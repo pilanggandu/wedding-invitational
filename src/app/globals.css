@@ -63,18 +63,6 @@
   border: 1px solid rgba(210, 160, 140, 0.4);
 }
 
-.paper-cut-layer-1 {
-  filter: drop-shadow(0 4px 8px rgba(70, 50, 30, 0.08));
-}
-
-.paper-cut-layer-2 {
-  filter: drop-shadow(0 8px 16px rgba(70, 50, 30, 0.12));
-}
-
-.paper-cut-layer-3 {
-  filter: drop-shadow(0 14px 24px rgba(70, 50, 30, 0.16));
-}
-
 .washi-tape {
   background-color: rgba(235, 215, 195, 0.75);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -110,7 +98,52 @@
     inset 0 -3px 6px rgba(50, 10, 5, 0.6);
 }
 
-/* Custom pulse and float animations */
+/* Gold Foil Shimmer for Handwriting Titles */
+.gold-foil-text {
+  background: linear-gradient(
+    115deg,
+    #3A3027 0%,
+    #A85A42 25%,
+    #D4AF37 45%,
+    #F3E5AB 50%,
+    #D4AF37 55%,
+    #A85A42 75%,
+    #3A3027 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShimmer 7s ease-in-out infinite;
+}
+
+@keyframes goldShimmer {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Swaying botanical animation */
+@keyframes botanicalSway {
+  0%, 100% {
+    transform: rotate(0deg) translate(0px, 0px);
+  }
+  50% {
+    transform: rotate(2.5deg) translate(2px, -3px);
+  }
+}
+
+.animate-botanical-sway {
+  animation: botanicalSway 8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Paper Float & Pulse */
 @keyframes paperFloat {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
@@ -136,6 +169,38 @@
 .animate-gentle-pulse {
   animation: gentlePulse 2.8s ease-in-out infinite;
 }
+
+/* Wax Seal Pulse Glow */
+@keyframes waxGlow {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(120, 30, 15, 0.45);
+  }
+  50% {
+    box-shadow: 0 4px 22px rgba(212, 91, 69, 0.7), 0 0 16px rgba(212, 175, 55, 0.4);
+  }
+}
+
+.animate-wax-glow {
+  animation: waxGlow 2.5s ease-in-out infinite;
+}
+
+/* Equalizer bounce */
+@keyframes eqBounce1 {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+@keyframes eqBounce2 {
+  0%, 100% { height: 14px; }
+  50% { height: 6px; }
+}
+@keyframes eqBounce3 {
+  0%, 100% { height: 8px; }
+  50% { height: 18px; }
+}
+
+.animate-eq-1 { animation: eqBounce1 0.8s ease-in-out infinite; }
+.animate-eq-2 { animation: eqBounce2 0.6s ease-in-out infinite; }
+.animate-eq-3 { animation: eqBounce3 0.7s ease-in-out infinite; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {

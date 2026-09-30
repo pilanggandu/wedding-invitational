@@ -4,6 +4,7 @@ import React from "react";
 import { Sparkles, Heart } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import { PhotoPlaceholder, BotanicalLeaves, TornPaperDivider } from "./PaperArtDecorations";
+import { MotionReveal } from "./MotionReveal";
 
 export function LoveStorySection() {
   const { stories } = WEDDING_DATA;
@@ -11,20 +12,22 @@ export function LoveStorySection() {
   return (
     <section id="cerita" className="relative py-16 bg-[#F4EFE6] overflow-hidden">
       {/* Decorative leaf cutouts */}
-      <BotanicalLeaves className="absolute top-1/3 -left-8 w-40 h-60 opacity-30 rotate-45" />
+      <BotanicalLeaves className="absolute top-1/3 -left-8 w-40 h-60 opacity-30 rotate-45 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center max-w-xl mx-auto mb-16">
-          <span className="font-serif italic text-xs tracking-widest uppercase text-[#947358] block mb-1">
-            Kilas Jejak Kasih
-          </span>
-          <h2 className="font-handwriting text-5xl sm:text-6xl text-[#3A3027] mb-2">
-            Kisah Cinta Kami
-          </h2>
-          <p className="text-xs sm:text-sm font-sans text-[#786452]">
-            Sebuah untaian takdir yang mempertemukan dua hati dalam satu ikatan janji suci
-          </p>
-        </div>
+        <MotionReveal variant="fade-up">
+          <div className="text-center max-w-xl mx-auto mb-16">
+            <span className="font-serif italic text-xs tracking-widest uppercase text-[#947358] block mb-1">
+              Kilas Jejak Kasih
+            </span>
+            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#3A3027] mb-2">
+              Kisah Cinta Kami
+            </h2>
+            <p className="text-xs sm:text-sm font-sans text-[#786452]">
+              Sebuah untaian takdir yang mempertemukan dua hati dalam satu ikatan janji suci
+            </p>
+          </div>
+        </MotionReveal>
 
         {/* Scrapbook Timeline */}
         <div className="relative">
@@ -36,53 +39,58 @@ export function LoveStorySection() {
               const isEven = index % 2 === 0;
 
               return (
-                <div
+                <MotionReveal
                   key={story.year}
-                  className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-10 ${
-                    isEven ? "sm:flex-row-reverse" : ""
-                  }`}
+                  variant={isEven ? "slide-left" : "slide-right"}
+                  delay={0.15 * (index + 1)}
                 >
-                  {/* Photo Placeholder Card */}
-                  <div className="w-full sm:w-1/2 flex justify-center">
-                    <PhotoPlaceholder
-                      variant={index === 0 ? "landscape" : index === 1 ? "couple" : index === 2 ? "rings" : "bride"}
-                      caption={story.photoCaption}
-                      tag={story.year}
-                      tapePosition={isEven ? "top-right" : "top-left"}
-                      tiltAngle={isEven ? "right" : "left"}
-                      className="max-w-[260px] sm:max-w-[280px]"
-                    />
-                  </div>
+                  <div
+                    className={`flex flex-col sm:flex-row items-center gap-6 sm:gap-10 ${
+                      isEven ? "sm:flex-row-reverse" : ""
+                    }`}
+                  >
+                    {/* Photo Placeholder Card */}
+                    <div className="w-full sm:w-1/2 flex justify-center">
+                      <PhotoPlaceholder
+                        variant={index === 0 ? "landscape" : index === 1 ? "couple" : index === 2 ? "rings" : "bride"}
+                        caption={story.photoCaption}
+                        tag={story.year}
+                        tapePosition={isEven ? "top-right" : "top-left"}
+                        tiltAngle={isEven ? "right" : "left"}
+                        className="max-w-[260px] sm:max-w-[280px]"
+                      />
+                    </div>
 
-                  {/* Text Note Scrapbook Card */}
-                  <div className="w-full sm:w-1/2">
-                    <div className="paper-sheet rounded-2xl p-6 sm:p-7 border border-[#DECBB4] shadow-sm relative">
-                      {/* Decorative small pin / stamp */}
-                      <div className="flex items-center justify-between border-b border-[#E8D9C5] pb-2 mb-3">
-                        <span className="font-serif text-2xl font-bold text-[#A85A42] tracking-wide">
-                          {story.year}
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-sans text-[#8C7A68] bg-[#FAF6EE] px-2.5 py-0.5 rounded-full border border-[#E0D0BD]">
-                          <Heart className="w-3 h-3 text-[#C26D53] fill-current" />
-                          Babak {index + 1}
-                        </span>
-                      </div>
+                    {/* Text Note Scrapbook Card */}
+                    <div className="w-full sm:w-1/2">
+                      <div className="paper-sheet rounded-2xl p-6 sm:p-7 border border-[#DECBB4] shadow-sm relative transform transition-transform duration-300 hover:-translate-y-1 hover:shadow-md">
+                        {/* Decorative header */}
+                        <div className="flex items-center justify-between border-b border-[#E8D9C5] pb-2 mb-3">
+                          <span className="font-serif text-2xl font-bold text-[#A85A42] tracking-wide">
+                            {story.year}
+                          </span>
+                          <span className="inline-flex items-center gap-1 text-[11px] font-sans text-[#8C7A68] bg-[#FAF6EE] px-2.5 py-0.5 rounded-full border border-[#E0D0BD]">
+                            <Heart className="w-3 h-3 text-[#C26D53] fill-current animate-pulse" />
+                            Babak {index + 1}
+                          </span>
+                        </div>
 
-                      <h3 className="font-serif text-lg sm:text-xl font-bold text-[#352B24] mb-2">
-                        {story.title}
-                      </h3>
+                        <h3 className="font-serif text-lg sm:text-xl font-bold text-[#352B24] mb-2">
+                          {story.title}
+                        </h3>
 
-                      <p className="text-xs sm:text-sm font-sans text-[#6B5A4B] leading-relaxed">
-                        {story.story}
-                      </p>
+                        <p className="text-xs sm:text-sm font-sans text-[#6B5A4B] leading-relaxed">
+                          {story.story}
+                        </p>
 
-                      <div className="mt-4 pt-2 flex items-center justify-end text-[11px] font-script text-[#998370]">
-                        <Sparkles className="w-3 h-3 text-[#C26D53] mr-1" />
-                        Sebuah catatan perjalanan
+                        <div className="mt-4 pt-2 flex items-center justify-end text-[11px] font-script text-[#998370]">
+                          <Sparkles className="w-3 h-3 text-[#C26D53] mr-1" />
+                          Sebuah catatan perjalanan
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </MotionReveal>
               );
             })}
           </div>

@@ -12,13 +12,14 @@ import { RsvpSection } from "@/components/RsvpSection";
 import { FooterSection } from "@/components/FooterSection";
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 
 export default function WeddingInvitationPage() {
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
   return (
     <main className="min-h-screen relative text-[#3A332C]">
-      {/* Envelope Opening Screen (With Wax Seal & Personalized Guest Name) */}
+      {/* Envelope Opening Screen (With 3D Wax Seal & Personalized Guest Name) */}
       <EnvelopeCover
         isOpen={isOpened}
         onOpen={() => setIsOpened(true)}
@@ -27,6 +28,9 @@ export default function WeddingInvitationPage() {
       {/* Main Wedding Invitation Content */}
       {isOpened && (
         <div className="animate-in fade-in duration-1000">
+          {/* Ambient Falling Paper Petals & Golden Sparkles */}
+          <FallingPaperPetals />
+
           <HeroSection />
           <CoupleSection />
           <EventSection />

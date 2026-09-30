@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Realistic Paper Art Photo Placeholder
 interface PhotoPlaceholderProps {
@@ -20,14 +20,38 @@ export function PhotoPlaceholder({
   tapePosition = "top-center",
   tiltAngle = "straight",
 }: PhotoPlaceholderProps) {
-  const tiltClasses = {
-    left: "-rotate-2 hover:rotate-0 transition-transform duration-500",
-    right: "rotate-2 hover:rotate-0 transition-transform duration-500",
-    straight: "hover:-translate-y-1 transition-transform duration-500",
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    setRotate({
+      x: -(y / (rect.height / 2)) * 6,
+      y: (x / (rect.width / 2)) * 6,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setRotate({ x: 0, y: 0 });
+  };
+
+  const baseAngleClass = {
+    left: "-rotate-2",
+    right: "rotate-2",
+    straight: "rotate-0",
   }[tiltAngle];
 
   return (
-    <div className={`relative inline-block ${tiltClasses} ${className}`}>
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
+        transition: rotate.x === 0 ? "transform 0.5s ease-out" : "transform 0.08s ease-out",
+      }}
+      className={`relative inline-block ${baseAngleClass} ${className}`}
+    >
       {/* Washi Tape Accent */}
       {tapePosition === "top-center" && (
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 w-24 h-7 washi-tape rotate-[-1.5deg] opacity-90" />
@@ -285,7 +309,7 @@ export function WaxSeal({
 
       {/* 3D Wax Seal Body */}
       <div
-        className={`${sizeClasses} wax-seal rounded-full flex flex-col items-center justify-center text-[#FEE8E1] p-1.5 transition-transform duration-300 group-hover:scale-105 active:scale-95`}
+        className={`${sizeClasses} wax-seal animate-wax-glow rounded-full flex flex-col items-center justify-center text-[#FEE8E1] p-1.5 transition-transform duration-300 group-hover:scale-105 active:scale-95`}
       >
         {/* Inner concentric ring */}
         <div className="w-full h-full rounded-full border-2 border-dashed border-[#FCA590]/50 flex flex-col items-center justify-center text-center p-1">
@@ -314,7 +338,7 @@ export function BotanicalLeaves({
   variant?: "olive" | "fern" | "eucalyptus";
 }) {
   return (
-    <div className={`pointer-events-none select-none ${className}`}>
+    <div className={`pointer-events-none select-none animate-botanical-sway ${className}`}>
       <svg
         viewBox="0 0 120 180"
         className="w-full h-full text-[#7B8A78]/70 drop-shadow-[0_3px_5px_rgba(50,60,45,0.08)]"
