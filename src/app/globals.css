@@ -26,101 +26,144 @@
   font-family: var(--font-sans);
 }
 
-/* Cute Maroon Drawing Art Background */
+/* Joyful Sketchbook Paper Background with subtle grain */
 .paper-texture {
-  background-color: #FFF5F6;
+  background-color: #FFFDF8;
   background-image: 
-    radial-gradient(at 15% 15%, rgba(245, 168, 184, 0.2) 0px, transparent 45%),
-    radial-gradient(at 85% 85%, rgba(125, 17, 40, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 50%, rgba(255, 235, 240, 0.5) 0px, transparent 70%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    radial-gradient(at 10% 15%, rgba(254, 240, 138, 0.25) 0px, transparent 40%),
+    radial-gradient(at 90% 20%, rgba(251, 207, 232, 0.3) 0px, transparent 45%),
+    radial-gradient(at 85% 85%, rgba(187, 247, 208, 0.25) 0px, transparent 40%),
+    radial-gradient(at 15% 80%, rgba(191, 219, 254, 0.25) 0px, transparent 40%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
 }
 
-/* Hand-Drawn Doodle Box Styles (Organic Wobbly Sketch Borders) */
-.doodle-box {
+/* Childlike Drawing Crayon Boxes (Wobbly Hand-Drawn Borders) */
+.crayon-box {
   background-color: #FFFFFF;
-  border: 2.5px solid #660F1A;
+  border: 3px solid #222222;
   border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-  box-shadow: 4px 5px 0px #660F1A;
-  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 5px 0px #222222;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.doodle-box:hover {
-  box-shadow: 6px 7px 0px #660F1A;
+.crayon-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 7px 0px #222222;
 }
 
-.doodle-box-soft {
-  background-color: #FFFDFE;
-  border: 2px solid #8A1C2C;
+.crayon-box-yellow {
+  background-color: #FFFDF0;
+  border: 3px solid #222222;
   border-radius: 20px 255px 20px 255px/255px 20px 255px 20px;
-  box-shadow: 3px 4px 0px rgba(102, 15, 26, 0.2);
+  box-shadow: 4px 5px 0px #F59E0B;
 }
 
-.doodle-box-maroon {
-  background-color: #660F1A;
-  color: #FFF0F3;
-  border: 2.5px solid #3D070E;
-  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-  box-shadow: 4px 5px 0px #3D070E;
+.crayon-box-blue {
+  background-color: #F0F7FF;
+  border: 3px solid #222222;
+  border-radius: 255px 25px 225px 25px/25px 225px 25px 255px;
+  box-shadow: 4px 5px 0px #2563EB;
 }
 
-.doodle-button {
-  background-color: #7D1128;
-  color: #FFF8F9;
-  border: 2px solid #4A0812;
+.crayon-box-pink {
+  background-color: #FFF1F5;
+  border: 3px solid #222222;
+  border-radius: 25px 255px 25px 255px/255px 25px 255px 25px;
+  box-shadow: 4px 5px 0px #DB2777;
+}
+
+/* Childlike Drawing Tactile Buttons */
+.crayon-button {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  border: 2.5px solid #222222;
   border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
-  box-shadow: 3px 3px 0px #4A0812;
+  box-shadow: 3px 4px 0px #222222;
+  font-weight: 700;
   transition: all 0.15s ease-in-out;
 }
 
-.doodle-button:hover {
-  background-color: #911730;
+.crayon-button:hover {
+  background-color: #DC2626;
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #4A0812;
+  box-shadow: 5px 6px 0px #222222;
 }
 
-.doodle-button:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #4A0812;
+.crayon-button:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px #222222;
 }
 
-.doodle-button-alt {
-  background-color: #FFF9FA;
-  color: #660F1A;
-  border: 2px solid #660F1A;
+.crayon-button-yellow {
+  background-color: #FBBF24;
+  color: #222222;
+  border: 2.5px solid #222222;
   border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
-  box-shadow: 3px 3px 0px #660F1A;
+  box-shadow: 3px 4px 0px #222222;
+  font-weight: 700;
   transition: all 0.15s ease-in-out;
 }
 
-.doodle-button-alt:hover {
-  background-color: #FFEBF0;
+.crayon-button-yellow:hover {
+  background-color: #F59E0B;
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #660F1A;
+  box-shadow: 5px 6px 0px #222222;
 }
 
-.doodle-button-alt:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #660F1A;
+.crayon-button-yellow:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px #222222;
 }
 
-/* Cute Sticker Tape & Badges */
-.washi-tape-cute {
-  background-color: rgba(255, 235, 140, 0.88);
-  border: 1px dashed rgba(150, 100, 20, 0.4);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  position: relative;
+.crayon-button-white {
+  background-color: #FFFFFF;
+  color: #222222;
+  border: 2.5px solid #222222;
+  border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
+  box-shadow: 3px 4px 0px #222222;
+  font-weight: 700;
+  transition: all 0.15s ease-in-out;
 }
 
-.washi-tape-maroon {
-  background-color: rgba(158, 42, 59, 0.8);
-  border: 1px dashed rgba(255, 255, 255, 0.4);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  position: relative;
+.crayon-button-white:hover {
+  background-color: #F8FAFC;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 6px 0px #222222;
 }
 
+.crayon-button-white:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0px #222222;
+}
+
+/* Washi Tape with cute colored stitches */
+.washi-tape-yellow {
+  background-color: #FDE047;
+  border: 1.5px dashed #B45309;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.washi-tape-pink {
+  background-color: #F472B6;
+  border: 1.5px dashed #BE185D;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.washi-tape-blue {
+  background-color: #60A5FA;
+  border: 1.5px dashed #1D4ED8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.washi-tape-green {
+  background-color: #4ADE80;
+  border: 1.5px dashed #15803D;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Cute Childlike Sticker Drop Shadow */
 .doodle-sticker {
-  filter: drop-shadow(2px 3px 0px rgba(102, 15, 26, 0.22));
+  filter: drop-shadow(2px 3px 0px #222222);
   transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -128,62 +171,60 @@
   transform: scale(1.1) rotate(4deg);
 }
 
-/* Maroon Wax Seal */
-.wax-seal-maroon {
-  background: radial-gradient(circle at 35% 35%, #9E1F35 0%, #6E0E20 65%, #4A0814 100%);
-  border: 2px solid #3D070E;
+/* Colorful Wax Seal with Crayon Edge */
+.wax-seal-colorful {
+  background: radial-gradient(circle at 35% 35%, #F87171 0%, #DC2626 70%, #991B1B 100%);
+  border: 3px solid #222222;
   box-shadow: 
-    0 4px 12px rgba(80, 10, 20, 0.5),
-    inset 0 2px 4px rgba(255, 180, 195, 0.5),
-    inset 0 -3px 6px rgba(40, 5, 10, 0.7);
+    0 4px 10px rgba(0, 0, 0, 0.25),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(153, 27, 27, 0.8);
 }
 
-/* Radiant Maroon Shimmer for Title */
-.maroon-shimmer-text {
+/* Radiant Crayon Rainbow Shimmer for Titles */
+.rainbow-shimmer-text {
   background: linear-gradient(
     115deg,
-    #5A0B17 0%,
-    #8A1C2C 25%,
-    #D63D56 45%,
-    #FFB3C1 50%,
-    #D63D56 55%,
-    #8A1C2C 75%,
-    #5A0B17 100%
+    #DC2626 0%,
+    #EA580C 20%,
+    #D97706 40%,
+    #16A34A 60%,
+    #2563EB 80%,
+    #7C3AED 100%
   );
-  background-size: 250% auto;
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: goldShimmer 7s ease-in-out infinite;
+  animation: rainbowShimmer 6s linear infinite;
 }
 
-@keyframes goldShimmer {
+@keyframes rainbowShimmer {
   0% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-  100% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
-/* Wiggle animation for cute stickers & doodles */
-@keyframes cuteWiggle {
+/* Playful Crayon Drawing Wiggle */
+@keyframes crayonWiggle {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-3deg) scale(1.02); }
-  75% { transform: rotate(3deg) scale(0.98); }
+  25% { transform: rotate(-2deg) scale(1.02); }
+  75% { transform: rotate(2deg) scale(0.98); }
 }
 
-.animate-cute-wiggle {
-  animation: cuteWiggle 3.5s ease-in-out infinite;
+.animate-crayon-wiggle {
+  animation: crayonWiggle 3s ease-in-out infinite;
 }
 
 /* Soft pulse for badges */
 @keyframes gentlePulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.04); }
 }
 
 .animate-gentle-pulse {
   animation: gentlePulse 2.4s ease-in-out infinite;
 }
 
-/* Equalizer bounce in maroon */
+/* Equalizer bounce in playful primary colors */
 @keyframes eqBounce1 {
   0%, 100% { height: 4px; }
   50% { height: 16px; }
@@ -197,22 +238,22 @@
   50% { height: 18px; }
 }
 
-.animate-eq-1 { animation: eqBounce1 0.8s ease-in-out infinite; }
+.animate-eq-1 { animation: eqBounce1 0.75s ease-in-out infinite; }
 .animate-eq-2 { animation: eqBounce2 0.6s ease-in-out infinite; }
-.animate-eq-3 { animation: eqBounce3 0.7s ease-in-out infinite; }
+.animate-eq-3 { animation: eqBounce3 0.85s ease-in-out infinite; }
 
-/* Custom scrollbar in Maroon */
+/* Custom scrollbar in playful sketchbook colors */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 9px;
 }
 ::-webkit-scrollbar-track {
-  background: #FFF0F3;
+  background: #FFFDF8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C46D7D;
+  background: #FBBF24;
   border-radius: 9999px;
-  border: 2px solid #FFF0F3;
+  border: 2px solid #222222;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8A1C2C;
+  background: #F59E0B;
 }

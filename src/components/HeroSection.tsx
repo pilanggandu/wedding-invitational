@@ -2,9 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Download, ExternalLink, Heart, Sparkles } from "lucide-react";
+import { Calendar, Clock, Download, ExternalLink, Sparkles } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
-import { PhotoPlaceholder, BotanicalLeaves, TornPaperDivider } from "./PaperArtDecorations";
+import {
+  PhotoPlaceholder,
+  KidsDrawingSun,
+  KidsDrawingHeart,
+  KidsDrawingStar,
+  TornPaperDivider,
+} from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
 
 export function HeroSection() {
@@ -74,43 +80,50 @@ export function HeroSection() {
   };
 
   return (
-    <section id="beranda" className="relative pt-16 pb-20 overflow-hidden paper-texture">
-      {/* Decorative Botanical Leaf Cutouts with natural sway */}
-      <BotanicalLeaves className="absolute -top-6 -left-8 w-40 sm:w-56 h-60 opacity-40 rotate-12 pointer-events-none" />
-      <BotanicalLeaves className="absolute top-1/4 -right-10 w-44 sm:w-60 h-64 opacity-40 -rotate-45 pointer-events-none" />
+    <section id="beranda" className="relative pt-14 pb-20 overflow-hidden paper-texture bg-[#FFFDF8]">
+      {/* Decorative Childlike Floating Doodles */}
+      <div className="absolute top-4 left-4 pointer-events-none opacity-85">
+        <KidsDrawingSun className="w-16 h-16 animate-gentle-pulse" />
+      </div>
+      <div className="absolute top-1/4 -right-2 pointer-events-none opacity-75">
+        <KidsDrawingHeart className="w-10 h-10" />
+      </div>
+      <div className="absolute top-2/3 left-2 pointer-events-none opacity-80">
+        <KidsDrawingStar className="w-9 h-9 text-[#FBBF24]" />
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
-        {/* Cute Badge with Heart */}
+        {/* Childlike Badge with Heart */}
         <MotionReveal variant="fade-up" delay={0.1}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] shadow-xs mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
-            Official Wedding of Two Dorks!
-            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FEF08A] text-[#222222] border-2 border-[#222222] shadow-[2px_2px_0px_#222222] mb-3 rotate-[-1deg]">
+            <Sparkles className="w-3.5 h-3.5 text-[#EF4444]" />
+            Buku Gambar Bahagia: Pernikahan Kami!
+            <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
           </div>
         </MotionReveal>
 
-        {/* Couple Names with Maroon Shimmer */}
+        {/* Couple Names with Rainbow Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
-          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
-            Dimas <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Sarah
+          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl rainbow-shimmer-text tracking-wide my-1">
+            Dimas <span className="font-script text-4xl sm:text-5xl text-[#EF4444]">&</span> Sarah
           </h1>
 
-          <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
+          <p className="font-script text-lg sm:text-2xl text-[#374151] font-bold max-w-lg mx-auto mb-3">
             &ldquo;{WEDDING_DATA.general.funTagline}&rdquo;
           </p>
 
-          <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg]">
+          <div className="inline-block bg-[#BAE6FD] text-[#0369A1] px-4 py-1 rounded-full border-2 border-[#222222] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#222222]">
             📅 Sabtu, 12 Desember 2026 • Depok & Jakarta
           </div>
         </MotionReveal>
 
-        {/* Main Photo Placeholder (Chibi Couple Drawing Polaroid) */}
+        {/* Main Photo Placeholder (Childlike Couple Drawing Polaroid) */}
         <MotionReveal variant="polaroid-drop" delay={0.35}>
           <div className="my-4 flex justify-center">
             <PhotoPlaceholder
               variant="couple"
-              caption="Dimas & Sarah — Siap Menempuh Hidup Baru Penuh Tawa!"
-              tag="FOREVER LOVE"
+              caption="Dimas & Sarah: Siap Menempuh Hidup Baru Penuh Tawa!"
+              tag="CINTA SEJATI"
               stickerText="100% Cocok! 💖"
               tapePosition="both-top"
               tiltAngle="straight"
@@ -119,35 +132,35 @@ export function HeroSection() {
           </div>
         </MotionReveal>
 
-        {/* Paper Countdown Timer with Cute Doodle Box */}
+        {/* Paper Countdown Timer with Childlike Crayon Box */}
         <MotionReveal variant="fade-up" delay={0.45}>
           <div className="mt-8 mb-8">
-            <div className="inline-block doodle-box p-5 sm:p-7 max-w-lg w-full bg-[#FFF9FA]">
-              <div className="flex items-center justify-center gap-2 mb-4 text-[#7D1128]">
-                <Clock className="w-4 h-4 text-[#D63D56] animate-spin" style={{ animationDuration: "6s" }} />
+            <div className="inline-block crayon-box p-5 sm:p-7 max-w-lg w-full bg-white">
+              <div className="flex items-center justify-center gap-2 mb-4 text-[#222222]">
+                <Clock className="w-4 h-4 text-[#EF4444] animate-spin" style={{ animationDuration: "6s" }} />
                 <span className="font-script font-bold text-lg sm:text-xl">
                   Hitung Mundur Menuju Hari Sah! ⏰🥳
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                <CountdownCard value={timeLeft.days} label="Hari Lagi" />
-                <CountdownCard value={timeLeft.hours} label="Jam" />
-                <CountdownCard value={timeLeft.minutes} label="Menit" />
-                <CountdownCard value={timeLeft.seconds} label="Detik" />
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                <CountdownCard value={timeLeft.days} label="Hari Lagi" bgClass="bg-[#FEF08A]" textClass="text-[#854D0E]" />
+                <CountdownCard value={timeLeft.hours} label="Jam" bgClass="bg-[#BAE6FD]" textClass="text-[#0369A1]" />
+                <CountdownCard value={timeLeft.minutes} label="Menit" bgClass="bg-[#BBF7D0]" textClass="text-[#15803D]" />
+                <CountdownCard value={timeLeft.seconds} label="Detik" bgClass="bg-[#FBCFE8]" textClass="text-[#BE185D]" />
               </div>
             </div>
           </div>
         </MotionReveal>
 
-        {/* Save The Date Buttons with Doodle Tactile Feel */}
+        {/* Save The Date Buttons with Crayon Tactile Feel */}
         <MotionReveal variant="fade-up" delay={0.55}>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1">
             <a
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="doodle-button inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
+              className="crayon-button inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
               Ingatkan di Google Calendar
@@ -156,9 +169,9 @@ export function HeroSection() {
 
             <button
               onClick={downloadIcs}
-              className="doodle-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
+              className="crayon-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
-              <Download className="w-4 h-4 text-[#7D1128]" />
+              <Download className="w-4 h-4 text-[#EF4444]" />
               Simpan Kalender (iCal)
             </button>
           </div>
@@ -166,28 +179,38 @@ export function HeroSection() {
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#FFF5F6" />
+        <TornPaperDivider position="bottom" color="#FEF9E7" />
       </div>
     </section>
   );
 }
 
-// Countdown Card with Cute Doodle Box
-function CountdownCard({ value, label }: { value: number; label: string }) {
+// Countdown Card with Childlike Colorful Box
+function CountdownCard({
+  value,
+  label,
+  bgClass,
+  textClass,
+}: {
+  value: number;
+  label: string;
+  bgClass: string;
+  textClass: string;
+}) {
   const formatted = String(value).padStart(2, "0");
 
   return (
-    <div className="bg-white rounded-xl p-2 sm:p-3 text-center border-2 border-[#7D1128] shadow-[2px_3px_0px_#7D1128]">
+    <div className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#222222] shadow-[2px_3px_0px_#222222]`}>
       <motion.div
         key={value}
         initial={{ y: -3, opacity: 0.7 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.2 }}
-        className="font-script text-2xl sm:text-4xl font-bold text-[#660F1A] tracking-tight"
+        className={`font-script text-2xl sm:text-4xl font-bold ${textClass} tracking-tight`}
       >
         {formatted}
       </motion.div>
-      <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#9E2A3B] mt-0.5">
+      <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#222222] mt-0.5">
         {label}
       </div>
     </div>

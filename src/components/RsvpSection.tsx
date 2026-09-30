@@ -5,7 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { MessageSquareHeart, Send, CheckCircle2, User, Users, Heart, Sparkles } from "lucide-react";
 import { WEDDING_DATA, WishMessage } from "@/data/weddingData";
-import { BotanicalLeaves, TornPaperDivider } from "./PaperArtDecorations";
+import {
+  CrayonWashiTape,
+  KidsDrawingHeart,
+  KidsDrawingStar,
+  TornPaperDivider,
+} from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
 
 export function RsvpSection() {
@@ -13,7 +18,7 @@ export function RsvpSection() {
   const [formData, setFormData] = useState({
     name: "",
     relationship: "Sahabat Seperjuangan",
-    attendance: "Hadir dong! 😋" as "Hadir dong! 😋" | "Maaf ga bisa 🥺" | "Masih mikir 👀",
+    attendance: "Hadir dong! 😋" as "Hadir dong! 😋" | "Maaf belum bisa 🥺" | "Masih mikir-mikir 👀",
     guestsCount: "1 Orang",
     message: "",
   });
@@ -21,7 +26,7 @@ export function RsvpSection() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("wedding_wishes_dimas_sarah_maroon");
+      const stored = localStorage.getItem("wedding_wishes_dimas_sarah_kids_art");
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -50,7 +55,7 @@ export function RsvpSection() {
     setWishes(updated);
 
     try {
-      localStorage.setItem("wedding_wishes_dimas_sarah_maroon", JSON.stringify(updated));
+      localStorage.setItem("wedding_wishes_dimas_sarah_kids_art", JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -59,10 +64,10 @@ export function RsvpSection() {
 
     try {
       confetti({
-        particleCount: 50,
-        spread: 70,
+        particleCount: 60,
+        spread: 75,
         origin: { y: 0.7 },
-        colors: ["#7D1128", "#F5A8B8", "#FFE58F", "#D63D56"],
+        colors: ["#EF4444", "#FBBF24", "#3B82F6", "#22C55E", "#EC4899"],
       });
     } catch {
       // ignore
@@ -82,23 +87,28 @@ export function RsvpSection() {
   };
 
   return (
-    <section id="rsvp" className="relative py-16 paper-texture overflow-hidden">
-      {/* Decorative leaf cutouts */}
-      <BotanicalLeaves className="absolute -top-8 -left-6 w-36 h-56 opacity-35 rotate-25 pointer-events-none" />
+    <section id="rsvp" className="relative py-16 paper-texture bg-[#FFFDF8] overflow-hidden">
+      {/* Decorative Doodles */}
+      <div className="absolute -top-6 -left-2 pointer-events-none opacity-80">
+        <KidsDrawingStar className="w-10 h-10 text-[#FBBF24]" />
+      </div>
+      <div className="absolute top-1/2 -right-2 pointer-events-none opacity-75">
+        <KidsDrawingHeart className="w-9 h-9" />
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-14">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-xs animate-gentle-pulse">
-              <MessageSquareHeart className="w-6 h-6 text-[#FAD2D8]" />
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#FEF08A] text-[#222222] flex items-center justify-center border-2 border-[#222222] shadow-[2px_2px_0px_#222222] animate-gentle-pulse">
+              <MessageSquareHeart className="w-6 h-6 text-[#EF4444]" />
             </div>
-            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
+            <span className="font-script text-2xl text-[#EF4444] font-bold block mb-1">
               Buku Tamu & Kasih Kabar Yaa! ✍️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
+            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#222222] mb-2">
               Konfirmasi & Doa
             </h2>
-            <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
+            <p className="text-xs sm:text-sm font-sans text-[#4B5563]">
               Biar kami bisa siapin porsi makanan yang pas dan ga kehabisan rendang:
             </p>
           </div>
@@ -108,15 +118,15 @@ export function RsvpSection() {
           {/* RSVP Form Card */}
           <div className="lg:col-span-6">
             <MotionReveal variant="slide-left" delay={0.2}>
-              <div className="doodle-box p-6 sm:p-8 relative bg-white">
+              <div className="crayon-box p-6 sm:p-8 relative bg-white">
                 {/* Washi tape header */}
-                <div className="absolute -top-3.5 left-8 w-24 h-7 washi-tape-cute -rotate-2 rounded-xs flex items-center justify-center">
-                  <span className="text-[9px] font-mono font-bold text-[#8A5A10]">
-                    ★ FORM RSVP ★
-                  </span>
-                </div>
+                <CrayonWashiTape
+                  text="★ FORM RSVP ★"
+                  color="yellow"
+                  className="absolute -top-3.5 left-8 z-20"
+                />
 
-                <h3 className="font-script text-2xl sm:text-3xl font-bold text-[#660F1A] mb-3">
+                <h3 className="font-script text-2xl sm:text-3xl font-bold text-[#222222] mb-3">
                   Kamu Bakal Dateng Kan? 🥺
                 </h3>
 
@@ -126,11 +136,11 @@ export function RsvpSection() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="mb-5 p-3.5 rounded-2xl bg-[#E8F5E9] border-2 border-[#2E7D32] text-[#1B5E20] flex items-center gap-2.5"
+                      className="mb-5 p-3.5 rounded-2xl bg-[#DCFCE7] border-2 border-[#222222] text-[#15803D] flex items-center gap-2.5 shadow-[2px_2px_0px_#222222]"
                     >
-                      <CheckCircle2 className="w-5 h-5 shrink-0 text-[#2E7D32]" />
+                      <CheckCircle2 className="w-5 h-5 shrink-0 text-[#16A34A]" />
                       <p className="text-xs sm:text-sm font-script font-bold">
-                        Yey makasih banyak! Doa dan konfirmasi kamu udah masuk! 🎉
+                        Yey terima kasih banyak! Doa dan konfirmasi kamu sudah masuk! 🎉
                       </p>
                     </motion.div>
                   )}
@@ -139,7 +149,7 @@ export function RsvpSection() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Name */}
                   <div>
-                    <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-mono font-bold text-[#222222] uppercase tracking-wider mb-1">
                       Nama Kamu Siapa?
                     </label>
                     <div className="relative">
@@ -149,21 +159,21 @@ export function RsvpSection() {
                         placeholder="Contoh: Budi Santoso Si Gemas"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 placeholder:text-[#C48C95]"
+                        className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#222222] bg-[#FFFBEB] text-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-[#FBBF24] placeholder:text-[#9CA3AF]"
                       />
-                      <User className="w-4 h-4 text-[#9E2A3B] absolute right-3 top-3.5 pointer-events-none" />
+                      <User className="w-4 h-4 text-[#6B7280] absolute right-3 top-3.5 pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Relationship */}
                   <div>
-                    <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-mono font-bold text-[#222222] uppercase tracking-wider mb-1">
                       Hubungan Sama Siapa Nih?
                     </label>
                     <select
                       value={formData.relationship}
                       onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 cursor-pointer font-medium"
+                      className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#222222] bg-[#FFFBEB] text-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-[#FBBF24] cursor-pointer font-medium"
                     >
                       <option value="Sahabat Seperjuangan">Sahabat Seperjuangan Dimas</option>
                       <option value="Bestie Cantik Sarah">Bestie Cantik Sarah</option>
@@ -176,24 +186,34 @@ export function RsvpSection() {
 
                   {/* Attendance */}
                   <div>
-                    <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-mono font-bold text-[#222222] uppercase tracking-wider mb-1.5">
                       Bisa Hadir Nggak?
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                      {(["Hadir dong! 😋", "Maaf ga bisa 🥺", "Masih mikir 👀"] as const).map((status) => (
-                        <button
-                          type="button"
-                          key={status}
-                          onClick={() => setFormData({ ...formData, attendance: status })}
-                          className={`py-2 px-1 text-xs font-script font-bold rounded-xl border-2 transition-all cursor-pointer ${
-                            formData.attendance === status
-                              ? "bg-[#7D1128] text-white border-[#4A0812] shadow-[2px_2px_0px_#4A0812] scale-102"
-                              : "bg-[#FFF9FA] text-[#7D1128] border-[#7D1128] hover:bg-[#FFE5EB]"
-                          }`}
-                        >
-                          {status}
-                        </button>
-                      ))}
+                      {(["Hadir dong! 😋", "Maaf belum bisa 🥺", "Masih mikir-mikir 👀"] as const).map((status) => {
+                        const isSelected = formData.attendance === status;
+                        const bgActive =
+                          status.startsWith("Hadir")
+                            ? "bg-[#BBF7D0] text-[#14532D]"
+                            : status.startsWith("Maaf")
+                            ? "bg-[#FECACA] text-[#7F1D1D]"
+                            : "bg-[#FEF08A] text-[#713F12]";
+
+                        return (
+                          <button
+                            type="button"
+                            key={status}
+                            onClick={() => setFormData({ ...formData, attendance: status })}
+                            className={`py-2 px-1 text-xs font-script font-bold rounded-xl border-2 border-[#222222] transition-all cursor-pointer ${
+                              isSelected
+                                ? `${bgActive} shadow-[2px_2px_0px_#222222] scale-102`
+                                : "bg-[#FFFDF8] text-[#374151] hover:bg-[#FEF9C3]"
+                            }`}
+                          >
+                            {status}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -204,26 +224,26 @@ export function RsvpSection() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                     >
-                      <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
+                      <label className="block text-xs font-mono font-bold text-[#222222] uppercase tracking-wider mb-1">
                         Bawa Berapa Pasukan?
                       </label>
                       <div className="relative">
                         <select
                           value={formData.guestsCount}
                           onChange={(e) => setFormData({ ...formData, guestsCount: e.target.value })}
-                          className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 cursor-pointer font-medium"
+                          className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#222222] bg-[#FFFBEB] text-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-[#FBBF24] cursor-pointer font-medium"
                         >
                           <option value="1 Orang">1 Orang (Solo Fighter)</option>
-                          <option value="2 Orang">2 Orang (Sama Pasangan/Bestie)</option>
+                          <option value="2 Orang">2 Orang (Sama Pasangan / Bestie)</option>
                         </select>
-                        <Users className="w-4 h-4 text-[#9E2A3B] absolute right-3 top-3.5 pointer-events-none" />
+                        <Users className="w-4 h-4 text-[#6B7280] absolute right-3 top-3.5 pointer-events-none" />
                       </div>
                     </motion.div>
                   )}
 
                   {/* Message */}
                   <div>
-                    <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
+                    <label className="block text-xs font-mono font-bold text-[#222222] uppercase tracking-wider mb-1">
                       Doa / Pesan Lucu Buat Pengantin
                     </label>
                     <textarea
@@ -232,13 +252,13 @@ export function RsvpSection() {
                       placeholder="Tulis ucapan, ledekan sayang, atau doa terbaikmu di sini..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 placeholder:text-[#C48C95] resize-none"
+                      className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#222222] bg-[#FFFBEB] text-[#111827] text-sm focus:outline-none focus:ring-2 focus:ring-[#FBBF24] placeholder:text-[#9CA3AF] resize-none"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="doodle-button w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold cursor-pointer"
+                    className="crayon-button w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
                     Kirim Konfirmasi & Doa Restu 🚀
@@ -251,12 +271,12 @@ export function RsvpSection() {
           {/* Wishes Feed */}
           <div className="lg:col-span-6">
             <MotionReveal variant="slide-right" delay={0.3}>
-              <div className="doodle-box p-6 sm:p-7 bg-[#FFF0F3]">
-                <div className="flex items-center justify-between border-b-2 border-dashed border-[#8A1C2C]/30 pb-3 mb-4">
-                  <h3 className="font-script text-2xl font-bold text-[#660F1A]">
+              <div className="crayon-box p-6 sm:p-7 bg-[#FEF9E7]">
+                <div className="flex items-center justify-between border-b-2 border-dashed border-[#222222]/20 pb-3 mb-4">
+                  <h3 className="font-script text-2xl font-bold text-[#222222]">
                     Untaian Doa Hangat ({wishes.length}) 💌
                   </h3>
-                  <span className="text-xs font-mono font-bold text-[#7D1128] bg-white px-2.5 py-0.5 rounded-full border border-[#7D1128]">
+                  <span className="text-xs font-mono font-bold text-[#222222] bg-[#FEF08A] px-2.5 py-0.5 rounded-full border-2 border-[#222222] shadow-[1px_2px_0px_#222222]">
                     LIVE
                   </span>
                 </div>
@@ -271,29 +291,29 @@ export function RsvpSection() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="bg-white rounded-2xl p-4 border-2 border-[#7D1128] shadow-[2px_3px_0px_#7D1128] relative"
+                        className="bg-white rounded-2xl p-4 border-2 border-[#222222] shadow-[2px_3px_0px_#222222] relative"
                       >
                         <div className="flex items-start justify-between gap-2 mb-1.5">
                           <div>
-                            <h4 className="font-sans font-bold text-sm text-[#4A0812]">
+                            <h4 className="font-sans font-bold text-sm text-[#111827]">
                               {item.name}
                             </h4>
-                            <span className="text-[10px] font-mono text-[#9E2A3B]">
+                            <span className="text-[10px] font-mono text-[#6B7280]">
                               {item.relationship}
                             </span>
                           </div>
-                          <span className="text-[10px] font-script font-bold px-2.5 py-0.5 rounded-full bg-[#FFF0F3] text-[#7D1128] border border-[#7D1128]">
+                          <span className="text-[10px] font-script font-bold px-2.5 py-0.5 rounded-full bg-[#FEF08A] text-[#222222] border border-[#222222]">
                             {item.attendance}
                           </span>
                         </div>
 
-                        <p className="text-xs sm:text-sm font-sans text-[#5A0B17] leading-relaxed my-2">
+                        <p className="text-xs sm:text-sm font-sans text-[#374151] leading-relaxed my-2">
                           &ldquo;{item.message}&rdquo;
                         </p>
 
-                        <div className="flex items-center justify-between pt-1 border-t border-[#F8B4C0] text-[10px] text-[#9E2A3B] font-mono">
+                        <div className="flex items-center justify-between pt-1 border-t-2 border-dashed border-[#222222]/15 text-[10px] text-[#6B7280] font-mono">
                           <span>{item.date}</span>
-                          <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
+                          <Heart className="w-3.5 h-3.5 text-[#EF4444] fill-current animate-pulse" />
                         </div>
                       </motion.div>
                     ))}
@@ -306,7 +326,7 @@ export function RsvpSection() {
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#FFF0F3" />
+        <TornPaperDivider position="bottom" color="#FEF9E7" />
       </div>
     </section>
   );
