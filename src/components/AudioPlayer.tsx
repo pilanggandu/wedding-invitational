@@ -118,15 +118,15 @@ export function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
   }, []);
 
   return (
-    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40">
+    <div className="fixed lg:sticky bottom-20 sm:bottom-6 right-4 lg:ml-auto lg:mr-4 z-40 w-fit pointer-events-auto">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={toggleMusic}
         aria-label={isPlaying ? "Mute Musik" : "Putar Musik"}
-        className="paper-sheet flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2.5 rounded-full border border-[#D5C4AF] bg-[#FFFDF9]/95 text-[#5C4D41] hover:text-[#A85A42] hover:border-[#C29B7F] shadow-lg transition-all duration-300 group cursor-pointer backdrop-blur-xs"
+        className="bg-white/95 flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2.5 rounded-full border-2 border-[#7D1128] text-[#5A0B17] hover:text-[#7D1128] shadow-[3px_4px_0px_#7D1128] transition-all duration-300 group cursor-pointer backdrop-blur-xs"
       >
-        <div className="relative w-8 h-8 rounded-full bg-[#EFE6D6] flex items-center justify-center text-[#7F6B58] group-hover:bg-[#EADBC7]">
+        <div className="relative w-8 h-8 rounded-full bg-[#FFF0F3] border border-[#7D1128] flex items-center justify-center text-[#7D1128] group-hover:bg-[#FFE5EB]">
           {isPlaying ? (
             /* Animated Equalizer Wave Bars */
             <div className="flex items-end gap-[3px] h-4 w-4 justify-center">

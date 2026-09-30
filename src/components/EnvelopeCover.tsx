@@ -73,7 +73,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.08 : 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture"
+        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture"
       >
         {/* Cute leaf cutouts in Maroon */}
         <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-50 rotate-45 pointer-events-none" />

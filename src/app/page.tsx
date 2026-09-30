@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { DesktopLeftShowcase } from "@/components/DesktopLeftShowcase";
 import { EnvelopeCover } from "@/components/EnvelopeCover";
 import { HeroSection } from "@/components/HeroSection";
 import { CoupleSection } from "@/components/CoupleSection";
@@ -18,35 +19,51 @@ export default function WeddingInvitationPage() {
   const [isOpened, setIsOpened] = useState<boolean>(false);
 
   return (
-    <main className="min-h-screen relative text-[#3A332C]">
-      {/* Envelope Opening Screen (With 3D Wax Seal & Personalized Guest Name) */}
-      <EnvelopeCover
-        isOpen={isOpened}
-        onOpen={() => setIsOpened(true)}
-      />
+    <div className="min-h-screen bg-[#FFF5F6] flex flex-col lg:flex-row relative">
+      {/* 🖥️ Desktop Left Showcase (Visible on lg+ screens, hidden on mobile) */}
+      <DesktopLeftShowcase />
 
-      {/* Main Wedding Invitation Content */}
-      {isOpened && (
-        <div className="animate-in fade-in duration-1000">
-          {/* Ambient Falling Paper Petals & Golden Sparkles */}
-          <FallingPaperPetals />
+      {/* 📱 Right Side: Phone-style frame on desktop, Full-screen native on mobile */}
+      <div className="w-full lg:w-[52%] xl:w-[50%] lg:h-screen lg:overflow-y-auto flex justify-center py-0 lg:py-6 px-0 lg:px-6 bg-[#FFF5F6] relative">
+        <main className="w-full max-w-full lg:max-w-[460px] min-h-screen bg-[#FFF5F6] lg:rounded-[44px] lg:border-[6px] lg:border-[#4A0812] lg:shadow-[10px_14px_0px_#4A0812] relative overflow-hidden flex flex-col">
+          {/* Top Phone Camera / Speaker Notch (Desktop View Only) */}
+          <div className="hidden lg:flex justify-center items-center py-2.5 bg-[#4A0812] text-white shrink-0">
+            <div className="w-24 h-4 bg-[#2A040A] rounded-full flex items-center justify-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#1A0206]" />
+              <span className="w-8 h-1 rounded-full bg-[#5A0B17]" />
+            </div>
+          </div>
 
-          <HeroSection />
-          <CoupleSection />
-          <EventSection />
-          <LoveStorySection />
-          <GallerySection />
-          <GiftSection />
-          <RsvpSection />
-          <FooterSection />
+          {/* Envelope Opening Screen */}
+          <EnvelopeCover
+            isOpen={isOpened}
+            onOpen={() => setIsOpened(true)}
+          />
 
-          {/* Floating Navigation Dock */}
-          <NavigationDock />
+          {/* Main Invitation Content */}
+          {isOpened && (
+            <div className="animate-in fade-in duration-1000 flex flex-col flex-1 relative">
+              {/* Falling Hearts & Stars Particles */}
+              <FallingPaperPetals />
 
-          {/* Ambient Music Player */}
-          <AudioPlayer autoPlayTrigger={isOpened} />
-        </div>
-      )}
-    </main>
+              <HeroSection />
+              <CoupleSection />
+              <EventSection />
+              <LoveStorySection />
+              <GallerySection />
+              <GiftSection />
+              <RsvpSection />
+              <FooterSection />
+
+              {/* Navigation Dock */}
+              <NavigationDock />
+
+              {/* Ambient Audio Player */}
+              <AudioPlayer autoPlayTrigger={isOpened} />
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
   );
 }
