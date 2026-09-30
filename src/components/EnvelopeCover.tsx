@@ -67,7 +67,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
 
     setTimeout(() => {
       onOpen();
-    }, 1100);
+    }, 1000);
   };
 
   if (isOpen) return null;
@@ -76,12 +76,12 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
-        animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.08 : 1 }}
+        animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.05 : 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
         className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture bg-[#FFF5F6]"
       >
-        {/* Harmonious Floating Doodles */}
+        {/* Harmonious 2D Floating Doodles */}
         <div className="absolute top-6 left-6 pointer-events-none opacity-80">
           <KidsDrawingSun className="w-14 h-14" />
         </div>
@@ -99,18 +99,15 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
           <PaperStamp text="RESMI SAH" date="12 • 12 • 2026" />
         </div>
 
-        {/* 3D Envelope Presentation */}
-        <div
+        {/* Flat 2D Hand-Drawn Envelope Card Presentation */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative w-full max-w-md"
-          style={{ perspective: "1400px" }}
         >
           {/* Main Envelope Box with Childlike Maroon Border */}
-          <motion.div
-            initial={{ y: 25, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="relative bg-[#FFF0F3] rounded-3xl p-6 sm:p-8 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden"
-          >
+          <div className="relative bg-[#FFF0F3] rounded-3xl p-6 sm:p-8 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden">
             {/* Cute Crayon Washi Tape Accents in Gold & Maroon */}
             <CrayonWashiTape
               text="♥ SPESIAL UNTUKMU ♥"
@@ -123,27 +120,20 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
               className="absolute -top-3.5 right-8 z-30"
             />
 
-            {/* 3D Envelope Flap in Velvet Maroon */}
-            <motion.div
-              animate={{
-                rotateX: isOpening ? 180 : 0,
-                opacity: isOpening ? 0 : 1,
-              }}
-              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-              style={{
-                transformOrigin: "top center",
-                backfaceVisibility: "hidden",
-              }}
-              className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#8A1C2C] to-[#660F1A] border-b-2 border-[#4A0812] shadow-sm z-20 pointer-events-none rounded-t-2xl"
-            />
+            {/* Flat 2D Envelope Header Trim in Velvet Maroon */}
+            <div className="w-full h-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 bg-gradient-to-r from-[#7D1128] via-[#8A1C2C] to-[#7D1128] border-b-2 border-[#4A0812] flex items-center justify-center mb-3">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-[#FFE58F] uppercase">
+                ✦ OFFICIAL WEDDING INVITATION ✦
+              </span>
+            </div>
 
-            {/* Inner Letter Card */}
+            {/* Flat 2D Inner Letter Card */}
             <motion.div
               animate={{
-                y: isOpening ? -35 : 0,
-                scale: isOpening ? 1.04 : 1,
+                y: isOpening ? -24 : 0,
+                scale: isOpening ? 1.03 : 1,
               }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="crayon-box p-6 sm:p-7 relative z-10 my-2 bg-white"
             >
               {/* Cute Header Pill */}
@@ -178,26 +168,26 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                 </p>
               </div>
 
-              {/* Rich Maroon Wax Seal Open Button */}
+              {/* Flat 2D Maroon Wax Seal Open Button */}
               <div className="mt-6 flex flex-col items-center justify-center">
                 <motion.button
-                  whileHover={{ scale: 1.1, rotate: 2 }}
-                  whileTap={{ scale: 0.92 }}
+                  whileHover={{ scale: 1.08, rotate: 2 }}
+                  whileTap={{ scale: 0.94 }}
                   onClick={handleOpenInvitation}
                   className="relative group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60 rounded-full"
                   aria-label="Buka Undangan Pernikahan"
                 >
-                  {/* Ribbon Ends in Maroon & Gold */}
+                  {/* Flat 2D Ribbon Ends in Maroon & Gold */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-28 flex justify-center -z-10 pointer-events-none">
-                    <div className="w-3.5 h-full bg-[#4A0812] shadow-sm transform -rotate-15 rounded-xs" />
-                    <div className="w-3.5 h-full bg-[#E5B869] shadow-sm transform rotate-15 -ml-1 rounded-xs" />
+                    <div className="w-3.5 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-15 rounded-xs" />
+                    <div className="w-3.5 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-15 -ml-1 rounded-xs" />
                   </div>
 
-                  {/* Wax Seal Disk in Rich Velvet Maroon */}
-                  <div className="w-20 h-20 sm:w-22 sm:h-22 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-xl">
-                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#FAD2D8]/70 flex flex-col items-center justify-center text-center p-1">
+                  {/* Flat 2D Wax Seal Disk in Rich Velvet Maroon */}
+                  <div className="w-20 h-20 sm:w-22 sm:h-22 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-[3px_4px_0px_#4A0812]">
+                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center p-1">
                       <Heart className="w-4 h-4 text-[#FAD2D8] mb-0.5 fill-current animate-pulse" />
-                      <span className="font-script font-bold tracking-wider text-[13px] text-white">
+                      <span className="font-script font-bold tracking-wider text-[14px] text-white">
                         D & S
                       </span>
                       <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#FFE58F]">
@@ -213,8 +203,8 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                 </span>
               </div>
             </motion.div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );

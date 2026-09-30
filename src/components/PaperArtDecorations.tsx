@@ -23,22 +23,6 @@ export function PhotoPlaceholder({
   tapePosition = "top-center",
   tiltAngle = "straight",
 }: PhotoPlaceholderProps) {
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    setRotate({
-      x: -(y / (rect.height / 2)) * 6,
-      y: (x / (rect.width / 2)) * 6,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    setRotate({ x: 0, y: 0 });
-  };
-
   const baseAngleClass = {
     left: "-rotate-2",
     right: "rotate-2",
@@ -47,13 +31,7 @@ export function PhotoPlaceholder({
 
   return (
     <div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
-        transition: rotate.x === 0 ? "transform 0.5s ease-out" : "transform 0.08s ease-out",
-      }}
-      className={`relative inline-block ${baseAngleClass} ${className}`}
+      className={`relative inline-block ${baseAngleClass} transform transition-transform duration-200 hover:-translate-y-1 ${className}`}
     >
       {/* Harmonious Washi Tapes (Maroon, Gold, Blush) */}
       {tapePosition === "top-center" && (
