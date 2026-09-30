@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💌 Undangan Digital Pernikahan - Paper Art Edition
 
-## Getting Started
+Aplikasi Web Undangan Pernikahan Digital modern bergaya **Paper Art (Seni Kertas)** dengan tipografi **Handwriting Calligraphy**, dibangun menggunakan **Next.js 16 (App Router)**, **TypeScript**, dan **Tailwind CSS**.
 
-First, run the development server:
+---
 
+## ✨ Fitur Utama
+
+1. **Aestetika Paper Art & Craft**:
+   - Efek potongan kertas berlapis (*layered paper cutouts*) dengan bayangan bertingkat (*multi-layer drop shadows*).
+   - Tekstur serat kertas alami (*paper grain texture*), aksen pita washi (*washi tape*), pembatas kertas sobek (*torn deckle edge*), dan stempel pos klasik.
+   - Ornamen dedaunan botani bergaya siluet seni kertas (*botanical cutouts*).
+
+2. **Tipografi Handwriting & Kaligrafi**:
+   - Google Fonts: **Great Vibes** (calligraphy handwriting) untuk nama mempelai & tanda tangan.
+   - **Caveat** untuk aksen tulisan tangan polaroid & catatan scrapbook.
+   - **Playfair Display** untuk judul dan ayat suci bernuansa editorial elegan.
+   - **Plus Jakarta Sans** untuk kenyamanan membaca detail acara dan formulir.
+
+3. **Placeholder Foto Artistik**:
+   - Frame polaroid kertas kerajinan tangan lengkap dengan aksen selotip washi tape dan sudut kemiringan alami.
+   - Siluet ilustratif seni kertas untuk Pria (*The Groom*), Wanita (*The Bride*), Pasangan (*Our Moments*), Cincin (*The Rings*), dan Lanskap Alam.
+   - Mudah diganti dengan foto asli kapan saja.
+
+4. **Cover Amplop Interaktif dengan Segel Lilin (Wax Seal)**:
+   - Personalisasi nama tamu secara otomatis melalui URL query:
+     ```text
+     https://domain-anda.com/?to=Bapak+Budi+Santoso
+     https://domain-anda.com/?u=Keluarga+Besar+Hendra
+     ```
+   - Tombol segel lilin 3D (*Wax Seal*) dengan pita gantung merah bata.
+   - Efek ledakan konfeti (*paper confetti burst*) dan animasi membuka amplop.
+
+5. **Audio Player Akustik Romantis**:
+   - Menggunakan Web Audio API synthesizer dengan arpeggio gitar akustik romantis yang menenangkan tanpa ketergantungan file eksternal (anti error 404).
+   - Tombol kontrol mengambang (*floating toggle*) untuk memutar atau membisukan musik.
+
+6. **Rangkaian Acara Lengkap**:
+   - Kartu tiket paper art untuk **Akad Nikah** dan **Resepsi Pernikahan**.
+   - Tombol integrasi langsung ke **Google Maps** (*Petunjuk Arah*) & tautan **Live Streaming**.
+   - Tombol simpan ke **Google Calendar** dan download kalender **iCal (.ics)**.
+   - Hitung mundur hari bahagia (*Live Countdown Timer*) dalam blok kartu kertas.
+
+7. **Kilas Jejak Kisah Cinta (Scrapbook Love Story)**:
+   - Garis waktu perjalanan cinta mulai dari pertemuan pertama, komitmen, lamaran, hingga pernikahan.
+
+8. **Galeri Foto Scrapbook & Lightbox**:
+   - Tata letak grid polaroid dengan sudut kemiringan acak dan selotip washi.
+   - Modal tampilan pembesar (*lightbox*) saat foto diklik.
+
+9. **Amplop Digital & Kado Fisik**:
+   - Kartu nomor rekening bank (BCA, Mandiri) dengan tombol **Salin Nomor Rekening** sekali klik (disertai feedback visual).
+   - Alamat pengiriman kado fisik dengan tombol **Salin Alamat Lengkap**.
+
+10. **Buku Tamu & RSVP Interaktif**:
+    - Formulir konfirmasi kehadiran (Hadir, Tidak Hadir, Masih Ragu), jumlah tamu, dan pesan doa restu.
+    - Ucapan langsung tersimpan dan muncul di daftar doa secara instan (tersimpan di *localStorage*).
+
+11. **Panduan Busana (*Dresscode*)**:
+    - Palet warna hangat bertema *Earthy Paper* (Terracotta, Warm Cream, Kraft Sand, Soft Sage, Espresso).
+
+12. **Navigasi Mengambang (*Floating Dock*)**:
+    - Menu navigasi cepat di bagian bawah layar untuk beralih antar seksi dengan mulus.
+
+---
+
+## 🚀 Cara Menjalankan Proyek
+
+### 1. Instalasi Dependensi (jika belum)
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Jalankan Server Pengembangan
+```bash
+npm run dev
+```
+Buka browser di [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Untuk menguji nama tamu khusus:
+[http://localhost:3000/?to=Bapak+Joko+Wirowo](http://localhost:3000/?to=Bapak+Joko+Wirowo)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Build untuk Produksi
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Struktur Data & Kustomisasi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Semua data teks, nama mempelai, tanggal acara, rekening bank, dan daftar cerita tersimpan rapi dalam satu file konfigurasi di:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+📄 **`src/data/weddingData.ts`**
 
-## Deploy on Vercel
+Contoh kustomisasi:
+- Ubah nama mempelai di bagian `couple.groom` dan `couple.bride`.
+- Ubah tanggal acara dan lokasi di bagian `events`.
+- Ubah rekening bank di bagian `gifts.accounts`.
+- Ganti placeholder foto dengan URL foto asli dengan menambahkan `next/image` ke `PhotoPlaceholder`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, Turbopack)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide Icons
+- **Effects**: Canvas Confetti & Web Audio API
+- **Fonts**: Great Vibes, Caveat, Playfair Display, Plus Jakarta Sans

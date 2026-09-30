@@ -1,26 +1,153 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --font-handwriting: var(--font-handwriting), 'Great Vibes', cursive;
+    --font-script: var(--font-script), 'Caveat', cursive;
+    --font-serif: var(--font-serif), 'Playfair Display', Georgia, serif;
+    --font-sans: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Typography Helpers */
+.font-handwriting {
+  font-family: var(--font-handwriting);
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Paper Art Aesthetic Effects */
+.paper-texture {
+  background-color: #FAF6EE;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(220, 205, 185, 0.12) 0px, transparent 50%),
+    radial-gradient(at 90% 85%, rgba(210, 195, 175, 0.15) 0px, transparent 50%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+.paper-sheet {
+  background-color: #FFFDF9;
+  box-shadow: 
+    0 1px 2px rgba(60, 45, 30, 0.05),
+    0 4px 10px rgba(60, 45, 30, 0.06),
+    0 12px 28px rgba(60, 45, 30, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 2px rgba(60, 45, 30, 0.03);
+  border: 1px solid rgba(215, 200, 180, 0.45);
+}
+
+.paper-sheet-kraft {
+  background-color: #EFE4D2;
+  box-shadow: 
+    0 2px 5px rgba(60, 40, 20, 0.08),
+    0 8px 20px rgba(60, 40, 20, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(195, 175, 150, 0.5);
+}
+
+.paper-sheet-terracotta {
+  background-color: #F7EAE3;
+  box-shadow: 
+    0 2px 6px rgba(130, 60, 40, 0.08),
+    0 10px 24px rgba(130, 60, 40, 0.08);
+  border: 1px solid rgba(210, 160, 140, 0.4);
+}
+
+.paper-cut-layer-1 {
+  filter: drop-shadow(0 4px 8px rgba(70, 50, 30, 0.08));
+}
+
+.paper-cut-layer-2 {
+  filter: drop-shadow(0 8px 16px rgba(70, 50, 30, 0.12));
+}
+
+.paper-cut-layer-3 {
+  filter: drop-shadow(0 14px 24px rgba(70, 50, 30, 0.16));
+}
+
+.washi-tape {
+  background-color: rgba(235, 215, 195, 0.75);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  position: relative;
+}
+
+.washi-tape::before,
+.washi-tape::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-size: 6px 6px;
+}
+
+.washi-tape::before {
+  left: -3px;
+  background: radial-gradient(circle, transparent 3px, rgba(235, 215, 195, 0.75) 3px);
+}
+
+.washi-tape::after {
+  right: -3px;
+  background: radial-gradient(circle, transparent 3px, rgba(235, 215, 195, 0.75) 3px);
+}
+
+.wax-seal {
+  background: radial-gradient(circle at 35% 35%, #D45B45 0%, #A83622 70%, #7A2415 100%);
+  box-shadow: 
+    0 4px 14px rgba(120, 30, 15, 0.45),
+    inset 0 2px 4px rgba(255, 200, 180, 0.5),
+    inset 0 -3px 6px rgba(50, 10, 5, 0.6);
+}
+
+/* Custom pulse and float animations */
+@keyframes paperFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.5deg);
+  }
+}
+
+.animate-paper-float {
+  animation: paperFloat 6s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.animate-gentle-pulse {
+  animation: gentlePulse 2.8s ease-in-out infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9CBB7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C4B19A;
 }
