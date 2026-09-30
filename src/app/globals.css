@@ -26,89 +26,129 @@
   font-family: var(--font-sans);
 }
 
-/* Paper Art Aesthetic Effects */
+/* Cute Maroon Drawing Art Background */
 .paper-texture {
-  background-color: #FAF6EE;
+  background-color: #FFF5F6;
   background-image: 
-    radial-gradient(at 10% 20%, rgba(220, 205, 185, 0.12) 0px, transparent 50%),
-    radial-gradient(at 90% 85%, rgba(210, 195, 175, 0.15) 0px, transparent 50%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+    radial-gradient(at 15% 15%, rgba(245, 168, 184, 0.2) 0px, transparent 45%),
+    radial-gradient(at 85% 85%, rgba(125, 17, 40, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(255, 235, 240, 0.5) 0px, transparent 70%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
-.paper-sheet {
-  background-color: #FFFDF9;
-  box-shadow: 
-    0 1px 2px rgba(60, 45, 30, 0.05),
-    0 4px 10px rgba(60, 45, 30, 0.06),
-    0 12px 28px rgba(60, 45, 30, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(60, 45, 30, 0.03);
-  border: 1px solid rgba(215, 200, 180, 0.45);
+/* Hand-Drawn Doodle Box Styles (Organic Wobbly Sketch Borders) */
+.doodle-box {
+  background-color: #FFFFFF;
+  border: 2.5px solid #660F1A;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow: 4px 5px 0px #660F1A;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.paper-sheet-kraft {
-  background-color: #EFE4D2;
-  box-shadow: 
-    0 2px 5px rgba(60, 40, 20, 0.08),
-    0 8px 20px rgba(60, 40, 20, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(195, 175, 150, 0.5);
+.doodle-box:hover {
+  box-shadow: 6px 7px 0px #660F1A;
 }
 
-.paper-sheet-terracotta {
-  background-color: #F7EAE3;
-  box-shadow: 
-    0 2px 6px rgba(130, 60, 40, 0.08),
-    0 10px 24px rgba(130, 60, 40, 0.08);
-  border: 1px solid rgba(210, 160, 140, 0.4);
+.doodle-box-soft {
+  background-color: #FFFDFE;
+  border: 2px solid #8A1C2C;
+  border-radius: 20px 255px 20px 255px/255px 20px 255px 20px;
+  box-shadow: 3px 4px 0px rgba(102, 15, 26, 0.2);
 }
 
-.washi-tape {
-  background-color: rgba(235, 215, 195, 0.75);
+.doodle-box-maroon {
+  background-color: #660F1A;
+  color: #FFF0F3;
+  border: 2.5px solid #3D070E;
+  border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  box-shadow: 4px 5px 0px #3D070E;
+}
+
+.doodle-button {
+  background-color: #7D1128;
+  color: #FFF8F9;
+  border: 2px solid #4A0812;
+  border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
+  box-shadow: 3px 3px 0px #4A0812;
+  transition: all 0.15s ease-in-out;
+}
+
+.doodle-button:hover {
+  background-color: #911730;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #4A0812;
+}
+
+.doodle-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #4A0812;
+}
+
+.doodle-button-alt {
+  background-color: #FFF9FA;
+  color: #660F1A;
+  border: 2px solid #660F1A;
+  border-radius: 255px 20px 225px 20px/20px 225px 20px 255px;
+  box-shadow: 3px 3px 0px #660F1A;
+  transition: all 0.15s ease-in-out;
+}
+
+.doodle-button-alt:hover {
+  background-color: #FFEBF0;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #660F1A;
+}
+
+.doodle-button-alt:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #660F1A;
+}
+
+/* Cute Sticker Tape & Badges */
+.washi-tape-cute {
+  background-color: rgba(255, 235, 140, 0.88);
+  border: 1px dashed rgba(150, 100, 20, 0.4);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(2px);
   position: relative;
 }
 
-.washi-tape::before,
-.washi-tape::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  background-size: 6px 6px;
+.washi-tape-maroon {
+  background-color: rgba(158, 42, 59, 0.8);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  position: relative;
 }
 
-.washi-tape::before {
-  left: -3px;
-  background: radial-gradient(circle, transparent 3px, rgba(235, 215, 195, 0.75) 3px);
+.doodle-sticker {
+  filter: drop-shadow(2px 3px 0px rgba(102, 15, 26, 0.22));
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.washi-tape::after {
-  right: -3px;
-  background: radial-gradient(circle, transparent 3px, rgba(235, 215, 195, 0.75) 3px);
+.doodle-sticker:hover {
+  transform: scale(1.1) rotate(4deg);
 }
 
-.wax-seal {
-  background: radial-gradient(circle at 35% 35%, #D45B45 0%, #A83622 70%, #7A2415 100%);
+/* Maroon Wax Seal */
+.wax-seal-maroon {
+  background: radial-gradient(circle at 35% 35%, #9E1F35 0%, #6E0E20 65%, #4A0814 100%);
+  border: 2px solid #3D070E;
   box-shadow: 
-    0 4px 14px rgba(120, 30, 15, 0.45),
-    inset 0 2px 4px rgba(255, 200, 180, 0.5),
-    inset 0 -3px 6px rgba(50, 10, 5, 0.6);
+    0 4px 12px rgba(80, 10, 20, 0.5),
+    inset 0 2px 4px rgba(255, 180, 195, 0.5),
+    inset 0 -3px 6px rgba(40, 5, 10, 0.7);
 }
 
-/* Gold Foil Shimmer for Handwriting Titles */
-.gold-foil-text {
+/* Radiant Maroon Shimmer for Title */
+.maroon-shimmer-text {
   background: linear-gradient(
     115deg,
-    #3A3027 0%,
-    #A85A42 25%,
-    #D4AF37 45%,
-    #F3E5AB 50%,
-    #D4AF37 55%,
-    #A85A42 75%,
-    #3A3027 100%
+    #5A0B17 0%,
+    #8A1C2C 25%,
+    #D63D56 45%,
+    #FFB3C1 50%,
+    #D63D56 55%,
+    #8A1C2C 75%,
+    #5A0B17 100%
   );
   background-size: 250% auto;
   -webkit-background-clip: text;
@@ -117,74 +157,33 @@
 }
 
 @keyframes goldShimmer {
-  0% {
-    background-position: 0% center;
-  }
-  50% {
-    background-position: 100% center;
-  }
-  100% {
-    background-position: 0% center;
-  }
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
 }
 
-/* Swaying botanical animation */
-@keyframes botanicalSway {
-  0%, 100% {
-    transform: rotate(0deg) translate(0px, 0px);
-  }
-  50% {
-    transform: rotate(2.5deg) translate(2px, -3px);
-  }
+/* Wiggle animation for cute stickers & doodles */
+@keyframes cuteWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg) scale(1.02); }
+  75% { transform: rotate(3deg) scale(0.98); }
 }
 
-.animate-botanical-sway {
-  animation: botanicalSway 8s ease-in-out infinite;
-  transform-origin: bottom center;
+.animate-cute-wiggle {
+  animation: cuteWiggle 3.5s ease-in-out infinite;
 }
 
-/* Paper Float & Pulse */
-@keyframes paperFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-6px) rotate(0.5deg);
-  }
-}
-
-.animate-paper-float {
-  animation: paperFloat 6s ease-in-out infinite;
-}
-
+/* Soft pulse for badges */
 @keyframes gentlePulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.04);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .animate-gentle-pulse {
-  animation: gentlePulse 2.8s ease-in-out infinite;
+  animation: gentlePulse 2.4s ease-in-out infinite;
 }
 
-/* Wax Seal Pulse Glow */
-@keyframes waxGlow {
-  0%, 100% {
-    box-shadow: 0 4px 14px rgba(120, 30, 15, 0.45);
-  }
-  50% {
-    box-shadow: 0 4px 22px rgba(212, 91, 69, 0.7), 0 0 16px rgba(212, 175, 55, 0.4);
-  }
-}
-
-.animate-wax-glow {
-  animation: waxGlow 2.5s ease-in-out infinite;
-}
-
-/* Equalizer bounce */
+/* Equalizer bounce in maroon */
 @keyframes eqBounce1 {
   0%, 100% { height: 4px; }
   50% { height: 16px; }
@@ -202,17 +201,18 @@
 .animate-eq-2 { animation: eqBounce2 0.6s ease-in-out infinite; }
 .animate-eq-3 { animation: eqBounce3 0.7s ease-in-out infinite; }
 
-/* Custom scrollbar */
+/* Custom scrollbar in Maroon */
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF6EE;
+  background: #FFF0F3;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D9CBB7;
+  background: #C46D7D;
   border-radius: 9999px;
+  border: 2px solid #FFF0F3;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #C4B19A;
+  background: #8A1C2C;
 }

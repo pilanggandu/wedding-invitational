@@ -2,6 +2,7 @@ export interface GroomBrideInfo {
   name: string;
   fullName: string;
   tagline: string;
+  bioFunny: string;
   parents: string;
   instagram: string;
   photoPlaceholder: {
@@ -16,7 +17,8 @@ export interface EventDetail {
   id: string;
   title: string;
   subTitle: string;
-  dateStr: string; // ISO string for calendar/countdown
+  badgeCute: string;
+  dateStr: string;
   displayDate: string;
   displayDay: string;
   time: string;
@@ -27,7 +29,7 @@ export interface EventDetail {
     title: string;
     description: string;
     location: string;
-    startDate: string; // YYYYMMDDTHHmmss
+    startDate: string;
     endDate: string;
   };
 }
@@ -36,6 +38,7 @@ export interface LoveStoryItem {
   year: string;
   title: string;
   story: string;
+  cuteReaction: string;
   photoCaption: string;
 }
 
@@ -43,8 +46,8 @@ export interface GalleryPhoto {
   id: number;
   caption: string;
   tag: string;
+  doodleSticker: string;
   aspectRatio: "square" | "portrait" | "landscape";
-  orientationClass: string;
 }
 
 export interface BankAccount {
@@ -52,14 +55,14 @@ export interface BankAccount {
   accountNumber: string;
   accountHolder: string;
   logoText: string;
-  colorScheme: "blue" | "yellow" | "red" | "green";
+  cuteLabel: string;
 }
 
 export interface WishMessage {
   id: string;
   name: string;
   relationship: string;
-  attendance: "Hadir" | "Tidak Hadir" | "Masih Ragu";
+  attendance: "Hadir dong! 😋" | "Maaf ga bisa 🥺" | "Masih mikir 👀";
   message: string;
   date: string;
 }
@@ -69,12 +72,13 @@ export const WEDDING_DATA = {
     groom: {
       name: "Dimas",
       fullName: "Dimas Arya Pratama, S.T.",
-      tagline: "Putra pertama dari dua bersaudara",
+      tagline: "Putra pertama yang akhirnya nemu pawang seumur hidup",
+      bioFunny: "Pencinta kopi tubruk, tukang ngelawak garing yang untungnya selalu diketawain Sarah (walau kasihan).",
       parents: "Bapak Bambang Wijaya & Ibu Sri Rahayu",
       instagram: "dimaspratama_",
       photoPlaceholder: {
         title: "The Groom",
-        caption: "Dimas Arya Pratama",
+        caption: "Dimas Si Calon Suami Siaga",
         aspectRatio: "3/4",
         variant: "groom",
       },
@@ -82,49 +86,52 @@ export const WEDDING_DATA = {
     bride: {
       name: "Sarah",
       fullName: "Sarah Annisa Larasati, S.Ds.",
-      tagline: "Putri bungsu dari tiga bersaudara",
+      tagline: "Putri bungsu yang hobi jajan matcha dan minta difotoin",
+      bioFunny: "Overthinker handal, ratu scrolling Shopee, tapi hatinya langsung tenang pas ketemu Mas Dimas.",
       parents: "Bapak Ir. Hendra Kusuma & Ibu Hj. Ratna Sari",
       instagram: "sarahlarasati_",
       photoPlaceholder: {
         title: "The Bride",
-        caption: "Sarah Annisa Larasati",
+        caption: "Sarah Si Tuan Putri Lucu",
         aspectRatio: "3/4",
         variant: "bride",
       },
     } as GroomBrideInfo,
   },
-  
+
   general: {
-    hashtag: "#DimasMenemukanSarah",
-    musicTitle: "A Thousand Years - Instrumental Acoustic Guitar",
-    musicArtist: "The Wedding Ensemble",
+    hashtag: "#AkhirnyaDimasSarahSah",
+    funTagline: "Dua bocah yang doyan makan akhirnya memutuskan untuk patungan seumur hidup! 🎉",
+    musicTitle: "Can't Take My Eyes Off You - Ukulele & Acoustic Lullaby",
+    musicArtist: "The Happy Wedding Band",
     quote: {
       arabic: "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً",
-      translation: "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.",
+      translation: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram dan damai kepadanya.",
       source: "QS. Ar-Rum: 21",
     },
-    openingGreetings: "Assalamu'alaikum Warahmatullahi Wabarakatuh",
-    openingMessage: "Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri perayaan pernikahan putra-putri kami:",
-    closingMessage: "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kedua mempelai.",
+    openingGreetings: "Assalamu'alaikum & Halo Semuanya! ✨",
+    openingMessage: "Setelah melewati perdebatan panjang milih tempat makan mau di mana, akhirnya kami berdua sepakat untuk melangkah ke jenjang yang paling sah dan penuh cinta!",
+    closingMessage: "Kehadiran dan doa restu kalian adalah hadiah paling berharga buat kami berdua. Sampai ketemu di hari bahagia kami yaa, jangan lupa makan yang kenyang!",
   },
 
-  countdownTarget: "2026-12-12T09:00:00+07:00", // Wedding Day Date
+  countdownTarget: "2026-12-12T09:00:00+07:00",
 
   events: [
     {
       id: "akad",
       title: "Akad Nikah",
-      subTitle: "Upacara Ijab Kabul Sakral",
+      subTitle: "Momen Sakral Ijab Kabul",
+      badgeCute: "Janji Suci Sehidup Semati 💍",
       dateStr: "2026-12-12T08:00:00+07:00",
       displayDate: "12 Desember 2026",
-      displayDay: "Sabtu",
+      displayDay: "Sabtu Pagi",
       time: "08:00 - 10:00 WIB",
       venueName: "Masjid Agung Kubah Emas & Pavilion",
       venueAddress: "Jl. Meruyung Raya No. 45, Limo, Kota Depok, Jawa Barat",
       mapUrl: "https://maps.google.com/?q=Masjid+Dian+Al-Mahri+Kubah+Emas+Depok",
       calendarEvent: {
         title: "Akad Nikah Dimas & Sarah",
-        description: "Akad Nikah pernikahan Dimas Arya Pratama & Sarah Annisa Larasati",
+        description: "Momen sakral janji nikah Dimas Arya Pratama & Sarah Annisa Larasati",
         location: "Masjid Agung Kubah Emas & Pavilion, Depok",
         startDate: "20261212T080000",
         endDate: "20261212T100000",
@@ -132,18 +139,19 @@ export const WEDDING_DATA = {
     },
     {
       id: "resepsi",
-      title: "Resepsi Pernikahan",
-      subTitle: "Ramah Tamah & Perayaan Bahagia",
+      title: "Pesta Resepsi",
+      subTitle: "Makan Enak & Ramah Tamah",
+      badgeCute: "Makan, Foto & Joget Bareng! 🍰",
       dateStr: "2026-12-12T11:00:00+07:00",
       displayDate: "12 Desember 2026",
-      displayDay: "Sabtu",
+      displayDay: "Sabtu Siang",
       time: "11:00 - 14:00 WIB",
       venueName: "Grand Cempaka Ballroom & Glasshouse",
       venueAddress: "Jl. Letjen Suprapto No. 100, Cempaka Putih, Jakarta Pusat",
       mapUrl: "https://maps.google.com/?q=Grand+Cempaka+Jakarta",
       calendarEvent: {
         title: "Resepsi Pernikahan Dimas & Sarah",
-        description: "Resepsi pernikahan Dimas Arya Pratama & Sarah Annisa Larasati",
+        description: "Pesta perayaan pernikahan Dimas Arya Pratama & Sarah Annisa Larasati",
         location: "Grand Cempaka Ballroom & Glasshouse, Jakarta Pusat",
         startDate: "20261212T110000",
         endDate: "20261212T140000",
@@ -154,72 +162,76 @@ export const WEDDING_DATA = {
   stories: [
     {
       year: "2020",
-      title: "Pertemuan Pertama",
-      story: "Takdir mempertemukan kami di sebuah workshop desain dan arsitektur di Yogyakarta. Sebuah obrolan hangat tentang secangkir kopi saring mengawali perjalanan cerita kami.",
-      photoCaption: "Kenangan Pertama di Malioboro, 2020",
+      title: "Ketemu Gara-Gara Es Kopi",
+      story: "Lagi workshop desain di Jogja, Dimas ga sengaja numpahin es kopi ke sketchbook Sarah. Dari minta maaf panik, malah berlanjut ngobrol 4 jam nonstop!",
+      cuteReaction: "Oops, takdir berkedok keteledoran ☕😅",
+      photoCaption: "Wajah canggung waktu baru kenal!",
     },
     {
       year: "2022",
-      title: "Menjalin Komitmen",
-      story: "Setelah dua tahun saling berbagi cerita, tawa, dan suka duka, kami memutuskan untuk saling melengkapi dan melangkah bersama dengan keyakinan yang mantap.",
-      photoCaption: "Langkah Bersama di Kebun Raya Bogor, 2022",
+      title: "Resmi Pacaran & Partner Jajan",
+      story: "Setelah ratusan mangkok bakso dan mie ayam dilahap berdua, Dimas akhirnya memberanikan diri nembak Sarah di puncak bukit sambil bawa cilok kesukaan Sarah.",
+      cuteReaction: "Diterima karena bawa cilok yang masih anget 🍡❤️",
+      photoCaption: "Masa-masa bucin tingkat dewa",
     },
     {
       year: "2025",
-      title: "Hari Lamaran",
-      story: "Di hadapan kedua keluarga besar tercinta, sebuah janji diikrarkan. Langkah menuju babak baru yang penuh berkah diiringi doa dan restu orang tua.",
-      photoCaption: "Momen Tukar Cincin & Restu Keluarga, 2025",
+      title: "Dilamar di Hadapan Keluarga",
+      story: "Dimas datang bersama keluarga besar sambil bawa seserahan dan senyum gemeteran. Sarah langsung bilang 'YES!' tanpa mikir dua kali (keburu laper).",
+      cuteReaction: "Cincinnya pas, makanannya ludes! 💍✨",
+      photoCaption: "Resmi tukar cincin & restu orang tua",
     },
     {
       year: "2026",
-      title: "Menuju Babak Abadi",
-      story: "Kini, kami bersiap menyatukan doa, mimpi, dan cita-cita dalam ikatan suci pernikahan yang diridhoi-Nya seumur hidup.",
-      photoCaption: "Menatap Masa Depan Berdua, 2026",
+      title: "Hari Paling Sah & Bahagia",
+      story: "Bismillah, babak baru resmi dimulai! Siap jadi tim kompak seumur hidup, saling support, dan ga berantem rebutan remot TV.",
+      cuteReaction: "Sah, halal, dan bahagia selamanya! 🥳🎉",
+      photoCaption: "Ready for our biggest adventure!",
     },
   ] as LoveStoryItem[],
 
   gallery: [
     {
       id: 1,
-      caption: "Potret Bersama dalam Balutan Busana Tradisional Nusantara",
-      tag: "Prewedding I",
+      caption: "Muka sok estetik padahal lagi nahan ketawa",
+      tag: "Prewedding 01",
+      doodleSticker: "Cute Couple 💑",
       aspectRatio: "portrait",
-      orientationClass: "col-span-1 row-span-2",
     },
     {
       id: 2,
-      caption: "Momen Hangat Berdua di Pinggir Pantai Kala Senja",
+      caption: "Di pantai senja, pura-pura romantis padahal kelilipan pasir",
       tag: "Sunset Vows",
+      doodleSticker: "Golden Hour 🌅",
       aspectRatio: "landscape",
-      orientationClass: "col-span-1 row-span-1",
     },
     {
       id: 3,
-      caption: "Tawa Spontan yang Mengabadikan Kebahagiaan Kami",
-      tag: "Candid Moments",
+      caption: "Foto candid waktu Dimas keceplosan ngelawak garing",
+      tag: "Laughter",
+      doodleSticker: "Haha Lucu Banget 😂",
       aspectRatio: "square",
-      orientationClass: "col-span-1 row-span-1",
     },
     {
       id: 4,
-      caption: "Cincin Pengikat Janji di Atas Kertas Surat Cinta",
+      caption: "Dua cincin pengikat janji anti kabur-kabur club",
       tag: "The Rings",
+      doodleSticker: "Shinning Bright 💎",
       aspectRatio: "landscape",
-      orientationClass: "col-span-1 row-span-1",
     },
     {
       id: 5,
-      caption: "Tatapan Penuh Syukur Menyambut Hari yang Dinantikan",
-      tag: "Prewedding II",
+      caption: "Sarah yang cantik maksimal dan Dimas yang beruntung banget",
+      tag: "Prewedding 02",
+      doodleSticker: "Bidadari Dimas 👸",
       aspectRatio: "portrait",
-      orientationClass: "col-span-1 row-span-2",
     },
     {
       id: 6,
-      caption: "Langkah Bersama di Tengah Keasrian Taman Pinus",
-      tag: "Nature Serenade",
+      caption: "Jalan santai di taman pinus sambil mikirin mau makan apa abis ini",
+      tag: "Nature Vibe",
+      doodleSticker: "Forever Together 🌲",
       aspectRatio: "square",
-      orientationClass: "col-span-1 row-span-1",
     },
   ] as GalleryPhoto[],
 
@@ -230,66 +242,66 @@ export const WEDDING_DATA = {
         accountNumber: "8410294821",
         accountHolder: "DIMAS ARYA PRATAMA",
         logoText: "BCA",
-        colorScheme: "blue",
+        cuteLabel: "Celengan Modal Rumah Tangga 🏡",
       },
       {
         bankName: "Bank Mandiri",
         accountNumber: "1370019283742",
         accountHolder: "SARAH ANNISA LARASATI",
         logoText: "MANDIRI",
-        colorScheme: "yellow",
+        cuteLabel: "Tabungan Boba & Honeymoon 🧋✈️",
       },
     ] as BankAccount[],
     physicalGiftAddress: {
-      recipient: "Dimas & Sarah (Wedding Gift)",
+      recipient: "Dimas & Sarah (Markas Cinta)",
       phone: "+62 812-3456-7890",
       address: "Jl. Cempaka Indah No. 18, RT 04 / RW 07, Kebayoran Baru, Jakarta Selatan, 12150",
     },
   },
 
   dresscode: {
-    description: "Kami mengapresiasi kehadiran tamu dalam nuansa warna hangat bertema Earthy Paper & Terracotta:",
+    description: "Dresscode bebas yang penting sopan, cakep, dan nyaman! Tapi kalau mau kembaran warna sama kami:",
     colors: [
-      { name: "Terracotta", hex: "#C26D53" },
-      { name: "Warm Cream", hex: "#F3EAD8" },
-      { name: "Kraft Sand", hex: "#D6C2A7" },
-      { name: "Soft Sage", hex: "#8A9A86" },
-      { name: "Espresso", hex: "#4A3E37" },
+      { name: "Deep Maroon", hex: "#7D1128" },
+      { name: "Rose Blush", hex: "#F5A8B8" },
+      { name: "Marshmallow Cream", hex: "#FFF0F3" },
+      { name: "Warm Mocha", hex: "#6E453B" },
+      { name: "Golden Honey", hex: "#E5A93C" },
     ],
   },
 
   initialWishes: [
     {
       id: "w1",
-      name: "Raditya Maulana & Keluarga",
-      relationship: "Sahabat Kuliah Dimas",
-      attendance: "Hadir",
-      message: "Barakallahu lakuma wa baraka 'alaikuma wa jama'a bainakuma fii khair. Selamat melangkah ke jenjang baru saudaraku Dimas dan Sarah! Semoga langgeng dan selalu dilimpahi keberkahan.",
-      date: "Kemarin, 14:20",
+      name: "Raditya Maulana (Bestie Dimas)",
+      relationship: "Sahabat Seperjuangan",
+      attendance: "Hadir dong! 😋",
+      message: "AKHIRNYA SAHHH!! Selamat ya Mas Dimas dan Sarah! Jangan lupa Sarah, Dimas kalau tidur suka ngorok kayak knalpot bobokan. Siap-siap earplug yaa wkwk. Happy wedding lovebirds!",
+      date: "1 jam lalu",
     },
     {
       id: "w2",
-      name: "dr. Nabila Putri, Sp.A",
-      relationship: "Teman SMA Sarah",
-      attendance: "Hadir",
-      message: "Masya Allah Sarah cantik, akhirnya berlabuh juga di pelabuhan terbaik. Selamat menempuh hidup baru ya, semoga sakinah mawaddah warahmah selalu! See you at the wedding!",
-      date: "Kemarin, 18:45",
+      name: "dr. Nabila Putri (Bestie Sarah)",
+      relationship: "Teman Ghibah Halal",
+      attendance: "Hadir dong! 😋",
+      message: "Sarah cantiku gemessss banget! Mas Dimas tolong dijaga tuan putri ini ya, jangan sampai telat makan nanti ngamuk hehe. Can't wait to see you both on stage!",
+      date: "3 jam lalu",
     },
     {
       id: "w3",
-      name: "Keluarga Besar Bpk. H. Sutrisno",
-      relationship: "Kerabat Keluarga",
-      attendance: "Hadir",
-      message: "Selamat untuk Dimas dan Sarah beserta kedua keluarga besar. Semoga Allah SWT memberkahi kedua mempelai dengan keturunan yang sholeh dan sholehah.",
-      date: "Hari ini, 09:12",
+      name: "Yoga & Istri",
+      relationship: "Rekan Kantor Dimas",
+      attendance: "Hadir dong! 😋",
+      message: "Selamat menempuh hidup baru Dimas & Sarah! Semoga rumah tangganya selalu penuh tawa, berkah, dan rezeki melimpah ruah!",
+      date: "Kemarin, 20:15",
     },
     {
       id: "w4",
-      name: "Yoga Anggoro & Istri",
-      relationship: "Rekan Kerja Sarah",
-      attendance: "Hadir",
-      message: "Selamat ya Sarah dan Mas Dimas! Semoga acaranya dilancarkan dari akad hingga resepsi. Doa terbaik untuk rumah tangga kalian.",
-      date: "Hari ini, 11:30",
+      name: "Geng Bakso & Cilok",
+      relationship: "Sobat Kuliner",
+      attendance: "Hadir dong! 😋",
+      message: "Kondangan paling ditunggu tahun ini! Siap menghabiskan zuppa soup dan kambing guling di resepsi yaa! Samawa kalian berdua!",
+      date: "Kemarin, 21:40",
     },
   ] as WishMessage[],
 };

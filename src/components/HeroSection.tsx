@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Download, ExternalLink, Heart } from "lucide-react";
+import { Calendar, Clock, Download, ExternalLink, Heart, Sparkles } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import { PhotoPlaceholder, BotanicalLeaves, TornPaperDivider } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
@@ -43,7 +43,7 @@ export function HeroSection() {
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     "Pernikahan Dimas & Sarah"
   )}&dates=20261212T010000Z/20261212T070000Z&details=${encodeURIComponent(
-    "Undangan Pernikahan Dimas Arya Pratama & Sarah Annisa Larasati"
+    "Undangan Pernikahan Paling Seru: Dimas Arya Pratama & Sarah Annisa Larasati"
   )}&location=${encodeURIComponent("Grand Cempaka Ballroom, Jakarta")}`;
 
   const downloadIcs = () => {
@@ -80,33 +80,38 @@ export function HeroSection() {
       <BotanicalLeaves className="absolute top-1/4 -right-10 w-44 sm:w-60 h-64 opacity-40 -rotate-45 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
-        {/* Subtle Paper Badge */}
+        {/* Cute Badge with Heart */}
         <MotionReveal variant="fade-up" delay={0.1}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-serif tracking-widest uppercase bg-[#FFFDF9] text-[#7A6652] border border-[#DECDB8] shadow-xs mb-4">
-            <Heart className="w-3.5 h-3.5 text-[#C26D53] fill-current" />
-            The Wedding Celebration
-            <Heart className="w-3.5 h-3.5 text-[#C26D53] fill-current" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] shadow-xs mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
+            Official Wedding of Two Dorks!
+            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
           </div>
         </MotionReveal>
 
-        {/* Couple Names with Gold Foil Shimmer */}
+        {/* Couple Names with Maroon Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
-          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl gold-foil-text tracking-wide my-2">
-            Dimas <span className="font-script text-4xl sm:text-5xl text-[#C26D53]">&</span> Sarah
+          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
+            Dimas <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Sarah
           </h1>
 
-          <p className="font-serif italic text-sm sm:text-base text-[#7B6652] tracking-widest uppercase mb-8">
-            Sabtu, 12 Desember 2026 • Jakarta & Depok
+          <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
+            &ldquo;{WEDDING_DATA.general.funTagline}&rdquo;
           </p>
+
+          <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg]">
+            📅 Sabtu, 12 Desember 2026 • Depok & Jakarta
+          </div>
         </MotionReveal>
 
-        {/* Main Photo Placeholder (Polaroid with 3D Parallax Tilt) */}
+        {/* Main Photo Placeholder (Chibi Couple Drawing Polaroid) */}
         <MotionReveal variant="polaroid-drop" delay={0.35}>
-          <div className="my-6 flex justify-center">
+          <div className="my-4 flex justify-center">
             <PhotoPlaceholder
               variant="couple"
-              caption="Dimas & Sarah — Menyongsong Hari Bahagia"
-              tag="OUR MOMENTS"
+              caption="Dimas & Sarah — Siap Menempuh Hidup Baru Penuh Tawa!"
+              tag="FOREVER LOVE"
+              stickerText="100% Cocok! 💖"
               tapePosition="both-top"
               tiltAngle="straight"
               className="w-full max-w-sm"
@@ -114,19 +119,19 @@ export function HeroSection() {
           </div>
         </MotionReveal>
 
-        {/* Paper Countdown Timer */}
+        {/* Paper Countdown Timer with Cute Doodle Box */}
         <MotionReveal variant="fade-up" delay={0.45}>
-          <div className="mt-10 mb-8">
-            <div className="inline-block paper-sheet-kraft rounded-2xl p-4 sm:p-6 border border-[#D8C4A9] shadow-md max-w-lg w-full">
-              <div className="flex items-center justify-center gap-2 mb-4 text-[#6A5745]">
-                <Clock className="w-4 h-4 text-[#C26D53]" />
-                <span className="font-serif uppercase tracking-widest text-xs font-semibold">
-                  Menghitung Hari Bahagia
+          <div className="mt-8 mb-8">
+            <div className="inline-block doodle-box p-5 sm:p-7 max-w-lg w-full bg-[#FFF9FA]">
+              <div className="flex items-center justify-center gap-2 mb-4 text-[#7D1128]">
+                <Clock className="w-4 h-4 text-[#D63D56] animate-spin" style={{ animationDuration: "6s" }} />
+                <span className="font-script font-bold text-lg sm:text-xl">
+                  Hitung Mundur Menuju Hari Sah! ⏰🥳
                 </span>
               </div>
 
               <div className="grid grid-cols-4 gap-2 sm:gap-4">
-                <CountdownCard value={timeLeft.days} label="Hari" />
+                <CountdownCard value={timeLeft.days} label="Hari Lagi" />
                 <CountdownCard value={timeLeft.hours} label="Jam" />
                 <CountdownCard value={timeLeft.minutes} label="Menit" />
                 <CountdownCard value={timeLeft.seconds} label="Detik" />
@@ -135,58 +140,54 @@ export function HeroSection() {
           </div>
         </MotionReveal>
 
-        {/* Save The Date Buttons */}
+        {/* Save The Date Buttons with Doodle Tactile Feel */}
         <MotionReveal variant="fade-up" delay={0.55}>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1">
+            <a
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-sans font-medium bg-[#A85A42] hover:bg-[#924B35] text-[#FFFDF9] shadow-md transition-all duration-300 hover:shadow-lg"
+              className="doodle-button inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
-              Google Calendar
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-            </motion.a>
+              Ingatkan di Google Calendar
+              <ExternalLink className="w-3.5 h-3.5 opacity-90" />
+            </a>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={downloadIcs}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-sans font-medium bg-[#FFFDF9] hover:bg-[#F5EFEB] text-[#554538] border border-[#D5C2AA] shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer"
+              className="doodle-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
-              <Download className="w-4 h-4 text-[#A85A42]" />
+              <Download className="w-4 h-4 text-[#7D1128]" />
               Simpan Kalender (iCal)
-            </motion.button>
+            </button>
           </div>
         </MotionReveal>
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#F4EFE6" />
+        <TornPaperDivider position="bottom" color="#FFF5F6" />
       </div>
     </section>
   );
 }
 
-// Paper Countdown Unit Card with smooth number animation
+// Countdown Card with Cute Doodle Box
 function CountdownCard({ value, label }: { value: number; label: string }) {
   const formatted = String(value).padStart(2, "0");
 
   return (
-    <div className="paper-sheet rounded-xl p-2.5 sm:p-3 text-center border border-[#DECBB4]">
+    <div className="bg-white rounded-xl p-2 sm:p-3 text-center border-2 border-[#7D1128] shadow-[2px_3px_0px_#7D1128]">
       <motion.div
         key={value}
-        initial={{ y: -4, opacity: 0.7 }}
+        initial={{ y: -3, opacity: 0.7 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="font-serif text-2xl sm:text-4xl font-bold text-[#3E3126] tracking-tight"
+        transition={{ duration: 0.2 }}
+        className="font-script text-2xl sm:text-4xl font-bold text-[#660F1A] tracking-tight"
       >
         {formatted}
       </motion.div>
-      <div className="text-[10px] sm:text-xs font-sans uppercase tracking-wider text-[#8A7663] mt-0.5">
+      <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#9E2A3B] mt-0.5">
         {label}
       </div>
     </div>

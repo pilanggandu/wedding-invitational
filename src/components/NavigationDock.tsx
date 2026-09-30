@@ -45,7 +45,7 @@ export function NavigationDock() {
 
   return (
     <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-[95vw] sm:max-w-md w-full px-2">
-      <div className="paper-sheet rounded-full px-3 py-2 border border-[#D5C2AA] bg-[#FFFDF9]/95 backdrop-blur-md shadow-xl flex items-center justify-around">
+      <div className="bg-white/95 rounded-full px-3 py-2 border-2 border-[#7D1128] shadow-[3px_4px_0px_#7D1128] backdrop-blur-md flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
@@ -56,14 +56,14 @@ export function NavigationDock() {
               onClick={() => scrollToSection(item.id)}
               className={`flex flex-col items-center justify-center p-1.5 sm:px-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                 isActive
-                  ? "bg-[#A85A42] text-[#FFFDF9] shadow-xs scale-105"
-                  : "text-[#756251] hover:text-[#A85A42] hover:bg-[#F7EFE4]"
+                  ? "bg-[#7D1128] text-white shadow-xs scale-105"
+                  : "text-[#7D1128] hover:bg-[#FFF0F3]"
               }`}
               aria-label={item.label}
               title={item.label}
             >
               <Icon className="w-4 h-4" />
-              <span className="text-[9px] font-sans font-medium mt-0.5 hidden sm:block">
+              <span className="text-[9px] font-mono font-bold mt-0.5 hidden sm:block">
                 {item.label}
               </span>
             </button>

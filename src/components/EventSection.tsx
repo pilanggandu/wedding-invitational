@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Clock, Navigation, Video } from "lucide-react";
+import { MapPin, Calendar, Clock, Navigation, Video, Sparkles, Smile } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import { BotanicalLeaves, TornPaperDivider } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
@@ -18,14 +18,14 @@ export function EventSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="font-serif italic text-xs tracking-widest uppercase text-[#947358] block mb-1">
-              Waktu & Lokasi
+            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
+              Catat Tanggal & Jangan Nyasar! 🗺️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#3A3027] mb-2">
+            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Rangkaian Acara
             </h2>
-            <p className="text-xs sm:text-sm font-sans text-[#786452]">
-              Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada:
+            <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
+              Berikut jadwal keseruan pesta hari bahagia kami yang wajib kamu hadiri:
             </p>
           </div>
         </MotionReveal>
@@ -39,37 +39,41 @@ export function EventSection() {
               delay={0.2 * (index + 1)}
               className="h-full"
             >
-              <div className="paper-sheet rounded-2xl p-6 sm:p-7 border border-[#DECBB4] shadow-md relative group flex flex-col justify-between h-full transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                {/* Paper Washi Tape */}
+              <div className="doodle-box p-6 sm:p-7 relative group flex flex-col justify-between h-full bg-white">
+                {/* Cute Washi Tape */}
                 <div
-                  className={`absolute -top-3 ${
+                  className={`absolute -top-3.5 ${
                     index === 0 ? "left-6 -rotate-2" : "right-6 rotate-2"
-                  } w-24 h-6 washi-tape opacity-90`}
-                />
+                  } w-26 h-7 washi-tape-cute rounded-xs flex items-center justify-center`}
+                >
+                  <span className="text-[9px] font-mono font-bold text-[#8A5A10]">
+                    {index === 0 ? "★ AKAD NIKAH ★" : "♥ PESTA RESEPSI ♥"}
+                  </span>
+                </div>
 
                 {/* Event Content */}
                 <div>
-                  <div className="border-b border-[#E7D6C1] pb-4 mb-4 text-center">
-                    <span className="inline-block px-3 py-1 rounded-full text-[11px] font-sans font-semibold tracking-wider uppercase bg-[#F5EDE1] text-[#9A5B46] mb-2">
-                      {event.subTitle}
+                  <div className="border-b-2 border-dashed border-[#8A1C2C]/30 pb-4 mb-4 text-center mt-2">
+                    <span className="inline-block px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FFF0F3] text-[#7D1128] border border-[#FAD2D8] mb-2">
+                      {event.badgeCute}
                     </span>
-                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#352B24]">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#4A0812]">
                       {event.title}
                     </h3>
                   </div>
 
                   {/* Details list */}
-                  <div className="space-y-3.5 my-5 text-left text-[#564536]">
+                  <div className="space-y-4 my-5 text-left text-[#5A0B17]">
                     {/* Date */}
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#F5EDE1] text-[#9A5B46] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-full bg-[#FFF0F3] text-[#7D1128] border border-[#7D1128] flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                         <Calendar className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-sans font-semibold text-sm text-[#352B24]">
+                        <p className="font-sans font-bold text-sm text-[#4A0812]">
                           {event.displayDay}, {event.displayDate}
                         </p>
-                        <p className="text-xs text-[#826F5F] font-sans">
+                        <p className="text-xs text-[#9E2A3B] font-sans">
                           Tahun 2026
                         </p>
                       </div>
@@ -77,29 +81,29 @@ export function EventSection() {
 
                     {/* Time */}
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#F5EDE1] text-[#9A5B46] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-full bg-[#FFF0F3] text-[#7D1128] border border-[#7D1128] flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                         <Clock className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-sans font-semibold text-sm text-[#352B24]">
+                        <p className="font-sans font-bold text-sm text-[#4A0812]">
                           {event.time}
                         </p>
-                        <p className="text-xs text-[#826F5F] font-sans">
-                          Waktu Indonesia Barat (WIB)
+                        <p className="text-xs text-[#9E2A3B] font-sans">
+                          Jangan sampai telat yaa!
                         </p>
                       </div>
                     </div>
 
                     {/* Venue */}
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#F5EDE1] text-[#9A5B46] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <div className="w-8 h-8 rounded-full bg-[#FFF0F3] text-[#7D1128] border border-[#7D1128] flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                         <MapPin className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="font-sans font-semibold text-sm text-[#352B24]">
+                        <p className="font-sans font-bold text-sm text-[#4A0812]">
                           {event.venueName}
                         </p>
-                        <p className="text-xs text-[#7B6858] font-sans leading-relaxed mt-0.5">
+                        <p className="text-xs text-[#7D1128] font-sans leading-relaxed mt-0.5">
                           {event.venueAddress}
                         </p>
                       </div>
@@ -108,31 +112,27 @@ export function EventSection() {
                 </div>
 
                 {/* Action buttons */}
-                <div className="pt-4 border-t border-[#E7D6C1] flex flex-col gap-2">
-                  <motion.a
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                <div className="pt-4 border-t-2 border-dashed border-[#8A1C2C]/30 flex flex-col gap-2">
+                  <a
                     href={event.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-sans font-medium bg-[#A85A42] hover:bg-[#8F4731] text-[#FFFDF9] shadow-sm transition-all"
+                    className="doodle-button w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold cursor-pointer"
                   >
                     <Navigation className="w-3.5 h-3.5" />
-                    Petunjuk Arah (Google Maps)
-                  </motion.a>
+                    Buka Google Maps (Petunjuk Arah)
+                  </a>
 
                   {index === 0 && (
-                    <motion.a
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <a
                       href="https://youtube.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-sans font-medium bg-[#FFFDF9] hover:bg-[#F7EFE4] text-[#695444] border border-[#D5C2AA] transition-all"
+                      className="doodle-button-alt w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold cursor-pointer"
                     >
-                      <Video className="w-3.5 h-3.5 text-[#C26D53]" />
-                      Live Streaming Akad
-                    </motion.a>
+                      <Video className="w-3.5 h-3.5 text-[#7D1128]" />
+                      Nonton Live Streaming Akad 📺
+                    </a>
                   )}
                 </div>
               </div>
@@ -142,11 +142,12 @@ export function EventSection() {
 
         {/* Dresscode Palette Card */}
         <MotionReveal variant="paper-unfold" delay={0.4}>
-          <div className="mt-14 max-w-xl mx-auto paper-sheet-kraft rounded-2xl p-6 border border-[#DECBB4] text-center shadow-sm">
-            <span className="font-serif uppercase tracking-widest text-xs font-bold text-[#7E654F] block mb-2">
-              Panduan Busana (Dresscode)
-            </span>
-            <p className="text-xs sm:text-sm font-sans text-[#564536] mb-5">
+          <div className="mt-14 max-w-xl mx-auto doodle-box p-6 sm:p-7 text-center bg-[#FFF0F3]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FFE58F] text-[#4A0812] border-1.5 border-[#4A0812] mb-2 rotate-[-1deg]">
+              <Sparkles className="w-3.5 h-3.5" />
+              Inspirasi Outfit Biar Kembaran! 👗👔
+            </div>
+            <p className="text-xs sm:text-sm font-sans text-[#7D1128] mb-5 font-medium">
               {dresscode.description}
             </p>
 
@@ -154,23 +155,28 @@ export function EventSection() {
               {dresscode.colors.map((color) => (
                 <div key={color.name} className="flex flex-col items-center group">
                   <motion.div
-                    whileHover={{ scale: 1.2, rotate: 6 }}
+                    whileHover={{ scale: 1.25, rotate: 6 }}
                     transition={{ type: "spring", stiffness: 300, damping: 12 }}
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white/80 shadow-md cursor-pointer"
+                    className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-[#4A0812] shadow-[2px_3px_0px_#4A0812] cursor-pointer"
                     style={{ backgroundColor: color.hex }}
                   />
-                  <span className="text-[11px] font-sans font-medium text-[#5A493A] mt-1.5 group-hover:text-[#A85A42] transition-colors">
+                  <span className="text-[11px] font-mono font-bold text-[#4A0812] mt-1.5 group-hover:text-[#D63D56] transition-colors">
                     {color.name}
                   </span>
                 </div>
               ))}
             </div>
+
+            <p className="text-[11px] font-script text-[#9E2A3B] mt-4 flex items-center justify-center gap-1 font-bold">
+              <Smile className="w-3.5 h-3.5 text-[#D63D56]" />
+              Warna apa aja tetep cakep kok, yang penting dateng bawa senyuman!
+            </p>
           </div>
         </MotionReveal>
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#F4EFE6" />
+        <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
     </section>
   );

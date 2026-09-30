@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Heart } from "lucide-react";
 
 interface PetalItem {
   id: number;
@@ -11,7 +11,7 @@ interface PetalItem {
   duration: number;
   delay: number;
   rotationSpeed: number;
-  variant: "terracotta" | "cream" | "gold" | "leaf";
+  variant: "maroon-heart" | "blush-heart" | "yellow-star" | "cute-sparkle";
 }
 
 export function FallingPaperPetals() {
@@ -19,22 +19,21 @@ export function FallingPaperPetals() {
   const [petals, setPetals] = useState<PetalItem[]>([]);
 
   useEffect(() => {
-    // Generate randomized paper petal particles
     const generated: PetalItem[] = Array.from({ length: 18 }).map((_, i) => ({
       id: i,
-      startX: Math.random() * 95, // 0% to 95% viewport width
-      size: Math.random() * 12 + 10, // 10px to 22px
-      duration: Math.random() * 8 + 9, // 9s to 17s fall time
-      delay: Math.random() * 6,
-      rotationSpeed: (Math.random() - 0.5) * 720,
+      startX: Math.random() * 95,
+      size: Math.random() * 12 + 12, // 12px to 24px
+      duration: Math.random() * 7 + 8,
+      delay: Math.random() * 5,
+      rotationSpeed: (Math.random() - 0.5) * 540,
       variant:
         i % 4 === 0
-          ? "terracotta"
+          ? "maroon-heart"
           : i % 4 === 1
-          ? "cream"
+          ? "blush-heart"
           : i % 4 === 2
-          ? "gold"
-          : "leaf",
+          ? "yellow-star"
+          : "cute-sparkle",
     }));
 
     setPetals(generated);
@@ -44,29 +43,27 @@ export function FallingPaperPetals() {
     return (
       <button
         onClick={() => setIsEnabled(true)}
-        className="fixed top-4 right-4 z-40 p-2 rounded-full bg-[#FFFDF9]/90 border border-[#D5C2AA] text-[#8C7561] hover:text-[#A85A42] text-xs shadow-md backdrop-blur-xs transition-transform hover:scale-105 cursor-pointer"
-        title="Aktifkan Efek Kelopak Kertas"
-        aria-label="Aktifkan Efek Kelopak Kertas"
+        className="fixed top-4 right-4 z-40 p-2.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-xs shadow-md transition-transform hover:scale-110 cursor-pointer"
+        title="Aktifkan Efek Konfeti Lucu"
+        aria-label="Aktifkan Efek Konfeti Lucu"
       >
-        <Sparkles className="w-4 h-4" />
+        <Heart className="w-4 h-4 fill-current text-[#D63D56]" />
       </button>
     );
   }
 
   return (
     <>
-      {/* Floating Toggle in header */}
       <button
         onClick={() => setIsEnabled(false)}
-        className="fixed top-4 right-4 z-40 px-3 py-1.5 rounded-full bg-[#FFFDF9]/85 border border-[#DECBB4] text-[#7A6451] hover:text-[#A85A42] text-[11px] font-sans shadow-xs backdrop-blur-xs flex items-center gap-1.5 transition-all hover:shadow-md cursor-pointer"
-        title="Matikan animasi kelopak melayang"
-        aria-label="Matikan Efek Kelopak"
+        className="fixed top-4 right-4 z-40 px-3 py-1.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-[11px] font-script font-bold shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
+        title="Matikan animasi konfeti cinta melayang"
+        aria-label="Matikan Efek Konfeti"
       >
-        <Sparkles className="w-3.5 h-3.5 text-[#C26D53]" />
-        <span className="hidden sm:inline">Efek Kelopak: Aktif</span>
+        <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
+        <span className="hidden sm:inline">Efek Cinta: Aktif ♥</span>
       </button>
 
-      {/* Ambient Petals Container */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
           {petals.map((petal) => (
@@ -83,13 +80,13 @@ export function FallingPaperPetals() {
                 top: "105%",
                 left: [
                   `${petal.startX}%`,
-                  `${petal.startX + 6}%`,
-                  `${petal.startX - 6}%`,
-                  `${petal.startX + 3}%`,
+                  `${petal.startX + 5}%`,
+                  `${petal.startX - 5}%`,
+                  `${petal.startX + 2}%`,
                 ],
-                opacity: [0, 0.85, 0.9, 0],
+                opacity: [0, 0.9, 0.95, 0],
                 rotate: petal.rotationSpeed,
-                scale: [0.8, 1.1, 0.9, 0.7],
+                scale: [0.8, 1.15, 0.95, 0.75],
               }}
               transition={{
                 duration: petal.duration,
@@ -98,71 +95,45 @@ export function FallingPaperPetals() {
                 ease: "linear",
               }}
               className="absolute"
-              style={{ width: petal.size, height: petal.size * 1.3 }}
+              style={{ width: petal.size, height: petal.size }}
             >
-              {petal.variant === "terracotta" && (
-                <svg viewBox="0 0 30 40" className="w-full h-full drop-shadow-xs">
-                  {/* Terracotta paper rose petal */}
-                  <path
-                    d="M15 2 C25 2 28 15 26 28 C24 38 15 39 15 39 C15 39 6 38 4 28 C2 15 5 2 15 2 Z"
-                    fill="#C26D53"
-                    opacity="0.75"
-                  />
-                  <path
-                    d="M15 5 Q14 20 15 35"
-                    stroke="#A85A42"
-                    strokeWidth="0.8"
-                    fill="none"
-                    opacity="0.6"
-                  />
-                </svg>
-              )}
-
-              {petal.variant === "cream" && (
-                <svg viewBox="0 0 30 40" className="w-full h-full drop-shadow-xs">
-                  {/* Kraft cream paper petal */}
-                  <path
-                    d="M15 2 C24 4 27 16 25 27 C23 37 15 38 15 38 C15 38 7 37 5 27 C3 16 6 4 15 2 Z"
-                    fill="#EADBC6"
-                    opacity="0.85"
-                  />
-                  <path
-                    d="M15 6 Q16 20 15 34"
-                    stroke="#D5C2AA"
-                    strokeWidth="0.8"
-                    fill="none"
-                    opacity="0.7"
-                  />
-                </svg>
-              )}
-
-              {petal.variant === "gold" && (
+              {petal.variant === "maroon-heart" && (
                 <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
-                  {/* Golden cut star sparkle */}
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    fill="#7D1128"
+                    stroke="#4A0812"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              )}
+
+              {petal.variant === "blush-heart" && (
+                <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
+                  <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                    fill="#F8B4C0"
+                    stroke="#660F1A"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              )}
+
+              {petal.variant === "yellow-star" && (
+                <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
                   <polygon
                     points="12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9"
-                    fill="#D4AF37"
-                    opacity="0.7"
+                    fill="#FFE58F"
+                    stroke="#8A5A10"
+                    strokeWidth="1.5"
                   />
                 </svg>
               )}
 
-              {petal.variant === "leaf" && (
-                <svg viewBox="0 0 24 36" className="w-full h-full drop-shadow-xs">
-                  {/* Sage green paper leaf */}
-                  <path
-                    d="M12 2 C20 8 22 22 12 34 C2 22 4 8 12 2 Z"
-                    fill="#8A9A86"
-                    opacity="0.7"
-                  />
-                  <line
-                    x1="12"
-                    y1="4"
-                    x2="12"
-                    y2="30"
-                    stroke="#6F7E6B"
-                    strokeWidth="0.8"
-                  />
+              {petal.variant === "cute-sparkle" && (
+                <svg viewBox="0 0 20 20" className="w-full h-full">
+                  <circle cx="10" cy="10" r="5" fill="#D63D56" stroke="#4A0812" strokeWidth="1.5" />
+                  <circle cx="12" cy="8" r="1.5" fill="#FFFFFF" />
                 </svg>
               )}
             </motion.div>
