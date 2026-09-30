@@ -118,24 +118,24 @@ export function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
   }, []);
 
   return (
-    <div className="fixed lg:sticky bottom-20 sm:bottom-6 right-4 lg:ml-auto lg:mr-4 z-40 w-fit pointer-events-auto">
+    <div className="fixed top-4 left-4 lg:absolute lg:top-14 lg:left-4 z-40 w-fit pointer-events-auto">
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={toggleMusic}
         aria-label={isPlaying ? "Mute Musik" : "Putar Musik"}
-        className="bg-white/95 flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2.5 rounded-full border-2 border-[#7D1128] text-[#5A0B17] hover:bg-[#FFF0F3] shadow-[3px_4px_0px_#7D1128] transition-all duration-300 group cursor-pointer backdrop-blur-xs"
+        className="bg-white/95 flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-[#7D1128] text-[#5A0B17] hover:bg-[#FFF0F3] shadow-[2px_3px_0px_#7D1128] transition-all duration-300 group cursor-pointer backdrop-blur-xs min-h-[44px]"
       >
-        <div className="relative w-8 h-8 rounded-full bg-[#FFF0F3] border border-[#7D1128] flex items-center justify-center text-[#7D1128]">
+        <div className="relative w-7 h-7 rounded-full bg-[#FFF0F3] border border-[#7D1128] flex items-center justify-center text-[#7D1128] shrink-0">
           {isPlaying ? (
             /* Animated Equalizer Wave Bars */
-            <div className="flex items-end gap-[3px] h-4 w-4 justify-center">
+            <div className="flex items-end gap-[2px] h-3.5 w-3.5 justify-center">
               <span className="w-1 bg-[#7D1128] rounded-full animate-eq-1" />
               <span className="w-1 bg-[#C24155] rounded-full animate-eq-2" />
               <span className="w-1 bg-[#E5B869] rounded-full animate-eq-3" />
             </div>
           ) : (
-            <VolumeX className="w-4 h-4 text-[#9E2A3B]" />
+            <VolumeX className="w-3.5 h-3.5 text-[#9E2A3B]" />
           )}
 
           {/* Floating ping indicator */}
@@ -147,17 +147,9 @@ export function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
           )}
         </div>
 
-        <div className="hidden sm:flex flex-col text-left pr-1">
-          <div className="flex items-center gap-1.5">
-            <Music className="w-3 h-3 text-[#7D1128]" />
-            <span className="text-[11px] font-bold font-sans text-[#4A0812]">
-              {isPlaying ? "Musik Diputar" : "Musik Hening"}
-            </span>
-          </div>
-          <span className="text-[9px] font-script text-[#8A1C2C] font-bold tracking-wide">
-            Acoustic Serenade
-          </span>
-        </div>
+        <span className="text-[11px] font-script font-bold text-[#7D1128] pr-1">
+          {isPlaying ? "Musik: On 🎵" : "Musik: Off 🔇"}
+        </span>
       </motion.button>
     </div>
   );

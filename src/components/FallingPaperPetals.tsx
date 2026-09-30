@@ -45,7 +45,7 @@ export function FallingPaperPetals() {
     return (
       <button
         onClick={() => setIsEnabled(true)}
-        className="fixed top-4 right-4 z-40 p-2.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-xs shadow-md transition-transform hover:scale-110 cursor-pointer"
+        className="fixed top-4 right-4 lg:absolute lg:top-14 lg:right-4 z-40 p-2.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-xs shadow-[2px_3px_0px_#660F1A] transition-transform hover:scale-105 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center pointer-events-auto"
         title="Aktifkan Efek Kelopak Cinta"
         aria-label="Aktifkan Efek Kelopak Cinta"
       >
@@ -58,7 +58,7 @@ export function FallingPaperPetals() {
     <>
       <button
         onClick={() => setIsEnabled(false)}
-        className="fixed top-4 right-4 z-40 px-3.5 py-1.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-[11px] font-script font-bold shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
+        className="fixed top-4 right-4 lg:absolute lg:top-14 lg:right-4 z-40 px-3.5 py-1.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-[11px] font-script font-bold shadow-[2px_3px_0px_#660F1A] flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer min-h-[44px] pointer-events-auto"
         title="Matikan animasi kelopak cinta melayang"
         aria-label="Matikan Efek Kelopak Cinta"
       >
