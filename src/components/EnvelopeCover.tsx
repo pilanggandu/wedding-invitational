@@ -37,28 +37,28 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
     setIsOpening(true);
 
     try {
-      // Burst of colorful celebratory wedding confetti
+      // Burst of maroon, champagne gold, blush, and ivory confetti
       confetti({
-        particleCount: 80,
-        spread: 90,
+        particleCount: 75,
+        spread: 85,
         origin: { y: 0.6 },
-        colors: ["#EF4444", "#FBBF24", "#3B82F6", "#22C55E", "#EC4899", "#F59E0B"],
+        colors: ["#7D1128", "#E5B869", "#F5A8B8", "#FFF0F3", "#B3394B", "#660F1A"],
       });
 
       setTimeout(() => {
         confetti({
-          particleCount: 50,
+          particleCount: 45,
           angle: 60,
-          spread: 60,
+          spread: 55,
           origin: { x: 0 },
-          colors: ["#EF4444", "#FBBF24", "#3B82F6", "#22C55E"],
+          colors: ["#7D1128", "#FFE58F", "#F8B4C0"],
         });
         confetti({
-          particleCount: 50,
+          particleCount: 45,
           angle: 120,
-          spread: 60,
+          spread: 55,
           origin: { x: 1 },
-          colors: ["#EC4899", "#FBBF24", "#3B82F6", "#F59E0B"],
+          colors: ["#660F1A", "#E5B869", "#FAD2D8"],
         });
       }, 250);
     } catch {
@@ -79,17 +79,17 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.08 : 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture bg-[#FEF9E7]"
+        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture bg-[#FFF5F6]"
       >
-        {/* Childlike Floating Doodles */}
-        <div className="absolute top-6 left-6 pointer-events-none opacity-85">
-          <KidsDrawingSun className="w-16 h-16 animate-gentle-pulse" />
+        {/* Harmonious Floating Doodles */}
+        <div className="absolute top-6 left-6 pointer-events-none opacity-80">
+          <KidsDrawingSun className="w-14 h-14" />
         </div>
         <div className="absolute top-12 right-10 pointer-events-none opacity-80">
-          <KidsDrawingStar className="w-8 h-8 text-[#FBBF24]" />
+          <KidsDrawingStar className="w-8 h-8 text-[#FFE58F]" />
         </div>
         <div className="absolute bottom-10 left-8 pointer-events-none opacity-75">
-          <KidsDrawingHeart className="w-10 h-10" />
+          <KidsDrawingHeart className="w-9 h-9" />
         </div>
         <div className="absolute bottom-12 right-8 pointer-events-none opacity-75">
           <KidsDrawingHeart className="w-8 h-8" />
@@ -104,26 +104,26 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
           className="relative w-full max-w-md"
           style={{ perspective: "1400px" }}
         >
-          {/* Main Envelope Box with Childlike Crayon Border */}
+          {/* Main Envelope Box with Childlike Maroon Border */}
           <motion.div
             initial={{ y: 25, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="relative bg-[#FFFDF8] rounded-3xl p-6 sm:p-8 text-center border-[4px] border-[#222222] shadow-[6px_8px_0px_#222222] overflow-hidden"
+            className="relative bg-[#FFF0F3] rounded-3xl p-6 sm:p-8 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden"
           >
-            {/* Cute Crayon Washi Tape Accents */}
+            {/* Cute Crayon Washi Tape Accents in Gold & Maroon */}
             <CrayonWashiTape
               text="♥ SPESIAL UNTUKMU ♥"
-              color="yellow"
+              color="gold"
               className="absolute -top-3.5 left-8 z-30"
             />
             <CrayonWashiTape
               text="★ HARI BAHAGIA ★"
-              color="pink"
+              color="maroon"
               className="absolute -top-3.5 right-8 z-30"
             />
 
-            {/* 3D Envelope Flap */}
+            {/* 3D Envelope Flap in Velvet Maroon */}
             <motion.div
               animate={{
                 rotateX: isOpening ? 180 : 0,
@@ -134,7 +134,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                 transformOrigin: "top center",
                 backfaceVisibility: "hidden",
               }}
-              className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#EF4444] to-[#DC2626] border-b-3 border-[#222222] shadow-sm z-20 pointer-events-none rounded-t-2xl"
+              className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#8A1C2C] to-[#660F1A] border-b-2 border-[#4A0812] shadow-sm z-20 pointer-events-none rounded-t-2xl"
             />
 
             {/* Inner Letter Card */}
@@ -148,67 +148,67 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
             >
               {/* Cute Header Pill */}
               <div className="flex justify-center mb-3">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold tracking-wide bg-[#FEF08A] text-[#222222] border-2 border-[#222222] shadow-[2px_2px_0px_#222222]">
-                  <Sparkles className="w-3.5 h-3.5 text-[#EF4444]" />
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold tracking-wide bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] shadow-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-[#B3394B]" />
                   Undangan Nikah Paling Bahagia!
-                  <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#B3394B]" />
                 </span>
               </div>
 
-              {/* Couple Names with Rainbow Shimmer */}
-              <h1 className="font-handwriting text-5xl sm:text-6xl rainbow-shimmer-text my-2 leading-tight tracking-wide">
-                Dimas <span className="font-script text-3xl sm:text-4xl text-[#EF4444]">&</span> Sarah
+              {/* Couple Names with Maroon & Gold Shimmer */}
+              <h1 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text my-2 leading-tight tracking-wide">
+                Dimas <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Sarah
               </h1>
 
-              <div className="inline-block bg-[#BAE6FD] text-[#0369A1] px-3.5 py-0.5 rounded-full border-2 border-[#222222] text-xs font-mono font-bold my-1 rotate-[-1deg] shadow-[2px_2px_0px_#222222]">
+              <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-0.5 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold my-1 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
                 Sabtu, 12 Desember 2026 💍
               </div>
 
               {/* Recipient Letter Section */}
-              <div className="border-2 border-dashed border-[#222222]/40 py-3.5 px-3 my-4 bg-[#FFFBEB] rounded-2xl">
-                <p className="text-xs font-mono font-bold text-[#854D0E] uppercase tracking-wider mb-1">
+              <div className="border-2 border-dashed border-[#8A1C2C]/40 py-3.5 px-3 my-4 bg-[#FFF9FA] rounded-2xl">
+                <p className="text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
                   Spesial Untuk Sahabat / Keluarga Tercinta:
                 </p>
-                <p className="font-script text-2xl sm:text-3xl text-[#222222] font-bold px-2 py-0.5 leading-snug">
+                <p className="font-script text-2xl sm:text-3xl text-[#4A0812] font-bold px-2 py-0.5 leading-snug">
                   {guestName}
                 </p>
-                <p className="text-[11px] text-[#4B5563] mt-1 font-sans italic flex items-center justify-center gap-1">
-                  <Smile className="w-3.5 h-3.5 text-[#EF4444]" />
+                <p className="text-[11px] text-[#9E2A3B] mt-1 font-sans italic flex items-center justify-center gap-1">
+                  <Smile className="w-3.5 h-3.5 text-[#D63D56]" />
                   Harus dateng yaa, kita udah kangen banget!
                 </p>
               </div>
 
-              {/* Colorful Wax Seal Open Button */}
+              {/* Rich Maroon Wax Seal Open Button */}
               <div className="mt-6 flex flex-col items-center justify-center">
                 <motion.button
                   whileHover={{ scale: 1.1, rotate: 2 }}
                   whileTap={{ scale: 0.92 }}
                   onClick={handleOpenInvitation}
-                  className="relative group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#FBBF24]/70 rounded-full"
+                  className="relative group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60 rounded-full"
                   aria-label="Buka Undangan Pernikahan"
                 >
-                  {/* Ribbon Ends */}
+                  {/* Ribbon Ends in Maroon & Gold */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-28 flex justify-center -z-10 pointer-events-none">
-                    <div className="w-3.5 h-full bg-[#EF4444] shadow-sm transform -rotate-15 rounded-xs border-r border-[#222222]" />
-                    <div className="w-3.5 h-full bg-[#FBBF24] shadow-sm transform rotate-15 -ml-1 rounded-xs border-l border-[#222222]" />
+                    <div className="w-3.5 h-full bg-[#4A0812] shadow-sm transform -rotate-15 rounded-xs" />
+                    <div className="w-3.5 h-full bg-[#E5B869] shadow-sm transform rotate-15 -ml-1 rounded-xs" />
                   </div>
 
-                  {/* Wax Seal Disk in Colorful Festive Style */}
-                  <div className="w-20 h-20 sm:w-22 sm:h-22 wax-seal-colorful rounded-full flex flex-col items-center justify-center text-white p-1 shadow-xl">
-                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#FEF08A]/80 flex flex-col items-center justify-center text-center p-1">
-                      <Heart className="w-4 h-4 text-[#FEF08A] mb-0.5 fill-current animate-pulse" />
+                  {/* Wax Seal Disk in Rich Velvet Maroon */}
+                  <div className="w-20 h-20 sm:w-22 sm:h-22 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-xl">
+                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#FAD2D8]/70 flex flex-col items-center justify-center text-center p-1">
+                      <Heart className="w-4 h-4 text-[#FAD2D8] mb-0.5 fill-current animate-pulse" />
                       <span className="font-script font-bold tracking-wider text-[13px] text-white">
                         D & S
                       </span>
-                      <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#FEF08A]">
+                      <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#FFE58F]">
                         BUKA YUK
                       </span>
                     </div>
                   </div>
                 </motion.button>
 
-                <span className="text-xs font-script font-bold text-[#222222] mt-4 flex items-center gap-1.5 animate-bounce">
-                  <Mail className="w-3.5 h-3.5 text-[#EF4444]" />
+                <span className="text-xs font-script font-bold text-[#7D1128] mt-4 flex items-center gap-1.5 animate-bounce">
+                  <Mail className="w-3.5 h-3.5 text-[#B3394B]" />
                   Ketuk segel cinta untuk membuka surat! 💌
                 </span>
               </div>

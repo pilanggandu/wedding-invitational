@@ -6,6 +6,7 @@ import { X, ZoomIn, Heart, Sparkles } from "lucide-react";
 import { WEDDING_DATA, GalleryPhoto } from "@/data/weddingData";
 import {
   PhotoPlaceholder,
+  BotanicalLeaves,
   KidsDrawingHeart,
   KidsDrawingStar,
   KidsDrawingSun,
@@ -19,25 +20,21 @@ export function GallerySection() {
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
   return (
-    <section id="galeri" className="relative py-16 paper-texture bg-[#FFFDF8] overflow-hidden">
-      {/* Decorative Doodles */}
-      <div className="absolute top-4 left-4 pointer-events-none opacity-80">
-        <KidsDrawingSun className="w-14 h-14" />
-      </div>
-      <div className="absolute bottom-10 -right-2 pointer-events-none opacity-80">
-        <KidsDrawingStar className="w-10 h-10 text-[#FBBF24]" />
-      </div>
+    <section id="galeri" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
+      {/* Decorative Accents */}
+      <BotanicalLeaves className="absolute -top-10 -left-6 w-36 h-56 opacity-30 rotate-12 pointer-events-none" />
+      <BotanicalLeaves className="absolute bottom-10 -right-8 w-44 h-64 opacity-30 -rotate-45 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-14">
-            <span className="font-script text-2xl text-[#EF4444] font-bold block mb-1">
+            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
               Dokumentasi Hasil Jepretan Lucu 📸
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#222222] mb-2">
+            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Galeri Momen
             </h2>
-            <p className="text-xs sm:text-sm font-sans text-[#4B5563]">
+            <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
               Sedikit cuplikan gaya sok keren kami sebelum resmi jadi suami istri:
             </p>
           </div>
@@ -84,9 +81,9 @@ export function GallerySection() {
                     />
 
                     {/* Hover overlay hint */}
-                    <div className="absolute inset-0 bg-[#222222]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                      <span className="p-3 rounded-full bg-white text-[#222222] border-2 border-[#222222] shadow-[2px_3px_0px_#222222] transform scale-90 group-hover:scale-110 transition-transform">
-                        <ZoomIn className="w-5 h-5 text-[#EF4444]" />
+                    <div className="absolute inset-0 bg-[#660F1A]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <span className="p-3 rounded-full bg-white text-[#7D1128] border-2 border-[#7D1128] shadow-md transform scale-90 group-hover:scale-110 transition-transform">
+                        <ZoomIn className="w-5 h-5 text-[#D63D56]" />
                       </span>
                     </div>
                   </div>
@@ -104,7 +101,7 @@ export function GallerySection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#222222]/80 backdrop-blur-xs"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3D070E]/80 backdrop-blur-xs"
             onClick={() => setSelectedPhoto(null)}
           >
             <motion.div
@@ -112,13 +109,13 @@ export function GallerySection() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.88, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 260, damping: 20 }}
-              className="crayon-box p-6 sm:p-8 max-w-lg w-full relative bg-white shadow-2xl"
+              className="crayon-box p-6 sm:p-8 max-w-lg w-full relative bg-white border-[#660F1A] shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button with >=44px touch target */}
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute top-4 right-4 p-2.5 rounded-full bg-[#FEF08A] text-[#222222] border-2 border-[#222222] shadow-[2px_2px_0px_#222222] hover:bg-[#FDE047] cursor-pointer hover:scale-110 transition-transform"
+                className="absolute top-4 right-4 p-2.5 rounded-full bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] hover:bg-[#FAD2D8] cursor-pointer hover:scale-110 transition-transform"
                 aria-label="Tutup Pratinjau"
               >
                 <X className="w-5 h-5" />
@@ -127,12 +124,12 @@ export function GallerySection() {
               {/* Cute Crayon Washi Tape */}
               <CrayonWashiTape
                 text="♥ FOTO FAVORIT ♥"
-                color="pink"
+                color="gold"
                 className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20"
               />
 
               <div className="mt-2 text-center">
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FEF08A] text-[#222222] border-2 border-[#222222] mb-3 shadow-[2px_2px_0px_#222222]">
+                <span className="inline-block px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FFE58F] text-[#4A0812] border border-[#4A0812] mb-3">
                   {selectedPhoto.doodleSticker}
                 </span>
 
@@ -159,12 +156,12 @@ export function GallerySection() {
                   />
                 </div>
 
-                <p className="font-script text-xl sm:text-2xl text-[#222222] font-bold mt-4 mb-2">
+                <p className="font-script text-xl sm:text-2xl text-[#660F1A] font-bold mt-4 mb-2">
                   &ldquo;{selectedPhoto.caption}&rdquo;
                 </p>
 
-                <div className="flex items-center justify-center gap-1.5 text-xs text-[#4B5563] font-mono font-semibold">
-                  <Heart className="w-3.5 h-3.5 text-[#EF4444] fill-current animate-pulse" />
+                <div className="flex items-center justify-center gap-1.5 text-xs text-[#9E2A3B] font-mono font-semibold">
+                  <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
                   <span>Album Prewedding Dimas & Sarah</span>
                 </div>
               </div>
@@ -174,7 +171,7 @@ export function GallerySection() {
       </AnimatePresence>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#FEF9E7" />
+        <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
     </section>
   );

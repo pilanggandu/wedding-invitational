@@ -5,8 +5,8 @@ import { Heart, Sparkles, Coffee, ShoppingBag } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import {
   PhotoPlaceholder,
+  BotanicalLeaves,
   KidsDrawingHeart,
-  KidsDrawingStar,
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
@@ -34,32 +34,32 @@ export function CoupleSection() {
   const { quote, openingGreetings, openingMessage } = WEDDING_DATA.general;
 
   return (
-    <section id="mempelai" className="relative py-16 bg-[#FEF9E7] overflow-hidden paper-texture">
-      {/* Playful Floating Doodles */}
-      <div className="absolute top-10 -right-2 pointer-events-none opacity-80">
-        <KidsDrawingStar className="w-10 h-10 text-[#FBBF24]" />
-      </div>
-      <div className="absolute bottom-10 -left-2 pointer-events-none opacity-80">
-        <KidsDrawingHeart className="w-10 h-10" />
+    <section id="mempelai" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
+      {/* Botanical & Childlike Doodles */}
+      <BotanicalLeaves className="absolute top-10 -right-6 w-36 sm:w-48 h-56 opacity-30 -rotate-12 pointer-events-none" />
+      <BotanicalLeaves className="absolute bottom-10 -left-6 w-36 sm:w-48 h-56 opacity-30 rotate-45 pointer-events-none" />
+
+      <div className="absolute top-1/2 -left-2 pointer-events-none opacity-75">
+        <KidsDrawingHeart className="w-8 h-8" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Holy Verse Crayon Card */}
         <MotionReveal variant="paper-unfold" delay={0.1}>
-          <div className="crayon-box p-6 sm:p-8 max-w-2xl mx-auto text-center mb-16 relative bg-white">
-            <div className="w-12 h-12 mx-auto -mt-11 mb-3 rounded-full bg-[#EF4444] text-white flex items-center justify-center border-2 border-[#222222] shadow-[2px_2px_0px_#222222] animate-gentle-pulse">
-              <Heart className="w-6 h-6 fill-current text-[#FEF08A]" />
+          <div className="crayon-box p-6 sm:p-8 max-w-2xl mx-auto text-center mb-16 relative bg-white border-[#660F1A]">
+            <div className="w-12 h-12 mx-auto -mt-11 mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-sm animate-gentle-pulse">
+              <Heart className="w-6 h-6 fill-current text-[#FAD2D8]" />
             </div>
 
-            <p className="font-serif text-lg sm:text-xl text-[#222222] leading-relaxed mb-4 font-medium" dir="rtl">
+            <p className="font-serif text-lg sm:text-xl text-[#4A0812] leading-relaxed mb-4 font-medium" dir="rtl">
               {quote.arabic}
             </p>
 
-            <p className="font-script text-base sm:text-lg text-[#374151] font-bold leading-relaxed mb-2">
+            <p className="font-script text-base sm:text-lg text-[#7D1128] font-bold leading-relaxed mb-2">
               &ldquo;{quote.translation}&rdquo;
             </p>
 
-            <span className="inline-block bg-[#FEF08A] text-[#222222] px-3.5 py-0.5 rounded-full border-2 border-[#222222] text-[11px] font-mono font-bold tracking-wider shadow-[1px_2px_0px_#222222]">
+            <span className="inline-block bg-[#FFF0F3] text-[#7D1128] px-3.5 py-0.5 rounded-full border border-[#D63D56]/50 text-[11px] font-mono font-bold tracking-wider">
               {quote.source}
             </span>
           </div>
@@ -68,16 +68,16 @@ export function CoupleSection() {
         {/* Greetings Section */}
         <MotionReveal variant="fade-up" delay={0.2}>
           <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="font-script text-2xl text-[#EF4444] font-bold block mb-1">
+            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
               Kenalan Dulu Sama Kami! ✌️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#222222] mb-2">
+            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Kedua Mempelai
             </h2>
-            <p className="font-serif text-base sm:text-lg text-[#1F2937] font-bold mb-2">
+            <p className="font-serif text-base sm:text-lg text-[#4A0812] font-bold mb-2">
               {openingGreetings}
             </p>
-            <p className="text-xs sm:text-sm font-sans text-[#4B5563] leading-relaxed">
+            <p className="text-xs sm:text-sm font-sans text-[#7D1128] leading-relaxed">
               {openingMessage}
             </p>
           </div>
@@ -98,26 +98,26 @@ export function CoupleSection() {
                 className="w-full max-w-[260px] mb-4"
               />
 
-              <div className="crayon-box-blue p-5 w-full bg-white mt-2">
-                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#0284C7] mb-0.5">
+              <div className="crayon-box p-5 w-full bg-white mt-2 border-[#660F1A]">
+                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#660F1A] mb-0.5">
                   {groom.name}
                 </h3>
-                <p className="font-mono font-bold text-xs text-[#0369A1] tracking-wider mb-2">
+                <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
                   {groom.fullName}
                 </p>
 
-                <p className="text-xs font-script font-bold text-[#0284C7] text-sm mb-2 bg-[#E0F2FE] py-1.5 px-3 rounded-xl border border-[#BAE6FD]">
+                <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
                   &ldquo;{groom.tagline}&rdquo;
                 </p>
 
-                <p className="text-xs font-sans text-[#374151] mb-3 leading-relaxed">
-                  <Coffee className="w-3.5 h-3.5 inline mr-1 text-[#0284C7]" />
+                <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
+                  <Coffee className="w-3.5 h-3.5 inline mr-1 text-[#660F1A]" />
                   {groom.bioFunny}
                 </p>
 
-                <p className="text-xs font-sans text-[#4B5563] mb-4 border-t-2 border-dashed border-[#BAE6FD] pt-2 italic">
+                <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
                   Putra tercinta dari: <br />
-                  <span className="font-bold not-italic text-[#1F2937]">{groom.parents}</span>
+                  <span className="font-bold not-italic text-[#4A0812]">{groom.parents}</span>
                 </p>
 
                 <a
@@ -126,7 +126,7 @@ export function CoupleSection() {
                   rel="noopener noreferrer"
                   className="crayon-button-alt inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold"
                 >
-                  <InstagramIcon className="w-3.5 h-3.5 text-[#0284C7]" />
+                  <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{groom.instagram}
                 </a>
               </div>
@@ -146,26 +146,26 @@ export function CoupleSection() {
                 className="w-full max-w-[260px] mb-4"
               />
 
-              <div className="crayon-box-pink p-5 w-full bg-white mt-2">
-                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#DB2777] mb-0.5">
+              <div className="crayon-box p-5 w-full bg-white mt-2 border-[#660F1A]">
+                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#660F1A] mb-0.5">
                   {bride.name}
                 </h3>
-                <p className="font-mono font-bold text-xs text-[#BE185D] tracking-wider mb-2">
+                <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
                   {bride.fullName}
                 </p>
 
-                <p className="text-xs font-script font-bold text-[#DB2777] text-sm mb-2 bg-[#FCE7F3] py-1.5 px-3 rounded-xl border border-[#FBCFE8]">
+                <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
                   &ldquo;{bride.tagline}&rdquo;
                 </p>
 
-                <p className="text-xs font-sans text-[#374151] mb-3 leading-relaxed">
-                  <ShoppingBag className="w-3.5 h-3.5 inline mr-1 text-[#DB2777]" />
+                <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
+                  <ShoppingBag className="w-3.5 h-3.5 inline mr-1 text-[#660F1A]" />
                   {bride.bioFunny}
                 </p>
 
-                <p className="text-xs font-sans text-[#4B5563] mb-4 border-t-2 border-dashed border-[#FBCFE8] pt-2 italic">
+                <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
                   Putri tersayang dari: <br />
-                  <span className="font-bold not-italic text-[#1F2937]">{bride.parents}</span>
+                  <span className="font-bold not-italic text-[#4A0812]">{bride.parents}</span>
                 </p>
 
                 <a
@@ -174,7 +174,7 @@ export function CoupleSection() {
                   rel="noopener noreferrer"
                   className="crayon-button-alt inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold"
                 >
-                  <InstagramIcon className="w-3.5 h-3.5 text-[#DB2777]" />
+                  <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{bride.instagram}
                 </a>
               </div>
@@ -184,7 +184,7 @@ export function CoupleSection() {
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#FFFDF8" />
+        <TornPaperDivider position="bottom" color="#FFF9FA" />
       </div>
     </section>
   );

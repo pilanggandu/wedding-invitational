@@ -9,6 +9,7 @@ import {
   KidsDrawingSun,
   KidsDrawingHeart,
   KidsDrawingStar,
+  BotanicalLeaves,
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
@@ -80,39 +81,39 @@ export function HeroSection() {
   };
 
   return (
-    <section id="beranda" className="relative pt-14 pb-20 overflow-hidden paper-texture bg-[#FFFDF8]">
-      {/* Decorative Childlike Floating Doodles */}
-      <div className="absolute top-4 left-4 pointer-events-none opacity-85">
-        <KidsDrawingSun className="w-16 h-16 animate-gentle-pulse" />
+    <section id="beranda" className="relative pt-14 pb-20 overflow-hidden paper-texture bg-[#FFF9FA]">
+      {/* Botanical & Childlike Doodles */}
+      <BotanicalLeaves className="absolute -top-6 -left-8 w-40 sm:w-56 h-60 opacity-30 rotate-12 pointer-events-none" />
+      <BotanicalLeaves className="absolute top-1/3 -right-10 w-44 sm:w-60 h-64 opacity-30 -rotate-45 pointer-events-none" />
+
+      <div className="absolute top-4 right-4 pointer-events-none opacity-80">
+        <KidsDrawingSun className="w-14 h-14" />
       </div>
-      <div className="absolute top-1/4 -right-2 pointer-events-none opacity-75">
-        <KidsDrawingHeart className="w-10 h-10" />
-      </div>
-      <div className="absolute top-2/3 left-2 pointer-events-none opacity-80">
-        <KidsDrawingStar className="w-9 h-9 text-[#FBBF24]" />
+      <div className="absolute top-2/3 left-2 pointer-events-none opacity-75">
+        <KidsDrawingHeart className="w-9 h-9" />
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
         {/* Childlike Badge with Heart */}
         <MotionReveal variant="fade-up" delay={0.1}>
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FEF08A] text-[#222222] border-2 border-[#222222] shadow-[2px_2px_0px_#222222] mb-3 rotate-[-1deg]">
-            <Sparkles className="w-3.5 h-3.5 text-[#EF4444]" />
-            Buku Gambar Bahagia: Pernikahan Kami!
-            <Sparkles className="w-3.5 h-3.5 text-[#3B82F6]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] shadow-xs mb-3 rotate-[-1deg]">
+            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
+            Buku Sketsa Bahagia: Pernikahan Kami!
+            <Sparkles className="w-3.5 h-3.5 text-[#D63D56]" />
           </div>
         </MotionReveal>
 
-        {/* Couple Names with Rainbow Shimmer */}
+        {/* Couple Names with Maroon Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
-          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl rainbow-shimmer-text tracking-wide my-1">
-            Dimas <span className="font-script text-4xl sm:text-5xl text-[#EF4444]">&</span> Sarah
+          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
+            Dimas <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Sarah
           </h1>
 
-          <p className="font-script text-lg sm:text-2xl text-[#374151] font-bold max-w-lg mx-auto mb-3">
+          <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
             &ldquo;{WEDDING_DATA.general.funTagline}&rdquo;
           </p>
 
-          <div className="inline-block bg-[#BAE6FD] text-[#0369A1] px-4 py-1 rounded-full border-2 border-[#222222] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#222222]">
+          <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-4 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
             📅 Sabtu, 12 Desember 2026 • Depok & Jakarta
           </div>
         </MotionReveal>
@@ -132,28 +133,28 @@ export function HeroSection() {
           </div>
         </MotionReveal>
 
-        {/* Paper Countdown Timer with Childlike Crayon Box */}
+        {/* Paper Countdown Timer in Maroon & Gold */}
         <MotionReveal variant="fade-up" delay={0.45}>
           <div className="mt-8 mb-8">
-            <div className="inline-block crayon-box p-5 sm:p-7 max-w-lg w-full bg-white">
-              <div className="flex items-center justify-center gap-2 mb-4 text-[#222222]">
-                <Clock className="w-4 h-4 text-[#EF4444] animate-spin" style={{ animationDuration: "6s" }} />
+            <div className="inline-block crayon-box p-5 sm:p-7 max-w-lg w-full bg-[#FFF0F3] border-[#660F1A]">
+              <div className="flex items-center justify-center gap-2 mb-4 text-[#7D1128]">
+                <Clock className="w-4 h-4 text-[#D63D56] animate-spin" style={{ animationDuration: "6s" }} />
                 <span className="font-script font-bold text-lg sm:text-xl">
                   Hitung Mundur Menuju Hari Sah! ⏰🥳
                 </span>
               </div>
 
               <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                <CountdownCard value={timeLeft.days} label="Hari Lagi" bgClass="bg-[#FEF08A]" textClass="text-[#854D0E]" />
-                <CountdownCard value={timeLeft.hours} label="Jam" bgClass="bg-[#BAE6FD]" textClass="text-[#0369A1]" />
-                <CountdownCard value={timeLeft.minutes} label="Menit" bgClass="bg-[#BBF7D0]" textClass="text-[#15803D]" />
-                <CountdownCard value={timeLeft.seconds} label="Detik" bgClass="bg-[#FBCFE8]" textClass="text-[#BE185D]" />
+                <CountdownCard value={timeLeft.days} label="Hari Lagi" bgClass="bg-white" textClass="text-[#660F1A]" />
+                <CountdownCard value={timeLeft.hours} label="Jam" bgClass="bg-[#FFFDF0]" textClass="text-[#8A5A10]" />
+                <CountdownCard value={timeLeft.minutes} label="Menit" bgClass="bg-[#FFF5F6]" textClass="text-[#7D1128]" />
+                <CountdownCard value={timeLeft.seconds} label="Detik" bgClass="bg-white" textClass="text-[#660F1A]" />
               </div>
             </div>
           </div>
         </MotionReveal>
 
-        {/* Save The Date Buttons with Crayon Tactile Feel */}
+        {/* Save The Date Buttons in Maroon & Gold */}
         <MotionReveal variant="fade-up" delay={0.55}>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1">
             <a
@@ -171,7 +172,7 @@ export function HeroSection() {
               onClick={downloadIcs}
               className="crayon-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
-              <Download className="w-4 h-4 text-[#EF4444]" />
+              <Download className="w-4 h-4 text-[#7D1128]" />
               Simpan Kalender (iCal)
             </button>
           </div>
@@ -179,13 +180,13 @@ export function HeroSection() {
       </div>
 
       <div className="mt-16">
-        <TornPaperDivider position="bottom" color="#FEF9E7" />
+        <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
     </section>
   );
 }
 
-// Countdown Card with Childlike Colorful Box
+// Countdown Card with Childlike Maroon Box
 function CountdownCard({
   value,
   label,
@@ -200,7 +201,7 @@ function CountdownCard({
   const formatted = String(value).padStart(2, "0");
 
   return (
-    <div className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#222222] shadow-[2px_3px_0px_#222222]`}>
+    <div className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]`}>
       <motion.div
         key={value}
         initial={{ y: -3, opacity: 0.7 }}
@@ -210,7 +211,7 @@ function CountdownCard({
       >
         {formatted}
       </motion.div>
-      <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#222222] mt-0.5">
+      <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#9E2A3B] mt-0.5">
         {label}
       </div>
     </div>

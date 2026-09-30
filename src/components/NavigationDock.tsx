@@ -45,7 +45,7 @@ export function NavigationDock() {
 
   return (
     <nav className="fixed lg:sticky bottom-4 left-0 right-0 lg:left-auto lg:right-auto z-40 max-w-[92vw] sm:max-w-sm w-full px-2 mx-auto pointer-events-auto">
-      <div className="bg-white/95 rounded-full px-3 py-2 border-2 border-[#222222] shadow-[3px_4px_0px_#222222] backdrop-blur-md flex items-center justify-around">
+      <div className="bg-white/95 rounded-full px-3 py-2 border-2 border-[#7D1128] shadow-[3px_4px_0px_#7D1128] backdrop-blur-md flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeSection === item.id;
@@ -56,8 +56,8 @@ export function NavigationDock() {
               onClick={() => scrollToSection(item.id)}
               className={`flex flex-col items-center justify-center p-1.5 sm:px-2.5 rounded-full transition-all duration-300 cursor-pointer min-w-[40px] min-h-[40px] ${
                 isActive
-                  ? "bg-[#EF4444] text-white border-2 border-[#222222] shadow-[1px_2px_0px_#222222] scale-105"
-                  : "text-[#222222] hover:bg-[#FEF9C3]"
+                  ? "bg-[#7D1128] text-white border-1.5 border-[#4A0812] shadow-xs scale-105"
+                  : "text-[#7D1128] hover:bg-[#FFF0F3]"
               }`}
               aria-label={item.label}
               title={item.label}

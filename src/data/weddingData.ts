@@ -59,7 +59,7 @@ export interface BankAccount {
   accountHolder: string;
   logoText: string;
   cuteLabel: string;
-  cardColor: "yellow" | "blue";
+  cardColor: "gold" | "maroon";
 }
 
 export interface WishMessage {
@@ -104,17 +104,17 @@ export const WEDDING_DATA = {
   },
 
   general: {
-    hashtag: "#DimasSarahPenuhWarna",
-    funTagline: "Dua anak kecil yang tumbuh dewasa bareng dan memutuskan untuk main bersama selamanya!",
-    musicTitle: "Can't Take My Eyes Off You: Ukulele & Acoustic Lullaby",
-    musicArtist: "The Happy Rainbow Band",
+    hashtag: "#DimasSarahSah",
+    funTagline: "Perayaan cinta dua manusia gemas yang dipenuhi tawa, doa, dan rasa syukur!",
+    musicTitle: "Acoustic Serenade of Joy",
+    musicArtist: "Melodi Cinta Dimas & Sarah",
     quote: {
       arabic: "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً",
       translation: "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram dan damai kepadanya.",
       source: "QS. Ar-Rum: 21",
     },
     openingGreetings: "Assalamu'alaikum & Halo Teman-Teman Semua!",
-    openingMessage: "Dengan rasa syukur yang melimpah dan senyum selebar pelangi, kami ingin mengajak teman-teman dan keluarga untuk hadir di hari pernikahan kami:",
+    openingMessage: "Dengan rasa syukur yang melimpah dan senyum paling bahagia, kami mengundang teman-teman dan keluarga untuk hadir di hari pernikahan kami:",
     closingMessage: "Kehadiran serta doa restu teman-teman adalah hadiah terbaik buat kami berdua. Sampai jumpa di pesta pernikahan kami, jangan lupa makan yang kenyang ya!",
   },
 
@@ -259,7 +259,7 @@ export const WEDDING_DATA = {
         accountHolder: "DIMAS ARYA PRATAMA",
         logoText: "BCA",
         cuteLabel: "Celengan Rumah Masa Depan 🏡",
-        cardColor: "yellow",
+        cardColor: "gold",
       },
       {
         bankName: "Bank Mandiri",
@@ -267,7 +267,7 @@ export const WEDDING_DATA = {
         accountHolder: "SARAH ANNISA LARASATI",
         logoText: "MANDIRI",
         cuteLabel: "Tabungan Honeymoon & Jajan Boba 🧋✈️",
-        cardColor: "blue",
+        cardColor: "maroon",
       },
     ] as BankAccount[],
     physicalGiftAddress: {
@@ -278,13 +278,13 @@ export const WEDDING_DATA = {
   },
 
   dresscode: {
-    description: "Kenakan pakaian terbaikmu yang rapi dan nyaman. Kalau ingin serasi dengan tema warna-warni ceria kami:",
+    description: "Kenakan pakaian terbaikmu yang rapi dan nyaman. Kalau ingin serasi dengan tema maroon hangat kami:",
     colors: [
-      { name: "Cherry Red", hex: "#EF4444" },
-      { name: "Sunshine Yellow", hex: "#FBBF24" },
-      { name: "Sky Blue", hex: "#3B82F6" },
-      { name: "Garden Mint", hex: "#22C55E" },
-      { name: "Cotton Candy", hex: "#F472B6" },
+      { name: "Royal Maroon", hex: "#7D1128" },
+      { name: "Champagne Gold", hex: "#E5B869" },
+      { name: "Dusty Rose", hex: "#F5A8B8" },
+      { name: "Warm Sage", hex: "#8FA89B" },
+      { name: "Ivory Cream", hex: "#FFF0F3" },
     ],
   },
 

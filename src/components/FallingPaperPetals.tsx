@@ -11,7 +11,7 @@ interface PetalItem {
   duration: number;
   delay: number;
   rotationSpeed: number;
-  variant: "red-heart" | "pink-heart" | "yellow-star" | "blue-sparkle" | "green-dot";
+  variant: "maroon-heart" | "blush-heart" | "gold-star" | "sage-leaf" | "gold-dot";
 }
 
 export function FallingPaperPetals() {
@@ -28,14 +28,14 @@ export function FallingPaperPetals() {
       rotationSpeed: (Math.random() - 0.5) * 540,
       variant:
         i % 5 === 0
-          ? "red-heart"
+          ? "maroon-heart"
           : i % 5 === 1
-          ? "pink-heart"
+          ? "blush-heart"
           : i % 5 === 2
-          ? "yellow-star"
+          ? "gold-star"
           : i % 5 === 3
-          ? "blue-sparkle"
-          : "green-dot",
+          ? "sage-leaf"
+          : "gold-dot",
     }));
 
     setPetals(generated);
@@ -45,11 +45,11 @@ export function FallingPaperPetals() {
     return (
       <button
         onClick={() => setIsEnabled(true)}
-        className="fixed top-4 right-4 z-40 p-2.5 rounded-full bg-[#FEF08A] border-2 border-[#222222] text-[#222222] hover:bg-[#FDE047] text-xs shadow-[2px_2px_0px_#222222] transition-transform hover:scale-110 cursor-pointer"
-        title="Aktifkan Efek Konfeti Lucu"
-        aria-label="Aktifkan Efek Konfeti Lucu"
+        className="fixed top-4 right-4 z-40 p-2.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-xs shadow-md transition-transform hover:scale-110 cursor-pointer"
+        title="Aktifkan Efek Kelopak Cinta"
+        aria-label="Aktifkan Efek Kelopak Cinta"
       >
-        <Heart className="w-5 h-5 fill-current text-[#EF4444]" />
+        <Heart className="w-4 h-4 fill-current text-[#D63D56]" />
       </button>
     );
   }
@@ -58,12 +58,12 @@ export function FallingPaperPetals() {
     <>
       <button
         onClick={() => setIsEnabled(false)}
-        className="fixed top-4 right-4 z-40 px-3.5 py-1.5 rounded-full bg-[#FEF08A] border-2 border-[#222222] text-[#222222] hover:bg-[#FDE047] text-[11px] font-script font-bold shadow-[2px_2px_0px_#222222] flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
-        title="Matikan animasi konfeti cinta melayang"
-        aria-label="Matikan Efek Konfeti"
+        className="fixed top-4 right-4 z-40 px-3.5 py-1.5 rounded-full bg-white/95 border-2 border-[#660F1A] text-[#660F1A] hover:bg-[#FFF0F3] text-[11px] font-script font-bold shadow-sm flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
+        title="Matikan animasi kelopak cinta melayang"
+        aria-label="Matikan Efek Kelopak Cinta"
       >
-        <Heart className="w-3.5 h-3.5 text-[#EF4444] fill-current animate-pulse" />
-        <span className="hidden sm:inline">Efek Ceria: Aktif ✨</span>
+        <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
+        <span className="hidden sm:inline">Efek Cinta: Aktif ♥</span>
       </button>
 
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-30">
@@ -99,50 +99,54 @@ export function FallingPaperPetals() {
               className="absolute"
               style={{ width: petal.size, height: petal.size }}
             >
-              {petal.variant === "red-heart" && (
+              {petal.variant === "maroon-heart" && (
                 <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
                   <path
                     d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    fill="#EF4444"
-                    stroke="#222222"
+                    fill="#7D1128"
+                    stroke="#4A0812"
                     strokeWidth="1.5"
                   />
                 </svg>
               )}
 
-              {petal.variant === "pink-heart" && (
+              {petal.variant === "blush-heart" && (
                 <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
                   <path
                     d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    fill="#EC4899"
-                    stroke="#222222"
+                    fill="#F8B4C0"
+                    stroke="#660F1A"
                     strokeWidth="1.5"
                   />
                 </svg>
               )}
 
-              {petal.variant === "yellow-star" && (
+              {petal.variant === "gold-star" && (
                 <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
                   <polygon
                     points="12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9"
-                    fill="#FBBF24"
-                    stroke="#222222"
+                    fill="#FFE58F"
+                    stroke="#8A5A10"
                     strokeWidth="1.5"
                   />
                 </svg>
               )}
 
-              {petal.variant === "blue-sparkle" && (
-                <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
-                  <circle cx="12" cy="12" r="7" fill="#3B82F6" stroke="#222222" strokeWidth="1.5" />
-                  <circle cx="10" cy="10" r="2" fill="#FFFFFF" />
+              {petal.variant === "sage-leaf" && (
+                <svg viewBox="0 0 20 20" className="w-full h-full drop-shadow-xs">
+                  <path
+                    d="M10 2 C15 5 18 10 16 16 C10 18 5 15 2 10 C4 5 7 3 10 2 Z"
+                    fill="#8FA89B"
+                    stroke="#4A0812"
+                    strokeWidth="1.2"
+                  />
                 </svg>
               )}
 
-              {petal.variant === "green-dot" && (
-                <svg viewBox="0 0 24 24" className="w-full h-full drop-shadow-xs">
-                  <circle cx="12" cy="12" r="6" fill="#22C55E" stroke="#222222" strokeWidth="1.5" />
-                  <circle cx="10" cy="10" r="1.5" fill="#FFFFFF" />
+              {petal.variant === "gold-dot" && (
+                <svg viewBox="0 0 20 20" className="w-full h-full">
+                  <circle cx="10" cy="10" r="5" fill="#E5B869" stroke="#4A0812" strokeWidth="1.5" />
+                  <circle cx="12" cy="8" r="1.5" fill="#FFFFFF" />
                 </svg>
               )}
             </motion.div>
