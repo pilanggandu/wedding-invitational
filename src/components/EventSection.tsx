@@ -121,7 +121,9 @@ export function EventSection() {
 
                   {/* Action buttons */}
                   <div className="pt-4 border-t-2 border-dashed border-[#8A1C2C]/25 flex flex-col gap-2.5">
-                    <a
+                    <motion.a
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.97 }}
                       href={event.mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -129,10 +131,12 @@ export function EventSection() {
                     >
                       <Navigation className="w-3.5 h-3.5" />
                       Buka Google Maps (Petunjuk Arah)
-                    </a>
+                    </motion.a>
 
                     {isFirst && (
-                      <a
+                      <motion.a
+                        whileHover={{ scale: 1.03, y: -2 }}
+                        whileTap={{ scale: 0.97 }}
                         href="https://youtube.com"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -140,7 +144,7 @@ export function EventSection() {
                       >
                         <Video className="w-3.5 h-3.5 text-[#7D1128]" />
                         Nonton Live Streaming Akad 📺
-                      </a>
+                      </motion.a>
                     )}
                   </div>
                 </div>

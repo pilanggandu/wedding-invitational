@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Heart, Sparkles, Coffee, ShoppingBag } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import {
@@ -120,7 +121,9 @@ export function CoupleSection() {
                   <span className="font-bold not-italic text-[#4A0812]">{groom.parents}</span>
                 </p>
 
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   href={`https://instagram.com/${groom.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -128,7 +131,7 @@ export function CoupleSection() {
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{groom.instagram}
-                </a>
+                </motion.a>
               </div>
             </div>
           </MotionReveal>
@@ -168,7 +171,9 @@ export function CoupleSection() {
                   <span className="font-bold not-italic text-[#4A0812]">{bride.parents}</span>
                 </p>
 
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   href={`https://instagram.com/${bride.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -176,7 +181,7 @@ export function CoupleSection() {
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{bride.instagram}
-                </a>
+                </motion.a>
               </div>
             </div>
           </MotionReveal>

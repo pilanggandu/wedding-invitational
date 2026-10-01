@@ -5,7 +5,14 @@ import { motion, Variants } from "framer-motion";
 
 interface MotionRevealProps {
   children: React.ReactNode;
-  variant?: "fade-up" | "paper-unfold" | "polaroid-drop" | "scale-in" | "slide-left" | "slide-right";
+  variant?:
+    | "fade-up"
+    | "paper-unfold"
+    | "polaroid-drop"
+    | "scale-in"
+    | "slide-left"
+    | "slide-right"
+    | "float-gentle";
   delay?: number;
   duration?: number;
   className?: string;
@@ -15,39 +22,51 @@ export function MotionReveal({
   children,
   variant = "fade-up",
   delay = 0,
-  duration = 0.65,
+  duration = 0.7,
   className = "",
 }: MotionRevealProps) {
   const variantsMap: Record<string, Variants> = {
     "fade-up": {
-      hidden: { opacity: 0, y: 24 },
+      hidden: { opacity: 0, y: 28 },
       visible: {
         opacity: 1,
         y: 0,
-        transition: { duration, delay, ease: [0.25, 0.1, 0.25, 1.0] },
+        transition: {
+          type: "spring",
+          stiffness: 85,
+          damping: 18,
+          mass: 0.8,
+          delay,
+        },
       },
     },
-    // Pure 2D Flat Paper Reveal
+    // Pure 2D Flat Paper Reveal with Silky Spring
     "paper-unfold": {
-      hidden: { opacity: 0, scale: 0.94, y: 18 },
+      hidden: { opacity: 0, scale: 0.95, y: 20 },
       visible: {
         opacity: 1,
         scale: 1,
         y: 0,
-        transition: { duration: duration + 0.15, delay, ease: [0.16, 1, 0.3, 1] },
+        transition: {
+          type: "spring",
+          stiffness: 75,
+          damping: 17,
+          mass: 0.9,
+          delay,
+        },
       },
     },
-    // Pure 2D Flat Polaroid Drop
+    // Pure 2D Flat Polaroid Drop with bouncy natural overshoot
     "polaroid-drop": {
-      hidden: { opacity: 0, y: -20, scale: 0.94 },
+      hidden: { opacity: 0, y: -24, scale: 0.94 },
       visible: {
         opacity: 1,
         y: 0,
         scale: 1,
         transition: {
           type: "spring",
-          stiffness: 140,
-          damping: 15,
+          stiffness: 100,
+          damping: 14,
           delay,
         },
       },
@@ -57,23 +76,51 @@ export function MotionReveal({
       visible: {
         opacity: 1,
         scale: 1,
-        transition: { duration, delay, ease: "easeOut" },
+        transition: {
+          type: "spring",
+          stiffness: 90,
+          damping: 18,
+          delay,
+        },
       },
     },
     "slide-left": {
-      hidden: { opacity: 0, x: -28 },
+      hidden: { opacity: 0, x: -32 },
       visible: {
         opacity: 1,
         x: 0,
-        transition: { duration, delay, ease: "easeOut" },
+        transition: {
+          type: "spring",
+          stiffness: 85,
+          damping: 18,
+          delay,
+        },
       },
     },
     "slide-right": {
-      hidden: { opacity: 0, x: 28 },
+      hidden: { opacity: 0, x: 32 },
       visible: {
         opacity: 1,
         x: 0,
-        transition: { duration, delay, ease: "easeOut" },
+        transition: {
+          type: "spring",
+          stiffness: 85,
+          damping: 18,
+          delay,
+        },
+      },
+    },
+    // Gentle ambient floating
+    "float-gentle": {
+      hidden: { opacity: 0, y: 15 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+          duration: 0.8,
+          delay,
+          ease: [0.22, 1, 0.36, 1],
+        },
       },
     },
   };

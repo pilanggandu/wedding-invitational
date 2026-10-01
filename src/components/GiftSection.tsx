@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Gift, Copy, Check, CreditCard, MapPin, Send } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
+import { Gift, Copy, Check, CreditCard, MapPin, Send, Sparkles } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import {
   BotanicalLeaves,
@@ -19,6 +21,16 @@ export function GiftSection() {
   const handleCopy = (text: string, index: number) => {
     navigator.clipboard.writeText(text);
     setCopiedIndex(index);
+    try {
+      confetti({
+        particleCount: 25,
+        spread: 45,
+        origin: { y: 0.7 },
+        colors: ["#7D1128", "#FFE58F", "#F8B4C0"],
+      });
+    } catch {
+      // ignore
+    }
     setTimeout(() => {
       setCopiedIndex(null);
     }, 2500);
@@ -27,6 +39,16 @@ export function GiftSection() {
   const handleCopyAddress = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedAddress(true);
+    try {
+      confetti({
+        particleCount: 20,
+        spread: 40,
+        origin: { y: 0.8 },
+        colors: ["#7D1128", "#FFE58F"],
+      });
+    } catch {
+      // ignore
+    }
     setTimeout(() => {
       setCopiedAddress(false);
     }, 2500);
@@ -108,7 +130,9 @@ export function GiftSection() {
                   </div>
 
                   {/* Copy button */}
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.96 }}
                     onClick={() => handleCopy(acc.accountNumber, index)}
                     className={`w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-sans font-bold cursor-pointer transition-all ${
                       isCopied
@@ -118,16 +142,16 @@ export function GiftSection() {
                   >
                     {isCopied ? (
                       <>
-                        <Check className="w-4 h-4" />
+                        <Check className="w-4 h-4 text-white animate-bounce" />
                         Tersalin! Makasih Orang Baik 🥰
                       </>
                     ) : (
                       <>
-                        <Copy className="w-4 h-4" />
+                        <Copy className="w-4 h-4 text-[#FFE58F]" />
                         Salin Nomor Rekening
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 </div>
               </MotionReveal>
             );
@@ -151,7 +175,9 @@ export function GiftSection() {
               {physicalGiftAddress.address}
             </p>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => handleCopyAddress(`${physicalGiftAddress.recipient} - ${physicalGiftAddress.phone}\n${physicalGiftAddress.address}`)}
               className={`inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold cursor-pointer transition-all ${
                 copiedAddress
@@ -161,16 +187,16 @@ export function GiftSection() {
             >
               {copiedAddress ? (
                 <>
-                  <Check className="w-3.5 h-3.5" />
-                  Alamat Berhasil Disalin!
+                  <Check className="w-4 h-4 text-white" />
+                  Alamat Tersalin! 📬
                 </>
               ) : (
                 <>
-                  <Send className="w-3.5 h-3.5 text-[#7D1128]" />
+                  <Copy className="w-4 h-4 text-[#7D1128]" />
                   Salin Alamat Lengkap
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </MotionReveal>
       </div>

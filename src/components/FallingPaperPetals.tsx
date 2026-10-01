@@ -19,13 +19,13 @@ export function FallingPaperPetals() {
   const [petals, setPetals] = useState<PetalItem[]>([]);
 
   useEffect(() => {
-    const generated: PetalItem[] = Array.from({ length: 18 }).map((_, i) => ({
+    const generated: PetalItem[] = Array.from({ length: 16 }).map((_, i) => ({
       id: i,
-      startX: Math.random() * 95,
-      size: Math.random() * 12 + 14, // 14px to 26px
-      duration: Math.random() * 7 + 8,
-      delay: Math.random() * 5,
-      rotationSpeed: (Math.random() - 0.5) * 540,
+      startX: Math.random() * 92 + 2,
+      size: Math.random() * 10 + 15, // 15px to 25px
+      duration: Math.random() * 6 + 11, // 11s to 17s for ultra-chill drifting
+      delay: Math.random() * 6,
+      rotationSpeed: (Math.random() - 0.5) * 360,
       variant:
         i % 5 === 0
           ? "maroon-heart"
@@ -68,27 +68,29 @@ export function FallingPaperPetals() {
 
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
-          {petals.map((petal) => (
+          {petals.map((petal, i) => (
             <motion.div
               key={petal.id}
               initial={{
-                top: "-5%",
+                top: "-6%",
                 left: `${petal.startX}%`,
                 opacity: 0,
                 rotate: 0,
-                scale: 0.8,
+                x: 0,
+                scaleX: 1,
               }}
               animate={{
-                top: "105%",
-                left: [
-                  `${petal.startX}%`,
-                  `${petal.startX + 5}%`,
-                  `${petal.startX - 5}%`,
-                  `${petal.startX + 2}%`,
+                top: "106%",
+                x: [
+                  0,
+                  i % 2 === 0 ? 22 : -22,
+                  i % 2 === 0 ? -18 : 18,
+                  i % 2 === 0 ? 12 : -12,
+                  0,
                 ],
+                scaleX: [1, 0.4, -0.8, 0.5, 1],
+                rotate: [0, petal.rotationSpeed > 0 ? 180 : -180, petal.rotationSpeed > 0 ? 360 : -360],
                 opacity: [0, 0.95, 0.95, 0],
-                rotate: petal.rotationSpeed,
-                scale: [0.8, 1.15, 0.95, 0.75],
               }}
               transition={{
                 duration: petal.duration,

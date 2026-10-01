@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles } from "lucide-react";
 
 // Childlike Drawing Art Photo Placeholder in Maroon Dominant Palette
@@ -23,6 +24,19 @@ export function PhotoPlaceholder({
   tapePosition = "top-center",
   tiltAngle = "straight",
 }: PhotoPlaceholderProps) {
+  const [likes, setLikes] = useState<number>(0);
+  const [showHeartBurst, setShowHeartBurst] = useState<boolean>(false);
+
+  const handleHeartClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLikes((prev) => prev + 1);
+    setShowHeartBurst(true);
+    setTimeout(() => setShowHeartBurst(false), 900);
+  };
+
+  const hoverRotate =
+    tiltAngle === "left" ? -3 : tiltAngle === "right" ? 3 : -1;
+
   const baseAngleClass = {
     left: "-rotate-2",
     right: "rotate-2",
@@ -30,8 +44,11 @@ export function PhotoPlaceholder({
   }[tiltAngle];
 
   return (
-    <div
-      className={`relative inline-block ${baseAngleClass} transform transition-transform duration-200 hover:-translate-y-1 ${className}`}
+    <motion.div
+      whileHover={{ y: -6, rotate: hoverRotate, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 320, damping: 20 }}
+      className={`relative inline-block ${baseAngleClass} select-none ${className}`}
     >
       {/* Harmonious Washi Tapes (Maroon, Gold, Blush) */}
       {tapePosition === "top-center" && (
@@ -69,8 +86,24 @@ export function PhotoPlaceholder({
         </div>
       )}
 
+      {/* Floating +1 Heart Reaction */}
+      <AnimatePresence>
+        {showHeartBurst && (
+          <motion.div
+            initial={{ opacity: 0, y: 0, scale: 0.6 }}
+            animate={{ opacity: 1, y: -42, scale: 1.2 }}
+            exit={{ opacity: 0, y: -60 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none flex items-center gap-1 bg-[#7D1128] text-white px-2.5 py-1 rounded-full border border-[#FFE58F] shadow-lg text-xs font-mono font-bold"
+          >
+            <span>+1</span>
+            <Heart className="w-3.5 h-3.5 text-[#FAD2D8] fill-current animate-ping" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hand-Drawn Polaroid Sketch Card */}
-      <div className="crayon-box p-3.5 pb-5 bg-white relative overflow-hidden group">
+      <div className="crayon-box p-3.5 pb-5 bg-white relative overflow-hidden group shadow-[3px_4px_0px_#660F1A]">
         {/* Inner Crayon Drawing Sheet in soft blush-ivory */}
         <div className="border-2 border-dashed border-[#7D1128]/30 rounded-xl p-1 bg-[#FFF9FA]">
           <div className="relative aspect-[3/4] w-full min-w-[220px] bg-gradient-to-b from-[#FFFDF8] via-[#FFF5F6] to-[#FFEBEF] rounded-lg overflow-hidden flex flex-col items-center justify-center p-4">
@@ -92,17 +125,28 @@ export function PhotoPlaceholder({
           </div>
         </div>
 
-        {/* Polaroid Handwritten Caption with maroon heart */}
+        {/* Polaroid Handwritten Caption with Interactive Heart Reaction */}
         {caption && (
-          <div className="mt-3 text-center px-1">
-            <p className="font-script text-lg sm:text-xl text-[#4A0812] font-bold tracking-wide leading-tight flex items-center justify-center gap-1.5">
+          <div className="mt-3 text-center px-1 flex items-center justify-center">
+            <button
+              onClick={handleHeartClick}
+              className="font-script text-lg sm:text-xl text-[#4A0812] font-bold tracking-wide leading-tight flex items-center justify-center gap-1.5 hover:text-[#7D1128] transition-colors cursor-pointer group/btn"
+              title="Kirim Cinta ♥"
+            >
               <span>{caption}</span>
-              <Heart className="w-3.5 h-3.5 text-[#7D1128] fill-current shrink-0 inline" />
-            </p>
+              <span className="relative flex items-center justify-center p-1 rounded-full group-hover/btn:bg-[#FFF0F3] transition-colors">
+                <Heart className={`w-3.5 h-3.5 text-[#7D1128] fill-current shrink-0 transition-transform ${likes > 0 ? "scale-125 text-[#D63D56]" : "group-hover/btn:scale-125"}`} />
+              </span>
+              {likes > 0 && (
+                <span className="text-[10px] font-mono font-bold text-[#7D1128] bg-[#FFF0F3] px-1.5 py-0.2 rounded-full border border-[#7D1128]/30">
+                  {likes}
+                </span>
+              )}
+            </button>
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
 

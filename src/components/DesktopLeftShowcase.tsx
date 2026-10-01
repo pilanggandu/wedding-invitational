@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Calendar, Clock, Heart, Sparkles, Smartphone, Music, MapPin, Mail } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import {
@@ -57,13 +58,21 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
       <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-20 rotate-45 pointer-events-none" />
       <BotanicalLeaves className="absolute -bottom-10 -right-10 w-48 h-68 opacity-20 -rotate-135 pointer-events-none" />
 
-      {/* Floating Sun & Stars */}
-      <div className="absolute top-6 left-6 pointer-events-none opacity-85">
+      {/* Floating Sun & Stars with Chill Organic Float */}
+      <motion.div
+        animate={{ y: [-5, 5, -5], rotate: [-3, 3, -3] }}
+        transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+        className="absolute top-6 left-6 pointer-events-none opacity-85"
+      >
         <KidsDrawingSun className="w-14 h-14" />
-      </div>
-      <div className="absolute top-10 right-28 pointer-events-none opacity-70">
+      </motion.div>
+      <motion.div
+        animate={{ y: [5, -5, 5], rotate: [4, -4, 4] }}
+        transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
+        className="absolute top-10 right-28 pointer-events-none opacity-70"
+      >
         <KidsDrawingStar className="w-8 h-8 text-[#FFE58F]" />
-      </div>
+      </motion.div>
 
       {/* Floating Decorative Stamp */}
       <div className="absolute top-6 right-6">
@@ -134,30 +143,69 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
               ⏰ Menuju Ijab Kabul & Resepsi Pesta Bahagia:
             </span>
             <div className="grid grid-cols-4 gap-2">
-              <div className="bg-white rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs">
-                <span className="font-script text-2xl font-bold text-[#660F1A] block">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-white rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs"
+              >
+                <motion.span
+                  key={timeLeft.days}
+                  initial={{ y: -4, opacity: 0.6 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="font-script text-2xl font-bold text-[#660F1A] block"
+                >
                   {String(timeLeft.days).padStart(2, "0")}
-                </span>
+                </motion.span>
                 <span className="text-[9px] font-mono font-bold text-[#9E2A3B] uppercase">Hari</span>
-              </div>
-              <div className="bg-[#FFFDF0] rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs">
-                <span className="font-script text-2xl font-bold text-[#8A5A10] block">
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-[#FFFDF0] rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs"
+              >
+                <motion.span
+                  key={timeLeft.hours}
+                  initial={{ y: -4, opacity: 0.6 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="font-script text-2xl font-bold text-[#8A5A10] block"
+                >
                   {String(timeLeft.hours).padStart(2, "0")}
-                </span>
+                </motion.span>
                 <span className="text-[9px] font-mono font-bold text-[#8A5A10] uppercase">Jam</span>
-              </div>
-              <div className="bg-[#FFF5F6] rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs">
-                <span className="font-script text-2xl font-bold text-[#7D1128] block">
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-[#FFF5F6] rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs"
+              >
+                <motion.span
+                  key={timeLeft.minutes}
+                  initial={{ y: -4, opacity: 0.6 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="font-script text-2xl font-bold text-[#7D1128] block"
+                >
                   {String(timeLeft.minutes).padStart(2, "0")}
-                </span>
+                </motion.span>
                 <span className="text-[9px] font-mono font-bold text-[#9E2A3B] uppercase">Menit</span>
-              </div>
-              <div className="bg-white rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs">
-                <span className="font-script text-2xl font-bold text-[#660F1A] block">
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-white rounded-xl p-2 border-2 border-[#660F1A] text-center shadow-xs"
+              >
+                <motion.span
+                  key={timeLeft.seconds}
+                  initial={{ y: -4, scale: 0.9, opacity: 0.6 }}
+                  animate={{ y: 0, scale: 1, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="font-script text-2xl font-bold text-[#660F1A] block"
+                >
                   {String(timeLeft.seconds).padStart(2, "0")}
-                </span>
+                </motion.span>
                 <span className="text-[9px] font-mono font-bold text-[#9E2A3B] uppercase">Detik</span>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>

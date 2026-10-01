@@ -26,26 +26,42 @@ export function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
     220.0, 277.18, 329.63, 440.0,
   ];
 
-  const playTone = useCallback((freq: number, duration: number = 1.6) => {
+  const playTone = useCallback((freq: number, duration: number = 2.0) => {
     try {
       const ctx = audioContextRef.current;
       if (!ctx || ctx.state !== "running") return;
 
       const osc = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
       const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(1500, ctx.currentTime);
 
       osc.type = "sine";
       osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
-      gain.gain.setValueAtTime(0.001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.1);
+      osc2.type = "triangle";
+      osc2.frequency.setValueAtTime(freq * 2, ctx.currentTime);
+
+      const gain2 = ctx.createGain();
+      gain2.gain.value = 0.25;
+
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.06, ctx.currentTime + 0.06);
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
 
-      osc.connect(gain);
+      osc.connect(filter);
+      osc2.connect(gain2);
+      gain2.connect(filter);
+      filter.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(ctx.currentTime);
+      osc2.start(ctx.currentTime);
       osc.stop(ctx.currentTime + duration);
+      osc2.stop(ctx.currentTime + duration);
     } catch {
       // ignore
     }

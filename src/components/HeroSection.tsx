@@ -157,24 +157,28 @@ export function HeroSection() {
         {/* Save The Date Buttons in Maroon & Gold */}
         <MotionReveal variant="fade-up" delay={0.55}>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1">
-            <a
+            <motion.a
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="crayon-button inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4 text-[#FFE58F]" />
               Ingatkan di Google Calendar
               <ExternalLink className="w-3.5 h-3.5 opacity-90" />
-            </a>
+            </motion.a>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={downloadIcs}
               className="crayon-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
             >
               <Download className="w-4 h-4 text-[#7D1128]" />
               Simpan Kalender (iCal)
-            </button>
+            </motion.button>
           </div>
         </MotionReveal>
       </div>
@@ -186,7 +190,7 @@ export function HeroSection() {
   );
 }
 
-// Countdown Card with Childlike Maroon Box
+// Countdown Card with Childlike Maroon Box & Spring Number Pop
 function CountdownCard({
   value,
   label,
@@ -201,12 +205,16 @@ function CountdownCard({
   const formatted = String(value).padStart(2, "0");
 
   return (
-    <div className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]`}>
+    <motion.div
+      whileHover={{ scale: 1.06, y: -2 }}
+      transition={{ type: "spring", stiffness: 350, damping: 20 }}
+      className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A] cursor-default`}
+    >
       <motion.div
         key={value}
-        initial={{ y: -3, opacity: 0.7 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.2 }}
+        initial={{ y: -6, scale: 0.88, opacity: 0.6 }}
+        animate={{ y: 0, scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 320, damping: 18 }}
         className={`font-script text-2xl sm:text-4xl font-bold ${textClass} tracking-tight`}
       >
         {formatted}
@@ -214,6 +222,6 @@ function CountdownCard({
       <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#9E2A3B] mt-0.5">
         {label}
       </div>
-    </div>
+    </motion.div>
   );
 }

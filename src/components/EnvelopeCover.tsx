@@ -81,19 +81,38 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         transition={{ duration: 0.8, ease: "easeInOut" }}
         className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto select-none paper-texture bg-[#FFF5F6]"
       >
-        {/* Harmonious 2D Floating Doodles */}
-        <div className="absolute top-6 left-6 pointer-events-none opacity-80">
+        {/* Harmonious 2D Floating Doodles with Chill Gentle Float */}
+        <motion.div
+          animate={{ y: [-6, 6, -6], rotate: [-3, 3, -3] }}
+          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+          className="absolute top-6 left-6 pointer-events-none opacity-85"
+        >
           <KidsDrawingSun className="w-14 h-14" />
-        </div>
-        <div className="absolute top-12 right-10 pointer-events-none opacity-80">
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [6, -6, 6], rotate: [4, -4, 4] }}
+          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 0.5 }}
+          className="absolute top-12 right-10 pointer-events-none opacity-80"
+        >
           <KidsDrawingStar className="w-8 h-8 text-[#FFE58F]" />
-        </div>
-        <div className="absolute bottom-10 left-8 pointer-events-none opacity-75">
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [-5, 5, -5], scale: [0.95, 1.05, 0.95] }}
+          transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-10 left-8 pointer-events-none opacity-80"
+        >
           <KidsDrawingHeart className="w-9 h-9" />
-        </div>
-        <div className="absolute bottom-12 right-8 pointer-events-none opacity-75">
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [5, -5, 5], rotate: [-5, 5, -5] }}
+          transition={{ repeat: Infinity, duration: 5.5, ease: "easeInOut", delay: 0.8 }}
+          className="absolute bottom-12 right-8 pointer-events-none opacity-80"
+        >
           <KidsDrawingHeart className="w-8 h-8" />
-        </div>
+        </motion.div>
 
         <div className="absolute top-8 right-8 hidden sm:block">
           <PaperStamp text="RESMI SAH" date="12 • 12 • 2026" />
@@ -101,13 +120,13 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
 
         {/* Flat 2D Hand-Drawn Envelope Card Presentation */}
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ y: 24, opacity: 0, scale: 0.96 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 85, damping: 18 }}
           className="relative w-full max-w-md my-auto py-4"
         >
           {/* Main Envelope Box with Childlike Maroon Border */}
-          <div className="relative bg-[#FFF0F3] rounded-3xl p-6 sm:p-8 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden">
+          <div className="relative bg-[#FFF0F3] rounded-3xl p-5 sm:p-7 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden">
             {/* Cute Crayon Washi Tape Accents in Gold & Maroon */}
             <CrayonWashiTape
               text="♥ SPESIAL UNTUKMU ♥"
@@ -121,20 +140,24 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
             />
 
             {/* Flat 2D Envelope Header Trim in Velvet Maroon */}
-            <div className="w-full h-8 -mx-6 sm:-mx-8 -mt-6 sm:-mt-8 bg-gradient-to-r from-[#7D1128] via-[#8A1C2C] to-[#7D1128] border-b-2 border-[#4A0812] flex items-center justify-center mb-3">
+            <div className="w-full h-8 -mx-5 sm:-mx-7 -mt-5 sm:-mt-7 bg-gradient-to-r from-[#7D1128] via-[#8A1C2C] to-[#7D1128] border-b-2 border-[#4A0812] flex items-center justify-center mb-3">
               <span className="text-[10px] font-mono font-bold tracking-widest text-[#FFE58F] uppercase">
                 ✦ OFFICIAL WEDDING INVITATION ✦
               </span>
             </div>
 
-            {/* Flat 2D Inner Letter Card */}
+            {/* Flat 2D Inner Letter Card with Smooth Pull-Out Motion */}
             <motion.div
               animate={{
-                y: isOpening ? -24 : 0,
-                scale: isOpening ? 1.03 : 1,
+                y: isOpening ? -70 : 0,
+                scale: isOpening ? 1.04 : 1,
+                opacity: isOpening ? [1, 1, 0.2] : 1,
               }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="crayon-box p-6 sm:p-7 relative z-10 my-2 bg-white"
+              transition={{
+                duration: 1.0,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="crayon-box p-5 sm:p-7 relative z-10 my-2 bg-white"
             >
               {/* Cute Header Pill */}
               <div className="flex justify-center mb-3">
@@ -168,10 +191,22 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                 </p>
               </div>
 
-              {/* Prominent Buka Undangan (Open Invitation) Action Button */}
+              {/* Prominent Buka Undangan (Open Invitation) Action Area */}
               <div className="mt-5 flex flex-col items-center justify-center">
-                {/* Decorative 2D Wax Seal Badge */}
-                <div className="relative mb-3 flex flex-col items-center">
+                {/* Decorative 2D Wax Seal Badge with Pop Animation */}
+                <motion.div
+                  animate={
+                    isOpening
+                      ? { scale: [1, 1.35, 0], opacity: [1, 1, 0] }
+                      : { y: [-2, 2, -2] }
+                  }
+                  transition={
+                    isOpening
+                      ? { duration: 0.5, ease: "easeOut" }
+                      : { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                  }
+                  className="relative mb-3 flex flex-col items-center"
+                >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-16 flex justify-center -z-10 pointer-events-none">
                     <div className="w-3 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-15 rounded-xs" />
                     <div className="w-3 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-15 -ml-1 rounded-xs" />
@@ -185,13 +220,14 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                       </span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Main Prominent "Buka Undangan / Open Invitation" CTA Button */}
                 <motion.button
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleOpenInvitation}
+                  disabled={isOpening}
                   className="w-full max-w-xs mx-auto py-3.5 px-6 rounded-full bg-[#7D1128] hover:bg-[#660F1A] text-white border-2 border-[#4A0812] shadow-[4px_5px_0px_#4A0812] flex items-center justify-center gap-3 transition-all cursor-pointer group min-h-[50px] focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60"
                   aria-label="Buka Undangan (Open Invitation)"
                 >
@@ -200,7 +236,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="font-script font-bold text-xl text-white leading-none">
-                      Buka Undangan
+                      {isOpening ? "Membuka Surat..." : "Buka Undangan"}
                     </span>
                     <span className="text-[10px] font-mono tracking-widest uppercase text-[#FFE58F] font-bold mt-0.5">
                       Open Invitation 💌
