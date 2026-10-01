@@ -21,7 +21,10 @@ export default function WeddingInvitationPage() {
   return (
     <div className="min-h-screen bg-[#FFF5F6] flex flex-col lg:flex-row relative paper-texture">
       {/* 🖥️ Desktop Left Showcase (Visible on lg+ screens, hidden on mobile) */}
-      <DesktopLeftShowcase />
+      <DesktopLeftShowcase
+        isOpened={isOpened}
+        onOpen={() => setIsOpened(true)}
+      />
 
       {/* 📱 Right Side: Phone-style frame on desktop, Full-screen native on mobile */}
       <div className="w-full lg:w-[52%] xl:w-[50%] lg:h-screen lg:overflow-y-auto flex justify-center py-0 lg:py-6 px-0 lg:px-6 bg-[#FFF5F6] relative">

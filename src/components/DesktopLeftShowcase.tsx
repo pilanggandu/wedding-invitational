@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calendar, Clock, Heart, Sparkles, Smartphone, Music, MapPin } from "lucide-react";
+import { Calendar, Clock, Heart, Sparkles, Smartphone, Music, MapPin, Mail } from "lucide-react";
 import { WEDDING_DATA } from "@/data/weddingData";
 import {
   KidsDrawingCouple,
@@ -13,7 +13,12 @@ import {
   BotanicalLeaves,
 } from "./PaperArtDecorations";
 
-export function DesktopLeftShowcase() {
+interface DesktopLeftShowcaseProps {
+  onOpen?: () => void;
+  isOpened?: boolean;
+}
+
+export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcaseProps) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -193,13 +198,26 @@ export function DesktopLeftShowcase() {
               Buka di HP Kamu!
             </span>
             <p className="text-[11px] font-sans text-[#FAD2D8] leading-tight">
-              Gunakan perangkat ponsel atau scroll simulasi ponsel di sisi kanan 👉
+              Gunakan perangkat ponsel atau simulasi ponsel di sisi kanan 👉
             </p>
           </div>
         </div>
 
+        {/* Desktop Quick Buka Undangan Button */}
+        {!isOpened && onOpen && (
+          <button
+            onClick={onOpen}
+            className="px-4 py-2 rounded-full bg-[#FFE58F] hover:bg-[#FFD966] text-[#4A0812] border-2 border-[#2D050B] shadow-[3px_3px_0px_#2D050B] font-script font-bold text-xs sm:text-sm flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 shrink-0"
+            title="Buka Undangan Pernikahan"
+            aria-label="Buka Undangan (Open Invitation)"
+          >
+            <Mail className="w-4 h-4 text-[#7D1128] animate-bounce" />
+            <span>Buka Undangan 💌</span>
+          </button>
+        )}
+
         {/* Music indicator */}
-        <div className="hidden xl:flex items-center gap-2 bg-[#4A0812] px-3.5 py-1.5 rounded-full border border-[#D63D56]/40 text-right shadow-sm">
+        <div className="hidden xl:flex items-center gap-2 bg-[#4A0812] px-3.5 py-1.5 rounded-full border border-[#D63D56]/40 text-right shadow-sm shrink-0">
           <Music className="w-3.5 h-3.5 text-[#F5A8B8] animate-bounce" />
           <span className="text-[10px] font-mono font-bold text-[#FAD2D8]">
             Acoustic Serenade

@@ -79,7 +79,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.05 : 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-hidden select-none paper-texture bg-[#FFF5F6]"
+        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto select-none paper-texture bg-[#FFF5F6]"
       >
         {/* Harmonious 2D Floating Doodles */}
         <div className="absolute top-6 left-6 pointer-events-none opacity-80">
@@ -104,7 +104,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative w-full max-w-md"
+          className="relative w-full max-w-md my-auto py-4"
         >
           {/* Main Envelope Box with Childlike Maroon Border */}
           <div className="relative bg-[#FFF0F3] rounded-3xl p-6 sm:p-8 text-center border-[3px] border-[#660F1A] shadow-[6px_8px_0px_#660F1A] overflow-hidden">
@@ -168,38 +168,48 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                 </p>
               </div>
 
-              {/* Flat 2D Maroon Wax Seal Open Button */}
-              <div className="mt-6 flex flex-col items-center justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.08, rotate: 2 }}
-                  whileTap={{ scale: 0.94 }}
-                  onClick={handleOpenInvitation}
-                  className="relative group cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60 rounded-full"
-                  aria-label="Buka Undangan Pernikahan"
-                >
-                  {/* Flat 2D Ribbon Ends in Maroon & Gold */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-28 flex justify-center -z-10 pointer-events-none">
-                    <div className="w-3.5 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-15 rounded-xs" />
-                    <div className="w-3.5 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-15 -ml-1 rounded-xs" />
+              {/* Prominent Buka Undangan (Open Invitation) Action Button */}
+              <div className="mt-5 flex flex-col items-center justify-center">
+                {/* Decorative 2D Wax Seal Badge */}
+                <div className="relative mb-3 flex flex-col items-center">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-16 flex justify-center -z-10 pointer-events-none">
+                    <div className="w-3 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-15 rounded-xs" />
+                    <div className="w-3 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-15 -ml-1 rounded-xs" />
                   </div>
 
-                  {/* Flat 2D Wax Seal Disk in Rich Velvet Maroon */}
-                  <div className="w-20 h-20 sm:w-22 sm:h-22 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-[3px_4px_0px_#4A0812]">
-                    <div className="w-full h-full rounded-full border-2 border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center p-1">
-                      <Heart className="w-4 h-4 text-[#FAD2D8] mb-0.5 fill-current animate-pulse" />
-                      <span className="font-script font-bold tracking-wider text-[14px] text-white">
+                  <div className="w-12 h-12 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-[2px_3px_0px_#4A0812]">
+                    <div className="w-full h-full rounded-full border border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center">
+                      <Heart className="w-3 h-3 text-[#FAD2D8] fill-current animate-pulse" />
+                      <span className="font-script font-bold tracking-wider text-[10px] text-white">
                         D & S
-                      </span>
-                      <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#FFE58F]">
-                        BUKA YUK
                       </span>
                     </div>
                   </div>
+                </div>
+
+                {/* Main Prominent "Buka Undangan / Open Invitation" CTA Button */}
+                <motion.button
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={handleOpenInvitation}
+                  className="w-full max-w-xs mx-auto py-3.5 px-6 rounded-full bg-[#7D1128] hover:bg-[#660F1A] text-white border-2 border-[#4A0812] shadow-[4px_5px_0px_#4A0812] flex items-center justify-center gap-3 transition-all cursor-pointer group min-h-[50px] focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60"
+                  aria-label="Buka Undangan (Open Invitation)"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#FFF0F3] border border-[#FFE58F] flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 text-[#7D1128] group-hover:scale-110 transition-transform animate-bounce" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="font-script font-bold text-xl text-white leading-none">
+                      Buka Undangan
+                    </span>
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-[#FFE58F] font-bold mt-0.5">
+                      Open Invitation 💌
+                    </span>
+                  </div>
                 </motion.button>
 
-                <span className="text-xs font-script font-bold text-[#7D1128] mt-4 flex items-center gap-1.5 animate-bounce">
-                  <Mail className="w-3.5 h-3.5 text-[#B3394B]" />
-                  Ketuk segel cinta untuk membuka surat! 💌
+                <span className="text-xs font-script font-bold text-[#7D1128] mt-3 flex items-center gap-1.5 animate-pulse">
+                  Klik tombol di atas untuk membuka undangan resmi
                 </span>
               </div>
             </motion.div>
