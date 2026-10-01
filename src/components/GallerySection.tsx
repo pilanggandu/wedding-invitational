@@ -162,7 +162,7 @@ export function GallerySection() {
 
                 <div className="flex items-center justify-center gap-1.5 text-xs text-[#9E2A3B] font-mono font-semibold">
                   <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
-                  <span>Album Prewedding Dimas & Sarah</span>
+                  <span>Album Prewedding Gilang & Salsadila</span>
                 </div>
               </div>
             </motion.div>

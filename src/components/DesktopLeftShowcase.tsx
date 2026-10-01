@@ -76,18 +76,18 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
 
       {/* Floating Decorative Stamp */}
       <div className="absolute top-6 right-6">
-        <PaperStamp text="RESMI SAH" date="12 • 12 • 2026" />
+        <PaperStamp text="RESMI SAH" date="21 • 11 • 2026" />
       </div>
 
       {/* Header Section */}
       <div className="relative z-10 mt-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFE58F] text-[#4A0812] border-2 border-[#4A0812] shadow-[2px_2px_0px_#3D070E] mb-3 rotate-[-1.5deg]">
           <Sparkles className="w-3.5 h-3.5 text-[#7D1128]" />
-          Buku Sketsa Bahagia: Dimas & Sarah
+          Buku Sketsa Bahagia: Gilang & Salsadila
         </div>
 
         <h1 className="font-handwriting text-6xl xl:text-7xl text-[#FFF0F3] drop-shadow-md my-1 leading-tight tracking-wide">
-          Dimas <span className="font-script text-4xl text-[#F5A8B8]">&</span> Sarah
+          Gilang <span className="font-script text-4xl text-[#F5A8B8]">&</span> Salsadila
         </h1>
 
         <p className="font-script text-xl xl:text-2xl text-[#FAD2D8] font-bold mt-1 max-w-md">
@@ -97,7 +97,7 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
         <div className="flex flex-wrap items-center gap-2.5 mt-4 text-xs font-mono font-bold">
           <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <Calendar className="w-3.5 h-3.5 text-[#F5A8B8]" />
-            Sabtu, 12 Desember 2026
+            Sabtu, 21 November 2026
           </span>
           <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <MapPin className="w-3.5 h-3.5 text-[#F5A8B8]" />
@@ -126,12 +126,12 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
             <div className="flex-1 text-left space-y-2.5">
               <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
-                  💬 <strong>Dimas:</strong> &ldquo;Siap nemenin jajan boba dan nurutin apa kata nyonya rumah!&rdquo;
+                  💬 <strong>Gilang:</strong> &ldquo;Siap nemenin jajan boba dan nurutin apa kata nyonya rumah!&rdquo;
                 </p>
               </div>
               <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
-                  💬 <strong>Sarah:</strong> &ldquo;Siap ketawa denger lelucon garing Mas Dimas selamanya!&rdquo;
+                  💬 <strong>Salsadila:</strong> &ldquo;Siap ketawa denger lelucon garing Mas Gilang selamanya!&rdquo;
                 </p>
               </div>
             </div>

@@ -47,24 +47,27 @@ export function HeroSection() {
     return () => clearInterval(interval);
   }, []);
 
+  const { groom, bride } = WEDDING_DATA.couple;
+  const receptionEvent = WEDDING_DATA.events[1] || WEDDING_DATA.events[0];
+
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    "Pernikahan Dimas & Sarah"
-  )}&dates=20261212T010000Z/20261212T070000Z&details=${encodeURIComponent(
-    "Undangan Pernikahan Paling Seru: Dimas Arya Pratama & Sarah Annisa Larasati"
-  )}&location=${encodeURIComponent("Grand Cempaka Ballroom, Jakarta")}`;
+    `Pernikahan ${groom.name} & ${bride.name}`
+  )}&dates=20261121T020000Z/20261121T100000Z&details=${encodeURIComponent(
+    `Undangan Pernikahan Paling Seru: ${groom.fullName} & ${bride.fullName}`
+  )}&location=${encodeURIComponent(`${receptionEvent.venueName}, ${receptionEvent.venueAddress}`)}`;
 
   const downloadIcs = () => {
     const icsContent = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//The Wedding of Dimas & Sarah//ID",
+      "PRODID:-//The Wedding of Gilang & Salsadila//ID",
       "CALSCALE:GREGORIAN",
       "BEGIN:VEVENT",
-      "SUMMARY:The Wedding of Dimas & Sarah",
-      "DESCRIPTION:Pernikahan Dimas Arya Pratama & Sarah Annisa Larasati",
-      "LOCATION:Grand Cempaka Ballroom & Masjid Kubah Emas",
-      "DTSTART:20261212T010000Z",
-      "DTEND:20261212T070000Z",
+      `SUMMARY:The Wedding of ${groom.name} & ${bride.name}`,
+      `DESCRIPTION:Pernikahan ${groom.fullName} & ${bride.fullName}`,
+      `LOCATION:${receptionEvent.venueName}, ${receptionEvent.venueAddress}`,
+      "DTSTART:20261121T020000Z",
+      "DTEND:20261121T100000Z",
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR",
@@ -74,7 +77,7 @@ export function HeroSection() {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "Wedding-Dimas-Sarah.ics");
+    link.setAttribute("download", "Wedding-Gilang-Salsadila.ics");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -106,7 +109,7 @@ export function HeroSection() {
         {/* Couple Names with Maroon Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
           <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
-            Dimas <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Sarah
+            Gilang <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Salsadila
           </h1>
 
           <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
@@ -114,7 +117,7 @@ export function HeroSection() {
           </p>
 
           <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-4 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
-            📅 Sabtu, 12 Desember 2026 • Depok & Jakarta
+            📅 Sabtu, 21 November 2026 • Depok & Jakarta
           </div>
         </MotionReveal>
 
@@ -123,7 +126,7 @@ export function HeroSection() {
           <div className="my-4 flex justify-center">
             <PhotoPlaceholder
               variant="couple"
-              caption="Dimas & Sarah: Siap Menempuh Hidup Baru Penuh Tawa!"
+              caption="Gilang & Salsadila: Siap Menempuh Hidup Baru Penuh Tawa!"
               tag="CINTA SEJATI"
               stickerText="100% Cocok! 💖"
               tapePosition="both-top"

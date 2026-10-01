@@ -26,7 +26,7 @@ export function RsvpSection() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("wedding_wishes_dimas_sarah_maroon");
+      const stored = localStorage.getItem("wedding_wishes_gilang_salsa_maroon");
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -55,7 +55,7 @@ export function RsvpSection() {
     setWishes(updated);
 
     try {
-      localStorage.setItem("wedding_wishes_dimas_sarah_maroon", JSON.stringify(updated));
+      localStorage.setItem("wedding_wishes_gilang_salsa_maroon", JSON.stringify(updated));
     } catch {
       // ignore
     }
@@ -173,8 +173,8 @@ export function RsvpSection() {
                       onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 cursor-pointer font-medium"
                     >
-                      <option value="Sahabat Seperjuangan">Sahabat Seperjuangan Dimas</option>
-                      <option value="Bestie Cantik Sarah">Bestie Cantik Sarah</option>
+                      <option value="Sahabat Seperjuangan">Sahabat Seperjuangan Gilang</option>
+                      <option value="Bestie Cantik Salsadila">Bestie Cantik Salsadila</option>
                       <option value="Keluarga Mempelai Pria">Keluarga Mempelai Pria</option>
                       <option value="Keluarga Mempelai Wanita">Keluarga Mempelai Wanita</option>
                       <option value="Teman Kantor / Bisnis">Teman Kantor / Bisnis</option>

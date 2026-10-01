@@ -1,4 +1,4 @@
-# 📌 Panduan URL Akses Web Undangan Digital (Dimas & Sarah)
+# 📌 Panduan URL Akses Web Undangan Digital (Gilang & Salsadila)
 
 Dokumen ini berisi seluruh daftar tautan (URL) dan metode untuk membuka serta mengakses web undangan pernikahan ini, baik dari PC lokal, HP via Wi-Fi, maupun jarak jauh via internet tanpa VPN.
 
@@ -40,4 +40,4 @@ Jika ingin web undangan online 24 jam nonstop meskipun PC Anda dimatikan:
 3. Buka **[vercel.com](https://vercel.com)** dan login dengan akun GitHub Anda.
 4. Klik **"Add New Project"** -> pilih repositori ini -> klik **"Deploy"**.
 5. Anda akan mendapatkan domain permanen gratis, misalnya:
-   `https://undangan-dimas-sarah.vercel.app`
+   `https://undangan-gilang-salsadila.vercel.app`

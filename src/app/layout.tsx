@@ -28,7 +28,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "The Wedding of Dimas & Sarah - Undangan Digital Paper Art",
+  title: "The Wedding of Gilang & Salsadila - Undangan Digital Paper Art",
   description: "Undangan Pernikahan Digital Eksklusif dengan tema Paper Art Craft & Handcrafted Typography",
   icons: {
     icon: "/favicon.ico",

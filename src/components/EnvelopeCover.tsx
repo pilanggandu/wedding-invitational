@@ -99,7 +99,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         </motion.div>
 
         <div className="absolute top-8 right-8 hidden sm:block">
-          <PaperStamp text="RESMI SAH" date="12 • 12 • 2026" />
+          <PaperStamp text="RESMI SAH" date="21 • 11 • 2026" />
         </div>
 
         {/* Flat 2D Hand-Drawn Envelope Card Presentation */}
@@ -154,11 +154,11 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
 
               {/* Couple Names with Maroon & Gold Shimmer */}
               <h1 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text my-2 leading-tight tracking-wide">
-                Dimas <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Sarah
+                Gilang <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Salsadila
               </h1>
 
               <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-0.5 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold my-1 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
-                Sabtu, 12 Desember 2026 💍
+                Sabtu, 21 November 2026 💍
               </div>
 
               {/* Recipient Letter Section */}
@@ -204,7 +204,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                     <div className="w-full h-full rounded-full border border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center">
                       <Heart className="w-3 h-3 text-[#FAD2D8] fill-current animate-pulse" />
                       <span className="font-script font-bold tracking-wider text-[10px] text-white">
-                        D & S
+                        G & S
                       </span>
                     </div>
                   </div>

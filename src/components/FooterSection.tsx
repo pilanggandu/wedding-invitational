@@ -28,7 +28,7 @@ export function FooterSection() {
           <div className="crayon-box p-8 sm:p-10 relative bg-white border-[#660F1A]">
             {/* Postmark stamp in corner */}
             <div className="absolute top-4 right-4 hidden sm:block">
-              <PaperStamp text="RESMI SAH" date="12 • 12 • 2026" />
+              <PaperStamp text="RESMI SAH" date="21 • 11 • 2026" />
             </div>
 
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] mb-4 shadow-xs">
@@ -55,7 +55,7 @@ export function FooterSection() {
             {/* Couple Signatures in handwriting font with maroon shimmer */}
             <div className="my-5">
               <h3 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text tracking-wide">
-                Dimas <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Sarah
+                Gilang <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Salsadila
               </h3>
               <span className="inline-block mt-2 text-xs font-mono font-bold tracking-widest text-[#4A0812] bg-[#FFE58F] px-3.5 py-1 rounded-full border-1.5 border-[#4A0812] rotate-[-1deg] shadow-xs">
                 {general.hashtag}

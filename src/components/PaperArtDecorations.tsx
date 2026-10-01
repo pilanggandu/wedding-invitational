@@ -195,7 +195,7 @@ export function KidsDrawingGroom() {
       </svg>
       <div className="mt-1 text-center bg-white px-2.5 py-0.5 rounded-full border-1.5 border-[#4A0812] shadow-xs">
         <span className="font-script font-bold text-xs text-[#7D1128]">
-          Mas Dimas (Si Pengantin Ganteng)
+          Mas Gilang (Si Pengantin Ganteng)
         </span>
       </div>
     </div>
@@ -257,7 +257,7 @@ export function KidsDrawingBride() {
       </svg>
       <div className="mt-1 text-center bg-white px-2.5 py-0.5 rounded-full border-1.5 border-[#4A0812] shadow-xs">
         <span className="font-script font-bold text-xs text-[#7D1128]">
-          Mbak Sarah (Si Putri Ceria)
+          Mbak Salsadila (Si Putri Ceria)
         </span>
       </div>
     </div>
@@ -532,7 +532,7 @@ interface WaxSealProps {
 
 export function WaxSeal({
   label = "BUKA",
-  initials = "D & S",
+  initials = "G & S",
   onClick,
   size = "md",
   className = "",
@@ -642,7 +642,7 @@ export function TornPaperDivider({
 // Childlike Postmark Stamp Badge in Maroon & Gold
 export function PaperStamp({
   text = "RESMI SAH",
-  date = "12 • 12 • 2026",
+  date = "21 • 11 • 2026",
 }: {
   text?: string;
   date?: string;

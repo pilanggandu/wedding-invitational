@@ -91,7 +91,7 @@ export function CoupleSection() {
             <div className="flex flex-col items-center text-center">
               <PhotoPlaceholder
                 variant="groom"
-                caption="Dimas Arya Pratama"
+                caption={groom.name}
                 tag="MEMPELAI PRIA"
                 stickerText="Calon Suami Idaman! 😎"
                 tapePosition="top-left"
@@ -141,7 +141,7 @@ export function CoupleSection() {
             <div className="flex flex-col items-center text-center">
               <PhotoPlaceholder
                 variant="bride"
-                caption="Sarah Annisa Larasati"
+                caption={bride.name}
                 tag="MEMPELAI WANITA"
                 stickerText="Tuan Putri Cantik! 👸"
                 tapePosition="top-right"
