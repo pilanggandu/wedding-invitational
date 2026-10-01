@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { DesktopLeftShowcase } from "@/components/DesktopLeftShowcase";
 import { EnvelopeCover } from "@/components/EnvelopeCover";
 import { HeroSection } from "@/components/HeroSection";
@@ -40,10 +41,15 @@ export default function WeddingInvitationPage() {
           </div>
 
           {/* Envelope Opening Screen */}
-          <EnvelopeCover
-            isOpen={isOpened}
-            onOpen={() => setIsOpened(true)}
-          />
+          <AnimatePresence mode="wait">
+            {!isOpened && (
+              <EnvelopeCover
+                key="envelope-cover"
+                isOpen={isOpened}
+                onOpen={() => setIsOpened(true)}
+              />
+            )}
+          </AnimatePresence>
 
           {/* Main Invitation Content */}
           {isOpened && (

@@ -34,40 +34,24 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
   }, []);
 
   const handleOpenInvitation = () => {
+    if (isOpening) return;
     setIsOpening(true);
 
     try {
       // Burst of maroon, champagne gold, blush, and ivory confetti
       confetti({
-        particleCount: 75,
-        spread: 85,
+        particleCount: 70,
+        spread: 80,
         origin: { y: 0.6 },
         colors: ["#7D1128", "#E5B869", "#F5A8B8", "#FFF0F3", "#B3394B", "#660F1A"],
       });
-
-      setTimeout(() => {
-        confetti({
-          particleCount: 45,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: ["#7D1128", "#FFE58F", "#F8B4C0"],
-        });
-        confetti({
-          particleCount: 45,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: ["#660F1A", "#E5B869", "#FAD2D8"],
-        });
-      }, 250);
     } catch {
       // ignore
     }
 
     setTimeout(() => {
       onOpen();
-    }, 1000);
+    }, 400);
   };
 
   if (isOpen) return null;
@@ -195,6 +179,9 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
               <div className="mt-5 flex flex-col items-center justify-center">
                 {/* Decorative 2D Wax Seal Badge with Pop Animation */}
                 <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
+                  onClick={handleOpenInvitation}
                   animate={
                     isOpening
                       ? { scale: [1, 1.35, 0], opacity: [1, 1, 0] }
@@ -205,7 +192,8 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                       ? { duration: 0.5, ease: "easeOut" }
                       : { repeat: Infinity, duration: 3, ease: "easeInOut" }
                   }
-                  className="relative mb-3 flex flex-col items-center"
+                  className="relative mb-3 flex flex-col items-center cursor-pointer"
+                  title="Buka Undangan"
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-16 flex justify-center -z-10 pointer-events-none">
                     <div className="w-3 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-15 rounded-xs" />
