@@ -11,14 +11,17 @@ import {
   CrayonWashiTape,
   PaperStamp,
 } from "./PaperArtDecorations";
+import { useWeddingData } from "@/context/WeddingDataContext";
 
 interface EnvelopeCoverProps {
   onOpen: () => void;
   isOpen: boolean;
+  initialGuestName?: string;
 }
 
-export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
-  const [guestName, setGuestName] = useState<string>("Tamu Undangan Terfavorit");
+export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCoverProps) {
+  const data = useWeddingData();
+  const [guestName, setGuestName] = useState<string>(initialGuestName || "Tamu Undangan Terfavorit");
   const [isOpening, setIsOpening] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,11 +30,13 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
       const to = params.get("to") || params.get("u") || params.get("nama");
       if (to) {
         setGuestName(to.trim());
+      } else if (initialGuestName) {
+        setGuestName(initialGuestName);
       }
     } catch {
       // Fallback
     }
-  }, []);
+  }, [initialGuestName]);
 
   const handleOpenInvitation = () => {
     if (isOpening) return;
@@ -159,11 +164,13 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
 
               {/* Couple Names with Maroon & Gold Shimmer */}
               <h1 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text my-2 leading-tight tracking-wide">
-                Gilang <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Salsadila
+                {data.couple?.groom?.name || "Gilang"}{" "}
+                <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span>{" "}
+                {data.couple?.bride?.name || "Salsadila"}
               </h1>
 
               <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-0.5 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold my-1 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
-                Sabtu, 21 November 2026 💍
+                {data.events[0]?.displayDay ? `${data.events[0].displayDay}, ${data.events[0].displayDate}` : "Sabtu, 21 November 2026"} 💍
               </div>
 
               {/* Recipient Letter Section */}
@@ -209,7 +216,7 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
                     <div className="w-full h-full rounded-full border border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center">
                       <Heart className="w-3 h-3 text-[#FAD2D8] fill-current animate-pulse" />
                       <span className="font-script font-bold tracking-wider text-[10px] text-white">
-                        G & S
+                        {(data.couple?.groom?.name || "G")[0]} & {(data.couple?.bride?.name || "S")[0]}
                       </span>
                     </div>
                   </div>

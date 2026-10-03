@@ -1,0 +1,37 @@
+import { TemplateMeta } from "@/types/wedding";
+
+export const AVAILABLE_TEMPLATES: TemplateMeta[] = [
+  {
+    id: "paper-art-maroon",
+    name: "2D Paper Art Craft (Maroon Edition)",
+    description: "Tema buku sketsa krayon 2D dengan nuansa merah marun dominan, aksen emas hangat, washi tape lucu, dan stiker doodle ceria.",
+    category: "Paper Art",
+    tag: "Aktif & Populer ⭐",
+    badgeColor: "bg-[#7D1128] text-white",
+    previewGradient: "from-[#660F1A] via-[#7D1128] to-[#FFE58F]",
+    accentHex: "#7D1128",
+    isAvailable: true,
+  },
+  {
+    id: "paper-art-sage",
+    name: "2D Paper Art Botanical (Sage Green)",
+    description: "Nuansa hijau sage sejuk dan dedaunan botani yang menenangkan, dipadukan dengan tekstur kertas daur ulang dan aksen krem.",
+    category: "Botanical",
+    tag: "Estetik Kalem 🌿",
+    badgeColor: "bg-[#4F6D5A] text-white",
+    previewGradient: "from-[#2E4336] via-[#4F6D5A] to-[#DCE7DF]",
+    accentHex: "#4F6D5A",
+    isAvailable: true,
+  },
+  {
+    id: "paper-art-gold",
+    name: "2D Paper Art Luxury (Champagne Gold)",
+    description: "Kombinasi warna emas sampanye, kertas linen bertekstur mewah, dan pita washi metalik yang glamor namun tetap hangat.",
+    category: "Modern Minimalist",
+    tag: "Mewah Hangat ✨",
+    badgeColor: "bg-[#B07D30] text-white",
+    previewGradient: "from-[#68471A] via-[#B07D30] to-[#FFF3D6]",
+    accentHex: "#B07D30",
+    isAvailable: true,
+  },
+];

@@ -1,80 +1,63 @@
 "use client";
 
-import React, { useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { DesktopLeftShowcase } from "@/components/DesktopLeftShowcase";
-import { EnvelopeCover } from "@/components/EnvelopeCover";
-import { HeroSection } from "@/components/HeroSection";
-import { CoupleSection } from "@/components/CoupleSection";
-import { EventSection } from "@/components/EventSection";
-import { LoveStorySection } from "@/components/LoveStorySection";
-import { GallerySection } from "@/components/GallerySection";
-import { GiftSection } from "@/components/GiftSection";
-import { RsvpSection } from "@/components/RsvpSection";
-import { FooterSection } from "@/components/FooterSection";
-import { NavigationDock } from "@/components/NavigationDock";
-import { AudioPlayer } from "@/components/AudioPlayer";
-import { FallingPaperPetals } from "@/components/FallingPaperPetals";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Settings } from "lucide-react";
+import { getInvitationData } from "@/lib/invitationStore";
+import { WeddingInvitationData } from "@/types/wedding";
+import { TemplateRenderer } from "@/templates/TemplateRenderer";
 
-export default function WeddingInvitationPage() {
-  const [isOpened, setIsOpened] = useState<boolean>(false);
+function InvitationContent() {
+  const searchParams = useSearchParams();
+  const rawTo = searchParams.get("to") || searchParams.get("u") || searchParams.get("nama") || "";
+  const guestName = rawTo ? rawTo.trim() : undefined;
+
+  const [weddingData, setWeddingData] = useState<WeddingInvitationData>(getInvitationData());
+
+  useEffect(() => {
+    // Initial fetch on mount
+    setWeddingData(getInvitationData());
+
+    const handleDataChanged = () => {
+      setWeddingData(getInvitationData());
+    };
+
+    window.addEventListener("wedding-data-changed", handleDataChanged);
+    return () => {
+      window.removeEventListener("wedding-data-changed", handleDataChanged);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFF5F6] flex flex-col lg:flex-row relative paper-texture">
-      {/* 🖥️ Desktop Left Showcase (Visible on lg+ screens, hidden on mobile) */}
-      <DesktopLeftShowcase
-        isOpened={isOpened}
-        onOpen={() => setIsOpened(true)}
-      />
+    <div className="relative min-h-screen">
+      <TemplateRenderer data={weddingData} guestName={guestName} />
 
-      {/* 📱 Right Side: Phone-style frame on desktop, Full-screen native on mobile */}
-      <div className="w-full lg:w-[52%] xl:w-[50%] min-h-screen flex justify-center py-0 lg:py-8 px-0 lg:px-6 bg-[#FFF5F6] relative">
-        <main className="w-full max-w-full lg:max-w-[480px] min-h-screen bg-[#FFF9FA] lg:rounded-[44px] lg:border-[5px] lg:border-[#4A0812] lg:shadow-[8px_10px_0px_#660F1A] relative overflow-clip flex flex-col">
-          {/* Top Phone Camera / Speaker Notch (Desktop View Only) */}
-          <div className="hidden lg:flex justify-between items-center px-6 py-2.5 bg-[#4A0812] text-white shrink-0">
-            <span className="text-[11px] font-mono font-bold text-[#FFE58F]">12:12 💖</span>
-            <div className="w-20 h-3.5 bg-[#2D050B] rounded-full flex items-center justify-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#7D1128]" />
-              <span className="w-6 h-1 rounded-full bg-[#5A0B17]" />
-            </div>
-            <span className="text-[10px] font-mono text-[#E5B869]">100% 🔋</span>
-          </div>
-
-          {/* Envelope Opening Screen */}
-          <AnimatePresence mode="wait">
-            {!isOpened && (
-              <EnvelopeCover
-                key="envelope-cover"
-                isOpen={isOpened}
-                onOpen={() => setIsOpened(true)}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Main Invitation Content */}
-          {isOpened && (
-            <div className="animate-in fade-in duration-1000 flex flex-col flex-1 relative">
-              {/* Falling Hearts & Stars Particles */}
-              <FallingPaperPetals />
-
-              <HeroSection />
-              <CoupleSection />
-              <EventSection />
-              <LoveStorySection />
-              <GallerySection />
-              <GiftSection />
-              <RsvpSection />
-              <FooterSection />
-
-              {/* Navigation Dock */}
-              <NavigationDock />
-
-              {/* Ambient Audio Player */}
-              <AudioPlayer autoPlayTrigger={isOpened} />
-            </div>
-          )}
-        </main>
+      {/* Discreet floating shortcut to Admin Panel for the wedding host */}
+      <div className="fixed bottom-4 left-4 z-40">
+        <Link
+          href="/admin"
+          className="group flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#4A0812]/90 hover:bg-[#4A0812] text-[#FFE58F] border border-[#E5B869]/70 shadow-lg text-xs font-mono font-bold backdrop-blur-xs transition-all hover:scale-105"
+          title="Buka Dashboard Manajemen Undangan"
+        >
+          <Settings className="w-3.5 h-3.5 text-[#FFE58F] group-hover:rotate-45 transition-transform" />
+          <span>Dashboard Admin</span>
+        </Link>
       </div>
     </div>
+  );
+}
+
+export default function WeddingInvitationPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FFF5F6] flex items-center justify-center text-[#7D1128] font-script text-xl">
+          Memuat undangan penuh kebahagiaan...
+        </div>
+      }
+    >
+      <InvitationContent />
+    </Suspense>
   );
 }

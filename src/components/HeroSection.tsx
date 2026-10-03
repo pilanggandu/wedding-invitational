@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Download, ExternalLink, Sparkles } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   PhotoPlaceholder,
   KidsDrawingSun,
@@ -15,6 +15,16 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function HeroSection() {
+  const data = useWeddingData();
+  const { groom, bride } = data.couple;
+  const akadEvent = data.events[0] || {
+    venueAddress: "Merakurak, Tuban",
+    displayDate: "21 November 2026",
+    displayDay: "Sabtu",
+    time: "08:00 - 10:00 WIB",
+  };
+  const receptionEvent = data.events[1] || akadEvent;
+
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -23,7 +33,7 @@ export function HeroSection() {
   }>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = new Date(WEDDING_DATA.countdownTarget).getTime();
+    const target = new Date(data.countdownTarget || "2026-11-21T08:00:00+07:00").getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -45,16 +55,13 @@ export function HeroSection() {
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, []);
-
-  const { groom, bride } = WEDDING_DATA.couple;
-  const receptionEvent = WEDDING_DATA.events[1] || WEDDING_DATA.events[0];
+  }, [data.countdownTarget]);
 
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     `Pernikahan ${groom.name} & ${bride.name}`
-  )}&dates=20261121T020000Z/20261121T100000Z&details=${encodeURIComponent(
+  )}&dates=20261121T010000Z/20261121T080000Z&details=${encodeURIComponent(
     `Undangan Pernikahan Paling Seru: ${groom.fullName} & ${bride.fullName}`
-  )}&location=${encodeURIComponent(`${receptionEvent.venueName}, ${receptionEvent.venueAddress}`)}`;
+  )}&location=${encodeURIComponent(receptionEvent.venueAddress)}`;
 
   const downloadIcs = () => {
     const icsContent = [
@@ -65,9 +72,9 @@ export function HeroSection() {
       "BEGIN:VEVENT",
       `SUMMARY:The Wedding of ${groom.name} & ${bride.name}`,
       `DESCRIPTION:Pernikahan ${groom.fullName} & ${bride.fullName}`,
-      `LOCATION:${receptionEvent.venueName}, ${receptionEvent.venueAddress}`,
-      "DTSTART:20261121T020000Z",
-      "DTEND:20261121T100000Z",
+      `LOCATION:${receptionEvent.venueAddress}`,
+      "DTSTART:20261121T010000Z",
+      "DTEND:20261121T080000Z",
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR",
@@ -109,15 +116,15 @@ export function HeroSection() {
         {/* Couple Names with Maroon Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
           <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
-            Gilang <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> Salsadila
+            {groom.name} <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> {bride.name}
           </h1>
 
           <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
-            &ldquo;{WEDDING_DATA.general.funTagline}&rdquo;
+            &ldquo;{data.general.funTagline}&rdquo;
           </p>
 
           <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-4 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
-            📅 Sabtu, 21 November 2026 • Depok & Jakarta
+            📅 {akadEvent.displayDay}, {akadEvent.displayDate} • {akadEvent.venueAddress || "Merakurak, Tuban"}
           </div>
         </MotionReveal>
 

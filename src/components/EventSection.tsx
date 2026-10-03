@@ -2,8 +2,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { MapPin, Calendar, Clock, Navigation, Video, Sparkles } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { MapPin, Calendar, Clock, Navigation, Sparkles } from "lucide-react";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   CrayonWashiTape,
   KidsDrawingStar,
@@ -14,7 +14,7 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function EventSection() {
-  const { events, dresscode } = WEDDING_DATA;
+  const { events, dresscode } = useWeddingData();
 
   return (
     <section id="acara" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
@@ -133,19 +133,6 @@ export function EventSection() {
                       Buka Google Maps (Petunjuk Arah)
                     </motion.a>
 
-                    {isFirst && (
-                      <motion.a
-                        whileHover={{ scale: 1.03, y: -2 }}
-                        whileTap={{ scale: 0.97 }}
-                        href="https://youtube.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="crayon-button-alt w-full inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold cursor-pointer"
-                      >
-                        <Video className="w-3.5 h-3.5 text-[#7D1128]" />
-                        Nonton Live Streaming Akad 📺
-                      </motion.a>
-                    )}
                   </div>
                 </div>
               </MotionReveal>

@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn, Heart, Sparkles } from "lucide-react";
-import { WEDDING_DATA, GalleryPhoto } from "@/data/weddingData";
+import { GalleryPhoto } from "@/types/wedding";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   PhotoPlaceholder,
   BotanicalLeaves,
@@ -16,7 +17,7 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function GallerySection() {
-  const { gallery } = WEDDING_DATA;
+  const { gallery } = useWeddingData();
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
   return (
@@ -162,7 +163,7 @@ export function GallerySection() {
 
                 <div className="flex items-center justify-center gap-1.5 text-xs text-[#9E2A3B] font-mono font-semibold">
                   <Heart className="w-3.5 h-3.5 text-[#D63D56] fill-current animate-pulse" />
-                  <span>Album Prewedding Gilang & Salsadila</span>
+                  <span>Ilustrasi Pernikahan Gilang & Salsadila</span>
                 </div>
               </div>
             </motion.div>

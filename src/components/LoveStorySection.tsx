@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Sparkles, Heart } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   PhotoPlaceholder,
   BotanicalLeaves,
@@ -13,7 +13,7 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function LoveStorySection() {
-  const { stories } = WEDDING_DATA;
+  const { stories } = useWeddingData();
 
   return (
     <section id="cerita" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
@@ -39,7 +39,10 @@ export function LoveStorySection() {
         </MotionReveal>
 
         {/* Scrapbook Timeline */}
-        <div className="relative">
+          {stories.length === 0 ? (
+            <p className="text-center text-xs sm:text-sm font-sans text-[#7D1128]">Kisah berdua belum dicantumkan di undangan ini.</p>
+          ) : (
+          <div className="relative">
           {/* Central Dashed Thread Line in Maroon */}
           <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-1 border-l-2 border-dashed border-[#8A1C2C]/50 -translate-x-1/2 hidden sm:block" />
 
@@ -104,7 +107,8 @@ export function LoveStorySection() {
               );
             })}
           </div>
-        </div>
+          </div>
+          )}
       </div>
 
       <div className="mt-16">

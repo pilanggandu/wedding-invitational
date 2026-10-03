@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { MessageSquareHeart, Send, CheckCircle2, User, Users, Heart, Sparkles } from "lucide-react";
-import { WEDDING_DATA, WishMessage } from "@/data/weddingData";
+import { WishMessage } from "@/types/wedding";
+import { useWeddingData } from "@/context/WeddingDataContext";
+import { getWishes, saveWishes } from "@/lib/invitationStore";
 import {
   CrayonWashiTape,
   BotanicalLeaves,
@@ -14,7 +16,8 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function RsvpSection() {
-  const [wishes, setWishes] = useState<WishMessage[]>(WEDDING_DATA.initialWishes);
+  const data = useWeddingData();
+  const [wishes, setWishes] = useState<WishMessage[]>(data.initialWishes || []);
   const [formData, setFormData] = useState({
     name: "",
     relationship: "Sahabat Seperjuangan",
@@ -25,17 +28,16 @@ export function RsvpSection() {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("wedding_wishes_gilang_salsa_maroon");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setWishes(parsed);
-        }
-      }
-    } catch {
-      // Fallback
+    const loaded = getWishes();
+    if (loaded && loaded.length > 0) {
+      setWishes(loaded);
     }
+
+    const handleUpdate = () => {
+      setWishes(getWishes());
+    };
+    window.addEventListener("wedding-wishes-changed", handleUpdate);
+    return () => window.removeEventListener("wedding-wishes-changed", handleUpdate);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -53,12 +55,7 @@ export function RsvpSection() {
 
     const updated = [newWish, ...wishes];
     setWishes(updated);
-
-    try {
-      localStorage.setItem("wedding_wishes_gilang_salsa_maroon", JSON.stringify(updated));
-    } catch {
-      // ignore
-    }
+    saveWishes(updated);
 
     setIsSubmitted(true);
 
@@ -316,6 +313,9 @@ export function RsvpSection() {
                       </motion.div>
                     ))}
                   </AnimatePresence>
+                  {wishes.length === 0 && (
+                    <p className="text-xs font-sans text-[#7D1128]">Belum ada ucapan yang tersimpan.</p>
+                  )}
                 </div>
               </div>
             </MotionReveal>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Heart, Sparkles } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   BotanicalLeaves,
   KidsDrawingHeart,
@@ -12,7 +12,9 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function FooterSection() {
-  const { general, couple } = WEDDING_DATA;
+  const data = useWeddingData();
+  const { general, couple } = data;
+  const families = [couple.groom?.parents, couple.bride?.parents].filter(Boolean);
 
   return (
     <footer className="relative pt-12 pb-28 sm:pb-20 bg-[#FFF0F3] overflow-hidden text-center paper-texture">
@@ -41,21 +43,21 @@ export function FooterSection() {
               {general.closingMessage}
             </p>
 
-            <p className="font-script text-lg text-[#9E2A3B] mb-2 font-bold">
-              Keluarga Besar Paling Bahagia:
-            </p>
-
-            <p className="font-sans text-xs sm:text-sm font-bold text-[#4A0812] mb-1">
-              Keluarga Besar {couple.groom.parents}
-            </p>
-            <p className="font-sans text-xs sm:text-sm font-bold text-[#4A0812] mb-6">
-              & Keluarga Besar {couple.bride.parents}
-            </p>
+            {families.length > 0 && <>
+              <p className="font-script text-lg text-[#9E2A3B] mb-2 font-bold">
+                Keluarga Besar
+              </p>
+              <p className="font-sans text-xs sm:text-sm font-bold text-[#4A0812] mb-6">
+                {families.join(" & ")}
+              </p>
+            </>}
 
             {/* Couple Signatures in handwriting font with maroon shimmer */}
             <div className="my-5">
               <h3 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text tracking-wide">
-                Gilang <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span> Salsadila
+                {couple.groom?.name || "Gilang"}{" "}
+                <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span>{" "}
+                {couple.bride?.name || "Salsadila"}
               </h3>
               <span className="inline-block mt-2 text-xs font-mono font-bold tracking-widest text-[#4A0812] bg-[#FFE58F] px-3.5 py-1 rounded-full border-1.5 border-[#4A0812] rotate-[-1deg] shadow-xs">
                 {general.hashtag}

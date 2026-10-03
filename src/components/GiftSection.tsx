@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Gift, Copy, Check, CreditCard, MapPin, Send, Sparkles } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   BotanicalLeaves,
   KidsDrawingHeart,
@@ -14,7 +14,8 @@ import {
 import { MotionReveal } from "./MotionReveal";
 
 export function GiftSection() {
-  const { accounts, physicalGiftAddress } = WEDDING_DATA.gifts;
+  const data = useWeddingData();
+  const { accounts, physicalGiftAddress } = data.gifts;
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
 
@@ -169,7 +170,7 @@ export function GiftSection() {
             </div>
 
             <p className="text-xs sm:text-sm font-sans text-[#4A0812] mb-1">
-              Penerima: <span className="font-bold">{physicalGiftAddress.recipient}</span> ({physicalGiftAddress.phone})
+              Penerima: <span className="font-bold">{physicalGiftAddress.recipient}</span>{physicalGiftAddress.phone && ` (${physicalGiftAddress.phone})`}
             </p>
             <p className="text-xs font-sans text-[#7D1128] max-w-md mx-auto leading-relaxed mb-4">
               {physicalGiftAddress.address}
@@ -178,7 +179,7 @@ export function GiftSection() {
             <motion.button
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => handleCopyAddress(`${physicalGiftAddress.recipient} - ${physicalGiftAddress.phone}\n${physicalGiftAddress.address}`)}
+              onClick={() => handleCopyAddress(`${physicalGiftAddress.recipient}${physicalGiftAddress.phone ? ` - ${physicalGiftAddress.phone}` : ""}\n${physicalGiftAddress.address}`)}
               className={`inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold cursor-pointer transition-all ${
                 copiedAddress
                   ? "bg-[#16A34A] text-white rounded-2xl border-2 border-[#15803D]"

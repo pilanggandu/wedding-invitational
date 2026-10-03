@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Heart, Sparkles, Coffee, ShoppingBag } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   PhotoPlaceholder,
   BotanicalLeaves,
@@ -31,8 +31,9 @@ function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
 }
 
 export function CoupleSection() {
-  const { groom, bride } = WEDDING_DATA.couple;
-  const { quote, openingGreetings, openingMessage } = WEDDING_DATA.general;
+  const data = useWeddingData();
+  const { groom, bride } = data.couple;
+  const { quote, openingGreetings, openingMessage } = data.general;
 
   return (
     <section id="mempelai" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
@@ -107,20 +108,21 @@ export function CoupleSection() {
                   {groom.fullName}
                 </p>
 
-                <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
+                {groom.tagline && <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
                   &ldquo;{groom.tagline}&rdquo;
-                </p>
+                </p>}
 
-                <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
+                {groom.bioFunny && <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
                   <Coffee className="w-3.5 h-3.5 inline mr-1 text-[#660F1A]" />
                   {groom.bioFunny}
-                </p>
+                </p>}
 
-                <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
+                {groom.parents && <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
                   Putra tercinta dari: <br />
                   <span className="font-bold not-italic text-[#4A0812]">{groom.parents}</span>
-                </p>
+                </p>}
 
+                {groom.instagram &&
                 <motion.a
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -131,7 +133,7 @@ export function CoupleSection() {
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{groom.instagram}
-                </motion.a>
+                </motion.a>}
               </div>
             </div>
           </MotionReveal>
@@ -157,20 +159,21 @@ export function CoupleSection() {
                   {bride.fullName}
                 </p>
 
-                <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
+                {bride.tagline && <p className="text-xs font-script font-bold text-[#B3394B] text-sm mb-2 bg-[#FFF0F3] py-1.5 px-3 rounded-xl border border-[#FAD2D8]">
                   &ldquo;{bride.tagline}&rdquo;
-                </p>
+                </p>}
 
-                <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
+                {bride.bioFunny && <p className="text-xs font-sans text-[#5A0B17] mb-3 leading-relaxed">
                   <ShoppingBag className="w-3.5 h-3.5 inline mr-1 text-[#660F1A]" />
                   {bride.bioFunny}
-                </p>
+                </p>}
 
-                <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
+                {bride.parents && <p className="text-xs font-sans text-[#7D1128] mb-4 border-t-2 border-dashed border-[#F8B4C0] pt-2 italic">
                   Putri tersayang dari: <br />
                   <span className="font-bold not-italic text-[#4A0812]">{bride.parents}</span>
-                </p>
+                </p>}
 
+                {bride.instagram &&
                 <motion.a
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -181,7 +184,7 @@ export function CoupleSection() {
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{bride.instagram}
-                </motion.a>
+                </motion.a>}
               </div>
             </div>
           </MotionReveal>

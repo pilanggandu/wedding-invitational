@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Heart, Sparkles, Smartphone, Music, MapPin, Mail } from "lucide-react";
-import { WEDDING_DATA } from "@/data/weddingData";
+import { useWeddingData } from "@/context/WeddingDataContext";
 import {
   KidsDrawingCouple,
   KidsDrawingSun,
@@ -20,6 +20,14 @@ interface DesktopLeftShowcaseProps {
 }
 
 export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcaseProps) {
+  const data = useWeddingData();
+  const akadEvent = data.events[0] || {
+    time: "08:00 - 10:00 WIB",
+    displayDay: "Sabtu",
+    displayDate: "21 November 2026",
+    venueAddress: "Merakurak, Tuban",
+  };
+  const receptionEvent = data.events[1] || akadEvent;
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -28,7 +36,7 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
   }>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = new Date(WEDDING_DATA.countdownTarget).getTime();
+    const target = new Date(data.countdownTarget || "2026-11-21T08:00:00+07:00").getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -92,25 +100,27 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
       <div className="relative z-10 mt-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFE58F] text-[#4A0812] border-2 border-[#4A0812] shadow-[2px_2px_0px_#3D070E] mb-3 rotate-[-1.5deg]">
           <Sparkles className="w-3.5 h-3.5 text-[#7D1128]" />
-          Buku Sketsa Bahagia: Gilang & Salsadila
+          Buku Sketsa Bahagia: {data.couple?.groom?.name || "Gilang"} & {data.couple?.bride?.name || "Salsadila"}
         </div>
 
         <h1 className="font-handwriting text-6xl xl:text-7xl text-[#FFF0F3] drop-shadow-md my-1 leading-tight tracking-wide">
-          Gilang <span className="font-script text-4xl text-[#F5A8B8]">&</span> Salsadila
+          {data.couple?.groom?.name || "Gilang"}{" "}
+          <span className="font-script text-4xl text-[#F5A8B8]">&</span>{" "}
+          {data.couple?.bride?.name || "Salsadila"}
         </h1>
 
         <p className="font-script text-xl xl:text-2xl text-[#FAD2D8] font-bold mt-1 max-w-md">
-          &ldquo;{WEDDING_DATA.general.funTagline}&rdquo;
+          &ldquo;{data.general?.funTagline || "Menemukan cinta itu mudah, tapi menemukan yang sehobi dan sefrekuensi itu anugerah!"}&rdquo;
         </p>
 
         <div className="flex flex-wrap items-center gap-2.5 mt-4 text-xs font-mono font-bold">
           <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <Calendar className="w-3.5 h-3.5 text-[#F5A8B8]" />
-            Sabtu, 21 November 2026
+            {akadEvent.displayDay || "Sabtu"}, {akadEvent.displayDate || "21 November 2026"}
           </span>
           <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <MapPin className="w-3.5 h-3.5 text-[#F5A8B8]" />
-            Depok & Jakarta
+            {akadEvent.venueAddress || "Merakurak, Tuban"}
           </span>
         </div>
       </div>
@@ -135,12 +145,12 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
             <div className="flex-1 text-left space-y-2.5">
               <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
-                  💬 <strong>Gilang:</strong> &ldquo;Siap nemenin jajan boba dan nurutin apa kata nyonya rumah!&rdquo;
+                  <strong>Akad:</strong> {akadEvent.time}
                 </p>
               </div>
               <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
-                  💬 <strong>Salsadila:</strong> &ldquo;Siap ketawa denger lelucon garing Mas Gilang selamanya!&rdquo;
+                  <strong>Resepsi:</strong> {receptionEvent.time}
                 </p>
               </div>
             </div>
