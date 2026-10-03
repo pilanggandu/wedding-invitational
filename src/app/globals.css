@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --font-handwriting: var(--font-great-vibes), "Great Vibes", cursive;
+  --font-handwriting: var(--font-caveat), "Caveat", cursive;
   --font-script: var(--font-caveat), "Caveat", cursive;
+  --font-calligraphy: var(--font-great-vibes), "Great Vibes", cursive;
   --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
   --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
 @layer base {
   :root {
-    --font-handwriting: var(--font-great-vibes), "Great Vibes", cursive;
+    --font-handwriting: var(--font-caveat), "Caveat", cursive;
     --font-script: var(--font-caveat), "Caveat", cursive;
+    --font-calligraphy: var(--font-great-vibes), "Great Vibes", cursive;
     --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
     --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
@@ -18,11 +20,15 @@
 
 /* Custom Typography Helpers */
 .font-handwriting {
-  font-family: var(--font-great-vibes), "Great Vibes", cursive;
+  font-family: var(--font-caveat), "Caveat", cursive;
 }
 
 .font-script {
   font-family: var(--font-caveat), "Caveat", cursive;
+}
+
+.font-calligraphy {
+  font-family: var(--font-great-vibes), "Great Vibes", cursive;
 }
 
 .font-serif {
