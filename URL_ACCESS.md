@@ -6,8 +6,8 @@ Dokumen ini berisi seluruh daftar tautan (URL) dan metode untuk membuka serta me
 
 ## 🌟 1. URL Publik Gratis Aktif (Bisa Dibuka Siapa Saja Tanpa VPN)
 Link HTTPS resmi dari Cloudflare Tunnel yang saat ini **sedang aktif berjalan**:
-- 👉 **[https://older-approaches-fog-shareware.trycloudflare.com](https://older-approaches-fog-shareware.trycloudflare.com)**
-- Contoh dengan Nama Tamu: **[https://older-approaches-fog-shareware.trycloudflare.com/?to=Sahabat+Tercinta](https://older-approaches-fog-shareware.trycloudflare.com/?to=Sahabat+Tercinta)**
+- 👉 **[https://disciplinary-fragrance-smilies-really.trycloudflare.com](https://disciplinary-fragrance-smilies-really.trycloudflare.com)**
+- Contoh dengan Nama Tamu: **[https://disciplinary-fragrance-smilies-really.trycloudflare.com/?to=Sahabat+Tercinta](https://disciplinary-fragrance-smilies-really.trycloudflare.com/?to=Sahabat+Tercinta)**
 
 *(Bisa dibuka dari HP siapa saja menggunakan paket data seluler tanpa perlu install VPN atau sambung ke Wi-Fi).*
 

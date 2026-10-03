@@ -1,29 +1,36 @@
 @import "tailwindcss";
 
+@theme {
+  --font-handwriting: var(--font-great-vibes), "Great Vibes", cursive;
+  --font-script: var(--font-caveat), "Caveat", cursive;
+  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
 @layer base {
   :root {
-    --font-handwriting: var(--font-handwriting), 'Great Vibes', cursive;
-    --font-script: var(--font-script), 'Caveat', cursive;
-    --font-serif: var(--font-serif), 'Playfair Display', Georgia, serif;
-    --font-sans: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-handwriting: var(--font-great-vibes), "Great Vibes", cursive;
+    --font-script: var(--font-caveat), "Caveat", cursive;
+    --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
+    --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
 }
 
 /* Custom Typography Helpers */
 .font-handwriting {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-great-vibes), "Great Vibes", cursive;
 }
 
 .font-script {
-  font-family: var(--font-script);
+  font-family: var(--font-caveat), "Caveat", cursive;
 }
 
 .font-serif {
-  font-family: var(--font-serif);
+  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
 }
 
 .font-sans {
-  font-family: var(--font-sans);
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
 }
 
 /* Elegant Maroon & Ivory Sketchbook Paper Background with subtle grain */
