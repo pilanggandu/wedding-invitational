@@ -28,8 +28,8 @@ export default function WeddingInvitationPage() {
       />
 
       {/* 📱 Right Side: Phone-style frame on desktop, Full-screen native on mobile */}
-      <div className="w-full lg:w-[52%] xl:w-[50%] lg:h-screen lg:overflow-y-auto flex justify-center py-0 lg:py-6 px-0 lg:px-6 bg-[#FFF5F6] relative">
-        <main className="w-full max-w-full lg:max-w-[460px] min-h-screen bg-[#FFF9FA] lg:rounded-[44px] lg:border-[5px] lg:border-[#4A0812] lg:shadow-[8px_10px_0px_#660F1A] relative overflow-hidden flex flex-col">
+      <div className="w-full lg:w-[52%] xl:w-[50%] min-h-screen flex justify-center py-0 lg:py-8 px-0 lg:px-6 bg-[#FFF5F6] relative">
+        <main className="w-full max-w-full lg:max-w-[480px] min-h-screen bg-[#FFF9FA] lg:rounded-[44px] lg:border-[5px] lg:border-[#4A0812] lg:shadow-[8px_10px_0px_#660F1A] relative overflow-clip flex flex-col">
           {/* Top Phone Camera / Speaker Notch (Desktop View Only) */}
           <div className="hidden lg:flex justify-between items-center px-6 py-2.5 bg-[#4A0812] text-white shrink-0">
             <span className="text-[11px] font-mono font-bold text-[#FFE58F]">12:12 💖</span>

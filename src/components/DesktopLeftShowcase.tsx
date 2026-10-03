@@ -53,7 +53,16 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
   }, []);
 
   return (
-    <div className="hidden lg:flex lg:w-[48%] xl:w-[50%] lg:h-screen lg:sticky lg:top-0 p-8 xl:p-12 flex-col justify-between overflow-y-auto bg-[#660F1A] text-white border-r-[4px] border-[#3D070E] shadow-2xl relative select-none">
+    <div
+      onWheel={(e) => {
+        if (!isOpened && onOpen && e.deltaY > 15) {
+          onOpen();
+        } else {
+          window.scrollBy({ top: e.deltaY, behavior: "auto" });
+        }
+      }}
+      className="hidden lg:flex lg:w-[48%] xl:w-[50%] lg:h-screen lg:sticky lg:top-0 p-8 xl:p-12 flex-col justify-between overflow-y-auto bg-[#660F1A] text-white border-r-[4px] border-[#3D070E] shadow-2xl relative select-none"
+    >
       {/* Background Decorative Doodles */}
       <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-20 rotate-45 pointer-events-none" />
       <BotanicalLeaves className="absolute -bottom-10 -right-10 w-48 h-68 opacity-20 -rotate-135 pointer-events-none" />

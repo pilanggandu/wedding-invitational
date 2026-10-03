@@ -45,7 +45,7 @@ export function NavigationDock() {
   };
 
   return (
-    <nav className="fixed lg:sticky bottom-4 left-0 right-0 lg:left-auto lg:right-auto z-40 max-w-[92vw] sm:max-w-sm w-full px-2 mx-auto pointer-events-auto">
+    <nav className="fixed bottom-4 left-0 right-0 lg:left-[48%] xl:left-[50%] z-40 max-w-[92vw] sm:max-w-sm w-full px-2 mx-auto pointer-events-auto">
       <div className="bg-white/95 rounded-full px-2 py-1.5 border-2 border-[#7D1128] shadow-[3px_4px_0px_#7D1128] backdrop-blur-md flex items-center justify-around relative">
         {navItems.map((item) => {
           const Icon = item.icon;

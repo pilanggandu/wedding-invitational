@@ -63,7 +63,12 @@ export function EnvelopeCover({ onOpen, isOpen }: EnvelopeCoverProps) {
         animate={{ opacity: isOpening ? 0 : 1, scale: isOpening ? 1.05 : 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto select-none paper-texture bg-[#FFF5F6]"
+        onWheel={(e) => {
+          if (e.deltaY > 15 && !isOpening) {
+            handleOpenInvitation();
+          }
+        }}
+        className="fixed lg:absolute inset-0 z-50 flex items-center justify-center p-4 select-none paper-texture bg-[#FFF5F6]"
       >
         {/* Harmonious 2D Floating Doodles with Chill Gentle Float */}
         <motion.div
