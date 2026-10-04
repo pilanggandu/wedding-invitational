@@ -1,17 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Sparkles, Heart, Building2, Send } from "lucide-react";
+import { Calendar, Clock, MapPin, Sparkles, Building2, Mail } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import {
-  SkyAirplane,
-  PastelCloud,
-  CitySkylineSvg,
-  VintageStreetLamp,
-  ParkBushes,
-} from "./CityscapeDecorations";
+  CoupleWalkingIllustration,
+  CityBoulevardBackdrop,
+} from "./CityscapeIllustrations";
+import { SkyAirplane, PastelCloud, VintageStreetLamp } from "./CityscapeDecorations";
 
 interface CityscapeDesktopLeftProps {
   isOpened?: boolean;
@@ -83,12 +80,12 @@ export function CityscapeDesktopLeft({
     >
       {/* Sky & Airplane Drift */}
       <SkyAirplane className="top-8 left-10" />
-      <PastelCloud className="w-36 h-16 absolute top-12 right-12 opacity-40" delay={0} />
-      <PastelCloud className="w-28 h-12 absolute top-28 left-8 opacity-30" delay={3} />
+      <PastelCloud className="w-36 h-16 absolute top-12 right-12 opacity-35" delay={0} />
+      <PastelCloud className="w-28 h-12 absolute top-28 left-8 opacity-25" delay={3} />
 
       {/* Top Header */}
       <div className="relative z-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-white/15 backdrop-blur-xs text-[#FFE58F] border border-white/20 shadow-xs mb-3">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-white/15 backdrop-blur-md text-[#FFE58F] border border-white/20 shadow-xs mb-3">
           <Building2 className="w-3.5 h-3.5 text-[#FFE58F]" />
           <span>Cityscape Romance: {groom.name} & {bride.name}</span>
         </div>
@@ -113,27 +110,23 @@ export function CityscapeDesktopLeft({
         </div>
       </div>
 
-      {/* Middle: Promenade Artwork Spotlight Card */}
-      <div className="my-5 relative z-10 flex items-center gap-6 bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/20 shadow-xl">
-        <div className="relative w-36 h-48 shrink-0 rounded-2xl overflow-hidden border-2 border-white/80 shadow-md">
-          <Image
-            src="/templates/cityscape-cover.jpeg"
-            alt="Cityscape Walk"
-            fill
-            className="object-cover object-top"
-          />
+      {/* Middle: Live Vector Promenade Card Showcase */}
+      <div className="my-5 relative z-10 flex items-center gap-6 bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/20 shadow-xl overflow-hidden">
+        {/* Vector Couple Walk in Miniature Showcase */}
+        <div className="relative w-40 h-52 shrink-0 rounded-2xl overflow-hidden border-2 border-white/80 shadow-md bg-gradient-to-b from-[#BFE1F4] via-[#DCEDF8] to-[#F1F8FC] flex items-end justify-center p-2">
+          <CoupleWalkingIllustration className="w-full h-auto max-w-[140px]" />
         </div>
 
         <div className="flex-1 space-y-3">
           <div className="bg-white/15 p-3 rounded-2xl border border-white/15">
-            <span className="text-[10px] font-mono uppercase text-[#FFE58F] block">Akad Nikah</span>
+            <span className="text-[10px] font-mono uppercase text-[#FFE58F] block font-bold">Akad Nikah</span>
             <p className="text-xs font-script font-bold text-white mt-0.5">
               {akadEvent.time} • {akadEvent.venueName || "Kediaman Mempelai"}
             </p>
           </div>
 
           <div className="bg-white/15 p-3 rounded-2xl border border-white/15">
-            <span className="text-[10px] font-mono uppercase text-[#FFE58F] block">Resepsi Pernikahan</span>
+            <span className="text-[10px] font-mono uppercase text-[#FFE58F] block font-bold">Resepsi Pernikahan</span>
             <p className="text-xs font-script font-bold text-white mt-0.5">
               {receptionEvent.time} • {receptionEvent.venueName || "Gedung Serbaguna"}
             </p>
@@ -141,25 +134,25 @@ export function CityscapeDesktopLeft({
 
           {/* Countdown Grid in Frosted Glass */}
           <div className="pt-1">
-            <span className="text-[11px] font-mono text-white/80 block mb-1.5">
-              ⏰ Hitung Mundur Hari Bahagia:
+            <span className="text-[11px] font-mono text-white/90 block mb-1.5 font-bold">
+              ⏰ Hitung Mundur Menuju Hari Bahagia:
             </span>
             <div className="grid grid-cols-4 gap-1.5 text-center font-mono">
               <div className="bg-white/20 p-1.5 rounded-xl border border-white/20">
-                <span className="text-base font-extrabold text-[#FFE58F] block">{timeLeft.days}</span>
-                <span className="text-[9px] uppercase text-white/80">Hari</span>
+                <span className="text-base font-black text-[#FFE58F] block">{timeLeft.days}</span>
+                <span className="text-[9px] uppercase text-white/80 font-bold">Hari</span>
               </div>
               <div className="bg-white/20 p-1.5 rounded-xl border border-white/20">
-                <span className="text-base font-extrabold text-[#FFE58F] block">{timeLeft.hours}</span>
-                <span className="text-[9px] uppercase text-white/80">Jam</span>
+                <span className="text-base font-black text-[#FFE58F] block">{timeLeft.hours}</span>
+                <span className="text-[9px] uppercase text-white/80 font-bold">Jam</span>
               </div>
               <div className="bg-white/20 p-1.5 rounded-xl border border-white/20">
-                <span className="text-base font-extrabold text-[#FFE58F] block">{timeLeft.minutes}</span>
-                <span className="text-[9px] uppercase text-white/80">Menit</span>
+                <span className="text-base font-black text-[#FFE58F] block">{timeLeft.minutes}</span>
+                <span className="text-[9px] uppercase text-white/80 font-bold">Menit</span>
               </div>
               <div className="bg-white/20 p-1.5 rounded-xl border border-white/20">
-                <span className="text-base font-extrabold text-[#FFE58F] block">{timeLeft.seconds}</span>
-                <span className="text-[9px] uppercase text-white/80">Detik</span>
+                <span className="text-base font-black text-[#FFE58F] block">{timeLeft.seconds}</span>
+                <span className="text-[9px] uppercase text-white/80 font-bold">Detik</span>
               </div>
             </div>
           </div>
@@ -171,20 +164,16 @@ export function CityscapeDesktopLeft({
         {!isOpened && onOpen && (
           <button
             onClick={onOpen}
-            className="px-5 py-2.5 rounded-full bg-[#38B6FF] hover:bg-[#209CEE] text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/40 shadow-lg transition-transform hover:scale-105 cursor-pointer"
+            className="px-6 py-3 rounded-full bg-[#38B6FF] hover:bg-[#209CEE] text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center gap-2 border-2 border-white shadow-lg transition-transform hover:scale-105 cursor-pointer"
           >
-            <span>Buka Undangan Sekarang 💌</span>
+            <Mail className="w-4 h-4 text-white animate-bounce" />
+            <span>Buka Undangan 💌</span>
           </button>
         )}
 
-        <div className="text-[11px] font-mono text-white/70 ml-auto">
+        <div className="text-[11px] font-mono font-bold text-[#FFE58F] ml-auto">
           {data.general?.hashtag || "#GilangSalsaHalal"}
         </div>
-      </div>
-
-      {/* Skyline Silhouette Background Anchor */}
-      <div className="absolute bottom-0 inset-x-0 h-28 pointer-events-none opacity-30">
-        <CitySkylineSvg className="w-full h-full" color="#FFFFFF" />
       </div>
     </div>
   );
