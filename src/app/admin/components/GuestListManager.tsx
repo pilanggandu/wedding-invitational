@@ -128,16 +128,16 @@ export function GuestListManager({
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Top Header & Metrics */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border-2 border-[#7D1128]/20 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#FFF0F3] text-[#7D1128] mb-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium bg-blue-50 text-blue-700 mb-1">
             <Users className="w-3.5 h-3.5" />
             Manajemen Penerima Undangan
           </div>
-          <h2 className="font-sans font-bold text-xl text-[#4A0812]">
+          <h2 className="font-sans font-bold text-xl text-slate-900">
             Daftar Tamu & Generator WhatsApp
           </h2>
-          <p className="text-xs text-[#7D1128]">
+          <p className="text-xs text-slate-500">
             Kelola data tamu, generate tautan personal otomatis, dan kirim pesan resmi via WhatsApp.
           </p>
         </div>
@@ -145,9 +145,9 @@ export function GuestListManager({
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-4 py-2.5 rounded-xl bg-[#7D1128] hover:bg-[#660F1A] text-white font-mono font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer hover:scale-105"
+            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
           >
-            <UserPlus className="w-4 h-4 text-[#FFE58F]" />
+            <UserPlus className="w-4 h-4 text-white" />
             <span>{showAddForm ? "Tutup Form" : "Tambah Tamu Baru"}</span>
           </button>
         </div>
@@ -155,17 +155,17 @@ export function GuestListManager({
 
       {/* Progress Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl p-4 border border-slate-200">
-          <span className="text-xs font-mono text-slate-500 block">Total Tamu</span>
-          <span className="text-2xl font-extrabold text-[#4A0812]">{totalCount}</span>
+        <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <span className="text-xs font-semibold uppercase text-slate-500 block">Total Tamu</span>
+          <span className="text-2xl font-bold text-slate-900">{totalCount}</span>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-emerald-200 bg-emerald-50/30">
-          <span className="text-xs font-mono text-emerald-800 block">Sudah Dikirim</span>
-          <span className="text-2xl font-extrabold text-emerald-950">{sentCount}</span>
+        <div className="bg-white rounded-xl p-4 border border-emerald-200 bg-emerald-50/40 shadow-xs">
+          <span className="text-xs font-semibold uppercase text-emerald-800 block">Sudah Dikirim</span>
+          <span className="text-2xl font-bold text-emerald-950">{sentCount}</span>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-amber-200 bg-amber-50/30">
-          <span className="text-xs font-mono text-amber-800 block">Belum Dikirim</span>
-          <span className="text-2xl font-extrabold text-amber-950">{unsentCount}</span>
+        <div className="bg-white rounded-xl p-4 border border-amber-200 bg-amber-50/40 shadow-xs">
+          <span className="text-xs font-semibold uppercase text-amber-800 block">Belum Dikirim</span>
+          <span className="text-2xl font-bold text-amber-950">{unsentCount}</span>
         </div>
       </div>
 
@@ -173,19 +173,19 @@ export function GuestListManager({
       {showAddForm && (
         <form
           onSubmit={handleAddSubmit}
-          className="bg-[#FFF9FA] rounded-2xl p-6 border-2 border-[#7D1128]/30 shadow-md animate-in slide-in-from-top-4 duration-200 space-y-4"
+          className="bg-slate-50 rounded-xl p-6 border border-slate-200 shadow-xs animate-in slide-in-from-top-4 duration-200 space-y-4"
         >
-          <div className="flex items-center justify-between pb-2 border-b border-[#7D1128]/15">
-            <h3 className="font-sans font-bold text-sm text-[#4A0812] flex items-center gap-2">
-              <UserPlus className="w-4 h-4 text-[#7D1128]" />
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+            <h3 className="font-sans font-bold text-sm text-slate-900 flex items-center gap-2">
+              <UserPlus className="w-4 h-4 text-blue-600" />
               Tambah Tamu Undangan Baru
             </h3>
-            <span className="text-xs text-[#7D1128]">Tautan personal akan digenerate otomatis</span>
+            <span className="text-xs text-slate-500">Tautan personal akan digenerate otomatis</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-mono font-bold text-[#7D1128] mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Nama Tamu Lengkap *
               </label>
               <input
@@ -193,13 +193,13 @@ export function GuestListManager({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Contoh: Budi Santoso & Partner"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-sans focus:outline-none focus:border-[#7D1128]"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm font-sans text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-bold text-[#7D1128] mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Nomor WhatsApp (opsional)
               </label>
               <input
@@ -207,18 +207,18 @@ export function GuestListManager({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="081234567890"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-sans focus:outline-none focus:border-[#7D1128]"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm font-sans text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono font-bold text-[#7D1128] mb-1">
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Kategori Tamu
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as any)}
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-sans focus:outline-none focus:border-[#7D1128]"
+                className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm font-sans text-slate-900 focus:outline-none focus:border-blue-500"
               >
                 <option value="Sahabat">Sahabat</option>
                 <option value="Keluarga">Keluarga</option>
@@ -230,7 +230,7 @@ export function GuestListManager({
           </div>
 
           <div>
-            <label className="block text-xs font-mono font-bold text-[#7D1128] mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
               Catatan Khusus (opsional)
             </label>
             <input
@@ -238,7 +238,7 @@ export function GuestListManager({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Contoh: Teman SMA / Rekan kantor lantai 3"
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-sans focus:outline-none focus:border-[#7D1128]"
+              className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm font-sans text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -246,13 +246,13 @@ export function GuestListManager({
             <button
               type="button"
               onClick={() => setShowAddForm(false)}
-              className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-mono font-bold cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-medium cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-[#7D1128] hover:bg-[#660F1A] text-white text-xs font-mono font-bold shadow-xs cursor-pointer"
+              className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium shadow-xs cursor-pointer"
             >
               Simpan Tamu
             </button>
@@ -261,7 +261,7 @@ export function GuestListManager({
       )}
 
       {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border-2 border-slate-200 flex flex-col md:flex-row gap-3 items-center justify-between shadow-xs">
+      <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row gap-3 items-center justify-between shadow-xs">
         {/* Search */}
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -270,7 +270,7 @@ export function GuestListManager({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari nama, telepon, catatan..."
-            className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 text-xs font-sans focus:outline-none focus:border-[#7D1128]"
+            className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-300 text-xs font-sans text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
@@ -279,7 +279,7 @@ export function GuestListManager({
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-mono bg-white"
+            className="px-3 py-1.5 rounded-xl border border-slate-300 text-xs text-slate-700 bg-white"
           >
             <option value="Semua">Semua Kategori</option>
             <option value="VIP">VIP</option>
@@ -292,7 +292,7 @@ export function GuestListManager({
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-mono bg-white"
+            className="px-3 py-1.5 rounded-xl border border-slate-300 text-xs text-slate-700 bg-white"
           >
             <option value="all">Semua Status</option>
             <option value="sent">Sudah Dikirim</option>
@@ -302,17 +302,17 @@ export function GuestListManager({
       </div>
 
       {/* Guests Table */}
-      <div className="bg-white rounded-2xl border-2 border-slate-200 overflow-hidden shadow-xs">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
         {filteredGuests.length === 0 ? (
           <div className="p-12 text-center text-slate-500 space-y-2">
             <Users className="w-8 h-8 mx-auto text-slate-400" />
-            <p className="font-sans font-bold text-sm">Tidak ada tamu yang sesuai pencarian</p>
-            <p className="text-xs">Coba ubah kata kunci atau tambahkan tamu baru.</p>
+            <p className="font-sans font-bold text-sm text-slate-700">Tidak ada tamu yang sesuai pencarian</p>
+            <p className="text-xs text-slate-500">Coba ubah kata kunci atau tambahkan tamu baru.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FFF5F6] border-b border-slate-200 text-[#7D1128] font-mono font-bold uppercase tracking-wider">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Nama Tamu</th>
                   <th className="py-3 px-3">Kategori</th>
@@ -328,10 +328,10 @@ export function GuestListManager({
                   const isCopied = copiedId === guest.id;
 
                   return (
-                    <tr key={guest.id} className="hover:bg-[#FFF9FA]/60 transition-colors">
+                    <tr key={guest.id} className="hover:bg-slate-50/70 transition-colors">
                       {/* Name & Notes */}
                       <td className="py-3.5 px-4">
-                        <div className="font-sans font-bold text-sm text-[#4A0812]">
+                        <div className="font-sans font-bold text-sm text-slate-900">
                           {guest.name}
                         </div>
                         {guest.notes && (
@@ -344,7 +344,7 @@ export function GuestListManager({
                       {/* Category */}
                       <td className="py-3.5 px-3">
                         <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
                             guest.category === "VIP"
                               ? "bg-purple-50 text-purple-800 border-purple-200"
                               : guest.category === "Keluarga"
@@ -367,7 +367,7 @@ export function GuestListManager({
                       <td className="py-3.5 px-3 text-center">
                         <button
                           onClick={() => handleToggleSent(guest.id)}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold border transition-colors cursor-pointer ${
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-medium border transition-colors cursor-pointer ${
                             guest.isSent
                               ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
                               : "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
@@ -384,7 +384,7 @@ export function GuestListManager({
                           {/* Send WhatsApp Button */}
                           <button
                             onClick={() => handleSendWhatsApp(guest)}
-                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
                             title="Kirim pesan undangan resmi via WhatsApp"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
@@ -394,13 +394,13 @@ export function GuestListManager({
                           {/* Copy Link Button */}
                           <button
                             onClick={() => handleCopyLink(guest)}
-                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-mono text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-[11px] flex items-center gap-1 transition-colors cursor-pointer"
                             title="Salin tautan personal khusus tamu ini"
                           >
                             {isCopied ? (
                               <Check className="w-3.5 h-3.5 text-emerald-600" />
                             ) : (
-                              <Copy className="w-3.5 h-3.5 text-slate-600" />
+                              <Copy className="w-3.5 h-3.5 text-slate-500" />
                             )}
                             <span className="hidden sm:inline">
                               {isCopied ? "Disalin!" : "Salin Link"}
@@ -412,7 +412,7 @@ export function GuestListManager({
                             href={personalUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
                             title="Buka undangan tamu di tab baru"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
@@ -421,7 +421,7 @@ export function GuestListManager({
                           {/* Delete */}
                           <button
                             onClick={() => handleDelete(guest.id)}
-                            className="p-1.5 rounded-lg hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg hover:bg-rose-50 text-rose-500 hover:text-rose-700 transition-colors cursor-pointer"
                             title="Hapus tamu"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
