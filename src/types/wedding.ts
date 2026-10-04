@@ -151,7 +151,7 @@ export interface TemplateMeta {
   id: string;
   name: string;
   description: string;
-  category: "Paper Art" | "Modern Minimalist" | "Botanical";
+  category: "Paper Art" | "Modern Minimalist" | "Botanical" | "Urban Aesthetic";
   tag: string;
   badgeColor: string;
   previewGradient: string;

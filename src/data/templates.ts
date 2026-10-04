@@ -34,4 +34,15 @@ export const AVAILABLE_TEMPLATES: TemplateMeta[] = [
     accentHex: "#B07D30",
     isAvailable: true,
   },
+  {
+    id: "cityscape-skyline",
+    name: "Cityscape Urban Romance (Tema Gedung-Gedung)",
+    description: "Konsep estetik modern bernuansa gedung pencakar langit kota metropolitan, jalanan setapak bertabur lampu taman vintage, awan pastel dan pesawat kertas romantis.",
+    category: "Urban Aesthetic",
+    tag: "Viral TikTok 🏙️",
+    badgeColor: "bg-[#2E8BC0] text-white",
+    previewGradient: "from-[#1D78A0] via-[#2E8BC0] to-[#E8F4F8]",
+    accentHex: "#2E8BC0",
+    isAvailable: true,
+  },
 ];

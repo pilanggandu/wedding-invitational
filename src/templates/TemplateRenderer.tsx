@@ -3,13 +3,15 @@
 import React from "react";
 import { TemplateProps } from "./types";
 import { PaperArtTemplate } from "./paper-art/PaperArtTemplate";
+import { CityscapeTemplate } from "./cityscape/CityscapeTemplate";
 
 export function TemplateRenderer(props: TemplateProps) {
   const { data } = props;
   const templateId = data.activeTemplateId || "paper-art-maroon";
 
-  // When more template layouts are created, switch by templateId
   switch (templateId) {
+    case "cityscape-skyline":
+      return <CityscapeTemplate {...props} />;
     case "paper-art-sage":
     case "paper-art-gold":
     case "paper-art-maroon":
