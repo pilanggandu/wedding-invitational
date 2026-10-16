@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import path from "node:path";
 import dotenv from "dotenv";
 import { isSupabaseConfigured } from "./supabase";
 import { initPostgres, isPostgresConfigured, isPostgresConnected } from "./postgres";
@@ -11,6 +12,7 @@ import rsvpsRoutes from "./routes/rsvps";
 import sectionsRoutes from "./routes/sections";
 
 dotenv.config();
+dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

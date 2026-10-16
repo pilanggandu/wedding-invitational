@@ -3,8 +3,11 @@ import path from "node:path";
 import fs from "node:fs";
 import { hashPassword } from "./auth";
 
-// Pastikan direktori server/data ada
-const dbDir = path.resolve(process.cwd(), "server", "data");
+// Pastikan direktori backend/data ada
+const dbDir = process.env.DB_DIR
+  ? path.resolve(process.env.DB_DIR)
+  : path.resolve(import.meta.dirname, "..", "data");
+
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
