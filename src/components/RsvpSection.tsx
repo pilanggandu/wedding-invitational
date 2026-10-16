@@ -6,7 +6,8 @@ import confetti from "canvas-confetti";
 import { MessageSquareHeart, Send, CheckCircle2, User, Users, Heart, Sparkles } from "lucide-react";
 import { WishMessage } from "@/types/wedding";
 import { useWeddingData } from "@/context/WeddingDataContext";
-import { getWishes, saveWishes } from "@/lib/invitationStore";
+import { getWishes, submitWish } from "@/lib/invitationStore";
+import { submitRsvpApi } from "@/lib/api";
 import {
   CrayonWashiTape,
   BotanicalLeaves,
@@ -15,16 +16,54 @@ import {
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
 
-export function RsvpSection() {
+interface RsvpSectionProps {
+  guestName?: string;
+  guestItem?: {
+    id: string;
+    name: string;
+    quota: number;
+    token?: string;
+    phone?: string;
+  } | null;
+}
+
+export function RsvpSection({ guestName, guestItem }: RsvpSectionProps = {}) {
   const data = useWeddingData();
   const [wishes, setWishes] = useState<WishMessage[]>(data.initialWishes || []);
+
+  const [activeGuest, setActiveGuest] = useState<{
+    id: string;
+    name: string;
+    quota: number;
+  } | null>(guestItem || null);
+
+  useEffect(() => {
+    if (guestItem) {
+      setActiveGuest(guestItem);
+      return;
+    }
+    try {
+      const stored = sessionStorage.getItem("verified_wedding_guest");
+      if (stored) {
+        setActiveGuest(JSON.parse(stored));
+      }
+    } catch {}
+  }, [guestItem]);
+
+  const defaultName = guestName || activeGuest?.name || "";
   const [formData, setFormData] = useState({
-    name: "",
+    name: defaultName,
     relationship: "Sahabat Seperjuangan",
     attendance: "Hadir dong! 😋" as "Hadir dong! 😋" | "Maaf belum bisa 🥺" | "Masih mikir-mikir 👀",
     guestsCount: "1 Orang",
     message: "",
   });
+
+  useEffect(() => {
+    if (defaultName && !formData.name) {
+      setFormData((prev) => ({ ...prev, name: defaultName }));
+    }
+  }, [defaultName]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -44,18 +83,24 @@ export function RsvpSection() {
     e.preventDefault();
     if (!formData.name.trim() || !formData.message.trim()) return;
 
-    const newWish: WishMessage = {
-      id: "w_" + Date.now(),
+    submitWish({
       name: formData.name.trim(),
       relationship: formData.relationship,
       attendance: formData.attendance,
       message: formData.message.trim(),
-      date: "Baru saja",
-    };
+      guestId: activeGuest?.id,
+    });
 
-    const updated = [newWish, ...wishes];
-    setWishes(updated);
-    saveWishes(updated);
+    if (activeGuest?.id) {
+      const isAttending = formData.attendance.startsWith("Hadir");
+      const count = parseInt(formData.guestsCount) || 1;
+      submitRsvpApi({
+        guestId: activeGuest.id,
+        status: isAttending ? 1 : 2,
+        attendeeCount: isAttending ? Math.min(count, activeGuest.quota || 1) : 0,
+        message: formData.message.trim(),
+      }).catch((err) => console.warn("Notice RSVP submit:", err));
+    }
 
     setIsSubmitted(true);
 
@@ -97,10 +142,10 @@ export function RsvpSection() {
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-xs animate-gentle-pulse">
               <MessageSquareHeart className="w-6 h-6 text-[#FAD2D8]" />
             </div>
-            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
+            <span className="font-script text-xl sm:text-2xl text-[#B3394B] font-bold block mb-1">
               Buku Tamu & Kasih Kabar Yaa! ✍️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
+            <h2 className="font-handwriting text-4xl min-[380px]:text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Konfirmasi & Doa
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
@@ -109,16 +154,16 @@ export function RsvpSection() {
           </div>
         </MotionReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
           {/* RSVP Form Card */}
           <div className="lg:col-span-6">
             <MotionReveal variant="slide-left" delay={0.2}>
-              <div className="crayon-box p-6 sm:p-8 relative bg-white border-[#660F1A]">
+              <div className="crayon-box p-4 sm:p-8 relative bg-white border-[#660F1A]">
                 {/* Washi tape header in gold */}
                 <CrayonWashiTape
                   text="★ FORM RSVP ★"
                   color="gold"
-                  className="absolute -top-3.5 left-8 z-20"
+                  className="absolute -top-3.5 left-6 sm:left-8 z-20"
                 />
 
                 <h3 className="font-script text-2xl sm:text-3xl font-bold text-[#660F1A] mb-3">
@@ -184,7 +229,7 @@ export function RsvpSection() {
                     <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1.5">
                       Bisa Hadir Nggak?
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
                       {(["Hadir dong! 😋", "Maaf belum bisa 🥺", "Masih mikir-mikir 👀"] as const).map((status) => {
                         const isSelected = formData.attendance === status;
                         const bgActive =
@@ -199,7 +244,7 @@ export function RsvpSection() {
                             type="button"
                             key={status}
                             onClick={() => setFormData({ ...formData, attendance: status })}
-                            className={`py-2 px-1 text-xs font-script font-bold rounded-xl border-2 transition-all cursor-pointer ${
+                            className={`py-2 px-1 text-[11px] sm:text-xs font-script font-bold rounded-xl border-2 transition-all cursor-pointer min-h-[44px] flex items-center justify-center text-center leading-tight ${
                               isSelected
                                 ? `${bgActive} shadow-[2px_2px_0px_#4A0812] scale-102`
                                 : "bg-[#FFF9FA] text-[#7D1128] border-[#7D1128] hover:bg-[#FFE5EB]"
@@ -219,17 +264,34 @@ export function RsvpSection() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                     >
-                      <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
-                        Bawa Berapa Pasukan?
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider">
+                          Bawa Berapa Pasukan?
+                        </label>
+                        {activeGuest?.quota && (
+                          <span className="text-[10px] font-mono text-[#9E2A3B] bg-[#FFF0F2] px-2 py-0.5 rounded-md border border-[#FAD2D8]">
+                            Maks. {activeGuest.quota} Orang
+                          </span>
+                        )}
+                      </div>
                       <div className="relative">
                         <select
                           value={formData.guestsCount}
                           onChange={(e) => setFormData({ ...formData, guestsCount: e.target.value })}
                           className="w-full px-4 py-2.5 rounded-2xl border-2 border-[#7D1128] bg-[#FFF9FA] text-[#4A0812] text-sm focus:outline-none focus:ring-2 focus:ring-[#D63D56]/40 cursor-pointer font-medium"
                         >
-                          <option value="1 Orang">1 Orang (Solo Fighter)</option>
-                          <option value="2 Orang">2 Orang (Sama Pasangan / Bestie)</option>
+                          {Array.from({
+                            length: Math.min(10, Math.max(1, activeGuest?.quota || 2)),
+                          }).map((_, i) => (
+                            <option key={i + 1} value={`${i + 1} Orang`}>
+                              {i + 1} Orang{" "}
+                              {i === 0
+                                ? "(Solo Fighter)"
+                                : i === 1
+                                ? "(Sama Pasangan / Bestie)"
+                                : ""}
+                            </option>
+                          ))}
                         </select>
                         <Users className="w-4 h-4 text-[#9E2A3B] absolute right-3 top-3.5 pointer-events-none" />
                       </div>
@@ -253,7 +315,7 @@ export function RsvpSection() {
 
                   <button
                     type="submit"
-                    className="crayon-button w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold cursor-pointer"
+                    className="crayon-button w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-bold cursor-pointer min-h-[48px]"
                   >
                     <Send className="w-4 h-4" />
                     Kirim Konfirmasi & Doa Restu 🚀
@@ -266,9 +328,9 @@ export function RsvpSection() {
           {/* Wishes Feed */}
           <div className="lg:col-span-6">
             <MotionReveal variant="slide-right" delay={0.3}>
-              <div className="crayon-box p-6 sm:p-7 bg-[#FFF0F3] border-[#660F1A]">
+              <div className="crayon-box p-4 sm:p-7 bg-[#FFF0F3] border-[#660F1A]">
                 <div className="flex items-center justify-between border-b-2 border-dashed border-[#8A1C2C]/30 pb-3 mb-4">
-                  <h3 className="font-script text-2xl font-bold text-[#660F1A]">
+                  <h3 className="font-script text-xl sm:text-2xl font-bold text-[#660F1A]">
                     Untaian Doa Hangat ({wishes.length}) 💌
                   </h3>
                   <span className="text-xs font-mono font-bold text-[#7D1128] bg-white px-2.5 py-0.5 rounded-full border border-[#7D1128]">

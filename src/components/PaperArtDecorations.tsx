@@ -7,6 +7,7 @@ import { Heart, Sparkles } from "lucide-react";
 // Childlike Drawing Art Photo Placeholder in Maroon Dominant Palette
 interface PhotoPlaceholderProps {
   variant: "groom" | "bride" | "couple" | "rings" | "landscape" | "gallery" | "boba";
+  imageUrl?: string;
   caption?: string;
   tag?: string;
   stickerText?: string;
@@ -17,6 +18,7 @@ interface PhotoPlaceholderProps {
 
 export function PhotoPlaceholder({
   variant,
+  imageUrl,
   caption,
   tag,
   stickerText,
@@ -106,19 +108,27 @@ export function PhotoPlaceholder({
       <div className="crayon-box p-3.5 pb-5 bg-white relative overflow-hidden group shadow-[3px_4px_0px_#660F1A]">
         {/* Inner Crayon Drawing Sheet in soft blush-ivory */}
         <div className="border-2 border-dashed border-[#7D1128]/30 rounded-xl p-1 bg-[#FFF9FA]">
-          <div className="relative aspect-[3/4] w-full min-w-[220px] bg-gradient-to-b from-[#FFFDF8] via-[#FFF5F6] to-[#FFEBEF] rounded-lg overflow-hidden flex flex-col items-center justify-center p-4">
-            
-            {/* Childlike Drawings */}
-            {variant === "groom" && <KidsDrawingGroom />}
-            {variant === "bride" && <KidsDrawingBride />}
-            {variant === "couple" && <KidsDrawingCouple />}
-            {variant === "rings" && <KidsDrawingRings />}
-            {variant === "landscape" && <KidsDrawingLandscape />}
-            {(variant === "gallery" || variant === "boba") && <KidsDrawingBoba />}
+          <div className="relative aspect-[3/4] w-full min-w-[220px] bg-gradient-to-b from-[#FFFDF8] via-[#FFF5F6] to-[#FFEBEF] rounded-lg overflow-hidden flex flex-col items-center justify-center p-0">
+            {imageUrl ? (
+              <img
+                src={imageUrl}
+                alt={caption || tag || "Foto Undangan"}
+                className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <div className="p-4 flex flex-col items-center justify-center w-full h-full">
+                {variant === "groom" && <KidsDrawingGroom />}
+                {variant === "bride" && <KidsDrawingBride />}
+                {variant === "couple" && <KidsDrawingCouple />}
+                {variant === "rings" && <KidsDrawingRings />}
+                {variant === "landscape" && <KidsDrawingLandscape />}
+                {(variant === "gallery" || variant === "boba") && <KidsDrawingBoba />}
+              </div>
+            )}
 
             {/* Tag Badge */}
             {tag && (
-              <span className="absolute bottom-2.5 left-2.5 text-[10px] tracking-wider uppercase font-mono font-bold px-2.5 py-0.5 rounded-full bg-white text-[#4A0812] border-1.5 border-[#4A0812] shadow-xs">
+              <span className="absolute bottom-2.5 left-2.5 text-[10px] tracking-wider uppercase font-mono font-bold px-2.5 py-0.5 rounded-full bg-white text-[#4A0812] border-1.5 border-[#4A0812] shadow-xs z-10">
                 {tag}
               </span>
             )}

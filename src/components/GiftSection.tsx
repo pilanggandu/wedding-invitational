@@ -15,7 +15,9 @@ import { MotionReveal } from "./MotionReveal";
 
 export function GiftSection() {
   const data = useWeddingData();
-  const { accounts, physicalGiftAddress } = data.gifts;
+  const gifts = data?.gifts || { accounts: [], physicalGiftAddress: { recipientName: "", phone: "", address: "" } };
+  const accounts = Array.isArray(gifts.accounts) ? gifts.accounts : [];
+  const physicalGiftAddress = gifts.physicalGiftAddress;
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
 

@@ -1,5 +1,16 @@
 import { WEDDING_DATA } from "@/data/weddingData";
 import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
+import {
+  fetchInvitationFromBackend,
+  saveInvitationToBackend,
+  fetchGuestsFromBackend,
+  addGuestToBackend,
+  updateGuestInBackend,
+  deleteGuestFromBackend,
+  fetchWishesFromBackend,
+  addWishToBackend,
+  deleteWishFromBackend,
+} from "@/lib/api";
 
 const INVITATION_STORAGE_KEY = "wedding_invitation_data_v1";
 const GUESTS_STORAGE_KEY = "wedding_guests_data_v1";
@@ -30,6 +41,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
         aspectRatio: "3/4",
         variant: "groom",
       },
+      photoUrl: "/images/prewedding/couple-3.jpg",
     },
     bride: {
       name: WEDDING_DATA.couple.bride.name,
@@ -44,6 +56,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
         aspectRatio: "3/4",
         variant: "bride",
       },
+      photoUrl: "/images/prewedding/couple-4.jpg",
     },
   },
   general: {
@@ -55,6 +68,16 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     openingGreetings: WEDDING_DATA.general.openingGreetings,
     openingMessage: WEDDING_DATA.general.openingMessage,
     closingMessage: WEDDING_DATA.general.closingMessage,
+    coverPhotoUrl: "/images/prewedding/couple-1.jpg",
+    heroPhotoUrl: "/images/prewedding/couple-2.jpg",
+    backgroundPhotoUrl: "/images/prewedding/couple-1.jpg",
+    preweddingPhotos: [
+      "/images/prewedding/couple-1.jpg",
+      "/images/prewedding/couple-2.jpg",
+      "/images/prewedding/couple-3.jpg",
+      "/images/prewedding/couple-4.jpg",
+      "/images/prewedding/couple-5.jpg",
+    ],
   },
   countdownTarget: WEDDING_DATA.countdownTarget,
   events: WEDDING_DATA.events,
@@ -156,11 +179,79 @@ export function getInvitationData(): WeddingInvitationData {
   return DEFAULT_INVITATION_DATA;
 }
 
+let isSyncing = false;
+
+/**
+ * Sinkronisasi data dari backend (Express + SQLite / Supabase) ke Client Store
+ */
+export async function syncWithBackend(): Promise<void> {
+  if (typeof window === "undefined" || isSyncing) return;
+  isSyncing = true;
+
+  try {
+    const [invitationRes, guestsRes, wishesRes] = await Promise.allSettled([
+      fetchInvitationFromBackend(),
+      fetchGuestsFromBackend(),
+      fetchWishesFromBackend(),
+    ]);
+
+    // 1. Sync Invitation Data
+    if (invitationRes.status === "fulfilled" && invitationRes.value) {
+      const serverData = invitationRes.value;
+      localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(serverData));
+      window.dispatchEvent(
+        new CustomEvent("wedding-data-changed", { detail: serverData })
+      );
+    }
+
+    // 2. Sync Guests
+    if (
+      guestsRes.status === "fulfilled" &&
+      guestsRes.value &&
+      Array.isArray(guestsRes.value)
+    ) {
+      const serverGuests = guestsRes.value;
+      localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(serverGuests));
+      window.dispatchEvent(
+        new CustomEvent("wedding-guests-changed", { detail: serverGuests })
+      );
+    }
+
+    // 3. Sync Wishes
+    if (
+      wishesRes.status === "fulfilled" &&
+      wishesRes.value &&
+      Array.isArray(wishesRes.value)
+    ) {
+      const serverWishes = wishesRes.value;
+      localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(serverWishes));
+      window.dispatchEvent(
+        new CustomEvent("wedding-wishes-changed", { detail: serverWishes })
+      );
+    }
+  } catch (err) {
+    console.warn("Backend sync notice (offline mode fallback):", err);
+  } finally {
+    isSyncing = false;
+  }
+}
+
+// Inisialisasi auto-sync background saat client browser memuat modul
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    syncWithBackend();
+  }, 100);
+}
+
 export function saveInvitationData(data: WeddingInvitationData): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
     window.dispatchEvent(new CustomEvent("wedding-data-changed", { detail: data }));
+    // Simpan ke backend secara asinkron
+    saveInvitationToBackend(data).catch((err) => {
+      console.warn("Gagal menyimpan data undangan ke backend:", err);
+    });
   } catch (err) {
     console.error("Gagal menyimpan invitation data:", err);
   }
@@ -170,7 +261,12 @@ export function resetInvitationData(): WeddingInvitationData {
   if (typeof window !== "undefined") {
     try {
       localStorage.removeItem(INVITATION_STORAGE_KEY);
-      window.dispatchEvent(new CustomEvent("wedding-data-changed", { detail: DEFAULT_INVITATION_DATA }));
+      window.dispatchEvent(
+        new CustomEvent("wedding-data-changed", { detail: DEFAULT_INVITATION_DATA })
+      );
+      saveInvitationToBackend(DEFAULT_INVITATION_DATA).catch((err) => {
+        console.warn("Gagal mereset data undangan di backend:", err);
+      });
     } catch {
       // ignore
     }
@@ -194,7 +290,7 @@ export function getGuests(): GuestItem[] {
   return INITIAL_GUESTS;
 }
 
-export function saveGuests(guests: GuestItem[]): void {
+function saveGuestsLocalOnly(guests: GuestItem[]): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(GUESTS_STORAGE_KEY, JSON.stringify(guests));
@@ -204,40 +300,78 @@ export function saveGuests(guests: GuestItem[]): void {
   }
 }
 
+export function saveGuests(guests: GuestItem[]): void {
+  saveGuestsLocalOnly(guests);
+}
+
 export function addGuest(
   name: string,
   phone: string,
   category: GuestItem["category"],
-  notes?: string
+  notes?: string,
+  quota?: number
 ): GuestItem {
   const cleanName = name.trim();
   const slug = encodeURIComponent(cleanName).replace(/%20/g, "+");
+  const cleanPhone = phone.trim().replace(/^0/, "62").replace(/[^0-9]/g, "");
+  const guestQuota = Math.max(1, quota || 1);
   const newGuest: GuestItem = {
     id: "g_" + Date.now(),
     name: cleanName,
     slug,
-    phone: phone.trim().replace(/^0/, "62").replace(/[^0-9]/g, ""),
+    phone: cleanPhone,
     category,
+    quota: guestQuota,
     isSent: false,
     notes: notes?.trim(),
     createdAt: new Date().toISOString(),
   };
 
   const list = [newGuest, ...getGuests()];
-  saveGuests(list);
+  saveGuestsLocalOnly(list);
+
+  // Simpan ke backend secara asinkron
+  addGuestToBackend({
+    name: cleanName,
+    phone: cleanPhone,
+    category,
+    notes: notes?.trim(),
+    quota: guestQuota,
+  } as any)
+    .then((saved) => {
+      if (saved && saved.id) {
+        const current = getGuests().map((g) => (g.id === newGuest.id ? saved : g));
+        saveGuestsLocalOnly(current);
+      }
+    })
+    .catch((err) => {
+      console.warn("Gagal menyimpan tamu ke backend:", err);
+    });
+
   return newGuest;
 }
 
 export function deleteGuest(id: string): void {
   const list = getGuests().filter((g) => g.id !== id);
-  saveGuests(list);
+  saveGuestsLocalOnly(list);
+  deleteGuestFromBackend(id).catch((err) => {
+    console.warn("Gagal menghapus tamu di backend:", err);
+  });
 }
 
 export function toggleGuestSent(id: string): void {
-  const list = getGuests().map((g) =>
-    g.id === id ? { ...g, isSent: !g.isSent } : g
-  );
-  saveGuests(list);
+  let targetSentState = false;
+  const list = getGuests().map((g) => {
+    if (g.id === id) {
+      targetSentState = !g.isSent;
+      return { ...g, isSent: !g.isSent };
+    }
+    return g;
+  });
+  saveGuestsLocalOnly(list);
+  updateGuestInBackend(id, { isSent: targetSentState }).catch((err) => {
+    console.warn("Gagal memperbarui status kirim tamu di backend:", err);
+  });
 }
 
 export function getWishes(): WishMessage[] {
@@ -254,7 +388,7 @@ export function getWishes(): WishMessage[] {
   return WEDDING_DATA.initialWishes || [];
 }
 
-export function saveWishes(wishes: WishMessage[]): void {
+function saveWishesLocalOnly(wishes: WishMessage[]): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(wishes));
@@ -264,9 +398,65 @@ export function saveWishes(wishes: WishMessage[]): void {
   }
 }
 
+export function saveWishes(wishes: WishMessage[]): void {
+  saveWishesLocalOnly(wishes);
+}
+
+/**
+ * Mengirim doa restu / RSVP baru ke store lokal dan backend database
+ */
+export function submitWish(wish: {
+  name: string;
+  relationship?: string;
+  attendance?: string;
+  message: string;
+  guestId?: string;
+}): WishMessage {
+  const cleanName = wish.name.trim();
+  const cleanMessage = wish.message.trim();
+  const relationship = wish.relationship || "Tamu Undangan";
+  const attendance = wish.attendance || "Hadir";
+
+  const newWish: WishMessage = {
+    id: "w_" + Date.now(),
+    name: cleanName,
+    relationship,
+    attendance: attendance as any,
+    message: cleanMessage,
+    date: "Baru saja",
+    createdAt: new Date().toISOString(),
+  };
+
+  const list = [newWish, ...getWishes()];
+  saveWishesLocalOnly(list);
+
+  // Simpan ke database backend
+  addWishToBackend({
+    name: cleanName,
+    relationship,
+    attendance,
+    message: cleanMessage,
+    guestId: wish.guestId,
+  })
+    .then((saved) => {
+      if (saved && saved.id) {
+        const current = getWishes().map((w) => (w.id === newWish.id ? saved : w));
+        saveWishesLocalOnly(current);
+      }
+    })
+    .catch((err) => {
+      console.warn("Gagal menyimpan ucapan ke backend:", err);
+    });
+
+  return newWish;
+}
+
 export function deleteWish(id: string): void {
   const list = getWishes().filter((w) => w.id !== id);
-  saveWishes(list);
+  saveWishesLocalOnly(list);
+  deleteWishFromBackend(id).catch((err) => {
+    console.warn("Gagal menghapus ucapan di backend:", err);
+  });
 }
 
 export function generateWhatsAppInvitationUrl(
@@ -274,10 +464,14 @@ export function generateWhatsAppInvitationUrl(
   guestName: string,
   coupleGroom: string,
   coupleBride: string,
-  invitationWebUrl: string
+  invitationWebUrl: string,
+  eventDate?: string
 ): string {
   const cleanPhone = phone.replace(/^0/, "62").replace(/[^0-9]/g, "");
-  const personalUrl = `${invitationWebUrl}?to=${encodeURIComponent(guestName).replace(/%20/g, "+")}`;
+  const base = invitationWebUrl.endsWith("/undangan")
+    ? invitationWebUrl
+    : `${invitationWebUrl.replace(/\/$/, "")}/undangan`;
+  const personalUrl = `${base}?to=${encodeURIComponent(guestName).replace(/%20/g, "+")}`;
 
   const message = [
     `Assalamu'alaikum Warahmatullahi Wabarakatuh`,
@@ -286,7 +480,7 @@ export function generateWhatsAppInvitationUrl(
     `Tanpa mengurangi rasa hormat, perkenankan kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami:`,
     ``,
     `💍 *The Wedding of ${coupleGroom} & ${coupleBride}*`,
-    `📅 *Sabtu, 21 November 2026*`,
+    `📅 *${eventDate || "Sabtu, 21 November 2026"}*`,
     ``,
     `Buka tautan undangan digital resmi di bawah ini:`,
     `${personalUrl}`,

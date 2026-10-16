@@ -1,16 +1,23 @@
 import { Router, Request, Response } from "express";
 import { getSupabaseClient, isSupabaseConfigured } from "../supabase";
+import { postgresService, isPostgresConnected } from "../postgres";
+import { sqliteService } from "../sqlite";
 
 const router = Router();
-
-// Fallback in-memory store jika Supabase belum aktif
-let inMemoryWeddingData: any = null;
 
 // GET /api/invitation - Mendapatkan data lengkap undangan pernikahan
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const supabase = getSupabaseClient();
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      const pgData = await postgresService.getWedding("inv_gilang_salsa");
+      if (pgData) {
+        return res.json({ ...pgData, source: "postgresql" });
+      }
+    }
 
+    // 2. Supabase Cloud
+    const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
       const { data, error } = await supabase
         .from("weddings")
@@ -41,13 +48,19 @@ router.get("/", async (_req: Request, res: Response) => {
       }
     }
 
-    // Return in-memory fallback
+    // 3. SQLite Fallback
+    const sqliteData = sqliteService.getWedding("inv_gilang_salsa");
+    if (sqliteData) {
+      return res.json({
+        ...sqliteData,
+        source: "sqlite",
+      });
+    }
+
     res.json({
-      ...(inMemoryWeddingData || {
-        id: "inv_gilang_salsa",
-        activeTemplateId: "paper-art-maroon",
-        source: "in-memory-fallback",
-      }),
+      id: "inv_gilang_salsa",
+      activeTemplateId: "paper-art-maroon",
+      source: "sqlite-default",
     });
   } catch (err: any) {
     console.error("Error in GET /api/invitation:", err);
@@ -59,8 +72,15 @@ router.get("/", async (_req: Request, res: Response) => {
 router.put("/", async (req: Request, res: Response) => {
   try {
     const payload = req.body;
-    const supabase = getSupabaseClient();
 
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      const saved = await postgresService.upsertWedding(payload);
+      return res.json({ success: true, data: saved, source: "postgresql" });
+    }
+
+    // 2. Supabase Cloud
+    const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
       const record = {
         id: payload.id || "inv_gilang_salsa",
@@ -91,9 +111,9 @@ router.put("/", async (req: Request, res: Response) => {
       return res.json({ success: true, data, source: "supabase" });
     }
 
-    // Update in-memory fallback
-    inMemoryWeddingData = { ...payload };
-    res.json({ success: true, data: inMemoryWeddingData, source: "in-memory-fallback" });
+    // Simpan ke database SQLite lokal
+    const saved = sqliteService.upsertWedding(payload);
+    res.json({ success: true, data: saved, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in PUT /api/invitation:", err);
     res.status(500).json({ error: err.message || "Internal server error" });

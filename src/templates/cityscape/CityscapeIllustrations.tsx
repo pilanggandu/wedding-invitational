@@ -430,3 +430,215 @@ export function CityBoulevardBackdrop({
     </div>
   );
 }
+
+/**
+ * Sophisticated Vector Urban Groom Illustration (No generic emojis!)
+ */
+export function UrbanGroomIllustration({ className = "w-full h-full" }: { className?: string }) {
+  return (
+    <div className={`relative w-full h-full flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="groomBgGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#E0F2FE" />
+            <stop offset="60%" stopColor="#BAE6FD" />
+            <stop offset="100%" stopColor="#7DD3FC" />
+          </linearGradient>
+          <linearGradient id="groomSuitGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#1E3A8A" />
+            <stop offset="50%" stopColor="#0C4A60" />
+            <stop offset="100%" stopColor="#082F49" />
+          </linearGradient>
+          <linearGradient id="groomLapelGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#0284C7" />
+            <stop offset="100%" stopColor="#0369A1" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Sky & Cityscape Backdrop */}
+        <rect width="200" height="240" rx="20" fill="url(#groomBgGrad)" />
+
+        {/* Architectural City Silhouette in Background */}
+        <g opacity="0.25" fill="#0C4A60">
+          <rect x="25" y="70" width="28" height="170" rx="3" />
+          <rect x="40" y="45" width="22" height="195" rx="2" />
+          <rect x="75" y="60" width="35" height="180" rx="4" />
+          <rect x="120" y="50" width="30" height="190" rx="3" />
+          <rect x="145" y="75" width="28" height="165" rx="3" />
+        </g>
+
+        {/* Warm Streetlight Sunburst / Bokeh Halo */}
+        <circle cx="100" cy="75" r="48" fill="#FDE047" opacity="0.35" filter="blur(16px)" />
+        <circle cx="65" cy="55" r="18" fill="#BAE6FD" opacity="0.5" filter="blur(8px)" />
+
+        {/* Tailored Suit Shoulders & Torso */}
+        <path
+          d="M 30 240 L 45 165 C 55 145, 75 140, 100 140 C 125 140, 145 145, 155 165 L 170 240 Z"
+          fill="url(#groomSuitGrad)"
+        />
+
+        {/* Crisp White Shirt Collar & V-Neck */}
+        <path d="M 82 140 L 100 190 L 118 140 Z" fill="#FFFFFF" />
+        <path d="M 80 138 L 95 165 L 98 140 Z" fill="#F8FAFC" />
+        <path d="M 120 138 L 105 165 L 102 140 Z" fill="#F1F5F9" />
+
+        {/* Navy Satin Tie */}
+        <path d="M 97 152 L 103 152 L 105 186 L 100 192 L 95 186 Z" fill="#0284C7" />
+        {/* Gold Tie-Bar */}
+        <line x1="97" y1="168" x2="103" y2="168" stroke="#FBBF24" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Suit Lapels */}
+        <path d="M 52 165 L 85 142 L 88 198 L 72 240 Z" fill="url(#groomLapelGrad)" opacity="0.95" />
+        <path d="M 148 165 L 115 142 L 112 198 L 128 240 Z" fill="url(#groomLapelGrad)" opacity="0.9" />
+
+        {/* Sky-Blue Boutonniere Flower on Left Lapel */}
+        <g transform="translate(68, 175)">
+          <circle cx="0" cy="0" r="5.5" fill="#38B6FF" />
+          <circle cx="0" cy="0" r="2.5" fill="#FFFFFF" />
+          <path d="M 0 5 Q -2 12 -4 16" stroke="#16A34A" strokeWidth="1.8" strokeLinecap="round" />
+        </g>
+
+        {/* Head / Face Silhouette & Styled Hair */}
+        <ellipse cx="100" cy="98" rx="28" ry="34" fill="#FED7AA" />
+        {/* Soft jawline contour */}
+        <path d="M 78 95 C 78 120, 90 132, 100 132 C 110 132, 122 120, 122 95 Z" fill="#FDBA74" opacity="0.3" />
+
+        {/* Modern Styled Textured Hair */}
+        <path
+          d="
+            M 72 95
+            C 68 70, 78 55, 95 50
+            C 112 45, 128 54, 130 72
+            C 134 85, 128 98, 128 100
+            C 125 88, 122 80, 115 78
+            C 105 75, 92 78, 85 86
+            C 78 92, 75 98, 72 95 Z
+          "
+          fill="#1E293B"
+        />
+
+        {/* Minimalist Glasses / Brow Accent */}
+        <path d="M 85 92 Q 93 88 100 90 Q 107 88 115 92" stroke="#334155" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7" />
+
+        {/* Bottom Badge Tag */}
+        <rect x="45" y="212" width="110" height="22" rx="11" fill="rgba(12, 74, 96, 0.9)" />
+        <text x="100" y="226" textAnchor="middle" fill="#FFFFFF" fontFamily="monospace" fontSize="9" fontWeight="bold" letterSpacing="1.5">
+          THE GROOM
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Sophisticated Vector Urban Bride Illustration (No generic emojis!)
+ */
+export function UrbanBrideIllustration({ className = "w-full h-full" }: { className?: string }) {
+  return (
+    <div className={`relative w-full h-full flex items-center justify-center ${className}`}>
+      <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <linearGradient id="brideBgGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFF1F2" />
+            <stop offset="60%" stopColor="#FCE7F3" />
+            <stop offset="100%" stopColor="#E0F2FE" />
+          </linearGradient>
+          <linearGradient id="brideGownGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="60%" stopColor="#F8FAFC" />
+            <stop offset="100%" stopColor="#E2E8F0" />
+          </linearGradient>
+        </defs>
+
+        {/* Ambient Sky & Twilight City Backdrop */}
+        <rect width="200" height="240" rx="20" fill="url(#brideBgGrad)" />
+
+        {/* Architectural City Silhouette in Background */}
+        <g opacity="0.2" fill="#BE185D">
+          <rect x="25" y="70" width="28" height="170" rx="3" />
+          <rect x="42" y="50" width="24" height="190" rx="2" />
+          <rect x="80" y="65" width="32" height="175" rx="4" />
+          <rect x="125" y="55" width="28" height="185" rx="3" />
+          <rect x="145" y="75" width="28" height="165" rx="3" />
+        </g>
+
+        {/* Warm Golden Bokeh & Twinkling Sparkles */}
+        <circle cx="100" cy="75" r="48" fill="#F472B6" opacity="0.25" filter="blur(16px)" />
+        <circle cx="135" cy="55" r="16" fill="#FDE047" opacity="0.45" filter="blur(8px)" />
+
+        {/* Elegant Bridal Gown Torso & Sweetheart Neckline */}
+        <path
+          d="M 32 240 L 48 175 C 55 155, 75 152, 100 152 C 125 152, 145 155, 152 175 L 168 240 Z"
+          fill="url(#brideGownGrad)"
+        />
+
+        {/* Sweetheart Neckline Lace Detail */}
+        <path
+          d="M 74 154 Q 87 165 100 160 Q 113 165 126 154 L 122 175 Q 100 182 78 175 Z"
+          fill="#FFFFFF"
+          stroke="#FCE7F3"
+          strokeWidth="1.5"
+        />
+
+        {/* Flowing Translucent Bridal Veil Silhouette */}
+        <path
+          d="
+            M 100 48
+            C 60 52, 40 90, 32 150
+            C 25 195, 30 230, 35 240
+            L 165 240
+            C 170 230, 175 195, 168 150
+            C 160 90, 140 52, 100 48 Z
+          "
+          fill="rgba(255, 255, 255, 0.45)"
+          stroke="rgba(255, 255, 255, 0.8)"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+        />
+
+        {/* Head / Face Silhouette & Updo Hair */}
+        <ellipse cx="100" cy="98" rx="27" ry="32" fill="#FED7AA" />
+        {/* Soft jawline contour */}
+        <path d="M 79 98 C 79 120, 90 130, 100 130 C 110 130, 121 120, 121 98 Z" fill="#FDBA74" opacity="0.3" />
+
+        {/* Pearl Necklace */}
+        <g transform="translate(100, 143)">
+          <circle cx="-12" cy="0" r="2.5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="0.8" />
+          <circle cx="-6" cy="2" r="2.8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="0.8" />
+          <circle cx="0" cy="3" r="3.5" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="0.8" />
+          <circle cx="6" cy="2" r="2.8" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="0.8" />
+          <circle cx="12" cy="0" r="2.5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="0.8" />
+        </g>
+
+        {/* Bridal Hair Updo with Soft Curls */}
+        <path
+          d="
+            M 73 98
+            C 70 75, 80 58, 100 55
+            C 120 58, 130 75, 127 98
+            C 124 88, 118 78, 100 76
+            C 82 78, 76 88, 73 98 Z
+          "
+          fill="#334155"
+        />
+        {/* Updo Bun */}
+        <circle cx="100" cy="54" r="16" fill="#1E293B" />
+
+        {/* Floral Bridal Hairpin / Tiara */}
+        <g transform="translate(100, 56)">
+          <circle cx="-10" cy="-2" r="4.5" fill="#F472B6" />
+          <circle cx="0" cy="-4" r="5.5" fill="#38B6FF" />
+          <circle cx="10" cy="-2" r="4.5" fill="#F472B6" />
+          <circle cx="0" cy="-4" r="2.5" fill="#FEF08A" />
+        </g>
+
+        {/* Bottom Badge Tag */}
+        <rect x="45" y="212" width="110" height="22" rx="11" fill="rgba(190, 24, 93, 0.9)" />
+        <text x="100" y="226" textAnchor="middle" fill="#FFFFFF" fontFamily="monospace" fontSize="9" fontWeight="bold" letterSpacing="1.5">
+          THE BRIDE
+        </text>
+      </svg>
+    </div>
+  );
+}
+

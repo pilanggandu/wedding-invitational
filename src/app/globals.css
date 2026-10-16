@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --font-couple: var(--font-couple-custom, var(--font-caveat), "Caveat", cursive);
   --font-handwriting: var(--font-caveat), "Caveat", cursive;
   --font-script: var(--font-caveat), "Caveat", cursive;
   --font-calligraphy: var(--font-great-vibes), "Great Vibes", cursive;
@@ -10,6 +11,7 @@
 
 @layer base {
   :root {
+    --font-couple-custom: "Caveat", cursive;
     --font-handwriting: var(--font-caveat), "Caveat", cursive;
     --font-script: var(--font-caveat), "Caveat", cursive;
     --font-calligraphy: var(--font-great-vibes), "Great Vibes", cursive;
@@ -17,6 +19,29 @@
     --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
 }
+
+/* Specific Typography Utility Classes */
+.font-great-vibes { font-family: "Great Vibes", cursive !important; }
+.font-pinyon { font-family: "Pinyon Script", cursive !important; }
+.font-alex-brush { font-family: "Alex Brush", cursive !important; }
+.font-allura { font-family: "Allura", cursive !important; }
+.font-parisienne { font-family: "Parisienne", cursive !important; }
+.font-sacramento { font-family: "Sacramento", cursive !important; }
+
+.font-caveat { font-family: "Caveat", cursive !important; }
+.font-dancing { font-family: "Dancing Script", cursive !important; }
+.font-marck { font-family: "Marck Script", cursive !important; }
+.font-pacifico { font-family: "Pacifico", cursive !important; }
+
+.font-cinzel { font-family: "Cinzel", serif !important; }
+.font-cormorant { font-family: "Cormorant Garamond", Georgia, serif !important; }
+.font-playfair { font-family: "Playfair Display", Georgia, serif !important; }
+.font-prata { font-family: "Prata", Georgia, serif !important; }
+.font-lora { font-family: "Lora", Georgia, serif !important; }
+
+.font-jakarta { font-family: "Plus Jakarta Sans", sans-serif !important; }
+.font-montserrat { font-family: "Montserrat", sans-serif !important; }
+.font-amiri { font-family: "Amiri", serif !important; }
 
 /* Custom Typography Helpers */
 .font-handwriting {
@@ -37,6 +62,17 @@
 
 .font-sans {
   font-family: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+/* Dynamic Couple Title Font - Enforces chosen typography over default classes */
+.font-couple-title,
+.font-couple-title.font-handwriting,
+.font-couple-title.font-serif,
+.font-couple-title.font-script,
+.font-couple-title.font-calligraphy,
+.font-couple-title.font-sans,
+[data-font-couple="true"] {
+  font-family: var(--font-couple-custom, var(--font-caveat), "Caveat", cursive) !important;
 }
 
 /* Elegant Maroon & Ivory Sketchbook Paper Background with subtle grain */

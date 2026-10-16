@@ -13,6 +13,7 @@ export interface GroomBrideInfo {
   parents: string;
   instagram: string;
   photoPlaceholder: PhotoPlaceholderConfig;
+  photoUrl?: string;
 }
 
 export interface CalendarEventDetail {
@@ -55,6 +56,7 @@ export interface GalleryPhoto {
   doodleSticker: string;
   stickerBg: string;
   aspectRatio: "square" | "portrait" | "landscape";
+  imageUrl?: string;
 }
 
 export interface BankAccount {
@@ -86,9 +88,10 @@ export interface WishMessage {
   id: string;
   name: string;
   relationship: string;
-  attendance: "Hadir dong! 😋" | "Maaf belum bisa 🥺" | "Masih mikir-mikir 👀";
+  attendance: string;
   message: string;
   date: string;
+  createdAt?: string;
 }
 
 export interface GeneralWeddingInfo {
@@ -104,15 +107,23 @@ export interface GeneralWeddingInfo {
   openingGreetings: string;
   openingMessage: string;
   closingMessage: string;
+  coverPhotoUrl?: string;
+  heroPhotoUrl?: string;
+  backgroundPhotoUrl?: string;
+  preweddingPhotos?: string[];
 }
 
 export interface ThemePaletteConfig {
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
-  fontStyle: "caveat" | "dancing" | "great-vibes";
+  fontStyle: string;
+  headingFont?: string;
+  bodyFont?: string;
   particlesEnabled: boolean;
   musicAutoplay: boolean;
+  ambientColorMode?: "auto" | "custom";
+  customAmbientColor?: string;
 }
 
 export interface WeddingInvitationData {
@@ -141,9 +152,20 @@ export interface GuestItem {
   name: string;
   slug: string;
   phone: string;
-  category: "Keluarga" | "Sahabat" | "Rekan Kerja" | "VIP" | "Lainnya";
+  category: "Keluarga" | "Sahabat" | "Rekan Kerja" | "VIP" | "Lainnya" | string;
   isSent: boolean;
   notes?: string;
+  token?: string;
+  quota?: number;
+  invitationStatus?: number;
+  openCount?: number;
+  openedAt?: string;
+  lastOpenedAt?: string;
+  groupId?: number | null;
+  rsvp?: {
+    status: number;
+    count: number;
+  } | null;
   createdAt: string;
 }
 
@@ -151,7 +173,7 @@ export interface TemplateMeta {
   id: string;
   name: string;
   description: string;
-  category: "Paper Art" | "Modern Minimalist" | "Botanical" | "Urban Aesthetic";
+  category: "Paper Art" | "Modern Minimalist" | "Botanical" | "Urban Aesthetic" | "Classic Formal" | "Cinematic Romance" | "Artistic Painterly" | "Adaptive Dynamic";
   tag: string;
   badgeColor: string;
   previewGradient: string;

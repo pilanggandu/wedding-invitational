@@ -14,6 +14,7 @@ import { MotionReveal } from "./MotionReveal";
 
 export function LoveStorySection() {
   const { stories } = useWeddingData();
+  const storyList = Array.isArray(stories) ? stories : [];
 
   return (
     <section id="cerita" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
@@ -27,27 +28,29 @@ export function LoveStorySection() {
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-16">
             <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
-              Dari Orang Asing Jadi Belahan Jiwa 📖
+              Dari Orang Asing Jadi Belahan Jiwa
             </span>
             <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Kisah Cinta Kami
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
-              Perjalanan absurd tapi romantis yang membawa kami berdua sampai ke pelaminan:
+              Perjalanan penuh kebersamaan yang membawa kami berdua sampai ke pelaminan:
             </p>
           </div>
         </MotionReveal>
 
         {/* Scrapbook Timeline */}
-          {stories.length === 0 ? (
-            <p className="text-center text-xs sm:text-sm font-sans text-[#7D1128]">Kisah berdua belum dicantumkan di undangan ini.</p>
-          ) : (
+        {storyList.length === 0 ? (
+          <p className="text-center text-xs sm:text-sm font-sans text-[#7D1128]">
+            Kisah berdua akan segera dibagikan di sini.
+          </p>
+        ) : (
           <div className="relative">
-          {/* Central Dashed Thread Line in Maroon */}
-          <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-1 border-l-2 border-dashed border-[#8A1C2C]/50 -translate-x-1/2 hidden sm:block" />
+            {/* Central Dashed Thread Line in Maroon */}
+            <div className="absolute left-4 md:left-1/2 top-4 bottom-4 w-1 border-l-2 border-dashed border-[#8A1C2C]/50 -translate-x-1/2 hidden sm:block" />
 
-          <div className="space-y-12 sm:space-y-16">
-            {stories.map((story, index) => {
+            <div className="space-y-12 sm:space-y-16">
+              {storyList.map((story, index) => {
               const isEven = index % 2 === 0;
 
               return (

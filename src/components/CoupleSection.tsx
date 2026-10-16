@@ -11,6 +11,7 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { getFontFamilyCss } from "@/lib/typography";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -48,20 +49,20 @@ export function CoupleSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Holy Verse Crayon Card */}
         <MotionReveal variant="paper-unfold" delay={0.1}>
-          <div className="crayon-box p-6 sm:p-8 max-w-2xl mx-auto text-center mb-16 relative bg-white border-[#660F1A]">
-            <div className="w-12 h-12 mx-auto -mt-11 mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-sm animate-gentle-pulse">
+          <div className="crayon-box p-4 sm:p-8 max-w-2xl mx-auto text-center mb-12 sm:mb-16 relative bg-white border-[#660F1A]">
+            <div className="w-12 h-12 mx-auto -mt-9 sm:-mt-11 mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-sm animate-gentle-pulse">
               <Heart className="w-6 h-6 fill-current text-[#FAD2D8]" />
             </div>
 
-            <p className="font-serif text-lg sm:text-xl text-[#4A0812] leading-relaxed mb-4 font-medium" dir="rtl">
+            <p className="font-serif text-base sm:text-xl text-[#4A0812] leading-relaxed mb-3 sm:mb-4 font-medium" dir="rtl">
               {quote.arabic}
             </p>
 
-            <p className="font-script text-base sm:text-lg text-[#7D1128] font-bold leading-relaxed mb-2">
+            <p className="font-script text-sm sm:text-lg text-[#7D1128] font-bold leading-relaxed mb-2">
               &ldquo;{quote.translation}&rdquo;
             </p>
 
-            <span className="inline-block bg-[#FFF0F3] text-[#7D1128] px-3.5 py-0.5 rounded-full border border-[#D63D56]/50 text-[11px] font-mono font-bold tracking-wider">
+            <span className="inline-block bg-[#FFF0F3] text-[#7D1128] px-3.5 py-0.5 rounded-full border border-[#D63D56]/50 text-[10px] sm:text-[11px] font-mono font-bold tracking-wider max-w-full">
               {quote.source}
             </span>
           </div>
@@ -69,14 +70,14 @@ export function CoupleSection() {
 
         {/* Greetings Section */}
         <MotionReveal variant="fade-up" delay={0.2}>
-          <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
+          <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
+            <span className="font-script text-xl sm:text-2xl text-[#B3394B] font-bold block mb-1">
               Kenalan Dulu Sama Kami! ✌️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
+            <h2 className="font-handwriting text-4xl min-[380px]:text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Kedua Mempelai
             </h2>
-            <p className="font-serif text-base sm:text-lg text-[#4A0812] font-bold mb-2">
+            <p className="font-serif text-sm sm:text-lg text-[#4A0812] font-bold mb-2">
               {openingGreetings}
             </p>
             <p className="text-xs sm:text-sm font-sans text-[#7D1128] leading-relaxed">
@@ -92,6 +93,7 @@ export function CoupleSection() {
             <div className="flex flex-col items-center text-center">
               <PhotoPlaceholder
                 variant="groom"
+                imageUrl={groom.photoUrl}
                 caption={groom.name}
                 tag="MEMPELAI PRIA"
                 stickerText="Calon Suami Idaman! 😎"
@@ -101,7 +103,10 @@ export function CoupleSection() {
               />
 
               <div className="crayon-box p-5 w-full bg-white mt-2 border-[#660F1A]">
-                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#660F1A] mb-0.5">
+                <h3
+                  style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+                  className="font-couple-title font-handwriting text-3xl min-[380px]:text-4xl sm:text-5xl text-[#660F1A] mb-0.5"
+                >
                   {groom.name}
                 </h3>
                 <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
@@ -129,7 +134,7 @@ export function CoupleSection() {
                   href={`https://instagram.com/${groom.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="crayon-button-alt inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold"
+                  className="crayon-button-alt inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold min-h-[44px]"
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{groom.instagram}
@@ -143,6 +148,7 @@ export function CoupleSection() {
             <div className="flex flex-col items-center text-center">
               <PhotoPlaceholder
                 variant="bride"
+                imageUrl={bride.photoUrl}
                 caption={bride.name}
                 tag="MEMPELAI WANITA"
                 stickerText="Tuan Putri Cantik! 👸"
@@ -152,7 +158,10 @@ export function CoupleSection() {
               />
 
               <div className="crayon-box p-5 w-full bg-white mt-2 border-[#660F1A]">
-                <h3 className="font-handwriting text-4xl sm:text-5xl text-[#660F1A] mb-0.5">
+                <h3
+                  style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+                  className="font-couple-title font-handwriting text-3xl min-[380px]:text-4xl sm:text-5xl text-[#660F1A] mb-0.5"
+                >
                   {bride.name}
                 </h3>
                 <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
@@ -180,7 +189,7 @@ export function CoupleSection() {
                   href={`https://instagram.com/${bride.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="crayon-button-alt inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold"
+                  className="crayon-button-alt inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold min-h-[44px]"
                 >
                   <InstagramIcon className="w-3.5 h-3.5 text-[#7D1128]" />
                   @{bride.instagram}

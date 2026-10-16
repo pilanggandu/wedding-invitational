@@ -1,94 +1,104 @@
-# 🚀 Panduan Integrasi Backend Express & Database Supabase
+# Panduan Setup & Integrasi Database Supabase
 
-Arsitektur backend dengan **Express.js** dan database **Supabase** telah disiapkan secara lengkap untuk proyek Undangan Digital Gilang & Salsadila.
+Dokumen ini memandu langkah-langkah menghubungkan backend Express ke **Supabase Cloud Database**.
 
----
-
-## 📁 Struktur File Backend yang Disiapkan
-
-```
-├── server/
-│   ├── index.ts              # Entry point server Express (port 5000)
-│   ├── supabase.ts           # Inisialisasi Supabase Client & fallback handler
-│   ├── schema.sql            # Script SQL DDL tabel Supabase (Weddings, Guests, Wishes)
-│   └── routes/
-│       ├── invitation.ts     # Endpoint data undangan (GET, PUT)
-│       ├── guests.ts         # Endpoint daftar tamu & RSVP tracking (GET, POST, PATCH, DELETE)
-│       └── wishes.ts         # Endpoint buku tamu & doa restu (GET, POST, DELETE)
-├── .env.example              # Template variabel lingkungan
-└── src/lib/api.ts            # Client fetch frontend dengan auto-fallback toleran
-```
+Saat ini, server backend Express (`http://localhost:5000`) telah aktif berjalan menggunakan **SQLite lokal** (`server/data/wedding.db`). Ketika konfigurasi Supabase dipasang, sistem akan otomatis beralih ke Supabase tanpa perlu mengubah kode frontend.
 
 ---
 
-## 🔑 1. Konfigurasi Kredensial Supabase (`.env`)
+## 1. Langkah Pembuatan Proyek di Supabase
 
-Ketika Anda sudah memiliki URL & API Key dari Supabase, buat file `.env` di direktori utama proyek (atau isi sesuai config):
+1. Buka [https://supabase.com/dashboard](https://supabase.com/dashboard) dan login ke akun Anda.
+2. Klik tombol **New Project**.
+3. Masukkan nama proyek (contoh: `wedding-gilang-salsa`), buat kata sandi database yang kuat, dan pilih region terdekat (misalnya: `Singapore`).
+4. Tunggu beberapa saat hingga proses provisioning proyek selesai (status menjadi hijau/Active).
+
+---
+
+## 2. Mengambil Kredensial API Supabase
+
+1. Pada dashboard Supabase proyek Anda, klik ikon **Settings** (roda gigi) di bagian bawah sidebar kiri.
+2. Pilih menu **API** (atau **Data API**).
+3. Salin 3 nilai penting berikut:
+   - **Project URL** (format: `https://[project-id].supabase.co`)
+   - **anon / public key** (kunci publik)
+   - **service_role secret key** (kunci administratif privat)
+
+---
+
+## 3. Membuat File Konfigurasi `.env`
+
+Buat file baru bernama `.env` di folder utama (root) proyek (`c:/My Files/Projects/GITHUB_WEDDING_GEMINI/.env`) dan isi dengan kredensial yang diperoleh:
 
 ```env
-# Port Server Backend
+# Port Server Backend Express
 PORT=5000
 
 # Kredensial Supabase Anda
-SUPABASE_URL=https://id-project-anda.supabase.co
+SUPABASE_URL=https://[project-id].supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
-# URL Frontend untuk CORS
+# Konfigurasi CORS dan URL Frontend
 CORS_ORIGIN=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
 ---
 
-## 🗄️ 2. Eksekusi Skrip Database di Supabase
+## 4. Menjalankan Skrip Database (SQL Schema)
 
-1. Buka dashboard proyek Supabase Anda: [https://supabase.com/dashboard](https://supabase.com/dashboard)
-2. Masuk ke menu **SQL Editor** di sidebar kiri.
-3. Klik tombol **New query**.
-4. Buka dan salin seluruh isi file [`server/schema.sql`](file:///c:/My%20Files/Projects/GITHUB_WEDDING_GEMINI/server/schema.sql) lalu tempelkan (paste) ke SQL Editor.
-5. Klik tombol **Run**.
-
-Tabel berikut akan langsung terbuat secara otomatis:
-- `weddings`: Data profil pengantin, jadwal acara Akad & Resepsi, tema warna, dan amplop hadiah.
-- `guests`: Daftar tamu, nomor WhatsApp, kategori, status kirim undangan, dan catatan.
-- `wishes`: Buku tamu, ucapan selamat, dan konfirmasi kehadiran RSVP.
-- Kebijakan RLS (Row Level Security) yang aman untuk publik dan admin.
+1. Pada sidebar Supabase, buka menu **SQL Editor**.
+2. Klik tombol **New query**.
+3. Buka file [`server/schema.sql`](file:///c:/My%20Files/Projects/GITHUB_WEDDING_GEMINI/server/schema.sql) di editor Anda, salin seluruh kodenya, lalu tempelkan (*paste*) ke SQL Editor Supabase.
+4. Klik tombol **Run** (atau tekan `Ctrl + Enter`).
+5. Tabel berikut akan otomatis dibuat beserta indeks dan kebijakan keamanan Row Level Security (RLS):
+   - `public.weddings` : Menyimpan data mempelai, tanggal acara, tema warna, dan nomor rekening.
+   - `public.guests` : Menyimpan daftar tamu undangan, slug tautan, nomor kontak, dan status pengiriman.
+   - `public.wishes` : Menyimpan buku tamu, doa restu, dan kehadiran RSVP.
 
 ---
 
-## ⚡ 3. Menjalankan Server Backend
+## 5. Menjalankan Ulang Server Backend
 
-Setelah dependensi terpasang (`npm install`), Anda dapat menjalankan server dengan perintah:
+Setelah file `.env` terisi dan skema SQL dieksekusi, jalankan ulang server backend:
 
 ```bash
-# Menjalankan server backend Express dengan hot-reload
+# Menghentikan proses lama (jika ada) lalu jalankan server:
 npm run server:dev
-
-# Atau menjalankan sekali jalan
-npm run server
 ```
 
-Server backend akan berjalan di **`http://localhost:5000`**.
+Server backend akan mendeteksi kredensial Supabase dan menampilkan log berikut di terminal:
+
+```
+⚡ Supabase client initialized successfully with: https://[project-id].supabase.co
+==================================================
+🚀 Express Backend Server aktif di port 5000
+👉 API Base URL: http://localhost:5000/api
+🗄️ Database: ✅ Supabase Cloud Database
+==================================================
+```
 
 ---
 
-## 🌐 4. Daftar REST API Endpoints
+## 6. Daftar Endpoint REST API yang Tersedia
 
-| Method | Endpoint | Deskripsi |
+| Method | Endpoint | Fungsi |
 |---|---|---|
-| `GET` | `/api/health` | Cek status server & koneksi Supabase |
+| `GET` | `/api/health` | Cek status server dan database aktif (`supabase` atau `sqlite`) |
 | `GET` | `/api/invitation` | Mengambil seluruh data undangan pernikahan |
-| `PUT` | `/api/invitation` | Menyimpan perubahan data undangan dari Dashboard Admin |
-| `GET` | `/api/guests` | Mengambil daftar seluruh tamu undangan |
-| `POST` | `/api/guests` | Menambahkan tamu undangan baru |
-| `PATCH` | `/api/guests/:id` | Memperbarui data tamu atau status terkirim (`is_sent`) |
-| `DELETE` | `/api/guests/:id` | Menghapus tamu dari daftar |
-| `GET` | `/api/wishes` | Mengambil semua ucapan buku tamu & RSVP |
-| `POST` | `/api/wishes` | Mengirimkan ucapan & konfirmasi kehadiran RSVP baru |
+| `PUT` | `/api/invitation` | Memperbarui data undangan dari Dashboard Admin |
+| `GET` | `/api/guests` | Mengambil seluruh daftar tamu undangan |
+| `POST` | `/api/guests` | Menambahkan tamu baru |
+| `PATCH` | `/api/guests/:id` | Mengubah data tamu atau status kirim WhatsApp |
+| `DELETE` | `/api/guests/:id` | Menghapus tamu |
+| `GET` | `/api/wishes` | Mengambil ucapan buku tamu dan RSVP |
+| `POST` | `/api/wishes` | Mengirim ucapan dan konfirmasi RSVP |
 | `DELETE` | `/api/wishes/:id` | Menghapus ucapan (moderasi admin) |
 
 ---
 
-## 💡 Fitur Graceful Fallback
-Jika server Express atau Supabase belum berjalan atau sedang offline, frontend web Next.js (`/` dan `/admin`) akan secara otomatis beralih menggunakan *Client-side LocalStorage Store* tanpa menampilkan pesan crash kepada tamu undangan!
+## 7. Keamanan dan Fallback Otomatis
+
+- **Dual-Driver Database**: Jika koneksi internet atau Supabase mengalami kendala sewaktu-waktu, server backend Express secara otomatis tetap melayani permintaan data melalui database SQLite lokal tanpa menyebabkan tampilan web error.
+- **Client Fallback**: Frontend Next.js dilengkapi *graceful client fallback* menggunakan LocalStorage, memastikan tamu undangan tetap dapat membaca undangan secara lancar di setiap kondisi.

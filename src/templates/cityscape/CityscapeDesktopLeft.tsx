@@ -9,6 +9,7 @@ import {
   CityBoulevardBackdrop,
 } from "./CityscapeIllustrations";
 import { SkyAirplane, PastelCloud, VintageStreetLamp } from "./CityscapeDecorations";
+import { getFontFamilyCss } from "@/lib/typography";
 
 interface CityscapeDesktopLeftProps {
   isOpened?: boolean;
@@ -90,7 +91,10 @@ export function CityscapeDesktopLeft({
           <span>Cityscape Romance: {groom.name} & {bride.name}</span>
         </div>
 
-        <h1 className="font-handwriting text-6xl xl:text-7xl text-white drop-shadow-md my-1 leading-tight tracking-wide">
+        <h1
+          style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+          className="font-couple-title font-handwriting text-6xl xl:text-7xl text-white drop-shadow-md my-1 leading-tight tracking-wide"
+        >
           {groom.name} <span className="font-script text-4xl text-[#FFE58F]">&</span> {bride.name}
         </h1>
 
@@ -171,9 +175,11 @@ export function CityscapeDesktopLeft({
           </button>
         )}
 
-        <div className="text-[11px] font-mono font-bold text-[#FFE58F] ml-auto">
-          {data.general?.hashtag || "#GilangSalsaHalal"}
-        </div>
+        {data.general?.hashtag && (
+          <div className="text-[11px] font-mono font-bold text-[#FFE58F] ml-auto">
+            {data.general.hashtag}
+          </div>
+        )}
       </div>
     </div>
   );

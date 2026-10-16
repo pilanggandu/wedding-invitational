@@ -26,11 +26,11 @@ export function EventSection() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         <MotionReveal variant="fade-up">
-          <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
+          <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
+            <span className="font-script text-xl sm:text-2xl text-[#B3394B] font-bold block mb-1">
               Catat Tanggal & Jangan Nyasar! 🗺️
             </span>
-            <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
+            <h2 className="font-handwriting text-4xl min-[380px]:text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Rangkaian Acara
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
@@ -51,7 +51,7 @@ export function EventSection() {
                 delay={0.2 * (index + 1)}
                 className="h-full"
               >
-                <div className="crayon-box p-6 sm:p-7 relative group flex flex-col justify-between h-full bg-white border-[#660F1A]">
+                <div className="crayon-box p-4 sm:p-7 relative group flex flex-col justify-between h-full bg-white border-[#660F1A]">
                   {/* Crayon Washi Tape in Gold / Maroon */}
                   <CrayonWashiTape
                     text={isFirst ? "★ AKAD NIKAH ★" : "♥ PESTA RESEPSI ♥"}
@@ -141,33 +141,37 @@ export function EventSection() {
         </div>
 
         {/* Dresscode Palette Card */}
-        <MotionReveal variant="paper-unfold" delay={0.4}>
-          <div className="mt-14 max-w-xl mx-auto crayon-box p-6 sm:p-7 text-center bg-[#FFF0F3] border-[#660F1A]">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold bg-[#FFE58F] text-[#4A0812] border-1.5 border-[#4A0812] mb-2 rotate-[-1deg] shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#7D1128]" />
-              Inspirasi Outfit Biar Kembaran! 👗👔
-            </div>
-            <p className="text-xs sm:text-sm font-sans text-[#7D1128] mb-5 font-medium">
-              {dresscode.description}
-            </p>
+        {dresscode?.colors && dresscode.colors.length > 0 && (
+          <MotionReveal variant="paper-unfold" delay={0.4}>
+            <div className="mt-14 max-w-xl mx-auto crayon-box p-6 sm:p-7 text-center bg-[#FFF0F3] border-[#660F1A]">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold bg-[#FFE58F] text-[#4A0812] border-1.5 border-[#4A0812] mb-2 rotate-[-1deg] shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#7D1128]" />
+                Inspirasi Outfit Serasi
+              </div>
+              {dresscode.description && (
+                <p className="text-xs sm:text-sm font-sans text-[#7D1128] mb-5 font-medium">
+                  {dresscode.description}
+                </p>
+              )}
 
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-              {dresscode.colors.map((color) => (
-                <div key={color.name} className="flex flex-col items-center group">
-                  <motion.div
-                    whileHover={{ scale: 1.25, rotate: 6 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 12 }}
-                    className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-[#4A0812] shadow-[2px_3px_0px_#4A0812] cursor-pointer"
-                    style={{ backgroundColor: color.hex }}
-                  />
-                  <span className="text-[11px] font-mono font-bold text-[#4A0812] mt-2 group-hover:text-[#7D1128] transition-colors">
-                    {color.name}
-                  </span>
-                </div>
-              ))}
+              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+                {dresscode.colors.map((color) => (
+                  <div key={color.name} className="flex flex-col items-center group">
+                    <motion.div
+                      whileHover={{ scale: 1.25, rotate: 6 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 12 }}
+                      className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-[#4A0812] shadow-[2px_3px_0px_#4A0812] cursor-pointer"
+                      style={{ backgroundColor: color.hex }}
+                    />
+                    <span className="text-[11px] font-mono font-bold text-[#4A0812] mt-2 group-hover:text-[#7D1128] transition-colors">
+                      {color.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </MotionReveal>
+          </MotionReveal>
+        )}
       </div>
 
       <div className="mt-16">

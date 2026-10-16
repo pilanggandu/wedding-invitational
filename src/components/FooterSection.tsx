@@ -10,6 +10,7 @@ import {
   PaperStamp,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { getFontFamilyCss } from "@/lib/typography";
 
 export function FooterSection() {
   const data = useWeddingData();
@@ -54,9 +55,12 @@ export function FooterSection() {
 
             {/* Couple Signatures in handwriting font with maroon shimmer */}
             <div className="my-5">
-              <h3 className="font-handwriting text-5xl sm:text-6xl maroon-shimmer-text tracking-wide">
+              <h3
+                style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+                className="font-couple-title font-handwriting text-3xl min-[380px]:text-4xl sm:text-6xl maroon-shimmer-text tracking-wide"
+              >
                 {couple.groom?.name || "Gilang"}{" "}
-                <span className="font-script text-3xl sm:text-4xl text-[#7D1128]">&</span>{" "}
+                <span className="font-script text-2xl min-[380px]:text-3xl sm:text-4xl text-[#7D1128]">&</span>{" "}
                 {couple.bride?.name || "Salsadila"}
               </h3>
               <span className="inline-block mt-2 text-xs font-mono font-bold tracking-widest text-[#4A0812] bg-[#FFE58F] px-3.5 py-1 rounded-full border-1.5 border-[#4A0812] rotate-[-1deg] shadow-xs">

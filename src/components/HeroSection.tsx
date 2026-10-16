@@ -13,6 +13,7 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { getFontFamilyCss } from "@/lib/typography";
 
 export function HeroSection() {
   const data = useWeddingData();
@@ -115,15 +116,22 @@ export function HeroSection() {
 
         {/* Couple Names with Maroon Shimmer */}
         <MotionReveal variant="paper-unfold" delay={0.2}>
-          <h1 className="font-handwriting text-6xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1">
-            {groom.name} <span className="font-script text-4xl sm:text-5xl text-[#7D1128]">&</span> {bride.name}
+          <h1
+            style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+            className="font-couple-title font-handwriting text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1 leading-tight"
+          >
+            {groom.name}{" "}
+            <span className="font-script text-3xl min-[380px]:text-4xl sm:text-5xl text-[#7D1128]">
+              &
+            </span>{" "}
+            {bride.name}
           </h1>
 
-          <p className="font-script text-lg sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
+          <p className="font-script text-base sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
             &ldquo;{data.general.funTagline}&rdquo;
           </p>
 
-          <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-4 py-1 rounded-full border-2 border-[#4A0812] text-xs font-mono font-bold mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812]">
+          <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 sm:px-4 py-1 rounded-full border-2 border-[#4A0812] text-[11px] sm:text-xs font-mono font-bold mb-5 sm:mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812] max-w-full break-words">
             📅 {akadEvent.displayDay}, {akadEvent.displayDate} • {akadEvent.venueAddress || "Merakurak, Tuban"}
           </div>
         </MotionReveal>
@@ -133,7 +141,8 @@ export function HeroSection() {
           <div className="my-4 flex justify-center">
             <PhotoPlaceholder
               variant="couple"
-              caption="Gilang & Salsadila: Siap Menempuh Hidup Baru Penuh Tawa!"
+              imageUrl={data.general?.heroPhotoUrl || data.general?.coverPhotoUrl}
+              caption={`${data.couple?.groom?.name} & ${data.couple?.bride?.name}: Siap Menempuh Hidup Baru Penuh Tawa!`}
               tag="CINTA SEJATI"
               stickerText="100% Cocok! 💖"
               tapePosition="both-top"
@@ -145,20 +154,41 @@ export function HeroSection() {
 
         {/* Paper Countdown Timer in Maroon & Gold */}
         <MotionReveal variant="fade-up" delay={0.45}>
-          <div className="mt-8 mb-8">
-            <div className="inline-block crayon-box p-5 sm:p-7 max-w-lg w-full bg-[#FFF0F3] border-[#660F1A]">
-              <div className="flex items-center justify-center gap-2 mb-4 text-[#7D1128]">
+          <div className="mt-6 sm:mt-8 mb-6 sm:mb-8">
+            <div className="inline-block crayon-box p-3.5 sm:p-7 max-w-lg w-full bg-[#FFF0F3] border-[#660F1A]">
+              <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4 text-[#7D1128]">
                 <Clock className="w-4 h-4 text-[#D63D56] animate-spin" style={{ animationDuration: "6s" }} />
-                <span className="font-script font-bold text-lg sm:text-xl">
+                <span className="font-script font-bold text-base sm:text-xl">
                   Hitung Mundur Menuju Hari Sah! ⏰🥳
                 </span>
               </div>
 
-              <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                <CountdownCard value={timeLeft.days} label="Hari Lagi" bgClass="bg-white" textClass="text-[#660F1A]" />
-                <CountdownCard value={timeLeft.hours} label="Jam" bgClass="bg-[#FFFDF0]" textClass="text-[#8A5A10]" />
-                <CountdownCard value={timeLeft.minutes} label="Menit" bgClass="bg-[#FFF5F6]" textClass="text-[#7D1128]" />
-                <CountdownCard value={timeLeft.seconds} label="Detik" bgClass="bg-white" textClass="text-[#660F1A]" />
+              <div className="grid grid-cols-4 gap-1.5 sm:gap-3">
+                <CountdownCard
+                  value={timeLeft.days}
+                  label="Hari Lagi"
+                  mobileLabel="Hari"
+                  bgClass="bg-white"
+                  textClass="text-[#660F1A]"
+                />
+                <CountdownCard
+                  value={timeLeft.hours}
+                  label="Jam"
+                  bgClass="bg-[#FFFDF0]"
+                  textClass="text-[#8A5A10]"
+                />
+                <CountdownCard
+                  value={timeLeft.minutes}
+                  label="Menit"
+                  bgClass="bg-[#FFF5F6]"
+                  textClass="text-[#7D1128]"
+                />
+                <CountdownCard
+                  value={timeLeft.seconds}
+                  label="Detik"
+                  bgClass="bg-white"
+                  textClass="text-[#660F1A]"
+                />
               </div>
             </div>
           </div>
@@ -166,14 +196,14 @@ export function HeroSection() {
 
         {/* Save The Date Buttons in Maroon & Gold */}
         <MotionReveal variant="fade-up" delay={0.55}>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1">
+          <div className="flex flex-col min-[420px]:flex-row flex-wrap items-center justify-center gap-2.5 sm:gap-4 pt-1">
             <motion.a
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="crayon-button inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
+              className="crayon-button w-full min-[420px]:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer min-h-[44px]"
             >
               <Calendar className="w-4 h-4 text-[#FFE58F]" />
               Ingatkan di Google Calendar
@@ -184,7 +214,7 @@ export function HeroSection() {
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
               onClick={downloadIcs}
-              className="crayon-button-alt inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer"
+              className="crayon-button-alt w-full min-[420px]:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-sans font-bold cursor-pointer min-h-[44px]"
             >
               <Download className="w-4 h-4 text-[#7D1128]" />
               Simpan Kalender (iCal)
@@ -204,11 +234,13 @@ export function HeroSection() {
 function CountdownCard({
   value,
   label,
+  mobileLabel,
   bgClass,
   textClass,
 }: {
   value: number;
   label: string;
+  mobileLabel?: string;
   bgClass: string;
   textClass: string;
 }) {
@@ -218,19 +250,26 @@ function CountdownCard({
     <motion.div
       whileHover={{ scale: 1.06, y: -2 }}
       transition={{ type: "spring", stiffness: 350, damping: 20 }}
-      className={`${bgClass} rounded-xl p-2 sm:p-3 text-center border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A] cursor-default`}
+      className={`${bgClass} rounded-xl p-1.5 sm:p-3 text-center border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A] cursor-default`}
     >
       <motion.div
         key={value}
         initial={{ y: -6, scale: 0.88, opacity: 0.6 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 320, damping: 18 }}
-        className={`font-script text-2xl sm:text-4xl font-bold ${textClass} tracking-tight`}
+        className={`font-script text-xl sm:text-4xl font-bold ${textClass} tracking-tight`}
       >
         {formatted}
       </motion.div>
       <div className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-[#9E2A3B] mt-0.5">
-        {label}
+        {mobileLabel ? (
+          <>
+            <span className="sm:hidden">{mobileLabel}</span>
+            <span className="hidden sm:inline">{label}</span>
+          </>
+        ) : (
+          label
+        )}
       </div>
     </motion.div>
   );

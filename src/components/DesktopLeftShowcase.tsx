@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Heart, Sparkles, Smartphone, Music, MapPin, Mail } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
+import { getFontFamilyCss } from "@/lib/typography";
 import {
   KidsDrawingCouple,
   KidsDrawingSun,
@@ -103,7 +104,10 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
           Buku Sketsa Bahagia: {data.couple?.groom?.name || "Gilang"} & {data.couple?.bride?.name || "Salsadila"}
         </div>
 
-        <h1 className="font-handwriting text-6xl xl:text-7xl text-[#FFF0F3] drop-shadow-md my-1 leading-tight tracking-wide">
+        <h1
+          style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+          className="font-couple-title font-handwriting text-6xl xl:text-7xl text-[#FFF0F3] drop-shadow-md my-1 leading-tight tracking-wide"
+        >
           {data.couple?.groom?.name || "Gilang"}{" "}
           <span className="font-script text-4xl text-[#F5A8B8]">&</span>{" "}
           {data.couple?.bride?.name || "Salsadila"}

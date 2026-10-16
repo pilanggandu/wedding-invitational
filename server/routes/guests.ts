@@ -1,37 +1,21 @@
 import { Router, Request, Response } from "express";
 import { getSupabaseClient, isSupabaseConfigured } from "../supabase";
+import { postgresService, isPostgresConnected, getNormalizedWeddingService } from "../postgres";
+import { sqliteService } from "../sqlite";
 
 const router = Router();
-
-// Fallback in-memory list
-let inMemoryGuests = [
-  {
-    id: "g_1",
-    name: "Bapak Budi Santoso & Keluarga",
-    slug: "Bapak+Budi+Santoso+%26+Keluarga",
-    phone: "6281234567890",
-    category: "VIP",
-    isSent: true,
-    notes: "Tamu kehormatan keluarga besar",
-    createdAt: "2026-10-01T10:00:00Z",
-  },
-  {
-    id: "g_2",
-    name: "Rizky Pratama & Partner",
-    slug: "Rizky+Pratama+%26+Partner",
-    phone: "6281987654321",
-    category: "Sahabat",
-    isSent: false,
-    notes: "Teman kuliah seperjuangan",
-    createdAt: "2026-10-02T11:00:00Z",
-  },
-];
 
 // GET /api/guests - Ambil seluruh daftar tamu
 router.get("/", async (_req: Request, res: Response) => {
   try {
-    const supabase = getSupabaseClient();
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      const guests = await postgresService.getGuests();
+      return res.json({ guests, source: "postgresql" });
+    }
 
+    // 2. Supabase Cloud
+    const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
       const { data, error } = await supabase
         .from("guests")
@@ -57,17 +41,39 @@ router.get("/", async (_req: Request, res: Response) => {
       return res.json({ guests: formatted, source: "supabase" });
     }
 
-    res.json({ guests: inMemoryGuests, source: "in-memory-fallback" });
+    // 3. SQLite Local
+    const guests = sqliteService.getGuests();
+    res.json({ guests, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in GET /api/guests:", err);
     res.status(500).json({ error: err.message || "Internal server error" });
   }
 });
 
+// GET /api/guests/verify/:token - Verifikasi token undangan tamu & catat open tracking
+router.get("/verify/:token", async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    const service = getNormalizedWeddingService();
+    if (isPostgresConnected() && service) {
+      const guest = await service.verifyGuestToken(token);
+      if (!guest) {
+        return res.status(404).json({ error: "Undangan tidak ditemukan atau token tidak valid" });
+      }
+      return res.json({ success: true, guest, source: "postgresql_12_tables" });
+    }
+
+    res.status(404).json({ error: "Token tidak ditemukan" });
+  } catch (err: any) {
+    console.error("Error in GET /api/guests/verify/:token:", err);
+    res.status(500).json({ error: err.message || "Gagal memverifikasi token tamu" });
+  }
+});
+
 // POST /api/guests - Tambah tamu baru
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { name, phone = "", category = "Sahabat", notes = "" } = req.body;
+    const { name, phone = "", category = "Sahabat", notes = "", quota = 1 } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: "Nama tamu wajib diisi" });
@@ -79,8 +85,23 @@ router.post("/", async (req: Request, res: Response) => {
     const id = "g_" + Date.now();
     const createdAt = new Date().toISOString();
 
-    const supabase = getSupabaseClient();
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      const created = await postgresService.createGuest({
+        id,
+        name: cleanName,
+        slug,
+        phone: cleanPhone,
+        category,
+        notes,
+        quota: Number(quota || 1),
+        createdAt,
+      });
+      return res.status(201).json({ success: true, guest: created, source: "postgresql" });
+    }
 
+    // 2. Supabase Cloud
+    const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
       const { data, error } = await supabase
         .from("guests")
@@ -118,19 +139,18 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
-    const newGuest = {
+    // 3. Simpan ke database SQLite lokal
+    const created = sqliteService.createGuest({
       id,
       name: cleanName,
       slug,
       phone: cleanPhone,
       category,
-      isSent: false,
       notes,
       createdAt,
-    };
-    inMemoryGuests = [newGuest, ...inMemoryGuests];
+    });
 
-    res.status(201).json({ success: true, guest: newGuest, source: "in-memory-fallback" });
+    res.status(201).json({ success: true, guest: created, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in POST /api/guests:", err);
     res.status(500).json({ error: err.message || "Internal server error" });
@@ -141,16 +161,33 @@ router.post("/", async (req: Request, res: Response) => {
 router.patch("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { isSent, notes, category, phone } = req.body;
+    const { isSent, notes, category, phone, name, quota } = req.body;
 
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      const updated = await postgresService.updateGuest(id, {
+        isSent,
+        notes,
+        category,
+        phone,
+        name,
+        quota: quota !== undefined ? Number(quota) : undefined,
+      });
+      if (!updated) {
+        return res.status(404).json({ error: "Tamu tidak ditemukan" });
+      }
+      return res.json({ success: true, guest: updated, source: "postgresql" });
+    }
+
+    // 2. Supabase Cloud
     const supabase = getSupabaseClient();
-
     if (isSupabaseConfigured() && supabase) {
       const updates: any = {};
       if (typeof isSent === "boolean") updates.is_sent = isSent;
       if (typeof notes === "string") updates.notes = notes;
       if (category) updates.category = category;
       if (phone !== undefined) updates.phone = phone;
+      if (name) updates.name = name;
 
       const { data, error } = await supabase
         .from("guests")
@@ -167,18 +204,13 @@ router.patch("/:id", async (req: Request, res: Response) => {
       return res.json({ success: true, guest: data, source: "supabase" });
     }
 
-    inMemoryGuests = inMemoryGuests.map((g) =>
-      g.id === id
-        ? {
-            ...g,
-            ...(typeof isSent === "boolean" ? { isSent } : {}),
-            ...(typeof notes === "string" ? { notes } : {}),
-            ...(category ? { category } : {}),
-          }
-        : g
-    );
+    // 3. Update di database SQLite lokal
+    const updated = sqliteService.updateGuest(id, { isSent, notes, category, phone, name });
+    if (!updated) {
+      return res.status(404).json({ error: "Tamu tidak ditemukan" });
+    }
 
-    res.json({ success: true, source: "in-memory-fallback" });
+    res.json({ success: true, guest: updated, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in PATCH /api/guests/:id:", err);
     res.status(500).json({ error: err.message || "Internal server error" });
@@ -189,8 +221,15 @@ router.patch("/:id", async (req: Request, res: Response) => {
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const supabase = getSupabaseClient();
 
+    // 1. PostgreSQL (Local / VPS)
+    if (isPostgresConnected()) {
+      await postgresService.deleteGuest(id);
+      return res.json({ success: true, id, source: "postgresql" });
+    }
+
+    // 2. Supabase Cloud
+    const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
       const { error } = await supabase.from("guests").delete().eq("id", id);
       if (error) {
@@ -200,8 +239,9 @@ router.delete("/:id", async (req: Request, res: Response) => {
       return res.json({ success: true, id, source: "supabase" });
     }
 
-    inMemoryGuests = inMemoryGuests.filter((g) => g.id !== id);
-    res.json({ success: true, id, source: "in-memory-fallback" });
+    // 3. Hapus dari SQLite lokal
+    sqliteService.deleteGuest(id);
+    res.json({ success: true, id, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in DELETE /api/guests/:id:", err);
     res.status(500).json({ error: err.message || "Internal server error" });

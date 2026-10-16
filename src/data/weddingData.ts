@@ -86,6 +86,7 @@ export const WEDDING_DATA = {
         aspectRatio: "3/4",
         variant: "groom",
       },
+      photoUrl: "/images/prewedding/couple-3.jpg",
     } as GroomBrideInfo,
     bride: {
       name: "Salsadila",
@@ -100,6 +101,7 @@ export const WEDDING_DATA = {
         aspectRatio: "3/4",
         variant: "bride",
       },
+      photoUrl: "/images/prewedding/couple-4.jpg",
     } as GroomBrideInfo,
   },
 
@@ -116,6 +118,16 @@ export const WEDDING_DATA = {
     openingGreetings: "Assalamu'alaikum & Halo Teman-Teman Semua!",
     openingMessage: "Dengan rasa syukur yang melimpah dan senyum paling bahagia, kami mengundang teman-teman dan keluarga untuk hadir di hari pernikahan kami:",
     closingMessage: "Kehadiran serta doa restu teman-teman adalah hadiah terbaik buat kami berdua. Sampai jumpa di pesta pernikahan kami, jangan lupa makan yang kenyang ya!",
+    coverPhotoUrl: "/images/prewedding/couple-1.jpg",
+    heroPhotoUrl: "/images/prewedding/couple-2.jpg",
+    backgroundPhotoUrl: "/images/prewedding/couple-1.jpg",
+    preweddingPhotos: [
+      "/images/prewedding/couple-1.jpg",
+      "/images/prewedding/couple-2.jpg",
+      "/images/prewedding/couple-3.jpg",
+      "/images/prewedding/couple-4.jpg",
+      "/images/prewedding/couple-5.jpg",
+    ],
   },
 
   countdownTarget: "2026-11-21T08:00:00+07:00",

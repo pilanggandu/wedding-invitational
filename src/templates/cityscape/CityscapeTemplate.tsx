@@ -19,6 +19,7 @@ import {
   Smile,
   X,
   ZoomIn,
+  Palette,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
@@ -43,9 +44,12 @@ function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
 }
 import { CityscapeCover } from "./CityscapeCover";
 import { CityscapeDesktopLeft } from "./CityscapeDesktopLeft";
+import { getFontFamilyCss } from "@/lib/typography";
 import {
   CoupleWalkingIllustration,
   CityBoulevardBackdrop,
+  UrbanGroomIllustration,
+  UrbanBrideIllustration,
 } from "./CityscapeIllustrations";
 import {
   SkyAirplane,
@@ -57,7 +61,7 @@ import {
 import { CityscapeParticles } from "./CityscapeParticles";
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
-import { RsvpSection } from "@/components/RsvpSection";
+import { CityscapeRsvp } from "./CityscapeRsvp";
 
 // ----------------------------------------------------------------------
 // 1. HERO SECTION (Cityscape Morning Avenue)
@@ -121,7 +125,7 @@ function CityscapeHero() {
     const icsContent = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//The Wedding of Gilang & Salsadila//ID",
+      `PRODID:-//The Wedding of ${groom.name || "Mempelai"} & ${bride.name || "Mempelai"}//ID`,
       "CALSCALE:GREGORIAN",
       "BEGIN:VEVENT",
       `SUMMARY:Pernikahan ${groom.name} & ${bride.name}`,
@@ -144,80 +148,119 @@ function CityscapeHero() {
     document.body.removeChild(link);
   };
 
-  return (
-    <section id="beranda" className="relative pt-12 pb-16 px-4 bg-gradient-to-b from-[#BFE1F4] via-[#DCEDF8] to-[#FFFFFF] overflow-hidden text-center">
-      {/* Background Animated Sky Elements */}
-      <SkyAirplane className="top-4 left-4" />
-      <PastelCloud className="w-28 h-12 absolute top-8 right-4 opacity-70" delay={1} />
-      <PastelCloud className="w-24 h-10 absolute top-20 left-6 opacity-60" delay={4} />
+  const heroCoverPhoto = data.general?.coverPhotoUrl || data.general?.preweddingPhotos?.[0] || "/images/prewedding/couple-1.jpg";
 
-      <div className="relative z-10 max-w-md mx-auto">
+  return (
+    <section id="beranda" className="relative pt-10 pb-16 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
+      <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{
+        backgroundImage: "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
+        backgroundSize: "28px 28px"
+      }} />
+
+      <div className="relative z-10 max-w-md mx-auto space-y-5">
         <motion.div
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full text-xs font-mono font-bold bg-white/85 text-[#1D78A0] border border-sky-100 shadow-xs mb-3"
+          className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[10px] font-mono font-bold bg-[#1D78A0]/60 backdrop-blur-md text-[#7DD3FC] border border-[#38B6FF]/30 shadow-xs"
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#38B6FF]" />
-          <span>The Wedding Celebration</span>
-          <Sparkles className="w-3.5 h-3.5 text-[#38B6FF]" />
+          <Building2 className="w-3 h-3 text-[#38B6FF]" />
+          <span>METROPOLITAN CELEBRATION</span>
+          <span className="text-white/40">&bull;</span>
+          <span>LAT -7.16&deg; LONG 112.05&deg;</span>
         </motion.div>
 
-        <h1 className="font-handwriting text-5xl sm:text-6xl text-[#1D78A0] tracking-wide my-1">
-          {groom.name} <span className="font-script text-3xl sm:text-4xl text-[#38B6FF]">&</span> {bride.name}
-        </h1>
+        <div>
+          <h1
+            style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+            className="text-4xl min-[380px]:text-5xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-md leading-none my-1"
+          >
+            {groom.name}{" "}
+            <span className="text-xl sm:text-2xl text-[#38B6FF] font-light font-mono mx-1">
+              &times;
+            </span>{" "}
+            {bride.name}
+          </h1>
 
-        <p className="font-script text-base sm:text-lg text-[#2E8BC0] font-bold max-w-sm mx-auto mb-4">
-          &ldquo;{data.general?.funTagline || "Menemukan cinta di antara jutaan cerita di kota ini."}&rdquo;
-        </p>
-
-        {/* Handcrafted Centerpiece: Vector Couple Walk in City Center */}
-        <div className="relative w-full max-w-[260px] mx-auto py-2 my-2 flex justify-center">
-          <CoupleWalkingIllustration className="w-full h-auto" />
+          <p className="text-xs sm:text-sm font-mono text-[#93C5FD] tracking-wider mt-2">
+            &ldquo;{data.general?.funTagline || "Menemukan cinta di antara jutaan cerita di kota ini."}&rdquo;
+          </p>
         </div>
 
-        {/* Date & Location Pill */}
-        <div className="inline-block bg-[#1D78A0] text-white px-5 py-1.5 rounded-full text-xs font-mono font-bold shadow-md my-2">
-          📅 {akadEvent.displayDay}, {akadEvent.displayDate} • {akadEvent.venueAddress}
+        <div className="relative rounded-2xl overflow-hidden border border-[#38B6FF]/40 shadow-2xl bg-[#0B1E2E]">
+          <div className="bg-[#081827] py-1.5 px-3 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC] border-b border-white/10">
+            <span className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#38B6FF]" />
+              CENTRAL AVENUE VIEW
+            </span>
+            <span>URBAN SKYLINE</span>
+          </div>
+
+          <div className="relative aspect-[16/10] overflow-hidden">
+            <img
+              src={heroCoverPhoto}
+              alt={`${groom.name} & ${bride.name}`}
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E2E] via-transparent to-transparent opacity-80" />
+            <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between z-20 text-left">
+              <div>
+                <span className="text-[10px] font-mono uppercase text-[#38B6FF] font-bold block">
+                  VENUE DESTINATION
+                </span>
+                <span className="text-xs font-sans text-white font-semibold">
+                  {akadEvent.venueAddress}
+                </span>
+              </div>
+              <span className="text-[9px] font-mono text-white/70 bg-black/60 px-2 py-0.5 rounded-sm border border-white/10">
+                {akadEvent.displayDay}, {akadEvent.displayDate}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Modern Frosted Countdown Box */}
-        <div className="mt-6 bg-white/95 backdrop-blur-md p-5 rounded-3xl border border-sky-200 shadow-lg">
-          <span className="text-xs font-mono font-bold text-[#1D78A0] block mb-3">
-            ⏰ Hitung Mundur Menuju Hari Bahagia:
-          </span>
-          <div className="grid grid-cols-4 gap-2 font-mono">
-            <div className="bg-[#F0F8FF] p-2.5 rounded-2xl border border-sky-200 shadow-2xs">
-              <span className="text-2xl font-black text-[#1D78A0] block">{timeLeft.days}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold">Hari</span>
+        <div className="bg-[#0B1E2E]/90 backdrop-blur-xl p-5 rounded-2xl border border-[#38B6FF]/30 shadow-xl text-left">
+          <div className="flex items-center justify-between border-b border-white/10 pb-2.5 mb-3">
+            <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#7DD3FC] uppercase tracking-wider">
+              <Clock className="w-3.5 h-3.5 text-[#38B6FF]" />
+              <span>TERMINAL DEPARTURES &bull; COUNTDOWN</span>
             </div>
-            <div className="bg-[#F0F8FF] p-2.5 rounded-2xl border border-sky-200 shadow-2xs">
-              <span className="text-2xl font-black text-[#1D78A0] block">{timeLeft.hours}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold">Jam</span>
+            <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">
+              ON SCHEDULE
+            </span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 font-mono text-center">
+            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
+              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.days}</span>
+              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Hari</span>
             </div>
-            <div className="bg-[#F0F8FF] p-2.5 rounded-2xl border border-sky-200 shadow-2xs">
-              <span className="text-2xl font-black text-[#1D78A0] block">{timeLeft.minutes}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold">Menit</span>
+            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
+              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.hours}</span>
+              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Jam</span>
             </div>
-            <div className="bg-[#F0F8FF] p-2.5 rounded-2xl border border-sky-200 shadow-2xs">
-              <span className="text-2xl font-black text-[#1D78A0] block">{timeLeft.seconds}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold">Detik</span>
+            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
+              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.minutes}</span>
+              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Menit</span>
+            </div>
+            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
+              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.seconds}</span>
+              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Detik</span>
             </div>
           </div>
 
-          {/* Calendar Actions */}
-          <div className="flex items-center justify-center gap-2.5 mt-4 pt-3 border-t border-sky-100">
+          <div className="flex items-center justify-center gap-2.5 mt-4 pt-3 border-t border-white/10">
             <a
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-2 rounded-xl bg-[#2E8BC0] hover:bg-[#1D78A0] text-white text-[11px] font-mono font-bold flex items-center gap-1.5 shadow-sm transition-transform hover:scale-105"
+              className="px-3.5 py-2 rounded-xl bg-[#1D78A0] hover:bg-[#0284C7] text-white text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-sm transition-transform hover:scale-105"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Google Calendar</span>
             </a>
             <button
               onClick={downloadIcs}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-[10px] font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Simpan (.ics)</span>
@@ -229,170 +272,226 @@ function CityscapeHero() {
   );
 }
 
-// ----------------------------------------------------------------------
-// 2. COUPLE SECTION (Pasangan Mempelai)
-// ----------------------------------------------------------------------
 function CityscapeCouple() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
   const quote = data.general?.quote;
 
   return (
-    <section id="mempelai" className="relative py-16 px-4 bg-[#F8FCFD] overflow-hidden">
-      <div className="max-w-md mx-auto relative z-10 text-center">
-        {/* Quranic Verse / Blessing */}
+    <section id="mempelai" className="relative py-14 px-4 bg-[#F0F7FB] overflow-hidden text-center">
+      <div className="max-w-md mx-auto relative z-10">
         {quote && (
-          <div className="bg-white rounded-3xl p-6 border-2 border-sky-100 shadow-sm mb-12 text-center">
-            <div className="w-10 h-10 mx-auto -mt-11 mb-3 rounded-full bg-[#2E8BC0] text-white flex items-center justify-center shadow-md">
-              <Heart className="w-5 h-5 fill-current text-white" />
+          <div className="bg-white rounded-2xl p-5 border border-sky-100 shadow-sm mb-10 text-center">
+            <div className="w-9 h-9 mx-auto -mt-9 mb-2.5 rounded-full bg-[#1D78A0] text-white flex items-center justify-center shadow-md">
+              <Heart className="w-4 h-4 fill-current text-white" />
             </div>
-            <p className="font-serif text-sm sm:text-base text-[#0C4A60] leading-relaxed mb-3 font-medium" dir="rtl">
-              {quote.arabic}
-            </p>
-            <p className="font-script text-sm text-[#1D78A0] font-bold leading-relaxed">
+            {quote.arabic && (
+              <p className="font-serif text-sm sm:text-base text-[#0C4A60] leading-relaxed mb-2 font-medium" dir="rtl">
+                {quote.arabic}
+              </p>
+            )}
+            <p className="text-xs text-[#1D78A0] font-sans italic leading-relaxed">
               &ldquo;{quote.translation}&rdquo;
             </p>
-            <span className="text-[10px] font-mono text-slate-400 block mt-2">
-              ({quote.source})
+            <span className="text-[9px] font-mono text-slate-400 block mt-2">
+              {quote.source}
             </span>
           </div>
         )}
 
-        <span className="text-xs font-mono font-bold text-[#2E8BC0] uppercase tracking-wider block mb-1">
-          Dua Langkah, Satu Cerita
-        </span>
-        <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-8">
-          Pasangan Mempelai
-        </h2>
-
-        {/* Groom Profile Card */}
-        <div className="bg-white rounded-3xl p-6 border-2 border-sky-100 shadow-sm text-center mb-8 relative">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#E8F4F8] to-[#CBE6F6] border-4 border-[#2E8BC0] flex items-center justify-center text-4xl mb-3 shadow-inner">
-            👨‍💼
-          </div>
-          <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#E8F4F8] text-[#1D78A0] mb-1">
-            Mempelai Pria
+        <div className="space-y-1 mb-8">
+          <span className="text-[10px] font-mono font-bold text-[#1D78A0] uppercase tracking-[0.2em] block">
+            METROPOLITAN SOULS &bull; TWO STORIES IN ONE CITY
           </span>
-          <h3 className="font-handwriting text-4xl text-[#1D78A0] my-0.5">
-            {groom.name}
-          </h3>
-          <p className="font-sans font-bold text-xs text-[#0C4A60]">
-            {groom.fullName}
-          </p>
-          <p className="text-xs text-slate-500 mt-2 italic leading-relaxed">
-            &ldquo;{groom.bioFunny || "Suka kopi, hobi ngobrol, dan siap jadi pendamping setia selamanya."}&rdquo;
-          </p>
-          <p className="text-[11px] text-slate-600 mt-3 font-medium">
-            {groom.parents}
-          </p>
-          {groom.instagram && (
-            <a
-              href={`https://instagram.com/${groom.instagram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F0F8FF] hover:bg-sky-100 text-[#1D78A0] border border-sky-200 text-xs font-mono font-bold mt-4 transition-colors"
-            >
-              <InstagramIcon className="w-3.5 h-3.5" />
-              <span>@{groom.instagram}</span>
-            </a>
-          )}
+          <h2 className="text-3xl font-extrabold text-[#0C4A60] tracking-tight">
+            Pasangan Mempelai
+          </h2>
         </div>
 
-        {/* Bride Profile Card */}
-        <div className="bg-white rounded-3xl p-6 border-2 border-sky-100 shadow-sm text-center relative">
-          <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#FFF0F3] to-[#FCE7F3] border-4 border-[#38B6FF] flex items-center justify-center text-4xl mb-3 shadow-inner">
-            👰‍♀️
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left">
+            <div className="bg-[#0F2B46] py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC]">
+              <span className="font-bold">URBAN PROFILE // GROOM</span>
+              <span>SUB-TBN REGION</span>
+            </div>
+
+            <div className="relative aspect-[4/3] overflow-hidden group">
+              <img
+                src={groom.photoUrl || "/images/prewedding/couple-3.jpg"}
+                alt={groom.fullName || groom.name}
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F2B46] via-transparent to-transparent opacity-85" />
+              <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between z-20">
+                <div>
+                  <span className="text-[9px] font-mono uppercase text-[#38B6FF] tracking-wider block font-bold">
+                    Mempelai Pria
+                  </span>
+                  <h3
+                    style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+                    className="text-2xl font-bold text-white tracking-tight"
+                  >
+                    {groom.name}
+                  </h3>
+                </div>
+                {groom.instagram && (
+                  <a
+                    href={`https://instagram.com/${groom.instagram.replace("@", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/20 text-xs text-white transition-colors"
+                  >
+                    <InstagramIcon className="w-3.5 h-3.5" />
+                    <span>@{groom.instagram.replace("@", "")}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 space-y-1.5 bg-white border-t border-sky-100">
+              <p className="text-xs font-sans font-bold text-[#0C4A60]">
+                {groom.fullName}
+              </p>
+              {groom.parents && (
+                <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
+                  {groom.parents}
+                </p>
+              )}
+            </div>
           </div>
-          <span className="inline-block px-3 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#FFF0F3] text-[#EC4899] mb-1">
-            Mempelai Wanita
-          </span>
-          <h3 className="font-handwriting text-4xl text-[#1D78A0] my-0.5">
-            {bride.name}
-          </h3>
-          <p className="font-sans font-bold text-xs text-[#0C4A60]">
-            {bride.fullName}
-          </p>
-          <p className="text-xs text-slate-500 mt-2 italic leading-relaxed">
-            &ldquo;{bride.bioFunny || "Pencinta keceriaan, senyum manis, dan siap membangun surga rumah tangga bersama."}&rdquo;
-          </p>
-          <p className="text-[11px] text-slate-600 mt-3 font-medium">
-            {bride.parents}
-          </p>
-          {bride.instagram && (
-            <a
-              href={`https://instagram.com/${bride.instagram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#F0F8FF] hover:bg-sky-100 text-[#1D78A0] border border-sky-200 text-xs font-mono font-bold mt-4 transition-colors"
-            >
-              <InstagramIcon className="w-3.5 h-3.5" />
-              <span>@{bride.instagram}</span>
-            </a>
-          )}
+
+          <div className="flex items-center justify-center gap-3 py-1">
+            <div className="h-px flex-1 bg-sky-200" />
+            <div className="w-8 h-8 rounded-full bg-[#1D78A0] text-white flex items-center justify-center font-mono font-bold text-xs shadow-sm">
+              &times;
+            </div>
+            <div className="h-px flex-1 bg-sky-200" />
+          </div>
+
+          <div className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left">
+            <div className="bg-[#0F2B46] py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC]">
+              <span className="font-bold">URBAN PROFILE // BRIDE</span>
+              <span>SUB-TBN REGION</span>
+            </div>
+
+            <div className="relative aspect-[4/3] overflow-hidden group">
+              <img
+                src={bride.photoUrl || "/images/prewedding/couple-4.jpg"}
+                alt={bride.fullName || bride.name}
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0F2B46] via-transparent to-transparent opacity-85" />
+              <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between z-20">
+                <div>
+                  <span className="text-[9px] font-mono uppercase text-[#38B6FF] tracking-wider block font-bold">
+                    Mempelai Wanita
+                  </span>
+                  <h3
+                    style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+                    className="text-2xl font-bold text-white tracking-tight"
+                  >
+                    {bride.name}
+                  </h3>
+                </div>
+                {bride.instagram && (
+                  <a
+                    href={`https://instagram.com/${bride.instagram.replace("@", "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/20 text-xs text-white transition-colors"
+                  >
+                    <InstagramIcon className="w-3.5 h-3.5" />
+                    <span>@{bride.instagram.replace("@", "")}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 space-y-1.5 bg-white border-t border-sky-100">
+              <p className="text-xs font-sans font-bold text-[#0C4A60]">
+                {bride.fullName}
+              </p>
+              {bride.parents && (
+                <p className="text-[11px] text-slate-500 leading-relaxed font-sans">
+                  {bride.parents}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// ----------------------------------------------------------------------
-// 3. EVENT SECTION (Rangkaian Acara & Maps)
-// ----------------------------------------------------------------------
 function CityscapeEvents() {
   const data = useWeddingData();
   const { events, dresscode } = data;
 
   return (
-    <section id="acara" className="relative py-16 px-4 bg-gradient-to-b from-[#FFFFFF] via-[#E8F4F8] to-[#CBE6F6] overflow-hidden">
-      <div className="max-w-md mx-auto relative z-10 text-center">
-        <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
-          Catat Waktu & Lokasi
-        </span>
-        <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-8">
-          Rangkaian Acara
-        </h2>
+    <section id="acara" className="relative py-14 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
+      <div className="max-w-md mx-auto relative z-10 space-y-8">
+        <div className="space-y-1">
+          <span className="text-[10px] font-mono font-bold text-[#7DD3FC] uppercase tracking-[0.2em] block">
+            TRANSIT ROUTE MAP // CELEBRATION SCHEDULE
+          </span>
+          <h2 className="text-3xl font-extrabold text-white tracking-tight">
+            Rangkaian Acara
+          </h2>
+        </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 text-left">
           {events.map((evt, idx) => (
             <div
               key={evt.id || idx}
-              className="bg-white rounded-3xl p-6 border-2 border-sky-200 shadow-md text-center relative overflow-hidden"
+              className="bg-[#0B1E2E] rounded-2xl overflow-hidden border border-[#38B6FF]/30 shadow-xl relative"
             >
-              {/* Skyline Banner Header */}
-              <div className="h-10 -mx-6 -mt-6 bg-[#1D78A0] text-white flex items-center justify-center font-mono font-bold text-xs uppercase tracking-widest mb-4">
-                {idx === 0 ? "🏙️ Akad Nikah" : "✨ Resepsi Pernikahan"}
+              <div className="bg-[#1D78A0] py-2 px-4 flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-wider text-white">
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#FDE047] animate-pulse" />
+                  LINE 0{idx + 1} &bull; {idx === 0 ? "AKAD NIKAH STATION" : "RECEPTION CENTRAL"}
+                </span>
+                <span className="text-white/80">{evt.displayDay}</span>
               </div>
 
-              <h3 className="font-sans font-extrabold text-xl text-[#0C4A60]">
-                {evt.title}
-              </h3>
-              <p className="text-xs font-mono font-bold text-[#2E8BC0] mt-1">
-                {evt.displayDay}, {evt.displayDate}
-              </p>
-              <p className="text-xs font-mono text-slate-600 mt-1">
-                ⏰ {evt.time}
-              </p>
+              <div className="p-5 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-sans font-bold text-lg text-white">
+                      {evt.title}
+                    </h3>
+                    <p className="text-xs font-mono text-[#7DD3FC] mt-0.5">
+                      {evt.displayDay}, {evt.displayDate}
+                    </p>
+                  </div>
+                  <div className="px-3 py-1 rounded-lg bg-white/10 border border-white/15 text-xs font-mono font-bold text-white">
+                    {evt.time}
+                  </div>
+                </div>
 
-              <div className="my-4 pt-3 border-t border-sky-100">
-                <p className="font-sans font-bold text-xs text-[#0C4A60]">
-                  {evt.venueName}
-                </p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  {evt.venueAddress}
-                </p>
+                <div className="pt-3 border-t border-white/10 space-y-1">
+                  <p className="font-sans font-semibold text-xs text-white">
+                    {evt.venueName}
+                  </p>
+                  <p className="text-[11px] text-white/70 font-sans">
+                    {evt.venueAddress}
+                  </p>
+                </div>
+
+                {evt.mapUrl && (
+                  <div className="pt-2">
+                    <a
+                      href={evt.mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0284C7] hover:bg-[#0369A1] text-white text-xs font-mono font-bold shadow-md transition-transform hover:scale-105"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-[#FDE047]" />
+                      <span>Navigasi Rute (Google Maps)</span>
+                    </a>
+                  </div>
+                )}
               </div>
-
-              {evt.mapUrl && (
-                <a
-                  href={evt.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2E8BC0] hover:bg-[#1D78A0] text-white text-xs font-mono font-bold shadow-md transition-transform hover:scale-105"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-[#FFE58F]" />
-                  <span>Buka Google Maps</span>
-                </a>
-              )}
             </div>
           ))}
         </div>
@@ -400,9 +499,10 @@ function CityscapeEvents() {
         {/* Dresscode Palette */}
         {dresscode?.colors && dresscode.colors.length > 0 && (
           <div className="mt-8 bg-white/95 p-5 rounded-3xl border border-sky-200 shadow-sm">
-            <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase block mb-1">
-              🎨 Rekomendasi Dress Code Tamu
-            </span>
+            <div className="flex items-center justify-center gap-1.5 text-xs font-mono font-bold text-[#1D78A0] uppercase mb-1">
+              <Palette className="w-3.5 h-3.5 text-[#2E8BC0]" />
+              <span>Rekomendasi Dress Code Tamu</span>
+            </div>
             <p className="text-[11px] text-slate-600 mb-3">
               {dresscode.description || "Sentuhan nuansa elegan modern perkotaan:"}
             </p>
@@ -433,24 +533,24 @@ function CityscapeLoveStory() {
     {
       year: "2020",
       title: "Pertemuan Pertama di Sudut Kota",
-      story: "Awalnya hanya rekan kerja dan teman ngobrol santai seputar kopi dan kesibukan kota.",
-      cuteReaction: "Tak disangka berlanjut obrolan panjang! ☕",
+      story: "Awalnya rekan satu lingkup kerja dan teman berdiskusi seputar kesibukan kota.",
+      cuteReaction: "Dari percakapan santai hingga frekuensi hati yang sama.",
       photoCaption: "Awal Cerita",
       badgeColor: "bg-[#2E8BC0]",
     },
     {
       year: "2023",
       title: "Menjelajahi Kota Bersama",
-      story: "Menyadari frekuensi yang sama dan selalu merasa tenang saat saling berbagi cerita.",
-      cuteReaction: "Dari teman jadi belahan jiwa 💕",
+      story: "Menyadari harmoni yang saling melengkapi dan selalu merasa tenang saat bersama.",
+      cuteReaction: "Menemukan ketenangan rumah dalam setiap langkah bersama.",
       photoCaption: "Kisah Bersama",
       badgeColor: "bg-[#38B6FF]",
     },
     {
       year: "2026",
       title: "Tujuan Akhir: Menuju Pelaminan",
-      story: "Memutuskan untuk mengikat janji suci selamanya dalam ikatan pernikahan yang sah dan penuh berkah.",
-      cuteReaction: "Alhamdulillah siap melangkah bersama! 💍",
+      story: "Memutuskan untuk mengikat janji suci selamanya dalam ikatan pernikahan yang sah dan berkah.",
+      cuteReaction: "Bismillah, melangkah mantap menuju babak baru kehidupan.",
       photoCaption: "Menuju Sah",
       badgeColor: "bg-[#1D78A0]",
     },
@@ -505,6 +605,31 @@ function CityscapeLoveStory() {
 function CityscapeGallery() {
   const data = useWeddingData();
   const gallery = data.gallery || [];
+  const userPreweddings = data.general?.preweddingPhotos || [];
+  const defaultPhotos = [
+    { id: 1, src: "/images/prewedding/couple-1.jpg", caption: "Kala Dua Hati Bertemu", tag: "AwalCerita" },
+    { id: 2, src: "/images/prewedding/couple-2.jpg", caption: "Langkah Menuju Masa Depan", tag: "BahagiaBersama" },
+    { id: 3, src: "/images/prewedding/couple-3.jpg", caption: "Senja dan Janji Suci", tag: "KisahCinta" },
+    { id: 4, src: "/images/prewedding/couple-4.jpg", caption: "Menatap Hari Esok", tag: "MenujuSah" },
+  ];
+
+  const photos =
+    gallery.length > 0
+      ? gallery.map((photo: any, idx: number) => ({
+          id: photo.id || idx,
+          src: photo.url || (userPreweddings[idx] || defaultPhotos[idx % defaultPhotos.length].src),
+          caption: photo.caption || `Momen Bahagia 0${idx + 1}`,
+          tag: photo.tag || "MomenBahagia",
+        }))
+      : userPreweddings.length > 0
+      ? userPreweddings.map((url, idx) => ({
+          id: idx,
+          src: url,
+          caption: `Potret Kenangan 0${idx + 1}`,
+          tag: "MomenBahagia",
+        }))
+      : defaultPhotos;
+
   const [activePhoto, setActivePhoto] = useState<any | null>(null);
 
   return (
@@ -518,15 +643,19 @@ function CityscapeGallery() {
         </h2>
 
         <div className="grid grid-cols-2 gap-4">
-          {gallery.map((photo) => (
+          {photos.map((photo) => (
             <div
               key={photo.id}
               onClick={() => setActivePhoto(photo)}
-              className="bg-white p-3 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between"
+              className="bg-white p-3 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between group"
             >
-              <div className="aspect-[3/4] bg-gradient-to-b from-sky-100 to-sky-50 rounded-xl flex items-center justify-center text-4xl mb-2 relative overflow-hidden border border-sky-50">
-                <span>📸</span>
-                <div className="absolute inset-0 bg-sky-900/10 hover:bg-transparent transition-colors flex items-center justify-center">
+              <div className="aspect-[3/4] bg-sky-50 rounded-xl overflow-hidden mb-2 relative border border-sky-100">
+                <img
+                  src={photo.src}
+                  alt={photo.caption}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-sky-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <ZoomIn className="w-5 h-5 text-white drop-shadow-md" />
                 </div>
               </div>
@@ -557,8 +686,12 @@ function CityscapeGallery() {
                 >
                   <X className="w-4 h-4" />
                 </button>
-                <div className="aspect-[3/4] bg-sky-50 rounded-2xl flex items-center justify-center text-6xl my-3">
-                  📸
+                <div className="aspect-[3/4] bg-sky-50 rounded-2xl overflow-hidden my-3 border border-sky-100">
+                  <img
+                    src={activePhoto.src}
+                    alt={activePhoto.caption}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h4 className="font-sans font-bold text-sm text-[#0C4A60]">
                   {activePhoto.caption}
@@ -640,9 +773,10 @@ function CityscapeGifts() {
 
           {physicalGiftAddress?.address && (
             <div className="bg-white rounded-2xl p-5 border border-sky-100 text-left">
-              <span className="text-xs font-mono font-bold text-[#1D78A0] block mb-1">
-                📦 Pengiriman Kado Fisik:
-              </span>
+              <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#1D78A0] mb-1">
+                <Building2 className="w-3.5 h-3.5 text-[#2E8BC0]" />
+                <span>Pengiriman Kado Fisik:</span>
+              </div>
               <p className="text-xs text-slate-700 leading-relaxed">
                 {physicalGiftAddress.address}
               </p>
@@ -690,13 +824,18 @@ function CityscapeFooter() {
           </div>
         )}
 
-        <h3 className="font-handwriting text-5xl sm:text-6xl text-white my-1">
+        <h3
+          style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+          className="font-couple-title font-handwriting text-5xl sm:text-6xl text-white my-1"
+        >
           {groom.name} <span className="font-script text-3xl text-[#FFE58F]">&</span> {bride.name}
         </h3>
 
-        <div className="mt-4 text-xs font-mono text-[#FFE58F] font-bold">
-          {data.general?.hashtag || "#GilangSalsaHalal"}
-        </div>
+        {data.general?.hashtag && (
+          <div className="mt-4 text-xs font-mono text-[#FFE58F] font-bold">
+            {data.general.hashtag}
+          </div>
+        )}
       </div>
     </footer>
   );
@@ -708,10 +847,13 @@ function CityscapeFooter() {
 export function CityscapeTemplate({
   data,
   guestName,
+  guestItem,
   isPreview = false,
+  isEditor = false,
   onOpenChange,
 }: TemplateProps) {
   const [isOpened, setIsOpened] = useState<boolean>(isPreview);
+  const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
 
   useEffect(() => {
     if (isPreview) {
@@ -726,7 +868,10 @@ export function CityscapeTemplate({
 
   return (
     <WeddingDataProvider data={data}>
-      <div className="min-h-screen bg-[#EBF4F8] flex flex-col lg:flex-row relative">
+      <div
+        style={{ "--font-couple-custom": fontFamilyCss } as React.CSSProperties}
+        className="min-h-screen bg-[#EBF4F8] flex flex-col lg:flex-row relative"
+      >
         {/* Desktop Left Showcase (only when not in miniature preview) */}
         {!isPreview && (
           <CityscapeDesktopLeft isOpened={isOpened} onOpen={handleOpen} />
@@ -753,15 +898,18 @@ export function CityscapeTemplate({
             {!isPreview && (
               <div className="hidden lg:flex justify-between items-center px-6 py-2.5 bg-[#1D78A0] text-white shrink-0">
                 <span className="text-[11px] font-mono font-bold text-[#FFE58F]">
-                  12:12 🏙️
+                  12:12
                 </span>
                 <div className="w-20 h-3.5 bg-[#0C4A60] rounded-full flex items-center justify-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#38B6FF]" />
                   <span className="w-6 h-1 rounded-full bg-[#2E8BC0]" />
                 </div>
-                <span className="text-[10px] font-mono text-[#E8F4F8]">
-                  100% 🔋
-                </span>
+                <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#E8F4F8]">
+                  <span>5G</span>
+                  <div className="w-4 h-2 rounded-xs border border-white/80 p-0.5 flex items-center">
+                    <div className="w-full h-full bg-[#FFE58F] rounded-2xs" />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -789,12 +937,11 @@ export function CityscapeTemplate({
                 <CityscapeLoveStory />
                 <CityscapeGallery />
                 <CityscapeGifts />
-                <RsvpSection />
+                <CityscapeRsvp guestName={guestName} guestItem={guestItem} />
                 <CityscapeFooter />
 
-                {/* Floating Navigation Dock & Audio Player */}
-                <NavigationDock />
-                <AudioPlayer autoPlayTrigger={isOpened} />
+                {!isEditor && <NavigationDock theme="cityscape" />}
+                {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="cityscape" />}
               </div>
             )}
           </main>

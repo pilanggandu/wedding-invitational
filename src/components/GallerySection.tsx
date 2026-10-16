@@ -18,6 +18,7 @@ import { MotionReveal } from "./MotionReveal";
 
 export function GallerySection() {
   const { gallery } = useWeddingData();
+  const photos = Array.isArray(gallery) ? gallery : [];
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
   return (
@@ -30,20 +31,20 @@ export function GallerySection() {
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-14">
             <span className="font-script text-2xl text-[#B3394B] font-bold block mb-1">
-              Dokumentasi Hasil Jepretan Lucu 📸
+              Dokumentasi Foto Momen Indah
             </span>
             <h2 className="font-handwriting text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Galeri Momen
             </h2>
             <p className="text-xs sm:text-sm font-sans text-[#7D1128]">
-              Sedikit cuplikan gaya sok keren kami sebelum resmi jadi suami istri:
+              Sedikit cuplikan kebersamaan kami sebelum resmi mengarungi bahtera rumah tangga:
             </p>
           </div>
         </MotionReveal>
 
         {/* Polaroid Scrapbook Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center">
-          {gallery.map((photo, index) => {
+          {photos.map((photo, index) => {
             const tilt = index % 3 === 0 ? "left" : index % 3 === 1 ? "right" : "straight";
             const tapePos = index % 2 === 0 ? "top-left" : "top-right";
 
@@ -73,6 +74,7 @@ export function GallerySection() {
                           ? "bride"
                           : "boba"
                       }
+                      imageUrl={photo.imageUrl}
                       caption={photo.caption}
                       tag={photo.tag}
                       stickerText={photo.doodleSticker}
@@ -150,6 +152,7 @@ export function GallerySection() {
                         ? "bride"
                         : "boba"
                     }
+                    imageUrl={selectedPhoto.imageUrl}
                     caption=""
                     tapePosition="none"
                     tiltAngle="straight"
