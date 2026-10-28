@@ -15,7 +15,7 @@ dotenv.config();
 dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5022;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
 // Inisialisasi PostgreSQL jika ada konfigurasi
