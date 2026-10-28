@@ -71,6 +71,7 @@ export async function initPostgres(): Promise<boolean> {
 
   // 1. Coba koneksi ke database target
   let testPool = new Pool(poolConfig);
+  testPool.on("error", (err) => console.warn("PostgreSQL pool background error:", err.message));
 
   try {
     const client = await testPool.connect();
@@ -78,6 +79,7 @@ export async function initPostgres(): Promise<boolean> {
     pool = testPool;
     isConnected = true;
   } catch (err: any) {
+    testPool.end().catch(() => {});
     // Jika database belum ada (error code 3D000), coba buat database otomatis
     if (err.code === "3D000") {
       console.log(
@@ -113,6 +115,7 @@ export async function initPostgres(): Promise<boolean> {
 
         // Hubungkan kembali ke database yang baru dibuat
         pool = new Pool(poolConfig);
+        pool.on("error", (err) => console.warn("PostgreSQL pool background error:", err.message));
         const retryClient = await pool.connect();
         retryClient.release();
         isConnected = true;
