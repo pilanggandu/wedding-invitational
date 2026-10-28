@@ -1,10 +1,13 @@
 import { Pool, PoolConfig } from "pg";
+import path from "node:path";
 import dotenv from "dotenv";
 import { hashPassword } from "./auth";
 import { run12TablesMigration } from "./database/migration_service";
 import { NormalizedWeddingService } from "./services/normalizedWeddingService";
 
 dotenv.config();
+dotenv.config({ path: path.resolve(import.meta.dirname, "../.env") });
+dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
 
 let pool: Pool | null = null;
 let isConnected = false;
