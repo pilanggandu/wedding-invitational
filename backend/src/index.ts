@@ -28,7 +28,7 @@ if (isPostgresConfigured()) {
 // Middleware
 app.use(
   cors({
-    origin: CORS_ORIGIN === "*" ? "*" : [CORS_ORIGIN, "http://localhost:3000"],
+    origin: CORS_ORIGIN === "*" ? "*" : [CORS_ORIGIN, "http://localhost:3000", "http://localhost:3022"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })

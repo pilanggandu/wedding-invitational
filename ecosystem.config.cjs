@@ -17,10 +17,10 @@ module.exports = {
       name: "wedding-frontend",
       cwd: "./frontend",
       script: "npm",
-      args: "run start",
+      args: "run start -- -p 3022",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
+        PORT: 3022,
       },
       watch: false,
       autorestart: true,
