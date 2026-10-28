@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iridBorder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="33%" stop-color="#E07A5F"/>
+      <stop offset="66%" stop-color="#A855F7"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+  <!-- Octagon with beveled corners -->
+  <polygon points="48,16 112,16 144,48 144,112 112,144 48,144 16,112 16,48" 
+           fill="#11141E" fill-opacity="0.85" stroke="url(#iridBorder)" stroke-width="2.5"/>
+  <polygon points="52,24 108,24 136,52 136,108 108,136 52,136 24,108 24,52" 
+           fill="none" stroke="#FFFFFF" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.5"/>
+  <text x="80" y="74" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="11" font-weight="300" fill="#94A3B8" letter-spacing="3">LOVE</text>
+  <text x="80" y="96" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" letter-spacing="1">&amp;</text>
+  <text x="80" y="112" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="10" font-weight="600" fill="#E07A5F" letter-spacing="2">GRACE</text>
+</svg>

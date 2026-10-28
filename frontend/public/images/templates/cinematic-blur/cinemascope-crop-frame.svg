@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 480 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 2.39:1 Anamorphic Widescreen Letterbox overlay -->
+  <rect x="0" y="0" width="480" height="26" fill="#0A0B0E"/>
+  <rect x="0" y="174" width="480" height="26" fill="#0A0B0E"/>
+  <!-- Hairline Frame Border -->
+  <rect x="12" y="26" width="456" height="148" stroke="#DFD2BD" stroke-width="1" stroke-opacity="0.3"/>
+  <!-- Corner Crop Marks -->
+  <path d="M 24 38 L 24 48 M 24 38 L 34 38" stroke="#DFD2BD" stroke-width="1.5"/>
+  <path d="M 456 38 L 456 48 M 456 38 L 446 38" stroke="#DFD2BD" stroke-width="1.5"/>
+  <path d="M 24 162 L 24 152 M 24 162 L 34 162" stroke="#DFD2BD" stroke-width="1.5"/>
+  <path d="M 456 162 L 456 152 M 456 162 L 446 162" stroke="#DFD2BD" stroke-width="1.5"/>
+  <!-- Center Scope Crosshair -->
+  <line x1="240" y1="94" x2="240" y2="106" stroke="#DFD2BD" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="234" y1="100" x2="246" y2="100" stroke="#DFD2BD" stroke-width="1" stroke-opacity="0.6"/>
+  <!-- Scope Info Label -->
+  <text x="24" y="18" font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="#9CA3AF" letter-spacing="2">ASPECT: 2.39:1 CINEMASCOPE</text>
+  <text x="456" y="18" text-anchor="end" font-family="'Courier New', monospace" font-size="9" fill="#9CA3AF" letter-spacing="2">COLOR: 35MM EASTMAN</text>
+</svg>

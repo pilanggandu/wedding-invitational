@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hand-drawn Botanical Corner Sprig -->
+  <path d="M 14 14 Q 30 70 80 110 T 160 140" stroke="#657351" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <!-- Branching leaf pairs -->
+  
+    <ellipse cx="23" cy="40" rx="14" ry="7" transform="rotate(-75 23 40)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+    <ellipse cx="45" cy="62" rx="14" ry="7" transform="rotate(-15 45 62)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+  
+    <ellipse cx="43" cy="65" rx="14" ry="7" transform="rotate(-55 43 65)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+    <ellipse cx="65" cy="87" rx="14" ry="7" transform="rotate(5 65 87)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+  
+    <ellipse cx="68" cy="90" rx="14" ry="7" transform="rotate(-40 68 90)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+    <ellipse cx="90" cy="112" rx="14" ry="7" transform="rotate(20 90 112)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+  
+    <ellipse cx="98" cy="110" rx="14" ry="7" transform="rotate(-15 98 110)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+    <ellipse cx="120" cy="132" rx="14" ry="7" transform="rotate(45 120 132)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+  
+    <ellipse cx="128" cy="125" rx="14" ry="7" transform="rotate(0 128 125)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+    <ellipse cx="150" cy="147" rx="14" ry="7" transform="rotate(60 150 147)" fill="#7D8D66" stroke="#4D593D" stroke-width="1.2"/>
+  
+  <!-- Maroon Berries -->
+  <circle cx="50" cy="55" r="4.5" fill="#7D1128"/>
+  <circle cx="85" cy="85" r="4.5" fill="#7D1128"/>
+  <circle cx="120" cy="110" r="4.5" fill="#7D1128"/>
+</svg>

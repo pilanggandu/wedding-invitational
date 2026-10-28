@@ -6,8 +6,9 @@ Dokumen ini berisi seluruh daftar tautan (URL) dan metode untuk membuka serta me
 
 ## 🌟 1. URL Publik Gratis Aktif (Bisa Dibuka Siapa Saja Tanpa VPN)
 Link HTTPS resmi dari Cloudflare Tunnel yang saat ini **sedang aktif berjalan**:
-- 👉 **[https://disciplinary-fragrance-smilies-really.trycloudflare.com](https://disciplinary-fragrance-smilies-really.trycloudflare.com)**
-- Contoh dengan Nama Tamu: **[https://disciplinary-fragrance-smilies-really.trycloudflare.com/?to=Sahabat+Tercinta](https://disciplinary-fragrance-smilies-really.trycloudflare.com/?to=Sahabat+Tercinta)**
+- 👉 **[https://cut-fishing-postal-violations.trycloudflare.com](https://cut-fishing-postal-violations.trycloudflare.com)**
+- Contoh dengan Nama Tamu: **[https://cut-fishing-postal-violations.trycloudflare.com/?to=Sahabat+Tercinta](https://cut-fishing-postal-violations.trycloudflare.com/?to=Sahabat+Tercinta)**
+- Link Langsung ke Photobox: **[https://cut-fishing-postal-violations.trycloudflare.com/photobox](https://cut-fishing-postal-violations.trycloudflare.com/photobox)**
 
 *(Bisa dibuka dari HP siapa saja menggunakan paket data seluler tanpa perlu install VPN atau sambung ke Wi-Fi).*
 

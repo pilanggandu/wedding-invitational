@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="goldArch" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8D7B8"/>
+      <stop offset="40%" stop-color="#C8A97E"/>
+      <stop offset="80%" stop-color="#8C6D3F"/>
+      <stop offset="100%" stop-color="#E8D7B8"/>
+    </linearGradient>
+  </defs>
+  <!-- Architectural Palace Archway / Kubah Gapura -->
+  <!-- Outer Arch Contour -->
+  <path d="M 28 420 L 28 170 C 28 80, 80 24, 160 24 C 240 24, 292 80, 292 170 L 292 420" 
+        stroke="url(#goldArch)" stroke-width="2.5" fill="none"/>
+  <!-- Inner Fine Arch -->
+  <path d="M 44 420 L 44 175 C 44 95, 90 44, 160 44 C 230 44, 276 95, 276 175 L 276 420" 
+        stroke="url(#goldArch)" stroke-width="1" stroke-dasharray="3 3" fill="none" opacity="0.75"/>
+  <!-- Left Classical Pillar -->
+  <rect x="22" y="170" width="12" height="250" stroke="url(#goldArch)" stroke-width="1.5" fill="#0F2D24" fill-opacity="0.3"/>
+  <rect x="18" y="162" width="20" height="8" rx="1" fill="url(#goldArch)"/>
+  <rect x="16" y="416" width="24" height="12" rx="1" fill="url(#goldArch)"/>
+  <!-- Right Classical Pillar -->
+  <rect x="286" y="170" width="12" height="250" stroke="url(#goldArch)" stroke-width="1.5" fill="#0F2D24" fill-opacity="0.3"/>
+  <rect x="282" y="162" width="20" height="8" rx="1" fill="url(#goldArch)"/>
+  <rect x="280" y="416" width="24" height="12" rx="1" fill="url(#goldArch)"/>
+  <!-- Arch Keystone Ornament at apex -->
+  <path d="M 152 14 L 168 14 L 164 36 L 156 36 Z" fill="url(#goldArch)"/>
+  <circle cx="160" cy="10" r="3" fill="#E8D7B8"/>
+  <!-- Arabesque Filigree Medallion in Tympanum -->
+  <circle cx="160" cy="95" r="28" stroke="url(#goldArch)" stroke-width="1.5" fill="none"/>
+  <circle cx="160" cy="95" r="24" stroke="url(#goldArch)" stroke-width="0.75" stroke-dasharray="2 3"/>
+  <path d="M 160 75 Q 150 95 160 115 Q 170 95 160 75 Z" fill="url(#goldArch)" opacity="0.6"/>
+  <path d="M 140 95 Q 160 85 180 95 Q 160 105 140 95 Z" fill="url(#goldArch)" opacity="0.6"/>
+</svg>

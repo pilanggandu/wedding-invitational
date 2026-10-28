@@ -4,6 +4,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -38,16 +40,10 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
   const glowColor = palette?.glow || "rgba(217,119,54,0.3)";
 
   return (
-    <section id="couple" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="couple" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -71,14 +67,12 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
             {data.general?.openingMessage ||
               "Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami mengundang kehadiran Bapak/Ibu/Saudara/i untuk menyaksikan ikrar suci kami."}
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Groom Asymmetric Editorial Card */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.1 }}
+        <ItemMotion
+          variant="slide-left"
+          delay={0.1}
           style={{
             borderColor: `${accentColor}33`,
             boxShadow: `0 20px 45px rgba(15,23,42,0.06), 0 0 35px ${glowColor}`,
@@ -96,14 +90,21 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
                 className="w-full h-full object-cover object-top scale-102 group-hover:scale-108 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center">
+              <ItemMotion
+                variant="slide-down"
+                delay={0.2}
+                float={true}
+                floatDistance={3}
+                floatDuration={3.5}
+                className="absolute bottom-2 left-0 right-0 flex justify-center"
+              >
                 <span
                   style={{ backgroundColor: `${accentColor}EE` }}
                   className="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-semibold uppercase tracking-wider text-white shadow-md backdrop-blur-md"
                 >
                   The Groom
                 </span>
-              </div>
+              </ItemMotion>
             </div>
 
             <div className="space-y-2 flex-1">
@@ -143,14 +144,12 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
               )}
             </div>
           </div>
-        </motion.div>
+        </ItemMotion>
 
         {/* Center Chromatic Harmony Connector */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <ItemMotion
+          variant="pop"
+          delay={0.15}
           className="flex items-center justify-center gap-3 my-2"
         >
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
@@ -164,14 +163,12 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
             &amp;
           </div>
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
-        </motion.div>
+        </ItemMotion>
 
         {/* Bride Asymmetric Editorial Card (Mirrored) */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+        <ItemMotion
+          variant="slide-right"
+          delay={0.2}
           style={{
             borderColor: `${accentColor}33`,
             boxShadow: `0 20px 45px rgba(15,23,42,0.06), 0 0 35px ${glowColor}`,
@@ -226,18 +223,25 @@ export function AmbientBlurCouple({ palette }: AmbientBlurCoupleProps) {
                 className="w-full h-full object-cover object-top scale-102 group-hover:scale-108 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center">
+              <ItemMotion
+                variant="slide-down"
+                delay={0.25}
+                float={true}
+                floatDistance={3}
+                floatDuration={3.5}
+                className="absolute bottom-2 left-0 right-0 flex justify-center"
+              >
                 <span
                   style={{ backgroundColor: `${accentColor}EE` }}
                   className="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-semibold uppercase tracking-wider text-white shadow-md backdrop-blur-md"
                 >
                   The Bride
                 </span>
-              </div>
+              </ItemMotion>
             </div>
           </div>
-        </motion.div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

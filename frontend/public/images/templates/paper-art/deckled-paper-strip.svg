@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 400 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="deckleShadow" x="-5%" y="-15%" width="110%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#2D2319" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g filter="url(#deckleShadow)">
+    <!-- Torn fibrous deckled paper strip -->
+    <path d="M 10 14 
+             Q 60 12 120 15 T 240 13 T 360 15 L 390 14 
+             L 394 22 L 388 30 L 394 38 L 388 46 L 392 50 
+             Q 340 52 280 49 T 160 51 T 40 49 L 10 50 
+             L 6 42 L 12 34 L 6 26 L 10 18 Z" 
+          fill="#FAF7F0" stroke="#E7DEC8" stroke-width="1.2"/>
+    <line x1="20" y1="32" x2="380" y2="32" stroke="#D1C5AE" stroke-width="1" stroke-dasharray="3 3"/>
+  </g>
+</svg>

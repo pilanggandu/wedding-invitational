@@ -15,6 +15,7 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
 
 export function GallerySection() {
   const { gallery } = useWeddingData();
@@ -22,7 +23,7 @@ export function GallerySection() {
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhoto | null>(null);
 
   return (
-    <section id="galeri" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
+    <SectionMotion id="galeri" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
       {/* Decorative Accents */}
       <BotanicalLeaves className="absolute -top-10 -left-6 w-36 h-56 opacity-30 rotate-12 pointer-events-none" />
       <BotanicalLeaves className="absolute bottom-10 -right-8 w-44 h-64 opacity-30 -rotate-45 pointer-events-none" />
@@ -177,6 +178,6 @@ export function GallerySection() {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }

@@ -65,42 +65,38 @@ export function PaintedCatsDesktopLeft({
   }, [data.countdownTarget]);
 
   return (
-    <aside className="hidden lg:flex lg:w-[48%] xl:w-[50%] min-h-screen relative flex-col justify-between p-12 xl:p-16 text-[#2C2623] overflow-hidden select-none border-r border-[#EAE0D5] bg-[#FAF6EE]">
-      {/* Background canvas grain texture */}
+    <aside className="hidden lg:flex lg:w-[48%] xl:w-[50%] min-h-screen relative flex-col justify-between p-12 xl:p-16 text-[#38241B] overflow-hidden select-none border-r border-[#F3DFD1] bg-[#FAF5ED]">
       <div
         className="absolute inset-0 opacity-[0.06] mix-blend-multiply pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(#C85A17 0.75px, transparent 0.75px), radial-gradient(#2C2623 0.75px, #FAF6EE 0.75px)`,
+          backgroundImage: `radial-gradient(#DF7B54 0.75px, transparent 0.75px), radial-gradient(#F3DFD1 0.75px, #FAF5ED 0.75px)`,
           backgroundSize: "16px 16px",
         }}
       />
 
-      {/* Top Header */}
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-[#D97736] flex items-center justify-center text-white shadow-sm">
+          <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#DF7B54] to-[#F4929D] flex items-center justify-center text-white shadow-sm">
             <DoodlePawSticker className="w-5 h-5" color="#FFFFFF" rotate={0} />
           </div>
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C85A17] block">
-              Doodle Cat Scrapbook
+            <span className="text-[10px] font-sans font-bold uppercase tracking-wider text-[#DF7B54] block">
+              Cute Chibi Cat Scrapbook
             </span>
-            <span className="font-serif text-sm font-bold text-[#2C2623]">
+            <span className="font-serif text-sm font-bold text-[#38241B]">
               {groom?.name} &amp; {bride?.name}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E8D9CB] text-xs text-[#C85A17] font-mono shadow-xs">
-          <Calendar className="w-3.5 h-3.5 text-[#D97736]" />
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#F3DFD1] text-xs text-[#DF7B54] font-sans font-bold shadow-xs">
+          <Calendar className="w-3.5 h-3.5 text-[#DF7B54]" />
           <span>{dateStr}</span>
         </div>
       </div>
 
-      {/* Center Doodle Sticker Scrapbook Showcase */}
       <div className="relative z-10 my-auto max-w-lg space-y-6">
-        {/* Doodle Sticker Display with Washi Tape */}
-        <div className="relative w-80 p-6 rounded-3xl bg-white border-2 border-[#EAD8C7] shadow-[0_20px_45px_rgba(200,90,23,0.12)] text-center">
+        <div className="relative w-80 p-6 rounded-[36px] bg-white border-[4px] border-white ring-1 ring-[#F3DFD1] shadow-[0_20px_45px_rgba(222,125,84,0.12)] text-center">
           <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-20">
             <WashiTape color="peach" angle={-3} className="w-32 text-[9px]" />
           </div>
@@ -114,22 +110,21 @@ export function PaintedCatsDesktopLeft({
           <DoodleCatCoupleSticker className="w-72 h-64 mx-auto" rotate={0} />
         </div>
 
-        {/* Animated Painted Names (Sequential Fade-in / Fade-out) */}
         <div className="space-y-2">
-          <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C85A17] block">
+          <span className="text-xs font-sans uppercase font-bold tracking-wider text-[#DF7B54] block">
             The Wedding Celebration of
           </span>
           <div className="min-h-[64px] flex items-center">
             <PaintedTextReveal
               text={`${groom?.name} & ${bride?.name}`}
-              className="text-4xl xl:text-5xl font-serif font-bold text-[#2C2623] tracking-tight leading-tight"
+              className="text-4xl xl:text-5xl font-serif font-bold text-[#38241B] tracking-tight leading-tight"
               mode="words"
               staggerDelay={0.12}
               loopFade={true}
               intervalSeconds={7}
             />
           </div>
-          <p className="text-sm text-[#7A6150] font-sans leading-relaxed pt-1">
+          <p className="text-sm text-[#6E5345] font-sans leading-relaxed pt-1">
             {data.general?.funTagline ||
               "Dua hati yang saling melengkapi dalam kehangatan cinta, doa, dan rasa syukur."}
           </p>
@@ -137,22 +132,21 @@ export function PaintedCatsDesktopLeft({
 
         <BrushStrokeDivider className="mx-0" />
 
-        {/* Live Countdown Grid with Sticker Card Design */}
         <div className="grid grid-cols-4 gap-3">
           {[
             { label: "HARI", value: timeLeft.days, bg: "bg-white" },
-            { label: "JAM", value: timeLeft.hours, bg: "bg-[#FFF9F3]" },
+            { label: "JAM", value: timeLeft.hours, bg: "bg-[#FFF9F5]" },
             { label: "MENIT", value: timeLeft.minutes, bg: "bg-white" },
-            { label: "DETIK", value: timeLeft.seconds, bg: "bg-[#FFF9F3]" },
+            { label: "DETIK", value: timeLeft.seconds, bg: "bg-[#FFF9F5]" },
           ].map((item, idx) => (
             <div
               key={idx}
-              className={`${item.bg} rounded-2xl p-3.5 text-center border-2 border-[#EAD8C7] shadow-xs relative`}
+              className={`${item.bg} rounded-2xl p-3.5 text-center border-[2.5px] border-white ring-1 ring-[#F3DFD1] shadow-xs relative`}
             >
-              <span className="text-xl xl:text-2xl font-serif font-bold text-[#2C2623] block">
+              <span className="text-xl xl:text-2xl font-serif font-bold text-[#38241B] block">
                 {String(item.value).padStart(2, "0")}
               </span>
-              <span className="text-[10px] font-mono text-[#C85A17] font-semibold tracking-wider block mt-0.5">
+              <span className="text-[10px] font-sans text-[#DF7B54] font-bold tracking-wider block mt-0.5">
                 {item.label}
               </span>
             </div>
@@ -160,10 +154,9 @@ export function PaintedCatsDesktopLeft({
         </div>
       </div>
 
-      {/* Bottom Footer Info */}
-      <div className="relative z-10 flex items-center justify-between text-xs text-[#8C6D58] font-sans border-t border-[#EAE0D5] pt-4">
+      <div className="relative z-10 flex items-center justify-between text-xs text-[#8C6D58] font-sans border-t border-[#F3DFD1] pt-4">
         <span>Gunakan layar ponsel di samping untuk pengalaman interaktif</span>
-        <span className="font-mono text-[#C85A17] font-medium">{data.general?.hashtag}</span>
+        <span className="font-sans text-[#DF7B54] font-bold">{data.general?.hashtag}</span>
       </div>
     </aside>
   );

@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { CreditCard, Copy, Check, Gift, MapPin } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { FilmTimecodeBadge, ModernHairlineDivider } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 export function CinematicGift() {
   const data = useWeddingData();
@@ -27,16 +29,10 @@ export function CinematicGift() {
   };
 
   return (
-    <section id="gift" className="relative py-16 px-6 text-center text-white overflow-hidden">
+    <SectionMotion id="gift" className="relative py-16 px-6 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <FilmTimecodeBadge scene="SCENE 06" take="TANDA KASIH" className="mb-2" />
           <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Amplop Digital &amp; Kado
@@ -44,19 +40,17 @@ export function CinematicGift() {
           <p className="text-xs text-white/70 max-w-xs mx-auto leading-relaxed">
             Doa restu Anda adalah karunia terindah bagi kami. Bagi yang berkenan memberikan tanda kasih, kami menyediakan nomor rekening di bawah ini.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Bank Account Cards */}
         <div className="space-y-4">
           {accounts.map((acc, idx) => {
             const isCopied = copiedAccount === String(idx);
             return (
-              <motion.div
+              <ItemMotion
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={idx * 0.12}
                 className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 border border-white/20 shadow-[0_15px_40px_rgba(0,0,0,0.4)] text-left relative overflow-hidden"
               >
                 {/* Bank Header */}
@@ -103,18 +97,16 @@ export function CinematicGift() {
                     </>
                   )}
                 </button>
-              </motion.div>
+              </ItemMotion>
             );
           })}
         </div>
 
         {/* Physical Gift Address (Optional) */}
         {physicalAddress && physicalAddress.address && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+          <ItemMotion
+            variant="pop"
+            delay={0.2}
             className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 border border-white/20 shadow-lg text-left space-y-3"
           >
             <div className="flex items-center gap-2 pb-2 border-b border-white/15">
@@ -148,9 +140,9 @@ export function CinematicGift() {
                 </>
               )}
             </button>
-          </motion.div>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }

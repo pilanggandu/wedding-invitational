@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="binderGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#854D0E"/>
+    </linearGradient>
+    <filter id="binderShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-color="#451A03" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <g filter="url(#binderShadow)">
+    <!-- Wire handles (Silver / Brass loops) -->
+    <path d="M 50 80 L 50 24 A 12 12 0 0 1 74 24 L 74 80" stroke="#E5E7EB" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <path d="M 66 80 L 66 24 A 12 12 0 0 1 90 24 L 90 80" stroke="#9CA3AF" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <!-- Triangular Spring Steel Body (Brass / Gold) -->
+    <polygon points="25,135 115,135 70,80" fill="url(#binderGold)" stroke="#A16207" stroke-width="2"/>
+    <rect x="25" y="132" width="90" height="12" rx="2" fill="#78350F"/>
+  </g>
+</svg>

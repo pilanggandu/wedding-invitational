@@ -1,5 +1,6 @@
 import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
 import { AuthUser, AuthResponse } from "@/types/auth";
+import type { GuestDraft } from "./guestData";
 
 export const AUTH_TOKEN_KEY = "wedding_auth_token_v1";
 
@@ -19,13 +20,22 @@ export function removeStoredAuthToken(): void {
 }
 
 function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
   if (typeof window !== "undefined") {
+    if (
+      process.env.NEXT_PUBLIC_API_URL &&
+      !process.env.NEXT_PUBLIC_API_URL.includes("localhost") &&
+      !process.env.NEXT_PUBLIC_API_URL.includes("127.0.0.1")
+    ) {
+      return process.env.NEXT_PUBLIC_API_URL;
+    }
     return "/api";
   }
-  return "http://localhost:5000/api";
+  return (
+    process.env.INTERNAL_API_URL ||
+    (process.env.NEXT_PUBLIC_API_URL?.startsWith("http")
+      ? process.env.NEXT_PUBLIC_API_URL
+      : "http://localhost:5000/api")
+  );
 }
 
 /**
@@ -34,7 +44,7 @@ function getBaseUrl(): string {
 async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
-): Promise<{ data: T | null; error: string | null }> {
+): Promise<{ data: T | null; error: string | null; status?: number }> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000); // 4 detik timeout
@@ -59,14 +69,20 @@ async function apiRequest<T>(
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}));
-      return { data: null, error: errBody.error || `HTTP ${res.status}` };
+      return { data: null, error: errBody.error || `HTTP ${res.status}`, status: res.status };
     }
 
     const json = await res.json();
     return { data: json, error: null };
   } catch (err: any) {
-    // Backend offline / not reachable
-    return { data: null, error: err.message || "Network error" };
+    if (err?.name === "AbortError") {
+      return { data: null, error: "Koneksi waktu habis (timeout) ke server." };
+    }
+    const message =
+      err?.message === "Load failed" || err?.message === "Failed to fetch"
+        ? "Gagal menghubungi server backend. Pastikan server backend sedang aktif."
+        : err?.message || "Network error";
+    return { data: null, error: message };
   }
 }
 
@@ -127,6 +143,35 @@ export async function deleteGuestFromBackend(id: string): Promise<boolean> {
     method: "DELETE",
   });
   return !error;
+}
+
+export async function saveGuestMasterToBackend(
+  draft: GuestDraft | { isSent: boolean },
+  id?: string,
+): Promise<GuestItem> {
+  const { data, error, status } = await apiRequest<{ guest: GuestItem }>(
+    id ? `/guests/${encodeURIComponent(id)}` : "/guests",
+    { method: id ? "PATCH" : "POST", body: JSON.stringify(draft) },
+  );
+  if (error || !data?.guest?.id) {
+    throw new GuestSaveError(
+      error || "Server belum mengonfirmasi penyimpanan tamu.",
+      status === undefined || status >= 500 || !error,
+    );
+  }
+  return data.guest;
+}
+
+export class GuestSaveError extends Error {
+  constructor(message: string, public readonly unconfirmed: boolean) {
+    super(message);
+    this.name = "GuestSaveError";
+  }
+}
+
+export async function deleteGuestMasterFromBackend(id: string): Promise<void> {
+  const { error } = await apiRequest(`/guests/${encodeURIComponent(id)}`, { method: "DELETE" });
+  if (error) throw new Error(error);
 }
 
 export async function verifyGuestTokenApi(
@@ -293,6 +338,24 @@ export async function loginToBackend(credentials: {
 
   if (error || !data || !data.token) {
     return { user: null, token: null, error: error || "Gagal masuk" };
+  }
+
+  setStoredAuthToken(data.token);
+  return { user: data.user, token: data.token, error: null };
+}
+
+export async function loginWithGoogleToBackend(credential: string): Promise<{
+  user: AuthUser | null;
+  token: string | null;
+  error: string | null;
+}> {
+  const { data, error } = await apiRequest<AuthResponse>("/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ credential }),
+  });
+
+  if (error || !data || !data.token) {
+    return { user: null, token: null, error: error || "Gagal masuk dengan Google" };
   }
 
   setStoredAuthToken(data.token);

@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { CreditCard, Copy, Check, Gift } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurGiftProps {
   palette?: ExtractedColors;
@@ -34,16 +36,10 @@ export function AmbientBlurGift({ palette }: AmbientBlurGiftProps) {
   };
 
   return (
-    <section id="gift" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="gift" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -66,19 +62,17 @@ export function AmbientBlurGift({ palette }: AmbientBlurGiftProps) {
           <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
             Doa restu Anda merupakan kado terindah bagi kami. Apabila Anda berkehendak memberikan tanda kasih, dapat melalui tautan rekening berikut.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Bank Account Cards */}
         <div className="space-y-4">
           {accounts.map((acc, idx) => {
             const isCopied = copiedAccount === String(idx);
             return (
-              <motion.div
+              <ItemMotion
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={idx * 0.12}
                 style={{
                   borderColor: `${accentColor}33`,
                   boxShadow: `0 15px 40px rgba(15,23,42,0.06), 0 0 20px ${glowColor}`,
@@ -137,18 +131,16 @@ export function AmbientBlurGift({ palette }: AmbientBlurGiftProps) {
                     </>
                   )}
                 </button>
-              </motion.div>
+              </ItemMotion>
             );
           })}
         </div>
 
         {/* Physical Gift Address (Optional) */}
         {physicalAddress && physicalAddress.address && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+          <ItemMotion
+            variant="slide-up"
+            delay={0.25}
             style={{
               borderColor: `${accentColor}33`,
             }}
@@ -185,9 +177,9 @@ export function AmbientBlurGift({ palette }: AmbientBlurGiftProps) {
                 </>
               )}
             </button>
-          </motion.div>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }

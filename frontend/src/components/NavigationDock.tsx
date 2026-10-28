@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Home,
   Users,
@@ -141,22 +141,24 @@ export function NavigationDock({
   );
 
   useEffect(() => {
-    if (defaultItems.length > 0) {
-      setActiveSection(defaultItems[0].id);
-    }
-  }, [defaultItems]);
-
-  useEffect(() => {
     const updatePosition = () => {
       const parentMain = navRef.current?.closest("main");
       if (parentMain) {
         const rect = parentMain.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
         const maxDockWidth = Math.min(rect.width - 24, 400);
-        setDockLayout({
-          left: `${centerX}px`,
-          maxWidth: `${Math.max(280, maxDockWidth)}px`,
-        });
+
+        if (navRef.current?.offsetParent) {
+          setDockLayout({
+            left: "50%",
+            maxWidth: `${Math.max(280, maxDockWidth)}px`,
+          });
+        } else {
+          const centerX = rect.left + rect.width / 2;
+          setDockLayout({
+            left: `${centerX}px`,
+            maxWidth: `${Math.max(280, maxDockWidth)}px`,
+          });
+        }
       } else {
         setDockLayout({
           left: "50%",
@@ -167,37 +169,44 @@ export function NavigationDock({
 
     updatePosition();
     window.addEventListener("resize", updatePosition, { passive: true });
-    window.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("scroll", updatePosition, { passive: true, capture: true });
     return () => {
       window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("scroll", updatePosition, { capture: true });
     };
   }, []);
 
+  const shouldReduceMotion = useReducedMotion();
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 220;
-      for (const item of defaultItems) {
+      const viewportTrigger = window.innerHeight * 0.38;
+      for (let i = defaultItems.length - 1; i >= 0; i--) {
+        const item = defaultItems[i];
         const el = getTargetElement(item.id);
         if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= viewportTrigger && rect.bottom > 80) {
             setActiveSection(item.id);
-            break;
+            return;
           }
         }
       }
+      if (window.scrollY < 120 && defaultItems.length > 0) {
+        setActiveSection(defaultItems[0].id);
+      }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", handleScroll, { capture: true });
   }, [defaultItems]);
 
   const scrollToSection = (id: string) => {
     const element = getTargetElement(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: shouldReduceMotion ? "auto" : "smooth", block: "start" });
+      setActiveSection(id);
     }
   };
 
@@ -254,19 +263,22 @@ export function NavigationDock({
     },
     cats: {
       container:
-        "bg-[#FAF6EE]/95 border-2 border-[#EAD8C7] shadow-[0_10px_30px_rgba(200,90,23,0.14)] text-[#8C5D38]",
+        "bg-white/95 backdrop-blur-md border-[2.5px] border-white ring-1 ring-[#F3DFD1] shadow-[0_12px_32px_rgba(222,125,84,0.18)] text-[#8C6D58]",
       activeText: "text-white",
-      inactiveText: "text-[#8C5D38] hover:text-[#D97736]",
+      inactiveText: "text-[#8C6D58] hover:text-[#DF7B54]",
       activePill:
-        "bg-[#D97736] border border-[#C85A17] shadow-xs",
-      font: "font-mono font-bold text-[10px]",
+        "bg-gradient-to-r from-[#DF7B54] to-[#F4929D] shadow-xs text-white",
+      font: "font-sans font-bold text-[10px]",
       layoutId: "dockPill-cats",
     },
   }[theme];
 
   return (
-    <nav
+    <motion.nav
       ref={navRef}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       style={{
         left: dockLayout.left,
         maxWidth: dockLayout.maxWidth,
@@ -284,8 +296,8 @@ export function NavigationDock({
           return (
             <motion.button
               key={item.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={shouldReduceMotion ? {} : { scale: 1.03 }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
               onClick={() => scrollToSection(item.id)}
               className={`flex-1 relative flex flex-col items-center justify-center py-1 sm:py-1.5 px-0.5 rounded-full transition-colors cursor-pointer min-h-[38px] sm:min-h-[42px] z-10 ${
                 isActive ? themeStyles.activeText : themeStyles.inactiveText
@@ -296,7 +308,7 @@ export function NavigationDock({
               {isActive && (
                 <motion.div
                   layoutId={themeStyles.layoutId}
-                  transition={{ type: "spring", stiffness: 450, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   className={`absolute inset-0 rounded-full -z-10 ${themeStyles.activePill}`}
                 />
               )}
@@ -310,7 +322,7 @@ export function NavigationDock({
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }
 

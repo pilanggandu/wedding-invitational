@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, Film } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { FilmTimecodeBadge, ModernHairlineDivider, CameraCropMarks } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 export function CinematicHero() {
   const data = useWeddingData();
@@ -50,23 +52,21 @@ export function CinematicHero() {
   const heroImage = data.general?.coverPhotoUrl || data.general?.preweddingPhotos?.[0] || "/images/prewedding/couple-1.jpg";
 
   return (
-    <section id="hero" className="relative pt-6 pb-16 px-4 text-center text-white overflow-hidden">
+    <SectionMotion id="hero" className="relative pt-6 pb-16 px-4 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+        <ItemMotion
+          variant="slide-down"
+          float={true}
+          floatDistance={3}
+          floatDuration={5}
           className="flex justify-center"
         >
           <FilmTimecodeBadge scene="SEQUENCE 01" take="PROLOGUE" fps="24 FPS" />
-        </motion.div>
+        </ItemMotion>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        <ItemMotion
+          variant="pop"
+          delay={0.08}
           className="relative rounded-2xl overflow-hidden border border-white/25 shadow-[0_20px_50px_rgba(0,0,0,0.7)] bg-black"
         >
           <div className="w-full bg-black py-1 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-white/60 border-b border-white/15">
@@ -80,6 +80,14 @@ export function CinematicHero() {
 
           <div className="relative aspect-[21/9] sm:aspect-[2.39/1] overflow-hidden group">
             <CameraCropMarks className="opacity-70" />
+            <div className="absolute inset-0 pointer-events-none select-none z-10 opacity-75">
+              <img
+                src="/images/templates/cinematic-blur/cinemascope-crop-frame.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-full h-full object-contain"
+              />
+            </div>
             <motion.img
               initial={{ scale: 1.08 }}
               animate={{ scale: 1.02 }}
@@ -108,14 +116,12 @@ export function CinematicHero() {
             <span>F/2.0 &bull; 50MM</span>
             <span>ISO 400</span>
           </div>
-        </motion.div>
+        </ItemMotion>
 
         {data.general?.quote && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+          <ItemMotion
+            variant="fade"
+            delay={0.16}
             className="bg-black/60 backdrop-blur-2xl rounded-2xl p-5 border border-white/15 shadow-xl space-y-2.5 text-center"
           >
             {data.general.quote.arabic && (
@@ -129,16 +135,16 @@ export function CinematicHero() {
             <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-white/50">
               {data.general.quote.source}
             </span>
-          </motion.div>
+          </ItemMotion>
         )}
 
-        <ModernHairlineDivider />
+        <ItemMotion variant="pop" delay={0.2}>
+          <ModernHairlineDivider />
+        </ItemMotion>
 
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.25 }}
+        <ItemMotion
+          variant="slide-up"
+          delay={0.22}
           className="bg-black/70 backdrop-blur-2xl rounded-2xl p-5 border border-white/20 shadow-2xl space-y-3"
         >
           <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
@@ -151,13 +157,15 @@ export function CinematicHero() {
 
           <div className="grid grid-cols-4 gap-2">
             {[
-              { label: "DAYS", val: timeLeft.days },
-              { label: "HOURS", val: timeLeft.hours },
-              { label: "MINS", val: timeLeft.minutes },
-              { label: "SECS", val: timeLeft.seconds },
+              { label: "DAYS", val: timeLeft.days, variant: "slide-left" as const },
+              { label: "HOURS", val: timeLeft.hours, variant: "slide-left" as const },
+              { label: "MINS", val: timeLeft.minutes, variant: "slide-right" as const },
+              { label: "SECS", val: timeLeft.seconds, variant: "slide-right" as const },
             ].map((item, idx) => (
-              <div
+              <ItemMotion
                 key={idx}
+                variant={item.variant}
+                delay={0.25 + idx * 0.05}
                 className="bg-zinc-950/90 rounded-xl p-2.5 border border-white/15 text-center shadow-inner"
               >
                 <span className="text-xl sm:text-2xl font-mono font-bold text-white block tracking-wider">
@@ -166,15 +174,24 @@ export function CinematicHero() {
                 <span className="text-[8px] font-mono uppercase tracking-wider text-white/50 block mt-0.5">
                   {item.label}
                 </span>
-              </div>
+              </ItemMotion>
             ))}
           </div>
 
           <p className="text-[10px] font-mono text-white/60 tracking-wider pt-1">
             PREMIERE DATE: {dayStr.toUpperCase()}, {dateStr.toUpperCase()}
           </p>
-        </motion.div>
+        </ItemMotion>
+
+        <div className="flex justify-center pt-2 opacity-65 pointer-events-none select-none">
+          <img
+            src="/images/templates/cinematic-blur/soundtrack-waveform.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-full max-w-sm h-auto object-contain"
+          />
+        </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

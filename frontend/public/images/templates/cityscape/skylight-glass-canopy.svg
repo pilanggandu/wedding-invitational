@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modernist Geodesic Glass Dome Lattice -->
+  <path d="M 20 140 C 20 60, 80 20, 160 20 C 240 20, 300 60, 300 140 Z" 
+        stroke="#2E8BC0" stroke-width="2" fill="#E0F2FE" fill-opacity="0.25"/>
+  <!-- Radial Ribs -->
+  <line x1="160" y1="20" x2="160" y2="140" stroke="#1D78A0" stroke-width="1.5"/>
+  <line x1="160" y1="20" x2="80" y2="140" stroke="#1D78A0" stroke-width="1.5"/>
+  <line x1="160" y1="20" x2="240" y2="140" stroke="#1D78A0" stroke-width="1.5"/>
+  <line x1="160" y1="20" x2="30" y2="140" stroke="#1D78A0" stroke-width="1.5"/>
+  <line x1="160" y1="20" x2="290" y2="140" stroke="#1D78A0" stroke-width="1.5"/>
+  <!-- Concentric Horizontal Arcs -->
+  <path d="M 70 60 C 100 45, 220 45, 250 60" stroke="#2E8BC0" stroke-width="1.5" fill="none"/>
+  <path d="M 40 100 C 90 75, 230 75, 280 100" stroke="#2E8BC0" stroke-width="1.5" fill="none"/>
+</svg>

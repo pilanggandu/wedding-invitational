@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Film, Radio } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
 import {
   FilmClapperIcon,
   FilmTimecodeBadge,
@@ -132,7 +133,8 @@ export function CinematicDesktopLeft({
             style={{ fontFamily: "var(--font-couple-custom, serif)" }}
             className="text-4xl xl:text-5xl font-bold tracking-tight text-white leading-tight drop-shadow-md"
           >
-            {groom?.name} &amp; {bride?.name}
+            <CharMotionReveal text={groom?.name || ""} baseDelay={0.2} /> &amp;{" "}
+            <CharMotionReveal text={bride?.name || ""} baseDelay={0.45} />
           </h1>
           <p className="text-sm text-white/70 font-sans leading-relaxed pt-1">
             {data.general?.funTagline ||

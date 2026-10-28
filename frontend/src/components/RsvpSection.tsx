@@ -15,6 +15,7 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
 
 interface RsvpSectionProps {
   guestName?: string;
@@ -129,7 +130,7 @@ export function RsvpSection({ guestName, guestItem }: RsvpSectionProps = {}) {
   };
 
   return (
-    <section id="rsvp" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
+    <SectionMotion id="rsvp" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
       {/* Decorative Accents */}
       <BotanicalLeaves className="absolute -top-8 -left-6 w-36 h-56 opacity-30 rotate-25 pointer-events-none" />
       <div className="absolute top-1/2 -right-2 pointer-events-none opacity-75">
@@ -388,6 +389,6 @@ export function RsvpSection({ guestName, guestItem }: RsvpSectionProps = {}) {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }

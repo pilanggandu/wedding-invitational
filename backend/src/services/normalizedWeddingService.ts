@@ -278,6 +278,22 @@ export class NormalizedWeddingService {
   // GUEST MANAGEMENT (Token, Quota, Open Tracking, Soft Delete)
   // =========================================================================
 
+  private async resolveGuestGroup(category: string): Promise<{ id: number; name: string }> {
+    const name = category.trim();
+    const existing = await this.pool.query(
+      "SELECT id, name FROM guest_groups WHERE LOWER(name) = LOWER($1) ORDER BY id LIMIT 1",
+      [name]
+    );
+    if (existing.rows.length) return existing.rows[0];
+    const inserted = await this.pool.query(
+      `INSERT INTO guest_groups (name) VALUES ($1)
+       ON CONFLICT (name) DO UPDATE SET name = guest_groups.name
+       RETURNING id, name`,
+      [name]
+    );
+    return inserted.rows[0];
+  }
+
   async getGuests(options: { includeDeleted?: boolean } = {}): Promise<any[]> {
     const whereClause = options.includeDeleted ? "" : "WHERE g.deleted_at IS NULL";
     const res = await this.pool.query(`
@@ -337,23 +353,13 @@ export class NormalizedWeddingService {
     const token = generateSecureToken(10);
     const quota = Math.max(1, data.quota || 1);
 
-    // Resolve group_id jika ada category
-    let groupId: number | null = null;
-    if (data.category) {
-      const gRes = await this.pool.query(
-        "SELECT id FROM guest_groups WHERE LOWER(name) = LOWER($1) LIMIT 1",
-        [data.category.trim()]
-      );
-      if (gRes.rows.length > 0) {
-        groupId = gRes.rows[0].id;
-      }
-    }
+    const group = await this.resolveGuestGroup(data.category || "Sahabat");
 
     const res = await this.pool.query(
       `INSERT INTO guests (guest_group_id, name, phone, token, quota, notes, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
        RETURNING *`,
-      [groupId, cleanName, cleanPhone, token, quota, data.notes || ""]
+      [group.id, cleanName, cleanPhone, token, quota, data.notes || ""]
     );
 
     const row = res.rows[0];
@@ -365,7 +371,8 @@ export class NormalizedWeddingService {
       token: row.token,
       quota: row.quota,
       invitationStatus: row.invitation_status,
-      category: data.category || "Sahabat & Teman Dekat",
+      category: group.name,
+      groupId: row.guest_group_id,
       isSent: false,
       notes: row.notes,
       createdAt: row.created_at,
@@ -429,7 +436,10 @@ export class NormalizedWeddingService {
     }
   ): Promise<any | null> {
     const curRes = await this.pool.query(
-      "SELECT * FROM guests WHERE id = $1 AND deleted_at IS NULL",
+      `SELECT g.*, gg.name AS group_name
+       FROM guests g
+       LEFT JOIN guest_groups gg ON g.guest_group_id = gg.id
+       WHERE g.id = $1 AND g.deleted_at IS NULL`,
       [id]
     );
     if (curRes.rows.length === 0) return null;
@@ -456,14 +466,11 @@ export class NormalizedWeddingService {
     }
 
     let groupId = cur.guest_group_id;
+    let category = cur.group_name || "Sahabat & Teman Dekat";
     if (data.category !== undefined) {
-      const gRes = await this.pool.query(
-        "SELECT id FROM guest_groups WHERE LOWER(name) = LOWER($1) LIMIT 1",
-        [data.category.trim()]
-      );
-      if (gRes.rows.length > 0) {
-        groupId = gRes.rows[0].id;
-      }
+      const group = await this.resolveGuestGroup(data.category);
+      groupId = group.id;
+      category = group.name;
     }
 
     const res = await this.pool.query(
@@ -490,11 +497,13 @@ export class NormalizedWeddingService {
       token: row.token,
       quota: row.quota,
       invitationStatus: row.invitation_status,
-      category: data.category || "Sahabat & Teman Dekat",
+      category,
+      groupId: row.guest_group_id,
       isSent: row.invitation_status > 0,
       notes: row.notes,
       openCount: row.open_count || 0,
       openedAt: row.opened_at,
+      lastOpenedAt: row.last_opened_at,
       createdAt: row.created_at,
     };
   }

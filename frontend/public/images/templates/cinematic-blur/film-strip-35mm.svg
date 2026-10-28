@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 100 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="filmBase" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0F1116"/>
+      <stop offset="50%" stop-color="#1A1D24"/>
+      <stop offset="100%" stop-color="#0F1116"/>
+    </linearGradient>
+  </defs>
+  <!-- 35mm Film Body -->
+  <rect x="0" y="0" width="100" height="500" rx="4" fill="url(#filmBase)" stroke="#2D313D" stroke-width="1.5"/>
+  <!-- Left Sprocket Holes -->
+  <rect x="8" y="14" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="49" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="84" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="119" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="154" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="189" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="224" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="259" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="294" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="329" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="364" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="399" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="434" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="8" y="469" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/>
+  <!-- Right Sprocket Holes -->
+  <rect x="80" y="14" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="49" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="84" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="119" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="154" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="189" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="224" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="259" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="294" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="329" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="364" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="399" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="434" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/><rect x="80" y="469" width="12" height="18" rx="2.5" fill="#FAF7F2" opacity="0.9"/>
+  <!-- Exposure Frame Windows in Middle (35mm Frames) -->
+  <rect x="26" y="24" width="48" height="68" rx="2" fill="#000000" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+  <rect x="26" y="118" width="48" height="68" rx="2" fill="#000000" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+  <rect x="26" y="212" width="48" height="68" rx="2" fill="#000000" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+  <rect x="26" y="306" width="48" height="68" rx="2" fill="#000000" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+  <rect x="26" y="400" width="48" height="68" rx="2" fill="#000000" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+  <!-- Edge numbers and barcode markings -->
+  <text x="24" y="106" font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#F59E0B" letter-spacing="1">▶ 01A</text>
+  <text x="24" y="200" font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#F59E0B" letter-spacing="1">▶ 02A</text>
+  <text x="24" y="294" font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#F59E0B" letter-spacing="1">▶ 03A</text>
+  <text x="24" y="388" font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#F59E0B" letter-spacing="1">▶ 04A</text>
+  <text x="24" y="482" font-family="'Courier New', monospace" font-size="7" font-weight="bold" fill="#F59E0B" letter-spacing="1">▶ 05A</text>
+</svg>

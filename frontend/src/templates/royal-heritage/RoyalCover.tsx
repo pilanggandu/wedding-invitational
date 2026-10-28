@@ -11,6 +11,7 @@ import {
 } from "./RoyalDecorations";
 import { RoyalAmbientParticles } from "./RoyalAmbientParticles";
 import { getFontFamilyCss } from "@/lib/typography";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
 
 interface RoyalCoverProps {
   isOpen: boolean;
@@ -108,7 +109,12 @@ export function RoyalCover({
           style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
           className="font-couple-title font-serif text-2xl min-[380px]:text-3xl sm:text-4xl tracking-tight text-[#FAF8F5] mb-1 font-normal leading-tight"
         >
-          {groomName} &amp; {brideName}
+          <CharMotionReveal
+            text={`${groomName} & ${brideName}`}
+            delay={0.25}
+            step={0.035}
+            className="justify-center"
+          />
         </h1>
 
         {/* Date */}
@@ -124,11 +130,26 @@ export function RoyalCover({
             Kepada Yth. Bapak/Ibu/Saudara/i:
           </p>
           <div className="text-base sm:text-lg font-serif font-semibold text-[#FAF8F5] tracking-wide px-2 py-0.5 sm:py-1">
-            {recipient}
+            <CharMotionReveal
+              text={recipient}
+              delay={0.4}
+              step={0.03}
+              className="justify-center"
+            />
           </div>
           <p className="text-[9px] sm:text-[10px] font-sans text-[#E8D7B8]/50 mt-1 italic">
             Mohon maaf apabila ada kesalahan penulisan nama atau gelar
           </p>
+        </div>
+
+        {/* Emerald Wax Seal Emblem */}
+        <div className="flex justify-center -mb-2 pointer-events-none select-none">
+          <img
+            src="/images/templates/royal-heritage/emerald-wax-seal.svg"
+            alt="Emerald Royal Seal"
+            aria-hidden="true"
+            className="w-16 h-16 object-contain drop-shadow-md"
+          />
         </div>
 
         {/* Open Invitation CTA */}

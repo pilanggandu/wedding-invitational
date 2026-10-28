@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="emeraldWax" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#2D6A4F"/>
+      <stop offset="50%" stop-color="#0F2D24"/>
+      <stop offset="85%" stop-color="#081C16"/>
+      <stop offset="100%" stop-color="#040F0C"/>
+    </radialGradient>
+    <linearGradient id="goldEmboss" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF2D6"/>
+      <stop offset="50%" stop-color="#C8A97E"/>
+      <stop offset="100%" stop-color="#806232"/>
+    </linearGradient>
+    <filter id="sealGlow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="5" stdDeviation="5" flood-color="#040D0A" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  <g filter="url(#sealGlow)">
+    <!-- Organic Emerald Wax Boundary -->
+    <path d="M 80 12 
+             C 108 10, 138 24, 146 52 
+             C 152 76, 148 106, 134 126 
+             C 120 144, 92 152, 70 148 
+             C 46 144, 20 134, 14 108 
+             C 8 82, 12 52, 26 34 
+             C 42 16, 62 14, 80 12 Z" 
+          fill="url(#emeraldWax)"/>
+    <!-- Inner Stamped Gold Bezel Ring -->
+    <circle cx="80" cy="80" r="48" stroke="url(#goldEmboss)" stroke-width="2" fill="none"/>
+    <circle cx="80" cy="80" r="44" stroke="#081C16" stroke-width="1.5" fill="none"/>
+    <!-- Gold Embossed Royal Crown & Laurel -->
+    <path d="M 68 64 L 73 54 L 80 60 L 87 54 L 92 64 Z" fill="url(#goldEmboss)"/>
+    <circle cx="80" cy="52" r="1.8" fill="#FFF2D6"/>
+    <text x="80" y="96" text-anchor="middle" font-family="'Cinzel', serif" font-size="28" font-weight="600" fill="url(#goldEmboss)">W</text>
+    <path d="M 64 96 C 60 88 64 78 70 74" stroke="url(#goldEmboss)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+    <path d="M 96 96 C 100 88 96 78 90 74" stroke="url(#goldEmboss)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

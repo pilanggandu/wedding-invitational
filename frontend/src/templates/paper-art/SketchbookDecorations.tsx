@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { MOTION_TRANSITIONS } from "@/lib/motion";
 
 export function SketchbookSpiralBinding({ className = "" }: { className?: string }) {
   return (
@@ -49,45 +51,93 @@ export function BotanicalBranchSvg({
   className?: string;
   color?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return (
+      <svg
+        viewBox="0 0 120 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`pointer-events-none ${className}`}
+      >
+        <path
+          d="M 10 20 Q 60 12 110 22"
+          stroke={color}
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path d="M 28 18 Q 32 8 40 12 Q 34 20 28 18 Z" fill={color} opacity="0.85" />
+        <path d="M 46 17 Q 52 26 60 22 Q 54 15 46 17 Z" fill={color} opacity="0.85" />
+        <path d="M 64 16 Q 70 6 78 10 Q 72 18 64 16 Z" fill={color} opacity="0.85" />
+        <path d="M 82 18 Q 88 27 96 23 Q 90 16 82 18 Z" fill={color} opacity="0.85" />
+        <path d="M 98 19 Q 106 12 112 18 Q 106 23 98 19 Z" fill={color} opacity="0.85" />
+      </svg>
+    );
+  }
+
   return (
-    <svg
+    <motion.svg
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: MOTION_TRANSITIONS.romantic.ease }}
       viewBox="0 0 120 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`pointer-events-none ${className}`}
     >
-      <path
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.85, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 10 20 Q 60 12 110 22"
         stroke={color}
         strokeWidth="1.8"
         strokeLinecap="round"
       />
-      <path
+      <motion.path
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.85, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 28 18 Q 32 8 40 12 Q 34 20 28 18 Z"
         fill={color}
-        opacity="0.85"
       />
-      <path
+      <motion.path
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.85, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.28, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 46 17 Q 52 26 60 22 Q 54 15 46 17 Z"
         fill={color}
-        opacity="0.85"
       />
-      <path
+      <motion.path
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.85, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.36, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 64 16 Q 70 6 78 10 Q 72 18 64 16 Z"
         fill={color}
-        opacity="0.85"
       />
-      <path
+      <motion.path
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.85, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.44, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 82 18 Q 88 27 96 23 Q 90 16 82 18 Z"
         fill={color}
-        opacity="0.85"
       />
-      <path
+      <motion.path
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 0.85, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.52, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 98 19 Q 106 12 112 18 Q 106 23 98 19 Z"
         fill={color}
-        opacity="0.85"
       />
-    </svg>
+    </motion.svg>
   );
 }
 
@@ -98,20 +148,65 @@ export function BotanicalWreathSvg({
   className?: string;
   color?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return (
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`pointer-events-none ${className}`}
+      >
+        <path
+          d="M 50 12 C 26 12 14 32 14 52 C 14 74 30 88 50 88"
+          stroke={color}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 50 12 C 74 12 86 32 86 52 C 86 74 70 88 50 88"
+          stroke={color}
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path d="M 20 32 Q 12 28 16 22 Q 22 24 20 32 Z" fill={color} opacity="0.85" />
+        <path d="M 14 50 Q 6 52 8 44 Q 16 46 14 50 Z" fill={color} opacity="0.85" />
+        <path d="M 22 68 Q 16 74 22 80 Q 26 72 22 68 Z" fill={color} opacity="0.85" />
+        <path d="M 80 32 Q 88 28 84 22 Q 78 24 80 32 Z" fill={color} opacity="0.85" />
+        <path d="M 86 50 Q 94 52 92 44 Q 84 46 86 50 Z" fill={color} opacity="0.85" />
+        <path d="M 78 68 Q 84 74 78 80 Q 74 72 78 68 Z" fill={color} opacity="0.85" />
+        <circle cx="50" cy="88" r="3" fill={color} />
+      </svg>
+    );
+  }
+
   return (
-    <svg
+    <motion.svg
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: MOTION_TRANSITIONS.romantic.ease }}
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`pointer-events-none ${className}`}
     >
-      <path
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.95, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 50 12 C 26 12 14 32 14 52 C 14 74 30 88 50 88"
         stroke={color}
         strokeWidth="1.6"
         strokeLinecap="round"
       />
-      <path
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.95, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 50 12 C 74 12 86 32 86 52 C 86 74 70 88 50 88"
         stroke={color}
         strokeWidth="1.6"
@@ -124,7 +219,7 @@ export function BotanicalWreathSvg({
       <path d="M 86 50 Q 94 52 92 44 Q 84 46 86 50 Z" fill={color} opacity="0.85" />
       <path d="M 78 68 Q 84 74 78 80 Q 74 72 78 68 Z" fill={color} opacity="0.85" />
       <circle cx="50" cy="88" r="3" fill={color} />
-    </svg>
+    </motion.svg>
   );
 }
 
@@ -135,20 +230,49 @@ export function CrayonUnderlineSvg({
   className?: string;
   color?: string;
 }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return (
+      <svg
+        viewBox="0 0 160 12"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className={`pointer-events-none ${className}`}
+      >
+        <path
+          d="M 4 7 Q 40 2 80 7 T 156 5"
+          stroke={color}
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          opacity="0.8"
+        />
+      </svg>
+    );
+  }
+
   return (
-    <svg
+    <motion.svg
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: MOTION_TRANSITIONS.romantic.ease }}
       viewBox="0 0 160 12"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`pointer-events-none ${className}`}
     >
-      <path
+      <motion.path
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, delay: 0.1, ease: MOTION_TRANSITIONS.romantic.ease }}
         d="M 4 7 Q 40 2 80 7 T 156 5"
         stroke={color}
         strokeWidth="3.2"
         strokeLinecap="round"
         opacity="0.8"
       />
-    </svg>
+    </motion.svg>
   );
 }

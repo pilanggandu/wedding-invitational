@@ -4,21 +4,30 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { FilmClapperIcon, ModernHairlineDivider } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 export function CinematicFooter() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
 
   return (
-    <footer className="relative pt-12 pb-24 px-6 text-center text-white overflow-hidden border-t border-white/10">
+    <SectionMotion id="closing" className="relative pt-12 pb-24 px-6 text-center text-white overflow-hidden border-t border-white/10">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="flex justify-center">
+        <ItemMotion
+          variant="stamp"
+          delay={0.08}
+          float={true}
+          floatDistance={4}
+          floatDuration={5}
+          className="flex justify-center"
+        >
           <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-lg">
             <FilmClapperIcon className="w-6 h-6" color="#FFFFFF" />
           </div>
-        </div>
+        </ItemMotion>
 
-        <div className="space-y-2">
+        <ItemMotion variant="fade" delay={0.12} className="space-y-2">
           <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-white/50 block">
             End Credits &bull; Penutup
           </span>
@@ -26,12 +35,18 @@ export function CinematicFooter() {
             {data.general?.closingMessage ||
               "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."}
           </p>
-        </div>
+        </ItemMotion>
 
-        <ModernHairlineDivider />
+        <ItemMotion variant="pop" delay={0.16}>
+          <ModernHairlineDivider />
+        </ItemMotion>
 
         {/* Film Production Credits Card */}
-        <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-5 border border-white/15 space-y-4 text-center">
+        <ItemMotion
+          variant="slide-up"
+          delay={0.2}
+          className="bg-black/40 backdrop-blur-xl rounded-2xl p-5 border border-white/15 space-y-4 text-center"
+        >
           <div className="space-y-1">
             <span className="text-[9px] font-mono uppercase tracking-widest text-white/40 block">
               Starring
@@ -69,13 +84,13 @@ export function CinematicFooter() {
               </span>
             </div>
           )}
-        </div>
+        </ItemMotion>
 
-        <div className="pt-4 text-[10px] font-mono text-white/40 space-y-1">
+        <ItemMotion variant="pop" delay={0.25} className="pt-4 text-[10px] font-mono text-white/40 space-y-1">
           <p className="tracking-widest uppercase">Cinema Release MMXXVI</p>
           <p className="text-white/30">All Rights Reserved &bull; The Wedding Production</p>
-        </div>
+        </ItemMotion>
       </div>
-    </footer>
+    </SectionMotion>
   );
 }

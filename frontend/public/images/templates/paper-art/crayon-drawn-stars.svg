@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 220 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hand-drawn 5-Point Crayon Stars & Sparkles -->
+  <!-- Star 1 -->
+  <polygon points="40,16 46,32 62,34 50,46 54,62 40,54 26,62 30,46 18,34 34,32" 
+           fill="#FFE58F" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Star 2 (Small) -->
+  <polygon points="110,40 114,50 124,51 116,59 119,69 110,64 101,69 104,59 96,51 106,50" 
+           fill="#FFE58F" stroke="#D4AF37" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Star 3 -->
+  <polygon points="175,22 180,36 195,38 184,48 187,62 175,55 163,62 166,48 155,38 170,36" 
+           fill="#FFE58F" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Little 4-point sparkles -->
+  <path d="M 80 20 L 80 32 M 74 26 L 86 26" stroke="#7D1128" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 140 16 L 140 26 M 135 21 L 145 21" stroke="#7D1128" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="198" cy="74" r="2.5" fill="#7D1128"/>
+  <circle cx="25" cy="74" r="2.5" fill="#7D1128"/>
+</svg>

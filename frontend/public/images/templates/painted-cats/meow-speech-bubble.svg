@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 220 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="bubbleShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#D97736" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <g filter="url(#bubbleShadow)">
+    <!-- Speech Bubble Body -->
+    <path d="M 24 24 
+             C 24 14, 34 6, 48 6 
+             L 172 6 
+             C 186 6, 196 14, 196 24 
+             L 196 90 
+             C 196 100, 186 108, 172 108 
+             L 80 108 
+             L 50 136 
+             L 58 108 
+             L 48 108 
+             C 34 108, 24 100, 24 90 Z" 
+          fill="#FFFBEB" stroke="#D97736" stroke-width="2.5"/>
+    <text x="110" y="50" text-anchor="middle" font-family="'Mali', cursive, sans-serif" font-size="22" font-weight="bold" fill="#EA580C">Meow &amp; Forever</text>
+    <text x="110" y="80" text-anchor="middle" font-family="'Caveat', cursive, sans-serif" font-size="18" font-weight="bold" fill="#F472B6">♥ Always Together ♥</text>
+    <!-- Little floating stars -->
+    <circle cx="180" cy="24" r="3" fill="#FACC15"/>
+    <circle cx="38" cy="80" r="2.5" fill="#FACC15"/>
+  </g>
+</svg>

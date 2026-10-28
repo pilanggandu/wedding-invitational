@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFF2D6"/>
+      <stop offset="50%" stop-color="#C8A97E"/>
+      <stop offset="100%" stop-color="#806232"/>
+    </linearGradient>
+  </defs>
+  <!-- Classical Medieval Escutcheon (Shield) -->
+  <path d="M 30 30 L 170 30 C 170 120, 150 180, 100 220 C 50 180, 30 120, 30 30 Z" 
+        stroke="url(#shieldGold)" stroke-width="2.5" fill="#081C16" fill-opacity="0.8"/>
+  <path d="M 40 40 L 160 40 C 160 115, 142 168, 100 204 C 58 168, 40 115, 40 40 Z" 
+        stroke="url(#shieldGold)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+  <!-- Chevron Accent across Shield -->
+  <path d="M 36 100 L 100 135 L 164 100" stroke="url(#shieldGold)" stroke-width="2" fill="none"/>
+  <!-- Crown inside Shield -->
+  <path d="M 82 66 L 86 54 L 94 60 L 100 48 L 106 60 L 114 54 L 118 66 Z" fill="url(#shieldGold)"/>
+  <text x="100" y="104" text-anchor="middle" font-family="'Cinzel', serif" font-size="28" font-weight="bold" fill="url(#shieldGold)">G</text>
+  <text x="100" y="176" text-anchor="middle" font-family="'Cinzel', serif" font-size="24" font-weight="bold" fill="#E8D7B8">S</text>
+</svg>

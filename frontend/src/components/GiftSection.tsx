@@ -12,6 +12,7 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
 
 export function GiftSection() {
   const data = useWeddingData();
@@ -58,7 +59,7 @@ export function GiftSection() {
   };
 
   return (
-    <section id="hadiah" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
+    <SectionMotion id="hadiah" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
       {/* Decorative Accents */}
       <BotanicalLeaves className="absolute top-10 -right-6 w-36 h-56 opacity-30 -rotate-12 pointer-events-none" />
       <div className="absolute bottom-10 -left-2 pointer-events-none opacity-75">
@@ -207,6 +208,6 @@ export function GiftSection() {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF9FA" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }

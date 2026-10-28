@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ZoomIn, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurGalleryProps {
   palette?: ExtractedColors;
@@ -47,16 +49,10 @@ export function AmbientBlurGallery({ palette }: AmbientBlurGalleryProps) {
   };
 
   return (
-    <section id="gallery" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="gallery" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -79,17 +75,15 @@ export function AmbientBlurGallery({ palette }: AmbientBlurGalleryProps) {
           <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
             Koleksi potret kebahagiaan kami menjelang ikrar suci pernikahan.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {galleryItems.map((item, idx) => (
-            <motion.div
+            <ItemMotion
               key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.08}
               onClick={() => setActiveModalIndex(idx)}
               style={{
                 borderColor: `${accentColor}33`,
@@ -119,7 +113,7 @@ export function AmbientBlurGallery({ palette }: AmbientBlurGalleryProps) {
               >
                 <ZoomIn className="w-3.5 h-3.5" />
               </div>
-            </motion.div>
+            </ItemMotion>
           ))}
         </div>
       </div>
@@ -187,6 +181,6 @@ export function AmbientBlurGallery({ palette }: AmbientBlurGalleryProps) {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionMotion>
   );
 }

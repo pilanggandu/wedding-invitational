@@ -27,28 +27,76 @@ export const TEMPLATE_PHOTO_PRESETS: Record<
     gallery: PhotoPresetItem[];
   }
 > = {
+  "craft-book": {
+    themeLabel: "Craft Scrapbook (Book View & Tabs)",
+    cover: [
+      { label: "Sampul Scrapbook", url: "/images/prewedding/couple-1.jpg", subtitle: "Album Kenangan" },
+      { label: "Momen Emas", url: "/images/prewedding/couple-2.jpg", subtitle: "Album Kenangan" },
+      { label: "Tawa Berdua", url: "/images/prewedding/couple-3.jpg", subtitle: "Album Kenangan" },
+      { label: "Hari Bahagia", url: "/images/prewedding/couple-4.jpg", subtitle: "Album Kenangan" },
+    ],
+    groom: [
+      { label: "Polaroid Mempelai Pria", url: "/images/prewedding/couple-3.jpg", subtitle: "Kartu Profil" },
+      { label: "Potret Mempelai Pria", url: "/images/prewedding/couple-1.jpg", subtitle: "Kartu Profil" },
+    ],
+    bride: [
+      { label: "Polaroid Mempelai Wanita", url: "/images/prewedding/couple-4.jpg", subtitle: "Kartu Profil" },
+      { label: "Potret Mempelai Wanita", url: "/images/prewedding/couple-2.jpg", subtitle: "Kartu Profil" },
+    ],
+    gallery: [
+      { label: "Kenangan 1", url: "/images/prewedding/couple-1.jpg", subtitle: "Polaroid Tempel" },
+      { label: "Kenangan 2", url: "/images/prewedding/couple-2.jpg", subtitle: "Polaroid Tempel" },
+      { label: "Kenangan 3", url: "/images/prewedding/couple-3.jpg", subtitle: "Polaroid Tempel" },
+      { label: "Kenangan 4", url: "/images/prewedding/couple-4.jpg", subtitle: "Polaroid Tempel" },
+      { label: "Kenangan 5", url: "/images/prewedding/couple-5.jpg", subtitle: "Polaroid Tempel" },
+    ],
+  },
+  "paper-keepsake": {
+    themeLabel: "Paper Keepsake · Surat & Album Kenangan",
+    cover: [
+      { label: "Sepucuk Kenangan", url: "/images/prewedding/couple-1.jpg", subtitle: "Sampul Album" },
+      { label: "Senja Bersama", url: "/images/prewedding/couple-2.jpg", subtitle: "Sampul Album" },
+      { label: "Potret dalam Surat", url: "/images/prewedding/couple-3.jpg", subtitle: "Sampul Album" },
+      { label: "Kisah Kita", url: "/images/prewedding/couple-4.jpg", subtitle: "Sampul Album" },
+    ],
+    groom: [
+      { label: "Potret Mempelai Pria", url: "/images/prewedding/couple-3.jpg", subtitle: "Lembar Profil" },
+      { label: "Kenangan Mempelai Pria", url: "/images/prewedding/couple-1.jpg", subtitle: "Lembar Profil" },
+    ],
+    bride: [
+      { label: "Potret Mempelai Wanita", url: "/images/prewedding/couple-4.jpg", subtitle: "Lembar Profil" },
+      { label: "Kenangan Mempelai Wanita", url: "/images/prewedding/couple-2.jpg", subtitle: "Lembar Profil" },
+    ],
+    gallery: [
+      { label: "Kenangan 1", url: "/images/prewedding/couple-1.jpg", subtitle: "Album Kenangan" },
+      { label: "Kenangan 2", url: "/images/prewedding/couple-2.jpg", subtitle: "Album Kenangan" },
+      { label: "Kenangan 3", url: "/images/prewedding/couple-3.jpg", subtitle: "Album Kenangan" },
+      { label: "Kenangan 4", url: "/images/prewedding/couple-4.jpg", subtitle: "Album Kenangan" },
+      { label: "Kenangan 5", url: "/images/prewedding/couple-5.jpg", subtitle: "Album Kenangan" },
+    ],
+  },
   "painted-cats": {
     themeLabel: "Purrfect Romance (Cat Doodle)",
     cover: [
-      { label: "Duo Kucing Manis", url: "/images/cats/cats-couple.jpg", subtitle: "Stiker Kucing" },
+      { label: "Duo Kucing Manis", url: "/images/cats/cats-couple.png", subtitle: "Stiker Kucing" },
       { label: "Potret Couple Kasih", url: "/images/prewedding/couple-1.jpg", subtitle: "Foto Alami" },
       { label: "Potret Kasih 3", url: "/images/prewedding/couple-3.jpg", subtitle: "Foto Alami" },
       { label: "Potret Kasih 4", url: "/images/prewedding/couple-4.jpg", subtitle: "Foto Alami" },
     ],
     groom: [
-      { label: "Kucing Oranye (Groom)", url: "/images/cats/orange-cat-groom.jpg", subtitle: "Stiker Kucing" },
+      { label: "Kucing Putih (Groom)", url: "/images/cats/white-cat-groom.png", subtitle: "Stiker Kucing" },
       { label: "Potret Mempelai Pria", url: "/images/prewedding/couple-3.jpg", subtitle: "Foto Asli" },
       { label: "Potret Mempelai Studio", url: "/images/prewedding/couple-1.jpg", subtitle: "Foto Asli" },
     ],
     bride: [
-      { label: "Kucing Putih (Bride)", url: "/images/cats/white-cat-bride.jpg", subtitle: "Stiker Kucing" },
+      { label: "Kucing Oren-Putih (Bride)", url: "/images/cats/orange-cat-bride.png", subtitle: "Stiker Kucing" },
       { label: "Potret Mempelai Wanita", url: "/images/prewedding/couple-4.jpg", subtitle: "Foto Asli" },
       { label: "Potret Mempelai Studio", url: "/images/prewedding/couple-2.jpg", subtitle: "Foto Asli" },
     ],
     gallery: [
-      { label: "Duo Kucing Kasih", url: "/images/cats/cats-couple.jpg", subtitle: "Stiker Kucing" },
-      { label: "Kucing Oranye", url: "/images/cats/orange-cat-groom.jpg", subtitle: "Stiker Kucing" },
-      { label: "Kucing Putih", url: "/images/cats/white-cat-bride.jpg", subtitle: "Stiker Kucing" },
+      { label: "Duo Kucing Kasih", url: "/images/cats/cats-couple.png", subtitle: "Stiker Kucing" },
+      { label: "Kucing Putih (Groom)", url: "/images/cats/white-cat-groom.png", subtitle: "Stiker Kucing" },
+      { label: "Kucing Oren-Putih (Bride)", url: "/images/cats/orange-cat-bride.png", subtitle: "Stiker Kucing" },
       { label: "Potret 1", url: "/images/prewedding/couple-1.jpg", subtitle: "Prewedding" },
       { label: "Potret 2", url: "/images/prewedding/couple-2.jpg", subtitle: "Prewedding" },
       { label: "Potret 3", url: "/images/prewedding/couple-3.jpg", subtitle: "Prewedding" },

@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { WeddingInvitationData } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
-import { TemplateRenderer } from "@/templates/TemplateRenderer";
+import { normalizeTemplateId, TemplateRenderer } from "@/templates/TemplateRenderer";
 import { normalizeWeddingData } from "@/context/WeddingDataContext";
+import { getTemplateScrollbarVars } from "@/lib/templateTheme";
 
 interface PreviewErrorBoundaryProps {
   children: ReactNode;
@@ -89,7 +90,8 @@ export function LivePreviewModal({
 
   if (!isOpen) return null;
 
-  const activeTmpl = overrideTemplateId || data.activeTemplateId || "cityscape-skyline";
+  const rawTmpl = overrideTemplateId || data.activeTemplateId || "cityscape-skyline";
+  const activeTmpl = normalizeTemplateId(rawTmpl);
   const tmplMeta = AVAILABLE_TEMPLATES.find((t) => t.id === activeTmpl);
   const tmplName = tmplMeta?.name || activeTmpl;
 
@@ -99,9 +101,14 @@ export function LivePreviewModal({
   };
 
   const previewUrl = `/undangan?template=${activeTmpl}`;
+  const scrollbarVars = getTemplateScrollbarVars(activeTmpl);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in">
+    <div
+      data-template-theme={activeTmpl}
+      style={scrollbarVars}
+      className="fixed inset-0 z-70 flex items-center justify-center p-2 sm:p-6 bg-black/70 backdrop-blur-xs animate-in fade-in"
+    >
       <div className="relative w-full max-w-4xl max-h-[96vh] sm:max-h-[95vh] bg-white rounded-2xl border border-zinc-200 shadow-2xl flex flex-col overflow-hidden">
         {/* Modal Top Bar */}
         <div className="px-3.5 py-2.5 sm:px-5 sm:py-3.5 bg-zinc-900 text-white flex items-center justify-between shrink-0">
@@ -175,8 +182,8 @@ export function LivePreviewModal({
         </div>
 
         {/* Modal Content / Phone Simulator Frame */}
-        <div className="flex-1 overflow-y-auto p-2 sm:p-6 flex justify-center items-start bg-zinc-100">
-          <div className="w-full max-w-[420px] bg-white rounded-xl sm:rounded-[32px] border-2 sm:border-[6px] border-zinc-800 shadow-xl sm:shadow-2xl overflow-hidden relative min-h-[580px] sm:min-h-[640px]">
+        <div style={scrollbarVars} className="flex-1 overflow-y-auto p-2 sm:p-6 flex justify-center items-start bg-zinc-100">
+          <div className="w-full max-w-[420px] bg-white rounded-xl sm:rounded-[32px] border-2 sm:border-[6px] border-zinc-800 shadow-xl sm:shadow-2xl overflow-hidden relative min-h-[580px] sm:min-h-[640px] [transform:translateZ(0)]">
             {/* Phone speaker notch (desktop simulator only) */}
             <div className="hidden sm:flex justify-between items-center px-6 py-2 bg-zinc-900 text-zinc-400 text-[11px] font-mono shrink-0 select-none">
               <span>09:41</span>

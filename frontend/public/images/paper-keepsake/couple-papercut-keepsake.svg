@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 380 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Paper Elevation Shadows for Distinct Craft Layers -->
+    <filter id="couplePaperElevation1" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#2D1914" flood-opacity="0.16"/>
+    </filter>
+    <filter id="couplePaperElevation2" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="4" stdDeviation="6" flood-color="#26120D" flood-opacity="0.22"/>
+    </filter>
+    <filter id="couplePaperElevation3" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="2" dy="6" stdDeviation="8" flood-color="#1E0C07" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- LAYER 0: Background Textured Paper Card -->
+  <rect x="12" y="12" width="356" height="456" rx="20" fill="#FAF7F2" stroke="#E3D7C5" stroke-width="2"/>
+  <!-- Inset Border with Paper Punch Marks -->
+  <rect x="22" y="22" width="336" height="436" rx="14" fill="none" stroke="#D1C3AF" stroke-width="1" stroke-dasharray="4 4" opacity="0.75"/>
+
+  <!-- LAYER 1: Botanical Papercut Archway (Sage & Dusty Rose Cut Leaves) -->
+  <g filter="url(#couplePaperElevation1)">
+    <!-- Arch Stems Framing the Couple -->
+    <path d="M 44 430 L 44 190 C 44 100 100 50 190 50 C 280 50 336 100 336 190 L 336 430" 
+          stroke="#79806B" stroke-width="2.5" fill="none"/>
+    <path d="M 54 430 L 54 195 C 54 110 105 65 190 65 C 275 65 326 110 326 195 L 326 430" 
+          stroke="#9AA889" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+
+    <!-- Cut Paper Leaves Climbing the Arch -->
+    
+      <g transform="translate(44, 320) rotate(-40)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(44, 240) rotate(-55)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(55, 160) rotate(-70)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#C7887D" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(95, 95) rotate(-100)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(150, 55) rotate(-125)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#C7887D" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(230, 55) rotate(125)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#C7887D" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(285, 95) rotate(100)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(325, 160) rotate(70)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#C7887D" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(336, 240) rotate(55)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+      <g transform="translate(336, 320) rotate(40)">
+        <path d="M 0 0 C -10 -6 -14 -18 0 -24 C 14 -18 10 -6 0 0 Z" fill="#79806B" stroke="#4D593D" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-20" stroke="#FAF7F2" stroke-width="0.7" opacity="0.6"/>
+      </g>
+    
+
+    <!-- Rose Blossom Papercut at Top Apex of Arch -->
+    <g transform="translate(190, 50) scale(0.65)">
+      
+        <path d="M 0 0 C -18 -12 -28 -34 0 -40 C 28 -34 18 -12 0 0 Z" transform="rotate(0)" fill="#C7887D"/>
+      
+        <path d="M 0 0 C -18 -12 -28 -34 0 -40 C 28 -34 18 -12 0 0 Z" transform="rotate(72)" fill="#C7887D"/>
+      
+        <path d="M 0 0 C -18 -12 -28 -34 0 -40 C 28 -34 18 -12 0 0 Z" transform="rotate(144)" fill="#C7887D"/>
+      
+        <path d="M 0 0 C -18 -12 -28 -34 0 -40 C 28 -34 18 -12 0 0 Z" transform="rotate(216)" fill="#C7887D"/>
+      
+        <path d="M 0 0 C -18 -12 -28 -34 0 -40 C 28 -34 18 -12 0 0 Z" transform="rotate(288)" fill="#C7887D"/>
+      
+      <circle cx="0" cy="0" r="7" fill="#C8A97E"/>
+    </g>
+  </g>
+
+  <!-- LAYER 2: The Loving Couple (Craft Silhouette Cut from Layered Paper) -->
+  <g filter="url(#couplePaperElevation2)">
+    <!-- Groom (Left Figure - Layered Mahogany Suit Paper) -->
+    <g transform="translate(150, 280)">
+      <!-- Groom Body / Coat Silhouette (Dark Velvet Mahogany #541E24) -->
+      <path d="M -30 150 L -36 50 C -36 25 -20 12 0 12 C 20 12 36 25 36 50 L 30 150 Z" fill="#541E24" stroke="#381014" stroke-width="1.5"/>
+      <!-- Groom White Linen Shirt Lapel -->
+      <polygon points="0,14 -10,48 0,44 10,48" fill="#FBF8F1"/>
+      <polygon points="0,22 -6,34 6,34" fill="#C8A97E"/>
+      <!-- Groom Head (Profile / Gentle Angle in Warm Bisque Paper) -->
+      <ellipse cx="0" cy="-14" rx="16" ry="19" fill="#F4DECD" stroke="#D1B29E" stroke-width="1"/>
+      <!-- Groom Hair Cutout (Dark Charcoal/Brown #2B1810) -->
+      <path d="M -16 -20 C -16 -34 8 -36 18 -26 C 20 -18 16 -12 12 -10 C 6 -12 -4 -8 -8 -4 C -14 -6 -16 -12 -16 -20 Z" fill="#2B1810"/>
+    </g>
+
+    <!-- Bride (Right Figure - Layered Ivory Lace Paper Gown) -->
+    <g transform="translate(230, 290)">
+      <!-- Bride Flowing Gown (Layered Pure Ivory Paper #FBF8F1) -->
+      <path d="M -24 140 C -32 80 -18 30 0 18 C 18 30 32 80 24 140 Z" fill="#FBF8F1" stroke="#D9CBB7" stroke-width="1.5"/>
+      <!-- Delicate Paper Lace Overlays / Scallops on Dress -->
+      <path d="M -18 65 Q 0 72 18 65" stroke="#C7887D" stroke-width="1.2" fill="none"/>
+      <path d="M -22 95 Q 0 104 22 95" stroke="#C7887D" stroke-width="1.2" fill="none"/>
+      <path d="M -24 125 Q 0 136 24 125" stroke="#C7887D" stroke-width="1.2" fill="none"/>
+      <!-- Bride Veil (Translucent Layered Paper Contour) -->
+      <path d="M 0 -12 C 26 2 34 60 28 130 L 18 135 C 22 75 16 20 0 0 Z" fill="#FFFDF8" fill-opacity="0.8" stroke="#E3D7C5" stroke-width="0.8"/>
+      <!-- Bride Head (Warm Bisque Paper) -->
+      <ellipse cx="0" cy="-10" rx="14" ry="17" fill="#F4DECD" stroke="#D1B29E" stroke-width="1"/>
+      <!-- Bride Hair & Floral Tiara -->
+      <path d="M -14 -14 C -14 -28 10 -30 16 -18 C 18 -10 14 -4 10 -2 C 4 -6 -4 -4 -6 2 C -12 0 -14 -8 -14 -14 Z" fill="#4A2E1F"/>
+      <circle cx="2" cy="-22" r="3.5" fill="#C8A97E"/>
+      <circle cx="-4" cy="-20" r="2.5" fill="#C7887D"/>
+      <circle cx="8" cy="-20" r="2.5" fill="#FAF8F1"/>
+    </g>
+
+    <!-- Hand-held Wildflower Bouquet held by Bride -->
+    <g transform="translate(192, 335)" filter="url(#couplePaperElevation1)">
+      <circle cx="0" cy="0" r="14" fill="#C7887D" stroke="#A96B60" stroke-width="1"/>
+      <circle cx="-5" cy="-3" r="5" fill="#FAF8F1"/>
+      <circle cx="5" cy="4" r="4.5" fill="#79806B"/>
+      <circle cx="2" cy="-5" r="4" fill="#C8A97E"/>
+      <path d="M 0 12 L 0 24" stroke="#79806B" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- LAYER 3: Bottom Elegant Ribbon & Keepsake Label -->
+  <g filter="url(#couplePaperElevation1)" transform="translate(190, 436)">
+    <rect x="-80" y="-14" width="160" height="28" rx="6" fill="#541E24" stroke="#381014" stroke-width="1.2"/>
+    <text x="0" y="4" text-anchor="middle" font-family="'Cinzel', Georgia, serif" font-size="10" font-weight="600" fill="#FAF8F1" letter-spacing="3">ETERNAL LOVE</text>
+  </g>
+</svg>

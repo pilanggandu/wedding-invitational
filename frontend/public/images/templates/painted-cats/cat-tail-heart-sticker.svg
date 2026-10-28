@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 240 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="tailShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#D97736" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#tailShadow)">
+    <!-- Left Cat (Calico Orange) Back View -->
+    <ellipse cx="80" cy="150" rx="34" ry="40" fill="#FB923C" stroke="#3D271D" stroke-width="2"/>
+    <circle cx="80" cy="100" r="22" fill="#FB923C" stroke="#3D271D" stroke-width="2"/>
+    <polygon points="64,84 68,68 80,82" fill="#EA580C" stroke="#3D271D" stroke-width="1.5"/>
+    <polygon points="84,82 96,68 100,84" fill="#EA580C" stroke="#3D271D" stroke-width="1.5"/>
+    
+    <!-- Right Cat (Pure White / Ivory) Back View -->
+    <ellipse cx="160" cy="150" rx="34" ry="40" fill="#FAF6EE" stroke="#3D271D" stroke-width="2"/>
+    <circle cx="160" cy="100" r="22" fill="#FAF6EE" stroke="#3D271D" stroke-width="2"/>
+    <polygon points="144,84 148,68 160,82" fill="#FAF6EE" stroke="#3D271D" stroke-width="1.5"/>
+    <polygon points="164,82 176,68 180,84" fill="#FAF6EE" stroke="#3D271D" stroke-width="1.5"/>
+    
+    <!-- Entwined Tails Forming a Heart -->
+    <!-- Left Tail (Orange) -->
+    <path d="M 80 170 C 80 190, 50 160, 60 110 C 68 70, 115 50, 120 85" 
+          stroke="#FB923C" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M 80 170 C 80 190, 50 160, 60 110 C 68 70, 115 50, 120 85" 
+          stroke="#3D271D" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Right Tail (White) -->
+    <path d="M 160 170 C 160 190, 190 160, 180 110 C 172 70, 125 50, 120 85" 
+          stroke="#FAF6EE" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M 160 170 C 160 190, 190 160, 180 110 C 172 70, 125 50, 120 85" 
+          stroke="#3D271D" stroke-width="2" stroke-linecap="round" fill="none"/>
+    
+    <!-- Little Floating Heart Above -->
+    <path d="M 120 44 C 120 44 110 32 110 24 C 110 18 114 14 118 14 C 120 14 120 16 120 16 C 120 16 120 14 122 14 C 126 14 130 18 130 24 C 130 32 120 44 120 44 Z" 
+          fill="#EC4899"/>
+  </g>
+</svg>

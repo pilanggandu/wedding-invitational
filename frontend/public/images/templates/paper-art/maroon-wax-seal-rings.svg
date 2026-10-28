@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="maroonWax" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="50%" stop-color="#7D1128"/>
+      <stop offset="85%" stop-color="#540816"/>
+      <stop offset="100%" stop-color="#33040C"/>
+    </radialGradient>
+    <filter id="maroonShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="5" stdDeviation="5" flood-color="#2D050B" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g filter="url(#maroonShadow)">
+    <!-- Organic Velvet Maroon Wax Rim -->
+    <path d="M 80 14 
+             C 106 12, 134 26, 142 50 
+             C 150 74, 146 102, 134 122 
+             C 122 142, 94 150, 72 146 
+             C 48 142, 22 134, 16 110 
+             C 10 86, 14 58, 28 38 
+             C 42 18, 62 16, 80 14 Z" 
+          fill="url(#maroonWax)"/>
+    <!-- Stamped Inner Bezel Rings -->
+    <circle cx="80" cy="80" r="48" stroke="#FCA5A5" stroke-width="1.8" opacity="0.65" fill="none"/>
+    <circle cx="80" cy="80" r="44" stroke="#450A0A" stroke-width="2" opacity="0.8" fill="none"/>
+    <!-- Stamped Interlocking Wedding Rings & Diamond -->
+    <circle cx="73" cy="82" r="16" stroke="#FFE484" stroke-width="2.5" fill="none"/>
+    <circle cx="87" cy="82" r="16" stroke="#FFE484" stroke-width="2.5" fill="none"/>
+    <path d="M 73 63 L 76 58 L 80 63 L 77 66 Z" fill="#FFFFFF"/>
+    <!-- Laurel Sprig under rings -->
+    <path d="M 60 102 Q 80 110 100 102" stroke="#FFE484" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

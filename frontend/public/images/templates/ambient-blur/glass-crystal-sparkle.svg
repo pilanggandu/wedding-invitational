@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sparkleCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#FFFFFF" stop-opacity="0.8"/>
+      <stop offset="70%" stop-color="#FDE047" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#F43F5E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- 4-Point Optical Crystal Star -->
+  <path d="M 60 4 Q 60 56 4 60 Q 60 64 60 116 Q 60 64 116 60 Q 60 56 60 4 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M 60 28 Q 60 58 28 60 Q 60 62 60 92 Q 60 62 92 60 Q 60 58 60 28 Z" fill="url(#sparkleCenter)"/>
+  <!-- Secondary 45 degree miniature ray -->
+  <path d="M 60 36 Q 60 58 36 60 Q 60 62 60 84 Q 60 62 84 60 Q 60 58 60 36 Z" transform="rotate(45 60 60)" fill="#FFFFFF" opacity="0.6"/>
+</svg>

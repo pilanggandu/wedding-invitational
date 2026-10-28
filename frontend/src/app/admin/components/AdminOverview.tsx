@@ -21,7 +21,6 @@ import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import {
   generateWhatsAppInvitationUrl,
-  toggleGuestSent,
 } from "@/lib/invitationStore";
 import { fetchRsvpsApi } from "@/lib/api";
 
@@ -119,10 +118,7 @@ export function AdminOverview({
       targetUrl,
       eventDateStr
     );
-    if (!guest.isSent) {
-      toggleGuestSent(guest.id);
-    }
-    window.open(waUrl, "_blank");
+    window.open(waUrl, "_blank", "noopener,noreferrer");
   };
 
   const responsePercentage =

@@ -10,7 +10,10 @@ import {
   fetchWishesFromBackend,
   addWishToBackend,
   deleteWishFromBackend,
+  saveGuestMasterToBackend,
+  deleteGuestMasterFromBackend,
 } from "@/lib/api";
+import { getGuestInputError, normalizeGuestPhone, type GuestDraft } from "./guestData";
 
 const INVITATION_STORAGE_KEY = "wedding_invitation_data_v1";
 const GUESTS_STORAGE_KEY = "wedding_guests_data_v1";
@@ -64,6 +67,8 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     funTagline: WEDDING_DATA.general.funTagline,
     musicTitle: WEDDING_DATA.general.musicTitle,
     musicArtist: WEDDING_DATA.general.musicArtist,
+    musicUrl: "",
+    musicVolume: 40,
     quote: WEDDING_DATA.general.quote,
     openingGreetings: WEDDING_DATA.general.openingGreetings,
     openingMessage: WEDDING_DATA.general.openingMessage,
@@ -280,7 +285,7 @@ export function getGuests(): GuestItem[] {
     const raw = localStorage.getItem(GUESTS_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed;
       }
     }
@@ -302,6 +307,39 @@ function saveGuestsLocalOnly(guests: GuestItem[]): void {
 
 export function saveGuests(guests: GuestItem[]): void {
   saveGuestsLocalOnly(guests);
+}
+
+function rememberSavedGuest(saved: GuestItem): GuestItem {
+  const guests = getGuests();
+  const previous = guests.find((guest) => guest.id === saved.id);
+  const guest = { ...previous, ...saved };
+  saveGuestsLocalOnly(previous
+    ? guests.map((item) => item.id === guest.id ? guest : item)
+    : [guest, ...guests]);
+  return guest;
+}
+
+export async function saveGuestMaster(draft: GuestDraft, id?: string): Promise<GuestItem> {
+  const error = getGuestInputError(draft);
+  if (error) throw new Error(error);
+  const saved = await saveGuestMasterToBackend({
+    ...draft,
+    name: draft.name.trim(),
+    phone: normalizeGuestPhone(draft.phone),
+    category: draft.category.trim() || "Lainnya",
+    notes: draft.notes.trim(),
+  }, id);
+  return rememberSavedGuest(saved);
+}
+
+export async function setGuestSentStatus(id: string, isSent: boolean): Promise<GuestItem> {
+  const saved = await saveGuestMasterToBackend({ isSent }, id);
+  return rememberSavedGuest(saved);
+}
+
+export async function deleteGuestMaster(id: string): Promise<void> {
+  await deleteGuestMasterFromBackend(id);
+  saveGuestsLocalOnly(getGuests().filter((guest) => guest.id !== id));
 }
 
 export function addGuest(
@@ -468,10 +506,12 @@ export function generateWhatsAppInvitationUrl(
   eventDate?: string
 ): string {
   const cleanPhone = phone.replace(/^0/, "62").replace(/[^0-9]/g, "");
-  const base = invitationWebUrl.endsWith("/undangan")
-    ? invitationWebUrl
-    : `${invitationWebUrl.replace(/\/$/, "")}/undangan`;
-  const personalUrl = `${base}?to=${encodeURIComponent(guestName).replace(/%20/g, "+")}`;
+  const target = new URL(invitationWebUrl);
+  if (!target.pathname.replace(/\/$/, "").endsWith("/undangan")) {
+    target.pathname = `${target.pathname.replace(/\/$/, "")}/undangan`;
+  }
+  if (!target.searchParams.get("u")) target.searchParams.set("to", guestName);
+  const personalUrl = target.toString();
 
   const message = [
     `Assalamu'alaikum Warahmatullahi Wabarakatuh`,
@@ -480,7 +520,7 @@ export function generateWhatsAppInvitationUrl(
     `Tanpa mengurangi rasa hormat, perkenankan kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami:`,
     ``,
     `💍 *The Wedding of ${coupleGroom} & ${coupleBride}*`,
-    `📅 *${eventDate || "Sabtu, 21 November 2026"}*`,
+    ...(eventDate ? [`📅 *${eventDate}*`] : []),
     ``,
     `Buka tautan undangan digital resmi di bawah ini:`,
     `${personalUrl}`,

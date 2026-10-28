@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import {
   Lock,
   User,
@@ -22,9 +23,49 @@ import { useAuth } from "@/context/AuthContext";
 
 type AuthMode = "login" | "register";
 
+interface GoogleCredentialResponse {
+  credential: string;
+}
+
+interface GoogleIdentityClient {
+  accounts: {
+    id: {
+      initialize: (options: {
+        client_id: string;
+        callback: (response: GoogleCredentialResponse) => void;
+      }) => void;
+      renderButton: (
+        parent: HTMLElement,
+        options: {
+          theme: "outline";
+          size: "large";
+          shape: "rectangular";
+          text: "signin_with";
+          width: number;
+          locale: "id";
+        }
+      ) => void;
+    };
+  };
+}
+
+declare global {
+  interface Window {
+    google?: GoogleIdentityClient;
+  }
+}
+
+const showDefaultAdminCredentials =
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_DEBUG?.toLowerCase() === "true";
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
 export function AdminAuthView() {
-  const { login, register } = useAuth();
+  const { login, loginWithGoogle, register } = useAuth();
   const [mode, setMode] = useState<AuthMode>("login");
+  const [isGoogleScriptReady, setIsGoogleScriptReady] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+  const googleInitializedRef = useRef(false);
 
   // Form states
   const [username, setUsername] = useState("");
@@ -35,6 +76,75 @@ export function AdminAuthView() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleGoogleCredential = useCallback(
+    async (response: GoogleCredentialResponse) => {
+      setErrorMessage(null);
+      setIsSubmitting(true);
+
+      try {
+        const result = await loginWithGoogle(response.credential);
+        if (!result.success) {
+          setErrorMessage(result.error || "Gagal masuk dengan Google.");
+        }
+      } catch (err: any) {
+        setErrorMessage(err.message || "Terjadi kesalahan saat masuk dengan Google.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [loginWithGoogle]
+  );
+  const googleCredentialHandlerRef = useRef(handleGoogleCredential);
+  googleCredentialHandlerRef.current = handleGoogleCredential;
+
+  useEffect(() => {
+    if (
+      !googleClientId ||
+      !isGoogleScriptReady ||
+      googleInitializedRef.current
+    ) {
+      return;
+    }
+
+    const googleIdentity = window.google?.accounts.id;
+    if (!googleIdentity) return;
+
+    googleIdentity.initialize({
+      client_id: googleClientId,
+      callback: (response) => {
+        void googleCredentialHandlerRef.current(response);
+      },
+    });
+    googleInitializedRef.current = true;
+  }, [isGoogleScriptReady]);
+
+  useEffect(() => {
+    if (
+      mode !== "login" ||
+      !googleClientId ||
+      !isGoogleScriptReady ||
+      !googleInitializedRef.current ||
+      !googleButtonRef.current
+    ) {
+      return;
+    }
+
+    const googleIdentity = window.google?.accounts.id;
+    if (!googleIdentity) return;
+
+    const buttonContainer = googleButtonRef.current;
+    googleIdentity.renderButton(buttonContainer, {
+      theme: "outline",
+      size: "large",
+      shape: "rectangular",
+      text: "signin_with",
+      width: Math.min(buttonContainer.clientWidth || 320, 400),
+      locale: "id",
+    });
+
+    return () => buttonContainer.replaceChildren();
+  }, [isGoogleScriptReady, mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +242,7 @@ export function AdminAuthView() {
 
           <div className="p-6 sm:p-8">
             {/* Quick helper banner for default credentials */}
-            {mode === "login" && (
+            {mode === "login" && showDefaultAdminCredentials && (
               <div className="mb-5 p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-amber-900 flex items-start justify-between gap-3 text-xs">
                 <div className="space-y-0.5">
                   <p className="font-semibold text-amber-950 flex items-center gap-1.5">
@@ -270,6 +380,28 @@ export function AdminAuthView() {
                 )}
               </button>
             </form>
+
+            {mode === "login" && googleClientId && (
+              <div className="mt-5">
+                <div className="flex items-center gap-3 text-[10px] text-zinc-400">
+                  <span className="h-px flex-1 bg-zinc-200" />
+                  <span>atau masuk dengan</span>
+                  <span className="h-px flex-1 bg-zinc-200" />
+                </div>
+                <div
+                  ref={googleButtonRef}
+                  className="mt-4 flex min-h-10 w-full justify-center"
+                />
+                <Script
+                  src="https://accounts.google.com/gsi/client"
+                  strategy="afterInteractive"
+                  onReady={() => setIsGoogleScriptReady(true)}
+                  onError={() =>
+                    setErrorMessage("Gagal memuat Google Sign-In. Coba lagi nanti.")
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
 

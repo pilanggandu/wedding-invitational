@@ -6,6 +6,7 @@ import confetti from "canvas-confetti";
 import { Building2, Navigation, Compass, MapPin, ArrowRight } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { getFontFamilyCss } from "@/lib/typography";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
 
 interface CityscapeCoverProps {
   isOpen: boolean;
@@ -179,11 +180,12 @@ export function CityscapeCover({
             style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
             className="text-4xl min-[380px]:text-5xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-md leading-none my-1"
           >
-            {groomName}{" "}
-            <span className="text-xl sm:text-2xl text-[#38B6FF] font-light font-mono mx-1">
-              &times;
-            </span>{" "}
-            {brideName}
+            <CharMotionReveal
+              text={`${groomName} × ${brideName}`}
+              delay={0.2}
+              step={0.03}
+              className="justify-center"
+            />
           </motion.h1>
 
           <motion.div
@@ -198,6 +200,15 @@ export function CityscapeCover({
         </div>
 
         <div className="relative flex-1 flex flex-col items-center justify-end z-20 pb-8 px-5">
+          <div className="flex justify-center mb-3 pointer-events-none select-none opacity-90">
+            <img
+              src="/images/templates/cityscape/metro-transit-ticket.svg"
+              alt="Metro Transit Ticket"
+              aria-hidden="true"
+              className="w-72 sm:w-80 h-auto object-contain drop-shadow-lg"
+            />
+          </div>
+
           <motion.div
             initial={{ y: 25, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -215,9 +226,13 @@ export function CityscapeCover({
             <span className="text-[9px] font-mono uppercase tracking-wider text-white/60 block">
               DITUJUKAN KEPADA:
             </span>
-            <p className="font-sans text-lg sm:text-xl font-bold text-white truncate mt-0.5">
-              {guestName}
-            </p>
+            <div className="font-sans text-lg sm:text-xl font-bold text-white truncate mt-0.5">
+              <CharMotionReveal
+                text={guestName}
+                delay={0.35}
+                step={0.03}
+              />
+            </div>
 
             <div className="flex items-center justify-between text-[10px] font-mono text-white/70 pt-3 mt-3 border-t border-white/10">
               <span className="flex items-center gap-1">

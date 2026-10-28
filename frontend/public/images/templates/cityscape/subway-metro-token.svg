@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="tokenBrass" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#FFB300"/>
+      <stop offset="85%" stop-color="#FF8F00"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </radialGradient>
+    <filter id="tokenShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#0E384D" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#tokenShadow)">
+    <!-- Metallic Token Coin -->
+    <circle cx="80" cy="80" r="70" fill="url(#tokenBrass)" stroke="#B78103" stroke-width="2"/>
+    <!-- Outer Train Track Beaded Rim -->
+    <circle cx="80" cy="80" r="62" stroke="#8D6E63" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+    <circle cx="80" cy="80" r="54" stroke="#FFF8E1" stroke-width="1" fill="none" opacity="0.6"/>
+    <!-- Metro Icon / Initials in Center -->
+    <path d="M 52 98 L 64 62 L 74 88 L 86 62 L 98 98" stroke="#5D4037" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M 52 96 L 64 60 L 74 86 L 86 60 L 98 96" stroke="#FFE082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <text x="80" y="118" text-anchor="middle" font-family="'Helvetica Neue', sans-serif" font-size="8" font-weight="bold" fill="#5D4037" letter-spacing="2">GOOD FOR ONE TRIP</text>
+  </g>
+</svg>

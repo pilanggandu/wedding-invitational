@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Calendar, Film, Ticket } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
 import {
   FilmClapperIcon,
   FilmTimecodeBadge,
@@ -115,6 +116,16 @@ export function CinematicCover({
           </div>
         </div>
 
+        {/* Film Festival Laurels Emblem */}
+        <div className="flex justify-center -mb-2 pointer-events-none select-none opacity-90">
+          <img
+            src="/images/templates/cinematic-blur/cinema-laurel-wreath.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-32 h-auto object-contain"
+          />
+        </div>
+
         {/* Couple Names */}
         <div className="space-y-1 mb-4">
           <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-white/60 block">
@@ -124,7 +135,8 @@ export function CinematicCover({
             style={{ fontFamily: "var(--font-couple-custom, serif)" }}
             className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight drop-shadow-md"
           >
-            {groomName} &amp; {brideName}
+            <CharMotionReveal text={groomName} baseDelay={0.2} /> &amp;{" "}
+            <CharMotionReveal text={brideName} baseDelay={0.45} />
           </h1>
           <p className="text-xs text-white/80 font-mono tracking-wider pt-0.5">
             {dayStr}, {dateStr}
@@ -145,7 +157,7 @@ export function CinematicCover({
             Kepada Yth. Bapak/Ibu/Saudara/i:
           </span>
           <p className="font-serif font-bold text-base sm:text-lg text-white tracking-wide truncate">
-            {recipient}
+            <CharMotionReveal text={recipient} baseDelay={0.65} />
           </p>
         </div>
 

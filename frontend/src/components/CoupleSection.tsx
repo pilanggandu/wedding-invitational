@@ -11,7 +11,10 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
+import { ItemMotion } from "./ItemMotion";
 import { getFontFamilyCss } from "@/lib/typography";
+import { CharMotionReveal } from "./CharMotionReveal";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -37,22 +40,34 @@ export function CoupleSection() {
   const { quote, openingGreetings, openingMessage } = data.general;
 
   return (
-    <section id="mempelai" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
+    <SectionMotion id="mempelai" className="relative py-16 bg-[#FFF0F3] overflow-hidden paper-texture">
       {/* Botanical & Childlike Doodles */}
       <BotanicalLeaves className="absolute top-10 -right-6 w-36 sm:w-48 h-56 opacity-30 -rotate-12 pointer-events-none" />
       <BotanicalLeaves className="absolute bottom-10 -left-6 w-36 sm:w-48 h-56 opacity-30 rotate-45 pointer-events-none" />
 
-      <div className="absolute top-1/2 -left-2 pointer-events-none opacity-75">
+      <ItemMotion
+        variant="pop"
+        float={true}
+        floatDistance={3}
+        floatDuration={4}
+        className="absolute top-1/2 -left-2 pointer-events-none opacity-75"
+      >
         <KidsDrawingHeart className="w-8 h-8" />
-      </div>
+      </ItemMotion>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Holy Verse Crayon Card */}
         <MotionReveal variant="paper-unfold" delay={0.1}>
           <div className="crayon-box p-4 sm:p-8 max-w-2xl mx-auto text-center mb-12 sm:mb-16 relative bg-white border-[#660F1A]">
-            <div className="w-12 h-12 mx-auto -mt-9 sm:-mt-11 mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-sm animate-gentle-pulse">
+            <ItemMotion
+              variant="stamp"
+              float={true}
+              floatDistance={3}
+              floatDuration={3.5}
+              className="w-12 h-12 mx-auto -mt-9 sm:-mt-11 mb-3 rounded-full bg-[#7D1128] text-white flex items-center justify-center border-2 border-[#4A0812] shadow-sm animate-gentle-pulse"
+            >
               <Heart className="w-6 h-6 fill-current text-[#FAD2D8]" />
-            </div>
+            </ItemMotion>
 
             <p className="font-serif text-base sm:text-xl text-[#4A0812] leading-relaxed mb-3 sm:mb-4 font-medium" dir="rtl">
               {quote.arabic}
@@ -107,7 +122,7 @@ export function CoupleSection() {
                   style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
                   className="font-couple-title font-handwriting text-3xl min-[380px]:text-4xl sm:text-5xl text-[#660F1A] mb-0.5"
                 >
-                  {groom.name}
+                  <CharMotionReveal text={groom.name} baseDelay={0.2} />
                 </h3>
                 <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
                   {groom.fullName}
@@ -162,7 +177,7 @@ export function CoupleSection() {
                   style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
                   className="font-couple-title font-handwriting text-3xl min-[380px]:text-4xl sm:text-5xl text-[#660F1A] mb-0.5"
                 >
-                  {bride.name}
+                  <CharMotionReveal text={bride.name} baseDelay={0.2} />
                 </h3>
                 <p className="font-mono font-bold text-xs text-[#7D1128] tracking-wider mb-2">
                   {bride.fullName}
@@ -203,6 +218,6 @@ export function CoupleSection() {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF9FA" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }

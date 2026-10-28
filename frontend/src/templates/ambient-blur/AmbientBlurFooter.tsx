@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurFooterProps {
   palette?: ExtractedColors;
@@ -18,9 +20,15 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
   const glowColor = palette?.glow || "rgba(217,119,54,0.3)";
 
   return (
-    <footer className="relative pt-12 pb-24 px-6 text-center text-slate-800 overflow-hidden border-t border-slate-200/80">
+    <SectionMotion id="closing" className="relative pt-12 pb-24 px-6 text-center text-slate-800 overflow-hidden border-t border-slate-200/80">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="flex justify-center">
+        <ItemMotion
+          variant="stamp"
+          float={true}
+          floatDistance={3}
+          floatDuration={3.5}
+          className="flex justify-center"
+        >
           <div
             style={{
               borderColor: `${accentColor}44`,
@@ -31,9 +39,9 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
           >
             <Heart style={{ color: accentColor }} className="w-5 h-5 fill-current" />
           </div>
-        </div>
+        </ItemMotion>
 
-        <div className="space-y-2">
+        <ItemMotion variant="fade" delay={0.1} className="space-y-2">
           <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-slate-500 block font-semibold">
             Ungkapan Terima Kasih
           </span>
@@ -41,7 +49,7 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
             {data.general?.closingMessage ||
               "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."}
           </p>
-        </div>
+        </ItemMotion>
 
         <div className="flex items-center justify-center gap-3 max-w-xs mx-auto my-4">
           <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent" />
@@ -53,7 +61,9 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
         </div>
 
         {/* Couple & Family Card */}
-        <div
+        <ItemMotion
+          variant="slide-up"
+          delay={0.15}
           style={{
             borderColor: `${accentColor}33`,
           }}
@@ -90,7 +100,7 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
           )}
 
           {data.general?.hashtag && (
-            <div className="pt-1">
+            <ItemMotion variant="pop" delay={0.25} className="pt-1">
               <span
                 style={{
                   borderColor: `${accentColor}44`,
@@ -101,15 +111,15 @@ export function AmbientBlurFooter({ palette }: AmbientBlurFooterProps) {
               >
                 {data.general.hashtag}
               </span>
-            </div>
+            </ItemMotion>
           )}
-        </div>
+        </ItemMotion>
 
         <div className="pt-4 text-[10px] font-mono text-slate-500 space-y-1">
           <p className="tracking-widest uppercase font-semibold">The Wedding Celebration 2026</p>
           <p className="text-slate-400">Semua Hak Cipta Dilindungi Undang-Undang</p>
         </div>
       </div>
-    </footer>
+    </SectionMotion>
   );
 }

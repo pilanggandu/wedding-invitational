@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
@@ -22,6 +23,8 @@ import {
   Copy,
   Heart,
   ShieldCheck,
+  Camera,
+  QrCode,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { AdminAuthView } from "./components/AdminAuthView";
@@ -31,6 +34,7 @@ import {
   getGuests,
   getWishes,
   resetInvitationData,
+  saveInvitationData,
   syncWithBackend,
 } from "@/lib/invitationStore";
 import { checkBackendHealth } from "@/lib/api";
@@ -42,6 +46,7 @@ import { RsvpManager } from "./components/RsvpManager";
 import { LivePreviewModal } from "./components/LivePreviewModal";
 import { CoupleSetupModal } from "./components/CoupleSetupModal";
 import { TemplateEditorWorkspace } from "./components/TemplateEditorWorkspace";
+import { A3PosterModal } from "@/components/photobox/A3PosterModal";
 
 type AdminTab = "overview" | "templates" | "wedding-data" | "guests" | "wishes";
 
@@ -65,9 +70,11 @@ export default function AdminDashboardPage() {
   const [wishes, setWishes] = useState<WishMessage[]>(getWishes());
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
   const [previewOverrideTemplate, setPreviewOverrideTemplate] = useState<string | undefined>(undefined);
+  const [previewOverrideData, setPreviewOverrideData] = useState<WeddingInvitationData | undefined>(undefined);
   const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false);
   const [editorTemplateId, setEditorTemplateId] = useState<string | null>(null);
   const [isCoupleModalOpen, setIsCoupleModalOpen] = useState<boolean>(false);
+  const [isA3PosterOpen, setIsA3PosterOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [isCopiedPublicLink, setIsCopiedPublicLink] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<{
@@ -349,6 +356,26 @@ export default function AdminDashboardPage() {
             <span className="hidden sm:inline">Buka Undangan</span>
           </Link>
 
+          <Link
+            href="/photobox"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
+            title="Buka Photobox Studio"
+          >
+            <Camera className="w-3.5 h-3.5 text-[#8C6239]" />
+            <span className="hidden sm:inline">Photobox</span>
+          </Link>
+
+          <button
+            onClick={() => setIsA3PosterOpen(true)}
+            className="px-3 py-1.5 rounded-lg bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            title="Generate & Cetak Poster QR Code Standee A3 untuk Photobox"
+          >
+            <QrCode className="w-3.5 h-3.5 text-[#DFD2BD]" />
+            <span className="hidden sm:inline">QR Standee A3</span>
+          </button>
+
           <button
             onClick={handleResetData}
             className="p-1.5 rounded-lg border border-transparent hover:border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
@@ -482,54 +509,64 @@ export default function AdminDashboardPage() {
           </div>
         )}
         <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          {activeTab === "overview" && (
-            <AdminOverview
-              data={invitationData}
-              guests={guests}
-              wishes={wishes}
-              onNavigateTab={(tab) => setActiveTab(tab)}
-              onOpenPreview={() => setIsPreviewOpen(true)}
-              onOpenCoupleModal={() => setIsCoupleModalOpen(true)}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              {activeTab === "overview" && (
+                <AdminOverview
+                  data={invitationData}
+                  guests={guests}
+                  wishes={wishes}
+                  onNavigateTab={(tab) => setActiveTab(tab)}
+                  onOpenPreview={() => setIsPreviewOpen(true)}
+                  onOpenCoupleModal={() => setIsCoupleModalOpen(true)}
+                />
+              )}
 
-          {activeTab === "templates" && (
-            <TemplateThemeManager
-              data={invitationData}
-              onUpdate={(updated) => setInvitationData(updated)}
-              onOpenPreview={(tmplId) => {
-                setPreviewOverrideTemplate(tmplId);
-                setIsPreviewOpen(true);
-              }}
-              onEditTemplate={(tmplId) => {
-                setEditorTemplateId(tmplId);
-                setIsEditorOpen(true);
-              }}
-              onOpenCoupleModal={() => setIsCoupleModalOpen(true)}
-            />
-          )}
+              {activeTab === "templates" && (
+                <TemplateThemeManager
+                  data={invitationData}
+                  onUpdate={(updated) => setInvitationData(updated)}
+                  onOpenPreview={(tmplId) => {
+                    setPreviewOverrideTemplate(tmplId);
+                    setIsPreviewOpen(true);
+                  }}
+                  onEditTemplate={(tmplId) => {
+                    setEditorTemplateId(tmplId);
+                    setIsEditorOpen(true);
+                  }}
+                  onOpenCoupleModal={() => setIsCoupleModalOpen(true)}
+                />
+              )}
 
-          {activeTab === "wedding-data" && (
-            <CoupleEventManager
-              data={invitationData}
-              onUpdate={(updated) => setInvitationData(updated)}
-            />
-          )}
+              {activeTab === "wedding-data" && (
+                <CoupleEventManager
+                  data={invitationData}
+                  onUpdate={(updated) => setInvitationData(updated)}
+                />
+              )}
 
-          {activeTab === "guests" && (
-            <GuestListManager
-              data={invitationData}
-              guests={guests}
-              onGuestsUpdated={(updated) => setGuests(updated)}
-            />
-          )}
+              {activeTab === "guests" && (
+                <GuestListManager
+                  data={invitationData}
+                  guests={guests}
+                  onGuestsUpdated={(updated) => setGuests(updated)}
+                />
+              )}
 
-          {activeTab === "wishes" && (
-            <RsvpManager
-              wishes={wishes}
-              onWishesUpdated={(updated) => setWishes(updated)}
-            />
-          )}
+              {activeTab === "wishes" && (
+                <RsvpManager
+                  wishes={wishes}
+                  onWishesUpdated={(updated) => setWishes(updated)}
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
       <LivePreviewModal
@@ -537,11 +574,14 @@ export default function AdminDashboardPage() {
         onClose={() => {
           setIsPreviewOpen(false);
           setPreviewOverrideTemplate(undefined);
+          setPreviewOverrideData(undefined);
         }}
-        data={invitationData}
+        data={previewOverrideData || invitationData}
         overrideTemplateId={previewOverrideTemplate}
         onEditTemplate={(tmplId) => {
           setIsPreviewOpen(false);
+          setPreviewOverrideData(undefined);
+          setPreviewOverrideTemplate(undefined);
           setEditorTemplateId(tmplId);
           setIsEditorOpen(true);
         }}
@@ -561,14 +601,20 @@ export default function AdminDashboardPage() {
             setEditorTemplateId(null);
           }}
           onSaveAndApply={(savedData) => {
+            saveInvitationData(savedData);
             setInvitationData(savedData);
           }}
           onOpenPreview={(data, tmplId) => {
+            setPreviewOverrideData(data);
             setPreviewOverrideTemplate(tmplId);
             setIsPreviewOpen(true);
           }}
         />
       )}
+      <A3PosterModal
+        isOpen={isA3PosterOpen}
+        onClose={() => setIsA3PosterOpen(false)}
+      />
     </div>
   );
 }

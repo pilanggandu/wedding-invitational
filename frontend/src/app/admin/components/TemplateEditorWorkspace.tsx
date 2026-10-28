@@ -21,6 +21,7 @@ import {
   ExternalLink,
   X,
   Layers,
+  Music,
 } from "lucide-react";
 import { WeddingInvitationData, BankAccount } from "@/types/wedding";
 import { TYPOGRAPHY_OPTIONS } from "@/lib/typography";
@@ -28,6 +29,9 @@ import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { TemplateRenderer } from "@/templates/TemplateRenderer";
 import { normalizeWeddingData } from "@/context/WeddingDataContext";
 import { PhotoPickerControl } from "./PhotoPickerControl";
+import { InvitationMusicSettings } from "./InvitationMusicSettings";
+import { getMusicUrlError, getMusicVolume } from "@/lib/musicSettings";
+import { getTemplateScrollbarVars, normalizeTemplateThemeId } from "@/lib/templateTheme";
 
 interface TemplateEditorWorkspaceProps {
   initialData: WeddingInvitationData;
@@ -44,6 +48,7 @@ type EditorSection =
   | "gallery"
   | "gifts"
   | "rsvp"
+  | "music"
   | "theme";
 
 export function TemplateEditorWorkspace({
@@ -69,7 +74,7 @@ export function TemplateEditorWorkspace({
   useEffect(() => {
     if (!canvasScrollContainerRef.current || !previewContentRef.current) return;
 
-    if (activeSection === "cover" || activeSection === "theme") {
+    if (activeSection === "cover" || activeSection === "theme" || activeSection === "music") {
       canvasScrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -82,6 +87,7 @@ export function TemplateEditorWorkspace({
       gifts: ["#gift", "#gifts", "#hadiah", "#kado", "#amplop"],
       rsvp: ["#rsvp", "#ucapan", "#doa"],
       theme: ["#hero", "#beranda", "#cover", "#sampul"],
+      music: ["#hero", "#beranda", "#cover", "#sampul"],
     };
 
     const selectors = selectorMap[activeSection] || [];
@@ -130,9 +136,18 @@ export function TemplateEditorWorkspace({
   };
 
   const handleSaveAndApplyClick = () => {
+    if (getMusicUrlError(draftData.general.musicUrl || "")) {
+      setActiveSection("music");
+      return;
+    }
     const finalData: WeddingInvitationData = {
       ...draftData,
       activeTemplateId: templateId,
+      general: {
+        ...draftData.general,
+        musicUrl: draftData.general.musicUrl?.trim() || "",
+        musicVolume: getMusicVolume(draftData.general.musicVolume),
+      },
     };
     onSaveAndApply(finalData);
     setIsDirty(false);
@@ -149,6 +164,7 @@ export function TemplateEditorWorkspace({
     { id: "gallery", label: "Galeri Foto", icon: ImageIcon },
     { id: "gifts", label: "Kado & Rekening", icon: CreditCard },
     { id: "rsvp", label: "Buku Tamu & RSVP", icon: MessageSquareHeart },
+    { id: "music", label: "Lagu Undangan", icon: Music },
     { id: "theme", label: "Gaya & Tipografi", icon: Palette },
   ];
 
@@ -157,8 +173,24 @@ export function TemplateEditorWorkspace({
     activeTemplateId: templateId,
   };
 
+  const normalizedTmpl = normalizeTemplateThemeId(templateId);
+  const scrollbarVars = getTemplateScrollbarVars(normalizedTmpl);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-template-theme", normalizedTmpl);
+      return () => {
+        document.documentElement.removeAttribute("data-template-theme");
+      };
+    }
+  }, [normalizedTmpl]);
+
   return (
-    <div className="fixed inset-0 z-50 bg-[#0F1116] text-[#FAF8F5] flex flex-col overflow-hidden font-sans">
+    <div
+      data-template-theme={normalizedTmpl}
+      style={scrollbarVars}
+      className="fixed inset-0 z-50 bg-[#0F1116] text-[#FAF8F5] flex flex-col overflow-hidden font-sans editor-workspace-theme"
+    >
       {/* Top Header Workspace Bar (Operate) */}
       <header className="h-14 bg-[#14161C] border-b border-[#232734] px-4 sm:px-6 flex items-center justify-between shrink-0 select-none">
         <div className="flex items-center gap-3">
@@ -314,10 +346,17 @@ export function TemplateEditorWorkspace({
         {/* Center: Live Experience Canvas (Experience) */}
         <main
           ref={canvasScrollContainerRef}
+          style={scrollbarVars}
           className="flex-1 bg-[#090A0D] p-3 sm:p-6 flex flex-col items-center justify-start overflow-y-auto relative"
         >
           <div className="w-full flex items-center justify-between max-w-md pb-2 text-[11px] font-mono text-[#717686]">
-            <span>Kanvas Langsung Undangan</span>
+            <span className="flex items-center gap-1.5">
+              <span
+                className="w-2 h-2 rounded-full shadow-xs"
+                style={{ backgroundColor: (scrollbarVars as Record<string, string>)["--scrollbar-thumb"] }}
+              />
+              <span>Kanvas Langsung Undangan</span>
+            </span>
             <span className="text-[#A6ABB9]">{deviceView === "mobile" ? "Lebar Ponsel (420px)" : "Layar Penuh"}</span>
           </div>
 
@@ -351,7 +390,10 @@ export function TemplateEditorWorkspace({
         </main>
 
         {/* Right Panel: Section Inspector Form Controls (Operate) */}
-        <aside className="w-72 sm:w-80 lg:w-96 shrink-0 bg-[#14161C] border-l border-[#1E222D] flex flex-col justify-between overflow-y-auto p-4 sm:p-5 select-none">
+        <aside
+          style={scrollbarVars}
+          className="w-72 sm:w-80 lg:w-96 shrink-0 bg-[#14161C] border-l border-[#1E222D] flex flex-col justify-between overflow-y-auto p-4 sm:p-5 select-none"
+        >
           <div className="space-y-5">
             <div className="border-b border-[#232734] pb-3">
               <div className="flex items-center gap-2">
@@ -1188,6 +1230,32 @@ export function TemplateEditorWorkspace({
               </div>
             )}
 
+            {activeSection === "music" && (
+              <div className="space-y-5">
+                <InvitationMusicSettings
+                  appearance="dark"
+                  value={draftData.general}
+                  onChange={(music) => updateDraft((prev) => ({
+                    ...prev,
+                    general: { ...prev.general, ...music },
+                  }))}
+                />
+                <label className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#1A1D26] border border-[#454B5D] cursor-pointer">
+                  <span className="text-sm text-white">Putar saat undangan dibuka</span>
+                  <input
+                    type="checkbox"
+                    checked={draftData.themePalette?.musicAutoplay !== false}
+                    onChange={(event) => updateDraft((prev) => ({
+                      ...prev,
+                      themePalette: { ...prev.themePalette, musicAutoplay: event.target.checked },
+                    }))}
+                    className="w-5 h-5 accent-[#DFD2BD]"
+                  />
+                </label>
+                <p className="text-sm text-[#A6ABB9]">Tekan Simpan &amp; Terapkan untuk memakai lagu ini di undangan.</p>
+              </div>
+            )}
+
             {/* 7. THEME & TYPOGRAPHY INSPECTOR */}
             {activeSection === "theme" && (
               <div className="space-y-4">
@@ -1249,23 +1317,6 @@ export function TemplateEditorWorkspace({
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-3 rounded-xl bg-[#1A1D26] border border-[#272B38] cursor-pointer">
-                    <span className="text-xs text-white">Putar Musik Otomatis</span>
-                    <input
-                      type="checkbox"
-                      checked={draftData.themePalette?.musicAutoplay !== false}
-                      onChange={(e) =>
-                        updateDraft((prev) => ({
-                          ...prev,
-                          themePalette: {
-                            ...prev.themePalette,
-                            musicAutoplay: e.target.checked,
-                          },
-                        }))
-                      }
-                      className="w-4 h-4 rounded text-emerald-600 focus:ring-0"
-                    />
-                  </label>
                 </div>
               </div>
             )}

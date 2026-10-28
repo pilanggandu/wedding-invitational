@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="fishShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#D97736" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#fishShadow)">
+    <!-- White Sticker Outline -->
+    <path d="M 18 60 
+             C 24 35, 50 35, 62 60 
+             L 165 60 
+             L 190 35 L 180 60 L 190 85 L 165 60 
+             L 62 60 
+             C 50 85, 24 85, 18 60 Z" 
+          stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round" fill="#FFFFFF"/>
+    <!-- Cute Fishbone Skeleton -->
+    <!-- Fish Head -->
+    <path d="M 28 60 C 34 44, 52 44, 58 60 C 52 76, 34 76, 28 60 Z" fill="#FB923C" stroke="#3D271D" stroke-width="2.5"/>
+    <circle cx="42" cy="54" r="3.5" fill="#3D271D"/>
+    <!-- Fish Spine -->
+    <line x1="58" y1="60" x2="160" y2="60" stroke="#3D271D" stroke-width="3" stroke-linecap="round"/>
+    <!-- Rib Bones -->
+    
+      <line x1="78" y1="40" x2="78" y2="80" stroke="#3D271D" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="78" cy="40" r="2.5" fill="#F472B6"/>
+      <circle cx="78" cy="80" r="2.5" fill="#F472B6"/>
+    
+      <line x1="98" y1="40" x2="98" y2="80" stroke="#3D271D" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="98" cy="40" r="2.5" fill="#F472B6"/>
+      <circle cx="98" cy="80" r="2.5" fill="#F472B6"/>
+    
+      <line x1="118" y1="40" x2="118" y2="80" stroke="#3D271D" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="118" cy="40" r="2.5" fill="#F472B6"/>
+      <circle cx="118" cy="80" r="2.5" fill="#F472B6"/>
+    
+      <line x1="138" y1="40" x2="138" y2="80" stroke="#3D271D" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="138" cy="40" r="2.5" fill="#F472B6"/>
+      <circle cx="138" cy="80" r="2.5" fill="#F472B6"/>
+    
+    <!-- Fish Tail -->
+    <polygon points="160,60 185,42 176,60 185,78" fill="#FB923C" stroke="#3D271D" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Cute little red bowtie on head -->
+    <polygon points="56,58 62,54 62,62" fill="#EF4444"/>
+    <polygon points="68,58 62,54 62,62" fill="#EF4444"/>
+    <circle cx="62" cy="58" r="1.5" fill="#B91C1C"/>
+  </g>
+</svg>

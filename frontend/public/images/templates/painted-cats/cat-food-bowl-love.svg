@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="bowlShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#D97736" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#bowlShadow)">
+    <!-- Ceramic Bowl Base -->
+    <path d="M 20 64 C 20 110, 160 110, 160 64 Z" fill="#FAF6EE" stroke="#3D271D" stroke-width="2.5"/>
+    <ellipse cx="90" cy="64" rx="70" ry="18" fill="#FFF7ED" stroke="#3D271D" stroke-width="2.5"/>
+    <!-- Heart treats mounded inside -->
+    <circle cx="70" cy="56" r="12" fill="#FB923C"/>
+    <circle cx="90" cy="52" r="14" fill="#EA580C"/>
+    <circle cx="110" cy="56" r="12" fill="#FB923C"/>
+    <!-- Fish Icon decoration on front of bowl -->
+    <path d="M 74 88 C 80 82, 92 82, 98 88 C 92 94, 80 94, 74 88 Z" fill="#D97736"/>
+    <polygon points="98,88 106,82 106,94" fill="#D97736"/>
+    <circle cx="80" cy="88" r="1.5" fill="#FFFFFF"/>
+  </g>
+</svg>

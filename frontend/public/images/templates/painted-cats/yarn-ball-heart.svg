@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="yarnShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#D97736" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#yarnShadow)">
+    <!-- Yarn Ball Circle -->
+    <circle cx="65" cy="85" r="45" fill="#FB923C" stroke="#EA580C" stroke-width="2.5"/>
+    <!-- Yarn strand curves -->
+    <path d="M 35 60 C 55 45, 80 50, 95 70" stroke="#FDBA74" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 25 85 C 45 65, 85 65, 105 85" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+    <path d="M 35 110 C 55 125, 80 120, 95 100" stroke="#C2410C" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 50 45 C 70 70, 70 100, 50 125" stroke="#EA580C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Unraveling yarn string leading to a heart -->
+    <path d="M 105 95 Q 125 125 140 105 T 160 80 C 160 65, 175 60, 180 70 C 185 60, 200 65, 200 80 C 200 95, 180 115, 180 115 C 180 115, 160 95, 160 80" 
+          stroke="#EA580C" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <!-- Cute needle sticking through -->
+    <line x1="20" y1="40" x2="110" y2="130" stroke="#CBD5E1" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="24" cy="44" r="2.5" fill="#94A3B8"/>
+  </g>
+</svg>

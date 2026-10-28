@@ -76,7 +76,7 @@ app.get("/", (_req: Request, res: Response) => {
     message: "Wedding Invitation API Server (Express + SQLite / Supabase)",
     endpoints: [
       "/api/health",
-      "/api/auth (POST register, POST login, GET me, POST logout)",
+      "/api/auth (POST register, POST login, POST google, GET me, POST logout)",
       "/api/invitation (GET, PUT)",
       "/api/guests (GET, POST, PATCH, DELETE)",
       "/api/wishes (GET, POST, DELETE)",

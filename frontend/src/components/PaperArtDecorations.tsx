@@ -569,7 +569,7 @@ export function WaxSeal({
         className={`${sizeClasses} wax-seal-maroon rounded-full flex flex-col items-center justify-center text-white p-1.5 transition-transform duration-300 group-hover:scale-105 active:scale-95`}
       >
         <div className="w-full h-full rounded-full border-2 border-dashed border-[#FFE58F]/70 flex flex-col items-center justify-center text-center p-1">
-          <Heart className="w-3.5 h-3.5 text-[#FAD2D8] mb-0.5 fill-current animate-pulse" />
+          <Heart className="w-3.5 h-3.5 text-[#FAD2D8] mb-0.5 fill-current" />
           <span className="font-script font-bold tracking-wider text-[14px] drop-shadow-sm text-white">
             {initials}
           </span>

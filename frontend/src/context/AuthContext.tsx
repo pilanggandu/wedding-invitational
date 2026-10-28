@@ -10,6 +10,7 @@ import React, {
 import { AuthUser } from "@/types/auth";
 import {
   loginToBackend,
+  loginWithGoogleToBackend,
   registerToBackend,
   fetchCurrentUserFromBackend,
   logoutFromBackend,
@@ -24,6 +25,9 @@ interface AuthContextType {
   login: (
     username: string,
     password: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: (
+    credential: string
   ) => Promise<{ success: boolean; error?: string }>;
   register: (params: {
     username: string;
@@ -76,6 +80,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true };
   };
 
+  const loginWithGoogle = async (credential: string) => {
+    const res = await loginWithGoogleToBackend(credential);
+    if (res.error || !res.user) {
+      return { success: false, error: res.error || "Gagal masuk dengan Google" };
+    }
+
+    setUser(res.user);
+    setToken(res.token);
+    return { success: true };
+  };
+
   const register = async (params: {
     username: string;
     password: string;
@@ -106,6 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         isAuthenticated: !!user,
         login,
+        loginWithGoogle,
         register,
         logout,
       }}

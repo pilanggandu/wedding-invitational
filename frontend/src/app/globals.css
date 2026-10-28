@@ -321,18 +321,156 @@
 .animate-eq-2 { animation: eqBounce2 0.6s ease-in-out infinite; }
 .animate-eq-3 { animation: eqBounce3 0.85s ease-in-out infinite; }
 
-/* Custom scrollbar in elegant maroon & gold */
+@keyframes botanicalSway {
+  0%, 100% { transform: rotate(0deg) translate3d(0, 0, 0); }
+  50% { transform: rotate(2.5deg) translate3d(2px, -2px, 0); }
+}
+
+.animate-botanical-sway {
+  animation: botanicalSway 6.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:root {
+  --scrollbar-thumb: #7D1128;
+  --scrollbar-thumb-hover: #540914;
+  --scrollbar-thumb-border: #FFE58F;
+  --scrollbar-track: #FFF5F6;
+  --scrollbar-width: 8px;
+}
+
+[data-template-theme="paper-art-maroon"],
+.theme-paper-art-maroon {
+  --scrollbar-thumb: #7D1128;
+  --scrollbar-thumb-hover: #540914;
+  --scrollbar-thumb-border: #FFE58F;
+  --scrollbar-track: #FFF5F6;
+}
+
+[data-template-theme="painted-cats"],
+.theme-painted-cats {
+  --scrollbar-thumb: #D97736;
+  --scrollbar-thumb-hover: #C2633C;
+  --scrollbar-thumb-border: #FFF0E8;
+  --scrollbar-track: #FAF6EE;
+}
+
+[data-template-theme="cityscape-skyline"],
+.theme-cityscape-skyline {
+  --scrollbar-thumb: #1D78A0;
+  --scrollbar-thumb-hover: #0C4A60;
+  --scrollbar-thumb-border: #38B6FF;
+  --scrollbar-track: #0B1E2E;
+}
+
+[data-template-theme="royal-heritage"],
+.theme-royal-heritage {
+  --scrollbar-thumb: #C8A97E;
+  --scrollbar-thumb-hover: #DFC49C;
+  --scrollbar-thumb-border: #071913;
+  --scrollbar-track: #09221B;
+}
+
+[data-template-theme="cinematic-blur"],
+.theme-cinematic-blur {
+  --scrollbar-thumb: #DFD2BD;
+  --scrollbar-thumb-hover: #FAF8F5;
+  --scrollbar-thumb-border: #1A1D26;
+  --scrollbar-track: #090B10;
+}
+
+[data-template-theme="ambient-blur"],
+.theme-ambient-blur {
+  --scrollbar-thumb: #E07A5F;
+  --scrollbar-thumb-hover: #F4A261;
+  --scrollbar-thumb-border: rgba(255, 255, 255, 0.6);
+  --scrollbar-track: #F8FAFC;
+}
+
+.editor-workspace-theme {
+  --scrollbar-track: rgba(255, 255, 255, 0.05);
+}
+
 ::-webkit-scrollbar {
-  width: 9px;
+  width: var(--scrollbar-width, 8px);
+  height: var(--scrollbar-width, 8px);
 }
+
 ::-webkit-scrollbar-track {
-  background: #FFF5F6;
+  background: var(--scrollbar-track, #FFF5F6);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #7D1128;
+  background: var(--scrollbar-thumb, #7D1128);
   border-radius: 9999px;
-  border: 2px solid #FFE58F;
+  border: 2px solid var(--scrollbar-thumb-border, #FFE58F);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #660F1A;
+  background: var(--scrollbar-thumb-hover, #540914);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, #7D1128) var(--scrollbar-track, #FFF5F6);
+}
+
+
+/* ========================================================
+   UNIVERSAL MOTION: LETTER-BY-LETTER & FRAME MOUNT
+   ======================================================== */
+.cm-char-reveal {
+  display: inline-block;
+  line-height: inherit;
+}
+.cm-char-track {
+  display: inline;
+}
+.cm-char-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.cm-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.32em) rotate(2.5deg);
+  animation: cm-char-in 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+.cm-char-space {
+  width: 0.28em;
+}
+
+@keyframes cm-char-in {
+  0% {
+    opacity: 0;
+    transform: translateY(0.35em) rotate(3deg);
+    filter: blur(1.5px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cm-char {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    filter: none !important;
+  }
 }

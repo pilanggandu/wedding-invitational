@@ -2,7 +2,16 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { VolumeX, Music } from "lucide-react";
+import { VolumeX } from "lucide-react";
+import { useWeddingData } from "@/context/WeddingDataContext";
+import { getMusicUrlError, getMusicVolume } from "@/lib/musicSettings";
+
+const NOTES = [
+  293.66, 369.99, 440, 587.33, 220, 277.18, 329.63, 440,
+  246.94, 293.66, 369.99, 493.88, 185, 220, 277.18, 369.99,
+  196, 246.94, 293.66, 392, 220, 293.66, 369.99, 440,
+  196, 246.94, 293.66, 392, 220, 277.18, 329.63, 440,
+];
 
 export type AudioTheme = "maroon" | "cityscape" | "royal" | "cinematic" | "ambient" | "cats";
 
@@ -12,22 +21,27 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerProps) {
+  const data = useWeddingData();
+  const source = data.general.musicUrl?.trim() || "";
+  const sourceError = getMusicUrlError(source);
+  const volume = getMusicVolume(data.general.musicVolume);
+  const shouldAutoPlay = Boolean(autoPlayTrigger) && data.themePalette?.musicAutoplay !== false;
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [audioError, setAudioError] = useState<{ source: string; message: string } | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const masterGainRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayingRef = useRef<boolean>(false);
+  const requestRef = useRef(0);
+  const volumeRef = useRef(volume / 100);
 
-  // Soft romantic acoustic melody notes (Ethereal Canon in D / Acoustic Arpeggios)
-  const notesFreq = [
-    293.66, 369.99, 440.0, 587.33,
-    220.0, 277.18, 329.63, 440.0,
-    246.94, 293.66, 369.99, 493.88,
-    185.0, 220.0, 277.18, 369.99,
-    196.0, 246.94, 293.66, 392.0,
-    220.0, 293.66, 369.99, 440.0,
-    196.0, 246.94, 293.66, 392.0,
-    220.0, 277.18, 329.63, 440.0,
-  ];
+  useEffect(() => {
+    volumeRef.current = volume / 100;
+    if (audioRef.current) audioRef.current.volume = volume / 100;
+    if (masterGainRef.current) masterGainRef.current.gain.value = volume / 100;
+  }, [volume, source]);
 
   const playTone = useCallback((freq: number, duration: number = 2.0) => {
     try {
@@ -59,38 +73,70 @@ export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerPr
       osc2.connect(gain2);
       gain2.connect(filter);
       filter.connect(gain);
-      gain.connect(ctx.destination);
+      gain.connect(masterGainRef.current || ctx.destination);
 
       osc.start(ctx.currentTime);
       osc2.start(ctx.currentTime);
       osc.stop(ctx.currentTime + duration);
       osc2.stop(ctx.currentTime + duration);
     } catch {
-      // ignore
     }
   }, []);
 
-  const startMusic = useCallback(() => {
+  const stopMusic = useCallback(() => {
+    requestRef.current += 1;
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    audioRef.current?.pause();
+    if (audioContextRef.current?.state === "running") {
+      void audioContextRef.current.suspend();
+    }
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+    setIsLoading(false);
+  }, []);
+
+  const startMusic = useCallback(async () => {
+    const request = ++requestRef.current;
+    setAudioError(null);
+    setIsLoading(true);
     try {
+      if (sourceError) throw new Error(sourceError);
+      if (source) {
+        const audio = audioRef.current;
+        if (!audio) return;
+        audio.volume = volumeRef.current;
+        await audio.play();
+        if (request !== requestRef.current) return;
+        isPlayingRef.current = true;
+        setIsPlaying(true);
+        return;
+      }
       if (!audioContextRef.current) {
         const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         audioContextRef.current = new AudioCtx();
+        masterGainRef.current = audioContextRef.current.createGain();
+        masterGainRef.current.gain.value = volumeRef.current;
+        masterGainRef.current.connect(audioContextRef.current.destination);
       }
 
       if (audioContextRef.current.state === "suspended") {
-        audioContextRef.current.resume();
+        await audioContextRef.current.resume();
       }
+      if (request !== requestRef.current) return;
 
       let step = 0;
       if (intervalRef.current) clearInterval(intervalRef.current);
 
       intervalRef.current = setInterval(() => {
         if (!isPlayingRef.current) return;
-        const freq = notesFreq[step % notesFreq.length];
+        const freq = NOTES[step % NOTES.length];
         playTone(freq, 2.0);
         if (step % 4 === 0) {
           setTimeout(() => {
-            if (isPlayingRef.current) playTone(freq * 1.5, 1.8);
+            if (isPlayingRef.current && request === requestRef.current) playTone(freq * 1.5, 1.8);
           }, 300);
         }
         step++;
@@ -98,41 +144,43 @@ export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerPr
 
       isPlayingRef.current = true;
       setIsPlaying(true);
-    } catch (e) {
-      console.warn("Audio autoplay policy:", e);
+    } catch (error) {
+      if (request !== requestRef.current) return;
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+      setAudioError({ source, message: sourceError || (error instanceof DOMException && error.name === "NotAllowedError"
+        ? "Ketuk ikon musik untuk memutar lagu."
+        : "Lagu tidak dapat diputar. Periksa tautan audio di pengaturan undangan.") });
+    } finally {
+      if (request === requestRef.current) setIsLoading(false);
     }
-  }, [notesFreq, playTone]);
-
-  const stopMusic = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    if (audioContextRef.current && audioContextRef.current.state === "running") {
-      audioContextRef.current.suspend();
-    }
-    isPlayingRef.current = false;
-    setIsPlaying(false);
-  }, []);
+  }, [source, sourceError, playTone]);
 
   const toggleMusic = () => {
-    if (isPlaying) {
+    if (isPlaying || isLoading) {
       stopMusic();
     } else {
-      startMusic();
+      void startMusic();
     }
   };
 
   useEffect(() => {
-    if (autoPlayTrigger && !isPlayingRef.current) {
-      startMusic();
-    }
-  }, [autoPlayTrigger, startMusic]);
+    const audio = audioRef.current;
+    if (shouldAutoPlay && !isPlayingRef.current) void startMusic();
+    return () => {
+      audio?.pause();
+      stopMusic();
+    };
+  }, [shouldAutoPlay, startMusic, stopMusic]);
 
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (audioContextRef.current) audioContextRef.current.close();
+      if (audioContextRef.current) {
+        void audioContextRef.current.close();
+        audioContextRef.current = null;
+        masterGainRef.current = null;
+      }
     };
   }, []);
 
@@ -194,11 +242,11 @@ export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerPr
     },
     cats: {
       button:
-        "bg-[#FAF6EE]/95 border-2 border-[#EAD8C7] text-[#8C5D38] hover:bg-white shadow-[0_4px_16px_rgba(200,90,23,0.15)]",
-      circle: "bg-[#FFF4EB] border border-[#EAD8C7] text-[#D97736]",
-      eqBars: ["bg-[#D97736]", "bg-[#EA580C]", "bg-[#FDBA74]"],
-      ping: "bg-[#EA580C]",
-      labelFont: "font-mono font-bold text-[10px] text-[#C85A17] uppercase tracking-wider",
+        "bg-white/95 border-[2px] border-[#F3DFD1] text-[#6E5345] hover:bg-[#FFF9F5] shadow-[0_8px_20px_rgba(222,125,84,0.14)]",
+      circle: "bg-[#FFF4EC] border border-[#FCD5CE] text-[#DF7B54]",
+      eqBars: ["bg-[#DF7B54]", "bg-[#F4929D]", "bg-[#FBBF24]"],
+      ping: "bg-[#DF7B54]",
+      labelFont: "font-sans font-bold text-[11px] text-[#DF7B54] tracking-wide",
       labelOn: "MEOW ON",
       labelOff: "MEOW OFF",
       mutedIcon: "text-[#A8734C]",
@@ -207,18 +255,40 @@ export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerPr
 
   return (
     <div className="fixed top-4 left-4 lg:absolute lg:top-14 lg:left-4 z-40 w-fit pointer-events-auto">
+      {source && !sourceError && (
+        <audio
+          key={source}
+          ref={audioRef}
+          src={source}
+          loop
+          preload="none"
+          onPlay={() => { isPlayingRef.current = true; setIsPlaying(true); }}
+          onPause={() => { isPlayingRef.current = false; setIsPlaying(false); }}
+          onWaiting={() => setIsLoading(true)}
+          onPlaying={() => setIsLoading(false)}
+          onError={() => {
+            isPlayingRef.current = false;
+            setIsPlaying(false);
+            setIsLoading(false);
+            setAudioError({ source, message: "Lagu tidak dapat diputar. Periksa tautan audio di pengaturan undangan." });
+          }}
+        />
+      )}
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        type="button"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.96 }}
         onClick={toggleMusic}
-        aria-label={isPlaying ? "Mute Musik" : "Putar Musik"}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 group cursor-pointer backdrop-blur-xs min-h-[44px] ${themeStyles.button}`}
+        aria-label={isLoading ? "Batalkan pemutaran musik" : isPlaying ? "Mute Musik" : "Putar Musik"}
+        aria-pressed={isPlaying}
+        aria-busy={isLoading}
+        title={source ? [data.general.musicTitle || "Lagu undangan", data.general.musicArtist].filter(Boolean).join(" · ") : "Instrumental bawaan"}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors duration-200 group cursor-pointer backdrop-blur-xs min-h-[44px] ${themeStyles.button}`}
       >
         <div
           className={`relative w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${themeStyles.circle}`}
         >
           {isPlaying ? (
-            /* Animated Equalizer Wave Bars */
             <div className="flex items-end gap-[2px] h-3.5 w-3.5 justify-center">
               <span className={`w-1 rounded-full animate-eq-1 ${themeStyles.eqBars[0]}`} />
               <span className={`w-1 rounded-full animate-eq-2 ${themeStyles.eqBars[1]}`} />
@@ -228,19 +298,23 @@ export function AudioPlayer({ autoPlayTrigger, theme = "maroon" }: AudioPlayerPr
             <VolumeX className={`w-3.5 h-3.5 ${themeStyles.mutedIcon}`} />
           )}
 
-          {/* Floating ping indicator */}
           {isPlaying && (
-            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${themeStyles.ping}`} />
+            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+              <motion.span
+                animate={{ scale: [1, 1.35, 1], opacity: [0.5, 0.15, 0.5] }}
+                transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
+                className={`absolute inline-flex h-full w-full rounded-full ${themeStyles.ping}`}
+              />
               <span className={`relative inline-flex rounded-full h-2 w-2 ${themeStyles.ping}`} />
             </span>
           )}
         </div>
 
         <span className={`pr-1 ${themeStyles.labelFont}`}>
-          {isPlaying ? themeStyles.labelOn : themeStyles.labelOff}
+          {isLoading ? "Memuat musik…" : isPlaying ? themeStyles.labelOn : themeStyles.labelOff}
         </span>
       </motion.button>
+      {audioError?.source === source && <p role="status" className="max-w-[220px] mt-2 p-2 bg-white text-[#702522] border border-[#D8C8C0] rounded-lg text-xs leading-relaxed">{audioError.message}</p>}
     </div>
   );
 }

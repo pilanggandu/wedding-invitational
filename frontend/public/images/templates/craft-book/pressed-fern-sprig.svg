@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="fernShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2.5" flood-color="#1C2115" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <g filter="url(#fernShadow)">
+    <!-- Main rachis stem -->
+    <path d="M 80 260 Q 82 160 76 24" stroke="#5A664A" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Fern pinnae / leaflets -->
+    
+      <path d="M 78 50 Q 70.5435063274364 42 63.0870126548728 42.54571639697018" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="63.0870126548728" cy="42.54571639697018" rx="5" ry="3" transform="rotate(-35 63.0870126548728 42.54571639697018)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 56 Q 85.4564936725636 48 92.91298734512719 48.54571639697018" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="92.91298734512719" cy="48.54571639697018" rx="5" ry="3" transform="rotate(35 92.91298734512719 48.54571639697018)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 84 Q 65.78703541595576 76 53.57407083191151 73.81160890651759" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="53.57407083191151" cy="73.81160890651759" rx="5" ry="3" transform="rotate(-40 53.57407083191151 73.81160890651759)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 92 Q 90.21296458404424 84 102.42592916808849 81.81160890651759" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="102.42592916808849" cy="81.81160890651759" rx="5" ry="3" transform="rotate(40 102.42592916808849 81.81160890651759)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 124 Q 61.029437251522864 116 44.05887450304572 112.120606076066" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="44.05887450304572" cy="112.120606076066" rx="5" ry="3" transform="rotate(-45 44.05887450304572 112.120606076066)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 132 Q 94.97056274847714 124 111.94112549695427 120.120606076066" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="111.94112549695427" cy="120.120606076066" rx="5" ry="3" transform="rotate(45 111.94112549695427 120.120606076066)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 168 Q 59.615223689149765 160 41.23044737829953 155.13065658240484" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="41.23044737829953" cy="155.13065658240484" rx="5" ry="3" transform="rotate(-45 41.23044737829953 155.13065658240484)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 176 Q 96.38477631085024 168 114.76955262170047 163.13065658240484" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="114.76955262170047" cy="163.13065658240484" rx="5" ry="3" transform="rotate(45 114.76955262170047 163.13065658240484)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 210 Q 62.44365081389596 202 46.88730162779191 199.11055556972718" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="46.88730162779191" cy="199.11055556972718" rx="5" ry="3" transform="rotate(-45 46.88730162779191 199.11055556972718)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+      <path d="M 78 218 Q 93.55634918610404 210 109.11269837220809 207.11055556972718" 
+            stroke="#637050" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="109.11269837220809" cy="207.11055556972718" rx="5" ry="3" transform="rotate(45 109.11269837220809 207.11055556972718)" 
+               fill="#7D8D66" opacity="0.9"/>
+      
+    <!-- Top budding tip -->
+    <path d="M 76 24 C 74 16, 78 12, 82 14 C 86 16, 84 22, 78 24" fill="#6B7A57"/>
+  </g>
+</svg>

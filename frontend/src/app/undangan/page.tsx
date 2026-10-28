@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Settings } from "lucide-react";
-import { getInvitationData, syncWithBackend } from "@/lib/invitationStore";
+import { DEFAULT_INVITATION_DATA, getInvitationData, syncWithBackend } from "@/lib/invitationStore";
 import { verifyGuestTokenApi } from "@/lib/api";
 import { WeddingInvitationData } from "@/types/wedding";
 import { TemplateRenderer } from "@/templates/TemplateRenderer";
@@ -15,7 +15,7 @@ function InvitationContent() {
   const rawTo = searchParams.get("to") || searchParams.get("nama") || "";
   const templateParam = searchParams.get("template") || searchParams.get("theme") || "";
 
-  const [weddingData, setWeddingData] = useState<WeddingInvitationData>(getInvitationData());
+  const [weddingData, setWeddingData] = useState<WeddingInvitationData>(DEFAULT_INVITATION_DATA);
   const [verifiedGuest, setVerifiedGuest] = useState<{
     id: string;
     name: string;

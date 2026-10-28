@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { motion, Variants } from "framer-motion";
+import { motion, useReducedMotion, Variants } from "framer-motion";
+import { MOTION_TRANSITIONS } from "@/lib/motion";
 
 interface MotionRevealProps {
   children: React.ReactNode;
@@ -22,104 +23,99 @@ export function MotionReveal({
   children,
   variant = "fade-up",
   delay = 0,
-  duration = 0.7,
+  duration = MOTION_TRANSITIONS.romantic.duration,
   className = "",
 }: MotionRevealProps) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   const variantsMap: Record<string, Variants> = {
     "fade-up": {
-      hidden: { opacity: 0, y: 28 },
+      hidden: { opacity: 0, y: 16 },
       visible: {
         opacity: 1,
         y: 0,
         transition: {
-          type: "spring",
-          stiffness: 85,
-          damping: 18,
-          mass: 0.8,
+          duration,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
-    // Pure 2D Flat Paper Reveal with Silky Spring
     "paper-unfold": {
-      hidden: { opacity: 0, scale: 0.95, y: 20 },
+      hidden: { opacity: 0, scale: 0.98, y: 12 },
       visible: {
         opacity: 1,
         scale: 1,
         y: 0,
         transition: {
-          type: "spring",
-          stiffness: 75,
-          damping: 17,
-          mass: 0.9,
+          duration: duration * 1.05,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
-    // Pure 2D Flat Polaroid Drop with bouncy natural overshoot
     "polaroid-drop": {
-      hidden: { opacity: 0, y: -24, scale: 0.94 },
+      hidden: { opacity: 0, y: -12, scale: 0.98 },
       visible: {
         opacity: 1,
         y: 0,
         scale: 1,
         transition: {
-          type: "spring",
-          stiffness: 100,
-          damping: 14,
+          duration: duration * 0.9,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
     "scale-in": {
-      hidden: { opacity: 0, scale: 0.92 },
+      hidden: { opacity: 0, scale: 0.96 },
       visible: {
         opacity: 1,
         scale: 1,
         transition: {
-          type: "spring",
-          stiffness: 90,
-          damping: 18,
+          duration,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
     "slide-left": {
-      hidden: { opacity: 0, x: -32 },
+      hidden: { opacity: 0, x: -16 },
       visible: {
         opacity: 1,
         x: 0,
         transition: {
-          type: "spring",
-          stiffness: 85,
-          damping: 18,
+          duration,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
     "slide-right": {
-      hidden: { opacity: 0, x: 32 },
+      hidden: { opacity: 0, x: 16 },
       visible: {
         opacity: 1,
         x: 0,
         transition: {
-          type: "spring",
-          stiffness: 85,
-          damping: 18,
+          duration,
           delay,
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
-    // Gentle ambient floating
     "float-gentle": {
-      hidden: { opacity: 0, y: 15 },
+      hidden: { opacity: 0, y: 12 },
       visible: {
         opacity: 1,
         y: 0,
         transition: {
-          duration: 0.8,
+          duration,
           delay,
-          ease: [0.22, 1, 0.36, 1],
+          ease: MOTION_TRANSITIONS.romantic.ease,
         },
       },
     },
@@ -129,7 +125,7 @@ export function MotionReveal({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
       variants={variantsMap[variant]}
       className={className}
     >
@@ -137,3 +133,5 @@ export function MotionReveal({
     </motion.div>
   );
 }
+
+export default MotionReveal;

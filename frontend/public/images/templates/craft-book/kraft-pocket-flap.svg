@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="flapShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#241B15" flood-opacity="0.25"/>
+    </filter>
+    <linearGradient id="kraftPocket" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CBB59B"/>
+      <stop offset="100%" stop-color="#AA9174"/>
+    </linearGradient>
+  </defs>
+  <g filter="url(#flapShadow)">
+    <!-- Envelope V-Flap -->
+    <path d="M 12 16 L 308 16 L 160 144 Z" fill="url(#kraftPocket)" stroke="#967B5E" stroke-width="1.5"/>
+    <!-- Paper washer string-tie circle at tip -->
+    <circle cx="160" cy="118" r="14" fill="#6E5441" stroke="#483628" stroke-width="1.5"/>
+    <circle cx="160" cy="118" r="4" fill="#D4AF37" stroke="#2B2117" stroke-width="1"/>
+    <!-- String wound around washer -->
+    <path d="M 160 114 C 172 110, 172 126, 160 122 C 148 118, 150 106, 164 112 L 184 156" 
+          stroke="#E6DEC9" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M 160 120 L 140 162" stroke="#E6DEC9" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

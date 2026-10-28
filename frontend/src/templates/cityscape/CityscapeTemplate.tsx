@@ -62,6 +62,8 @@ import { CityscapeParticles } from "./CityscapeParticles";
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { CityscapeRsvp } from "./CityscapeRsvp";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 // ----------------------------------------------------------------------
 // 1. HERO SECTION (Cityscape Morning Avenue)
@@ -151,25 +153,27 @@ function CityscapeHero() {
   const heroCoverPhoto = data.general?.coverPhotoUrl || data.general?.preweddingPhotos?.[0] || "/images/prewedding/couple-1.jpg";
 
   return (
-    <section id="beranda" className="relative pt-10 pb-16 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
+    <SectionMotion id="beranda" className="relative pt-10 pb-16 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
       <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{
         backgroundImage: "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
         backgroundSize: "28px 28px"
       }} />
 
       <div className="relative z-10 max-w-md mx-auto space-y-5">
-        <motion.div
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+        <ItemMotion
+          variant="slide-down"
+          float={true}
+          floatDistance={3}
+          floatDuration={5}
           className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[10px] font-mono font-bold bg-[#1D78A0]/60 backdrop-blur-md text-[#7DD3FC] border border-[#38B6FF]/30 shadow-xs"
         >
           <Building2 className="w-3 h-3 text-[#38B6FF]" />
           <span>METROPOLITAN CELEBRATION</span>
           <span className="text-white/40">&bull;</span>
           <span>LAT -7.16&deg; LONG 112.05&deg;</span>
-        </motion.div>
+        </ItemMotion>
 
-        <div>
+        <ItemMotion variant="slide-up" delay={0.08}>
           <h1
             style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
             className="text-4xl min-[380px]:text-5xl sm:text-6xl text-white font-extrabold tracking-tight drop-shadow-md leading-none my-1"
@@ -184,9 +188,13 @@ function CityscapeHero() {
           <p className="text-xs sm:text-sm font-mono text-[#93C5FD] tracking-wider mt-2">
             &ldquo;{data.general?.funTagline || "Menemukan cinta di antara jutaan cerita di kota ini."}&rdquo;
           </p>
-        </div>
+        </ItemMotion>
 
-        <div className="relative rounded-2xl overflow-hidden border border-[#38B6FF]/40 shadow-2xl bg-[#0B1E2E]">
+        <ItemMotion
+          variant="pop"
+          delay={0.14}
+          className="relative rounded-2xl overflow-hidden border border-[#38B6FF]/40 shadow-2xl bg-[#0B1E2E]"
+        >
           <div className="bg-[#081827] py-1.5 px-3 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC] border-b border-white/10">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#38B6FF]" />
@@ -201,7 +209,7 @@ function CityscapeHero() {
               alt={`${groom.name} & ${bride.name}`}
               className="w-full h-full object-cover object-center"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E2E] via-transparent to-transparent opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E2E] via-transparent to-transparent opacity-85" />
             <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between z-20 text-left">
               <div>
                 <span className="text-[10px] font-mono uppercase text-[#38B6FF] font-bold block">
@@ -216,9 +224,13 @@ function CityscapeHero() {
               </span>
             </div>
           </div>
-        </div>
+        </ItemMotion>
 
-        <div className="bg-[#0B1E2E]/90 backdrop-blur-xl p-5 rounded-2xl border border-[#38B6FF]/30 shadow-xl text-left">
+        <ItemMotion
+          variant="slide-up"
+          delay={0.18}
+          className="bg-[#0B1E2E]/90 backdrop-blur-xl p-5 rounded-2xl border border-[#38B6FF]/30 shadow-xl text-left"
+        >
           <div className="flex items-center justify-between border-b border-white/10 pb-2.5 mb-3">
             <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#7DD3FC] uppercase tracking-wider">
               <Clock className="w-3.5 h-3.5 text-[#38B6FF]" />
@@ -230,22 +242,22 @@ function CityscapeHero() {
           </div>
 
           <div className="grid grid-cols-4 gap-2 font-mono text-center">
-            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
-              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.days}</span>
-              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Hari</span>
-            </div>
-            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
-              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.hours}</span>
-              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Jam</span>
-            </div>
-            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
-              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.minutes}</span>
-              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Menit</span>
-            </div>
-            <div className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner">
-              <span className="text-xl sm:text-2xl font-black text-white block">{timeLeft.seconds}</span>
-              <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">Detik</span>
-            </div>
+            {[
+              { val: timeLeft.days, label: "Hari", variant: "slide-left" as const },
+              { val: timeLeft.hours, label: "Jam", variant: "slide-left" as const },
+              { val: timeLeft.minutes, label: "Menit", variant: "slide-right" as const },
+              { val: timeLeft.seconds, label: "Detik", variant: "slide-right" as const },
+            ].map((box, idx) => (
+              <ItemMotion
+                key={idx}
+                variant={box.variant}
+                delay={0.22 + idx * 0.05}
+                className="bg-[#081827] p-2.5 rounded-xl border border-white/10 shadow-inner"
+              >
+                <span className="text-xl sm:text-2xl font-black text-white block">{box.val}</span>
+                <span className="text-[8px] text-[#7DD3FC] uppercase font-bold tracking-wider">{box.label}</span>
+              </ItemMotion>
+            ))}
           </div>
 
           <div className="flex items-center justify-center gap-2.5 mt-4 pt-3 border-t border-white/10">
@@ -266,9 +278,18 @@ function CityscapeHero() {
               <span>Simpan (.ics)</span>
             </button>
           </div>
+        </ItemMotion>
+
+        <div className="flex justify-center pt-3 opacity-80 pointer-events-none select-none">
+          <img
+            src="/images/templates/cityscape/metropolitan-skyline-vector.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-full max-w-sm h-auto object-contain"
+          />
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -278,13 +299,24 @@ function CityscapeCouple() {
   const quote = data.general?.quote;
 
   return (
-    <section id="mempelai" className="relative py-14 px-4 bg-[#F0F7FB] overflow-hidden text-center">
+    <SectionMotion id="mempelai" className="relative py-14 px-4 bg-[#F0F7FB] overflow-hidden text-center">
       <div className="max-w-md mx-auto relative z-10">
         {quote && (
-          <div className="bg-white rounded-2xl p-5 border border-sky-100 shadow-sm mb-10 text-center">
-            <div className="w-9 h-9 mx-auto -mt-9 mb-2.5 rounded-full bg-[#1D78A0] text-white flex items-center justify-center shadow-md">
+          <ItemMotion
+            variant="fade"
+            delay={0.06}
+            className="bg-white rounded-2xl p-5 border border-sky-100 shadow-sm mb-10 text-center"
+          >
+            <ItemMotion
+              variant="stamp"
+              delay={0.15}
+              float={true}
+              floatDistance={3}
+              floatDuration={4}
+              className="w-9 h-9 mx-auto -mt-9 mb-2.5 rounded-full bg-[#1D78A0] text-white flex items-center justify-center shadow-md"
+            >
               <Heart className="w-4 h-4 fill-current text-white" />
-            </div>
+            </ItemMotion>
             {quote.arabic && (
               <p className="font-serif text-sm sm:text-base text-[#0C4A60] leading-relaxed mb-2 font-medium" dir="rtl">
                 {quote.arabic}
@@ -296,20 +328,24 @@ function CityscapeCouple() {
             <span className="text-[9px] font-mono text-slate-400 block mt-2">
               {quote.source}
             </span>
-          </div>
+          </ItemMotion>
         )}
 
-        <div className="space-y-1 mb-8">
+        <ItemMotion variant="slide-down" delay={0.1} className="space-y-1 mb-8">
           <span className="text-[10px] font-mono font-bold text-[#1D78A0] uppercase tracking-[0.2em] block">
             METROPOLITAN SOULS &bull; TWO STORIES IN ONE CITY
           </span>
           <h2 className="text-3xl font-extrabold text-[#0C4A60] tracking-tight">
             Pasangan Mempelai
           </h2>
-        </div>
+        </ItemMotion>
 
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left">
+          <ItemMotion
+            variant="slide-left"
+            delay={0.14}
+            className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left"
+          >
             <div className="bg-[#0F2B46] py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC]">
               <span className="font-bold">URBAN PROFILE // GROOM</span>
               <span>SUB-TBN REGION</span>
@@ -358,17 +394,21 @@ function CityscapeCouple() {
                 </p>
               )}
             </div>
-          </div>
+          </ItemMotion>
 
-          <div className="flex items-center justify-center gap-3 py-1">
+          <ItemMotion variant="pop" delay={0.18} className="flex items-center justify-center gap-3 py-1">
             <div className="h-px flex-1 bg-sky-200" />
             <div className="w-8 h-8 rounded-full bg-[#1D78A0] text-white flex items-center justify-center font-mono font-bold text-xs shadow-sm">
               &times;
             </div>
             <div className="h-px flex-1 bg-sky-200" />
-          </div>
+          </ItemMotion>
 
-          <div className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left">
+          <ItemMotion
+            variant="slide-right"
+            delay={0.2}
+            className="bg-white rounded-2xl overflow-hidden border border-sky-200 shadow-md text-left"
+          >
             <div className="bg-[#0F2B46] py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-[#7DD3FC]">
               <span className="font-bold">URBAN PROFILE // BRIDE</span>
               <span>SUB-TBN REGION</span>
@@ -417,10 +457,10 @@ function CityscapeCouple() {
                 </p>
               )}
             </div>
-          </div>
+          </ItemMotion>
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -429,21 +469,23 @@ function CityscapeEvents() {
   const { events, dresscode } = data;
 
   return (
-    <section id="acara" className="relative py-14 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
+    <SectionMotion id="acara" className="relative py-14 px-4 bg-[#0F2B46] text-white overflow-hidden text-center">
       <div className="max-w-md mx-auto relative z-10 space-y-8">
-        <div className="space-y-1">
+        <ItemMotion variant="slide-down" className="space-y-1">
           <span className="text-[10px] font-mono font-bold text-[#7DD3FC] uppercase tracking-[0.2em] block">
             TRANSIT ROUTE MAP // CELEBRATION SCHEDULE
           </span>
           <h2 className="text-3xl font-extrabold text-white tracking-tight">
             Rangkaian Acara
           </h2>
-        </div>
+        </ItemMotion>
 
         <div className="space-y-6 text-left">
           {events.map((evt, idx) => (
-            <div
+            <ItemMotion
               key={evt.id || idx}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.12}
               className="bg-[#0B1E2E] rounded-2xl overflow-hidden border border-[#38B6FF]/30 shadow-xl relative"
             >
               <div className="bg-[#1D78A0] py-2 px-4 flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-wider text-white">
@@ -492,13 +534,13 @@ function CityscapeEvents() {
                   </div>
                 )}
               </div>
-            </div>
+            </ItemMotion>
           ))}
         </div>
 
         {/* Dresscode Palette */}
         {dresscode?.colors && dresscode.colors.length > 0 && (
-          <div className="mt-8 bg-white/95 p-5 rounded-3xl border border-sky-200 shadow-sm">
+          <ItemMotion variant="slide-up" delay={0.2} className="mt-8 bg-white/95 p-5 rounded-3xl border border-sky-200 shadow-sm">
             <div className="flex items-center justify-center gap-1.5 text-xs font-mono font-bold text-[#1D78A0] uppercase mb-1">
               <Palette className="w-3.5 h-3.5 text-[#2E8BC0]" />
               <span>Rekomendasi Dress Code Tamu</span>
@@ -508,19 +550,19 @@ function CityscapeEvents() {
             </p>
             <div className="flex justify-center items-center gap-3">
               {dresscode.colors.map((c, i) => (
-                <div key={i} className="flex flex-col items-center gap-1">
+                <ItemMotion key={i} variant="pop" delay={0.25 + i * 0.05} className="flex flex-col items-center gap-1">
                   <div
                     className="w-9 h-9 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: c.hex }}
                   />
                   <span className="text-[10px] font-mono text-slate-600 font-bold">{c.name}</span>
-                </div>
+                </ItemMotion>
               ))}
             </div>
-          </div>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -557,23 +599,37 @@ function CityscapeLoveStory() {
   ];
 
   return (
-    <section id="cerita" className="relative py-16 px-4 bg-[#F8FCFD] overflow-hidden">
+    <SectionMotion id="cerita" className="relative py-16 px-4 bg-[#F8FCFD] overflow-hidden">
       <div className="max-w-md mx-auto relative z-10 text-center">
-        <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
-          Perjalanan Dua Hati
-        </span>
-        <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-8">
-          Kisah Cinta Kami
-        </h2>
+        <ItemMotion variant="slide-down" className="mb-8">
+          <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
+            Perjalanan Dua Hati
+          </span>
+          <h2 className="font-handwriting text-5xl text-[#0C4A60]">
+            Kisah Cinta Kami
+          </h2>
+        </ItemMotion>
 
         {/* Metro Route Styled Timeline */}
         <div className="relative pl-6 text-left border-l-3 border-[#2E8BC0]/40 ml-4 space-y-8">
           {stories.map((s, idx) => (
-            <div key={idx} className="relative">
+            <ItemMotion
+              key={idx}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.12}
+              className="relative"
+            >
               {/* Station Dot */}
-              <div className="absolute -left-[35px] top-1.5 w-6 h-6 rounded-full bg-[#2E8BC0] text-white flex items-center justify-center text-[10px] font-mono font-bold border-2 border-white shadow-md">
+              <ItemMotion
+                variant="pop"
+                delay={idx * 0.12 + 0.1}
+                float={true}
+                floatDistance={3}
+                floatDuration={4}
+                className="absolute -left-[35px] top-1.5 w-6 h-6 rounded-full bg-[#2E8BC0] text-white flex items-center justify-center text-[10px] font-mono font-bold border-2 border-white shadow-md z-10"
+              >
                 {idx + 1}
-              </div>
+              </ItemMotion>
 
               <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
                 <span className="text-xs font-mono font-bold text-[#38B6FF] block">
@@ -591,11 +647,11 @@ function CityscapeLoveStory() {
                   </p>
                 )}
               </div>
-            </div>
+            </ItemMotion>
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -633,19 +689,23 @@ function CityscapeGallery() {
   const [activePhoto, setActivePhoto] = useState<any | null>(null);
 
   return (
-    <section id="galeri" className="relative py-16 px-4 bg-gradient-to-b from-[#F8FCFD] via-[#EBF4F8] to-[#FFFFFF] overflow-hidden">
+    <SectionMotion id="galeri" className="relative py-16 px-4 bg-gradient-to-b from-[#F8FCFD] via-[#EBF4F8] to-[#FFFFFF] overflow-hidden">
       <div className="max-w-md mx-auto relative z-10 text-center">
-        <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
-          Momen Indah Berdua
-        </span>
-        <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-8">
-          Galeri Foto
-        </h2>
+        <ItemMotion variant="slide-down" className="mb-8">
+          <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
+            Momen Indah Berdua
+          </span>
+          <h2 className="font-handwriting text-5xl text-[#0C4A60]">
+            Galeri Foto
+          </h2>
+        </ItemMotion>
 
         <div className="grid grid-cols-2 gap-4">
-          {photos.map((photo) => (
-            <div
+          {photos.map((photo, idx) => (
+            <ItemMotion
               key={photo.id}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.08}
               onClick={() => setActivePhoto(photo)}
               className="bg-white p-3 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between group"
             >
@@ -662,7 +722,7 @@ function CityscapeGallery() {
               <p className="text-[11px] font-script font-bold text-[#0C4A60] truncate">
                 {photo.caption}
               </p>
-            </div>
+            </ItemMotion>
           ))}
         </div>
 
@@ -704,7 +764,7 @@ function CityscapeGallery() {
           )}
         </AnimatePresence>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -733,22 +793,28 @@ function CityscapeGifts() {
   };
 
   return (
-    <section id="hadiah" className="relative py-16 px-4 bg-[#F5FAFC] overflow-hidden">
+    <SectionMotion id="hadiah" className="relative py-16 px-4 bg-[#F5FAFC] overflow-hidden">
       <div className="max-w-md mx-auto relative z-10 text-center">
-        <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
-          Tanda Kasih & Doa Restu
-        </span>
-        <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-2">
-          Kado Pernikahan
-        </h2>
-        <p className="text-xs text-slate-600 max-w-xs mx-auto mb-8 leading-relaxed">
-          Doa restu Anda merupakan karunia terindah bagi kami. Namun jika hendak memberikan tanda kasih, dapat melalui:
-        </p>
+        <ItemMotion variant="slide-down">
+          <span className="text-xs font-mono font-bold text-[#1D78A0] uppercase tracking-wider block mb-1">
+            Tanda Kasih & Doa Restu
+          </span>
+          <h2 className="font-handwriting text-5xl text-[#0C4A60] mb-2">
+            Kado Pernikahan
+          </h2>
+        </ItemMotion>
+        <ItemMotion variant="fade" delay={0.1}>
+          <p className="text-xs text-slate-600 max-w-xs mx-auto mb-8 leading-relaxed">
+            Doa restu Anda merupakan karunia terindah bagi kami. Namun jika hendak memberikan tanda kasih, dapat melalui:
+          </p>
+        </ItemMotion>
 
         <div className="space-y-4">
           {accounts.map((acc, idx) => (
-            <div
+            <ItemMotion
               key={idx}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.12}
               className="bg-white rounded-2xl p-5 border-2 border-sky-100 shadow-sm text-left flex items-center justify-between"
             >
               <div>
@@ -768,11 +834,11 @@ function CityscapeGifts() {
                 {copiedIdx === idx ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedIdx === idx ? "Tersalin!" : "Salin"}</span>
               </button>
-            </div>
+            </ItemMotion>
           ))}
 
           {physicalGiftAddress?.address && (
-            <div className="bg-white rounded-2xl p-5 border border-sky-100 text-left">
+            <ItemMotion variant="slide-up" delay={0.25} className="bg-white rounded-2xl p-5 border border-sky-100 text-left">
               <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#1D78A0] mb-1">
                 <Building2 className="w-3.5 h-3.5 text-[#2E8BC0]" />
                 <span>Pengiriman Kado Fisik:</span>
@@ -780,11 +846,11 @@ function CityscapeGifts() {
               <p className="text-xs text-slate-700 leading-relaxed">
                 {physicalGiftAddress.address}
               </p>
-            </div>
+            </ItemMotion>
           )}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -797,47 +863,59 @@ function CityscapeFooter() {
   const families = [groom.parents, bride.parents].filter(Boolean);
 
   return (
-    <footer className="relative pt-14 pb-28 px-4 bg-gradient-to-b from-[#1D78A0] via-[#0E516D] to-[#062837] text-white text-center overflow-hidden">
+    <SectionMotion id="closing" className="relative pt-14 pb-28 px-4 bg-gradient-to-b from-[#1D78A0] via-[#0E516D] to-[#062837] text-white text-center overflow-hidden">
       {/* Background Twilight Skyline Silhouette */}
-      <div className="absolute inset-x-0 bottom-0 h-36 opacity-20 pointer-events-none">
+      <ItemMotion
+        variant="stamp"
+        float={true}
+        floatDistance={4}
+        floatDuration={6}
+        className="absolute inset-x-0 bottom-0 h-36 opacity-20 pointer-events-none"
+      >
         <CitySkylineSvg className="w-full h-full" color="#FFFFFF" />
-      </div>
+      </ItemMotion>
 
       <div className="max-w-md mx-auto relative z-10">
-        <span className="inline-block px-4 py-1 rounded-full text-xs font-mono font-bold bg-white/15 text-[#FFE58F] border border-white/20 mb-4">
-          Terima Kasih Banyak
-        </span>
+        <ItemMotion variant="slide-down">
+          <span className="inline-block px-4 py-1 rounded-full text-xs font-mono font-bold bg-white/15 text-[#FFE58F] border border-white/20 mb-4">
+            Terima Kasih Banyak
+          </span>
+        </ItemMotion>
 
-        <p className="text-xs text-sky-100 max-w-sm mx-auto leading-relaxed mb-6">
-          {data.general?.closingMessage ||
-            "Merupakan kehormatan dan kebahagiaan bagi kami atas kehadiran dan doa restu Anda."}
-        </p>
+        <ItemMotion variant="fade" delay={0.1}>
+          <p className="text-xs text-sky-100 max-w-sm mx-auto leading-relaxed mb-6">
+            {data.general?.closingMessage ||
+              "Merupakan kehormatan dan kebahagiaan bagi kami atas kehadiran dan doa restu Anda."}
+          </p>
+        </ItemMotion>
 
         {families.length > 0 && (
-          <div className="mb-6">
+          <ItemMotion variant="slide-up" delay={0.15} className="mb-6">
             <span className="text-xs font-script text-[#FFE58F] block font-bold">
               Keluarga Besar:
             </span>
             <p className="text-xs text-white/90 font-sans mt-0.5 font-bold">
               {families.join(" & ")}
             </p>
-          </div>
+          </ItemMotion>
         )}
 
-        <h3
-          style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
-          className="font-couple-title font-handwriting text-5xl sm:text-6xl text-white my-1"
-        >
-          {groom.name} <span className="font-script text-3xl text-[#FFE58F]">&</span> {bride.name}
-        </h3>
+        <ItemMotion variant="slide-up" delay={0.2}>
+          <h3
+            style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
+            className="font-couple-title font-handwriting text-5xl sm:text-6xl text-white my-1"
+          >
+            {groom.name} <span className="font-script text-3xl text-[#FFE58F]">&</span> {bride.name}
+          </h3>
+        </ItemMotion>
 
         {data.general?.hashtag && (
-          <div className="mt-4 text-xs font-mono text-[#FFE58F] font-bold">
+          <ItemMotion variant="pop" delay={0.25} className="mt-4 text-xs font-mono text-[#FFE58F] font-bold">
             {data.general.hashtag}
-          </div>
+          </ItemMotion>
         )}
       </div>
-    </footer>
+    </SectionMotion>
   );
 }
 
@@ -852,14 +930,14 @@ export function CityscapeTemplate({
   isEditor = false,
   onOpenChange,
 }: TemplateProps) {
-  const [isOpened, setIsOpened] = useState<boolean>(isPreview);
+  const [isOpened, setIsOpened] = useState<boolean>(isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
 
   useEffect(() => {
-    if (isPreview) {
+    if (isEditor) {
       setIsOpened(true);
     }
-  }, [isPreview]);
+  }, [isEditor]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -927,7 +1005,12 @@ export function CityscapeTemplate({
 
             {/* Main Invitation Content Once Opened */}
             {isOpened && (
-              <div className="animate-in fade-in duration-1000 flex flex-col flex-1 relative bg-white">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col flex-1 relative bg-white"
+              >
                 {/* Floating Urban Particles */}
                 {data.themePalette?.particlesEnabled !== false && <CityscapeParticles />}
 
@@ -942,7 +1025,7 @@ export function CityscapeTemplate({
 
                 {!isEditor && <NavigationDock theme="cityscape" />}
                 {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="cityscape" />}
-              </div>
+              </motion.div>
             )}
           </main>
         </div>

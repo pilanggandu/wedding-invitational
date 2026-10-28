@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="waxGrad" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#E27F63"/>
+      <stop offset="50%" stop-color="#BA563B"/>
+      <stop offset="90%" stop-color="#7A2D1A"/>
+      <stop offset="100%" stop-color="#4D190D"/>
+    </radialGradient>
+    <filter id="sealShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="5" stdDeviation="5" flood-color="#2D120B" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g filter="url(#sealShadow)">
+    <!-- Irregular organic wax melt boundary -->
+    <path d="M 80 14 
+             C 106 12, 134 26, 142 50 
+             C 150 74, 146 102, 134 122 
+             C 122 142, 94 150, 72 146 
+             C 48 142, 22 134, 16 110 
+             C 10 86, 14 58, 28 38 
+             C 42 18, 62 16, 80 14 Z" 
+          fill="url(#waxGrad)"/>
+    <!-- Inner stamped rim -->
+    <circle cx="80" cy="80" r="48" stroke="#F19C84" stroke-width="2" opacity="0.6" fill="none"/>
+    <circle cx="80" cy="80" r="44" stroke="#48180E" stroke-width="2" opacity="0.8" fill="none"/>
+    <!-- Embossed Love Heart & Laurel -->
+    <path d="M 80 94 C 80 94 62 82 62 68 C 62 60 68 54 75 54 C 78 54 80 57 80 57 C 80 57 82 54 85 54 C 92 54 98 60 98 68 C 98 82 80 94 80 94 Z" 
+          fill="#D66C4E" stroke="#5E1F11" stroke-width="1.5"/>
+    <!-- Little highlight gloss reflection -->
+    <ellipse cx="64" cy="46" rx="14" ry="7" transform="rotate(-30 64 46)" fill="#FED7AA" opacity="0.25"/>
+  </g>
+</svg>

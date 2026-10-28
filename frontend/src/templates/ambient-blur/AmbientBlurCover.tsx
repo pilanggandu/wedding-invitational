@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Sparkles, Heart } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
 
 interface AmbientBlurCoverProps {
   isOpen: boolean;
@@ -77,6 +78,16 @@ export function AmbientBlurCover({
         </div>
       </motion.div>
 
+      {/* Radiant Aurora Halo Background */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-10 opacity-60">
+        <img
+          src="/images/templates/ambient-blur/aurora-glow-halo.svg"
+          alt=""
+          aria-hidden="true"
+          className="w-[450px] sm:w-[550px] h-auto object-contain"
+        />
+      </div>
+
       {/* Center Adaptive Pearl Glass Card with Focal Portrait */}
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 15 }}
@@ -103,6 +114,14 @@ export function AmbientBlurCover({
             alt={`${groomName} & ${brideName}`}
             className="w-full h-full object-cover object-top scale-102 group-hover:scale-108 transition-transform duration-700"
           />
+          <div className="absolute top-2 right-2 w-5 h-5 z-20 pointer-events-none select-none opacity-85">
+            <img
+              src="/images/templates/ambient-blur/glass-crystal-sparkle.svg"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-contain"
+            />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
           <div className="absolute bottom-2.5 left-0 right-0 text-center">
             <span
@@ -122,7 +141,12 @@ export function AmbientBlurCover({
             style={{ fontFamily: "var(--font-couple-custom, serif)" }}
             className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 leading-tight drop-shadow-xs"
           >
-            {groomName} &amp; {brideName}
+            <CharMotionReveal
+              text={`${groomName} & ${brideName}`}
+              delay={0.25}
+              step={0.035}
+              className="justify-center"
+            />
           </h1>
           <p className="text-xs text-slate-600 font-mono tracking-wider pt-0.5">
             {dayStr}, {dateStr}
@@ -144,9 +168,14 @@ export function AmbientBlurCover({
           <span className="text-[10px] font-sans text-slate-500 block mb-1">
             Kepada Yth. Bapak/Ibu/Saudara/i:
           </span>
-          <p className="font-serif font-bold text-base sm:text-lg text-slate-900 tracking-wide truncate">
-            {recipient}
-          </p>
+          <div className="font-serif font-bold text-base sm:text-lg text-slate-900 tracking-wide truncate">
+            <CharMotionReveal
+              text={recipient}
+              delay={0.4}
+              step={0.03}
+              className="justify-center"
+            />
+          </div>
         </div>
 
         {/* Primary CTA: Buka Undangan with Dynamic Halo */}

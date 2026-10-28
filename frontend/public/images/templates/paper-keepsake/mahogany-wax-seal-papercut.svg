@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Papercraft Soft Shadow Filters (Matte, non-glossy) -->
+    <filter id="sealBaseShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#2D1116" flood-opacity="0.25"/>
+    </filter>
+    <filter id="paperLayerElevation" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="1" dy="2.5" stdDeviation="2.5" flood-color="#260C10" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- LAYER 1: Base Deckled Circle (Matte Deep Velvet Mahogany Cardstock) -->
+  <g filter="url(#sealBaseShadow)">
+    <!-- Organic Scalloped Edge of Hand-cut Paper Seal -->
+    <path d="M 160 22 
+             C 200 20, 245 42, 266 78 
+             C 285 112, 292 160, 276 198 
+             C 258 240, 218 276, 175 284 
+             C 132 290, 85 272, 54 238 
+             C 24 202, 22 152, 40 108 
+             C 58 64, 115 24, 160 22 Z" 
+          fill="#541E24" stroke="#3D1217" stroke-width="2"/>
+
+    <!-- Inner Paper Stitched Perforation Ring -->
+    <circle cx="160" cy="160" r="110" stroke="#7A2D35" stroke-width="1.5" stroke-dasharray="5 3" fill="none"/>
+    <circle cx="160" cy="160" r="102" stroke="#3D1217" stroke-width="1" fill="none"/>
+  </g>
+
+  <!-- LAYER 2: Sunken Medallion Center (Warm Terracotta/Mahogany Paper Sheet) -->
+  <g filter="url(#paperLayerElevation)">
+    <circle cx="160" cy="160" r="92" fill="#43151A" stroke="#2B0A0E" stroke-width="1.5"/>
+    <circle cx="160" cy="160" r="86" fill="none" stroke="#68222A" stroke-width="1" opacity="0.8"/>
+  </g>
+
+  <!-- LAYER 3: Die-Cut Botanical Laurel Wreath (Matte Cream Paper & Antique Gold Cardstock) -->
+  <g filter="url(#paperLayerElevation)">
+    <!-- Left Laurel Branch -->
+    <path d="M 160 228 C 115 220 90 180 92 128 C 94 98 115 72 135 60" 
+          stroke="#C8A97E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    
+      <g transform="translate(96, 185) rotate(-35)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(88, 155) rotate(-60)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(95, 125) rotate(-85)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(110, 95) rotate(-110)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(130, 72) rotate(-130)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+
+    <!-- Right Laurel Branch -->
+    <path d="M 160 228 C 205 220 230 180 228 128 C 226 98 205 72 185 60" 
+          stroke="#C8A97E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    
+      <g transform="translate(224, 185) rotate(35)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(232, 155) rotate(60)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(225, 125) rotate(85)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(210, 95) rotate(110)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+      <g transform="translate(190, 72) rotate(130)">
+        <path d="M 0 0 C -8 -6 -12 -16 0 -22 C 12 -16 8 -6 0 0 Z" fill="#FBF8F1" stroke="#C8A97E" stroke-width="0.8"/>
+        <line x1="0" y1="-2" x2="0" y2="-18" stroke="#C8A97E" stroke-width="0.6"/>
+      </g>
+    
+  </g>
+
+  <!-- LAYER 4: Top Cutout Centerpiece (Love Heart & Intertwined Letters) -->
+  <g filter="url(#paperLayerElevation)">
+    <!-- Cut-Paper Heart in Dusty Blush (#C7887D) -->
+    <path d="M 160 178 
+             C 160 178 126 154 126 132 
+             C 126 118 136 108 150 108 
+             C 156 108 160 113 160 113 
+             C 160 113 164 108 170 108 
+             C 184 108 194 118 194 132 
+             C 194 154 160 178 160 178 Z" 
+          fill="#C7887D" stroke="#A96B60" stroke-width="1.5"/>
+
+    <!-- Gold Paper Bow Tie at bottom of wreath -->
+    <circle cx="160" cy="226" r="4.5" fill="#C8A97E"/>
+    <path d="M 160 226 L 150 236 M 160 226 L 170 236" stroke="#C8A97E" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>

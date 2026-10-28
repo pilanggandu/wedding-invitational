@@ -9,6 +9,8 @@ import { WishMessage } from "@/types/wedding";
 import { getWishes, submitWish } from "@/lib/invitationStore";
 import { submitRsvpApi } from "@/lib/api";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurRsvpProps {
   guestName?: string;
@@ -104,16 +106,10 @@ export function AmbientBlurRsvp({ guestName, guestItem, palette }: AmbientBlurRs
   };
 
   return (
-    <section id="rsvp" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="rsvp" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -136,21 +132,19 @@ export function AmbientBlurRsvp({ guestName, guestItem, palette }: AmbientBlurRs
           <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
             Konfirmasikan kehadiran Anda serta sampaikan untaian doa restu untuk kedua mempelai.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* RSVP Form Card */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+        <ItemMotion
+          variant="slide-left"
+          delay={0.1}
           style={{
             borderColor: `${accentColor}33`,
             boxShadow: `0 20px 45px rgba(15,23,42,0.06), 0 0 25px ${glowColor}`,
           }}
           className="bg-white/85 sm:bg-white/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 border shadow-xl ring-1 ring-slate-900/5 text-left space-y-4"
         >
+          <form onSubmit={handleSubmit} className="space-y-4">
           {isSuccess && (
             <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center gap-2.5 text-xs text-emerald-800 shadow-sm">
               <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -258,10 +252,11 @@ export function AmbientBlurRsvp({ guestName, guestItem, palette }: AmbientBlurRs
             <Send className="w-4 h-4 text-white" />
             <span>{isSubmitting ? "Mengirim..." : "Kirim Konfirmasi"}</span>
           </button>
-        </motion.form>
+          </form>
+        </ItemMotion>
 
         {/* Wishes List Feed */}
-        <div className="space-y-4 text-left">
+        <ItemMotion variant="slide-right" delay={0.2} className="space-y-4 text-left">
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               Ucapan &amp; Doa ({wishes.length})
@@ -271,8 +266,10 @@ export function AmbientBlurRsvp({ guestName, guestItem, palette }: AmbientBlurRs
 
           <div className="max-h-80 overflow-y-auto space-y-3 pr-1">
             {wishes.map((w, idx) => (
-              <div
+              <ItemMotion
                 key={w.id || idx}
+                variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={Math.min(idx * 0.05, 0.35)}
                 style={{
                   borderColor: `${accentColor}25`,
                 }}
@@ -307,11 +304,11 @@ export function AmbientBlurRsvp({ guestName, guestItem, palette }: AmbientBlurRs
                     })}
                   </span>
                 )}
-              </div>
+              </ItemMotion>
             ))}
           </div>
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

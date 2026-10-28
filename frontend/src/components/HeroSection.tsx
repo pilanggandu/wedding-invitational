@@ -13,7 +13,10 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
+import { ItemMotion } from "./ItemMotion";
 import { getFontFamilyCss } from "@/lib/typography";
+import { CharMotionReveal } from "./CharMotionReveal";
 
 export function HeroSection() {
   const data = useWeddingData();
@@ -92,17 +95,29 @@ export function HeroSection() {
   };
 
   return (
-    <section id="beranda" className="relative pt-14 pb-20 overflow-hidden paper-texture bg-[#FFF9FA]">
+    <SectionMotion id="beranda" className="relative pt-14 pb-20 overflow-hidden paper-texture bg-[#FFF9FA]">
       {/* Botanical & Childlike Doodles */}
       <BotanicalLeaves className="absolute -top-6 -left-8 w-40 sm:w-56 h-60 opacity-30 rotate-12 pointer-events-none" />
       <BotanicalLeaves className="absolute top-1/3 -right-10 w-44 sm:w-60 h-64 opacity-30 -rotate-45 pointer-events-none" />
 
-      <div className="absolute top-4 right-4 pointer-events-none opacity-80">
+      <ItemMotion
+        variant="pop"
+        float={true}
+        floatDistance={4}
+        floatDuration={5}
+        className="absolute top-4 right-4 pointer-events-none opacity-80"
+      >
         <KidsDrawingSun className="w-14 h-14" />
-      </div>
-      <div className="absolute top-2/3 left-2 pointer-events-none opacity-75">
+      </ItemMotion>
+      <ItemMotion
+        variant="pop"
+        float={true}
+        floatDistance={3}
+        floatDuration={4}
+        className="absolute top-2/3 left-2 pointer-events-none opacity-75"
+      >
         <KidsDrawingHeart className="w-9 h-9" />
-      </div>
+      </ItemMotion>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
         {/* Childlike Badge with Heart */}
@@ -120,11 +135,11 @@ export function HeroSection() {
             style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
             className="font-couple-title font-handwriting text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl maroon-shimmer-text tracking-wide my-1 leading-tight"
           >
-            {groom.name}{" "}
+            <CharMotionReveal text={groom.name} baseDelay={0.2} />{" "}
             <span className="font-script text-3xl min-[380px]:text-4xl sm:text-5xl text-[#7D1128]">
               &
             </span>{" "}
-            {bride.name}
+            <CharMotionReveal text={bride.name} baseDelay={0.45} />
           </h1>
 
           <p className="font-script text-base sm:text-2xl text-[#660F1A] font-bold max-w-lg mx-auto mb-3">
@@ -226,7 +241,7 @@ export function HeroSection() {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 

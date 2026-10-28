@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 180 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="cityStampShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#0E384D" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <g filter="url(#cityStampShadow)">
+    <rect x="12" y="12" width="156" height="176" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1"/>
+    <!-- Stamp Perforations -->
+    <circle cx="22" cy="12" r="4" fill="#FFFFFF"/><circle cx="39" cy="12" r="4" fill="#FFFFFF"/><circle cx="56" cy="12" r="4" fill="#FFFFFF"/><circle cx="73" cy="12" r="4" fill="#FFFFFF"/><circle cx="90" cy="12" r="4" fill="#FFFFFF"/><circle cx="107" cy="12" r="4" fill="#FFFFFF"/><circle cx="124" cy="12" r="4" fill="#FFFFFF"/><circle cx="141" cy="12" r="4" fill="#FFFFFF"/><circle cx="158" cy="12" r="4" fill="#FFFFFF"/>
+    <circle cx="22" cy="188" r="4" fill="#FFFFFF"/><circle cx="39" cy="188" r="4" fill="#FFFFFF"/><circle cx="56" cy="188" r="4" fill="#FFFFFF"/><circle cx="73" cy="188" r="4" fill="#FFFFFF"/><circle cx="90" cy="188" r="4" fill="#FFFFFF"/><circle cx="107" cy="188" r="4" fill="#FFFFFF"/><circle cx="124" cy="188" r="4" fill="#FFFFFF"/><circle cx="141" cy="188" r="4" fill="#FFFFFF"/><circle cx="158" cy="188" r="4" fill="#FFFFFF"/>
+    <circle cx="12" cy="24" r="4" fill="#FFFFFF"/><circle cx="12" cy="41" r="4" fill="#FFFFFF"/><circle cx="12" cy="58" r="4" fill="#FFFFFF"/><circle cx="12" cy="75" r="4" fill="#FFFFFF"/><circle cx="12" cy="92" r="4" fill="#FFFFFF"/><circle cx="12" cy="109" r="4" fill="#FFFFFF"/><circle cx="12" cy="126" r="4" fill="#FFFFFF"/><circle cx="12" cy="143" r="4" fill="#FFFFFF"/><circle cx="12" cy="160" r="4" fill="#FFFFFF"/><circle cx="12" cy="177" r="4" fill="#FFFFFF"/>
+    <circle cx="168" cy="24" r="4" fill="#FFFFFF"/><circle cx="168" cy="41" r="4" fill="#FFFFFF"/><circle cx="168" cy="58" r="4" fill="#FFFFFF"/><circle cx="168" cy="75" r="4" fill="#FFFFFF"/><circle cx="168" cy="92" r="4" fill="#FFFFFF"/><circle cx="168" cy="109" r="4" fill="#FFFFFF"/><circle cx="168" cy="126" r="4" fill="#FFFFFF"/><circle cx="168" cy="143" r="4" fill="#FFFFFF"/><circle cx="168" cy="160" r="4" fill="#FFFFFF"/><circle cx="168" cy="177" r="4" fill="#FFFFFF"/>
+    <!-- Inner Card with Skyline -->
+    <rect x="24" y="24" width="132" height="152" fill="#1D78A0" rx="2"/>
+    <!-- Little skyline inside stamp -->
+    <rect x="36" y="86" width="16" height="58" fill="#E0F2FE"/>
+    <rect x="56" y="70" width="20" height="74" fill="#FFFFFF"/>
+    <polygon points="66,54 56,70 76,70" fill="#FFFFFF"/>
+    <rect x="80" y="80" width="18" height="64" fill="#E0F2FE"/>
+    <rect x="102" y="94" width="22" height="50" fill="#FFFFFF"/>
+    <!-- Postmark wavy cancellation lines -->
+    <path d="M 10 50 Q 50 35 90 50 T 170 50" stroke="#E0F2FE" stroke-width="1.5" opacity="0.6" fill="none"/>
+    <path d="M 10 60 Q 50 45 90 60 T 170 60" stroke="#E0F2FE" stroke-width="1.5" opacity="0.6" fill="none"/>
+    <text x="90" y="162" text-anchor="middle" font-family="'Courier New', monospace" font-size="10" font-weight="bold" fill="#FFFFFF" letter-spacing="2">URBAN LOVE</text>
+  </g>
+</svg>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Great_Vibes, Caveat, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
 
 const greatVibes = Great_Vibes({
@@ -54,7 +55,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#FAF6EE] text-[#3A332C] font-sans antialiased selection:bg-[#E5B6A0] selection:text-[#2A241D] min-h-screen">
-        {children}
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

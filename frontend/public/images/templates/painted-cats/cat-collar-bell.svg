@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="goldBell" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#FACC15"/>
+      <stop offset="90%" stop-color="#CA8A04"/>
+      <stop offset="100%" stop-color="#854D0E"/>
+    </radialGradient>
+    <filter id="bellShadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#CA8A04" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#bellShadow)">
+    <!-- Silk Ribbon Bow on top -->
+    <ellipse cx="60" cy="40" rx="22" ry="12" transform="rotate(-25 60 40)" fill="#F472B6" stroke="#DB2777" stroke-width="1.5"/>
+    <ellipse cx="100" cy="40" rx="22" ry="12" transform="rotate(25 100 40)" fill="#F472B6" stroke="#DB2777" stroke-width="1.5"/>
+    <circle cx="80" cy="42" r="9" fill="#EC4899" stroke="#BE185D" stroke-width="1.5"/>
+    <!-- Ribbon tails -->
+    <path d="M 74 48 L 56 74 L 68 70 L 76 54 Z" fill="#F472B6"/>
+    <path d="M 86 48 L 104 74 L 92 70 L 84 54 Z" fill="#F472B6"/>
+    <!-- Golden Jingle Bell Sphere -->
+    <circle cx="80" cy="95" r="38" fill="url(#goldBell)" stroke="#A16207" stroke-width="2"/>
+    <!-- Bell Eyelet & Slit -->
+    <rect x="74" y="55" width="12" height="6" rx="2" fill="#CA8A04"/>
+    <line x1="46" y1="95" x2="114" y2="95" stroke="#713F12" stroke-width="2.5"/>
+    <circle cx="80" cy="112" r="7" fill="#713F12"/>
+    <line x1="80" y1="95" x2="80" y2="107" stroke="#713F12" stroke-width="2.5"/>
+    <!-- Highlight shine -->
+    <ellipse cx="68" cy="80" rx="10" ry="5" transform="rotate(-30 68 80)" fill="#FFFFFF" opacity="0.6"/>
+  </g>
+</svg>

@@ -38,6 +38,8 @@ import {
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { getFontFamilyCss } from "@/lib/typography";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -92,7 +94,7 @@ function RoyalHero() {
         (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
       );
       const minutes = Math.floor(
-        (difference % (1000 * 60 * 60)) / (1000 * 60)
+        (difference % (1000 * 60)) / (1000 * 60)
       );
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
@@ -105,7 +107,7 @@ function RoyalHero() {
   }, [data.countdownTarget]);
 
   return (
-    <section
+    <SectionMotion
       id="hero"
       className="relative pt-12 pb-16 px-6 sm:px-10 text-center bg-[#FAF8F5] text-[#1A2521] overflow-hidden"
     >
@@ -115,18 +117,25 @@ function RoyalHero() {
       </div>
 
       <div className="relative z-10 max-w-xl mx-auto space-y-6">
-        {/* Monogram Emblem */}
-        <RoyalMotionReveal variant="scale-up" delay={0.1} className="flex justify-center">
+        {/* Monogram Emblem with floating loop */}
+        <ItemMotion
+          variant="stamp"
+          delay={0.08}
+          float={true}
+          floatDistance={3}
+          floatDuration={5}
+          className="flex justify-center"
+        >
           <RoyalMonogram className="w-20 h-20" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Bismillah Calligraphy */}
-        <RoyalMotionReveal variant="fade-up" delay={0.2}>
+        <ItemMotion variant="fade" delay={0.14}>
           <BismillahCalligraphy className="w-auto mx-auto my-1" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Greetings */}
-        <RoyalMotionReveal variant="fade-up" delay={0.3} className="space-y-2">
+        <ItemMotion variant="slide-down" delay={0.18} className="space-y-2">
           <p className="text-xs font-serif uppercase tracking-[0.25em] text-[#8C7456]">
             Assalamu&lsquo;alaikum Warahmatullahi Wabarakatuh
           </p>
@@ -134,10 +143,10 @@ function RoyalHero() {
             Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta&lsquo;ala, kami
             bermaksud menyelenggarakan syukuran pernikahan putra-putri kami:
           </p>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Couple Big Headline */}
-        <RoyalMotionReveal variant="fade-up" delay={0.4} className="py-2">
+        <ItemMotion variant="slide-up" delay={0.22} className="py-2">
           <h2
             style={{ fontFamily: getFontFamilyCss(data.themePalette?.fontStyle) }}
             className="font-couple-title font-serif text-2xl min-[380px]:text-3xl sm:text-4xl text-[#0F2D24] tracking-tight leading-tight"
@@ -147,12 +156,19 @@ function RoyalHero() {
           <p className="text-xs font-serif uppercase tracking-[0.2em] text-[#C8A97E] mt-2">
             {akadDay}, {akadDate}
           </p>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
-        <DividerOrnament className="w-44 mx-auto my-2" color="#C8A97E" />
+        <ItemMotion variant="pop" delay={0.25} className="flex justify-center">
+          <img
+            src="/images/templates/royal-heritage/damask-filigree-divider.svg"
+            alt=""
+            aria-hidden="true"
+            className="w-48 sm:w-60 h-auto object-contain opacity-90 my-2"
+          />
+        </ItemMotion>
 
         {/* Quran Verse Ar-Rum 21 in Framed Ivory Card */}
-        <RoyalMotionReveal variant="scale-up" delay={0.45}>
+        <ItemMotion variant="pop" delay={0.28}>
           <div className="relative p-6 rounded-xl border border-[#C8A97E]/30 bg-white shadow-xs text-center space-y-3 transition-shadow hover:shadow-md">
             <p
               className="font-serif text-sm sm:text-base text-[#0F2D24] leading-loose dir-rtl"
@@ -171,24 +187,25 @@ function RoyalHero() {
               (QS. Ar-Rum: 21)
             </p>
           </div>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Countdown Timer */}
-        <RoyalMotionReveal variant="fade-up" delay={0.5} className="pt-4">
+        <ItemMotion variant="slide-up" delay={0.32} className="pt-4">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block mb-3">
             Menuju Hari Bahagia
           </span>
 
           <div className="grid grid-cols-4 gap-2.5 max-w-sm mx-auto">
             {[
-              { val: timeLeft.days, unit: "Hari" },
-              { val: timeLeft.hours, unit: "Jam" },
-              { val: timeLeft.minutes, unit: "Menit" },
-              { val: timeLeft.seconds, unit: "Detik" },
+              { val: timeLeft.days, unit: "Hari", variant: "slide-left" as const },
+              { val: timeLeft.hours, unit: "Jam", variant: "slide-left" as const },
+              { val: timeLeft.minutes, unit: "Menit", variant: "slide-right" as const },
+              { val: timeLeft.seconds, unit: "Detik", variant: "slide-right" as const },
             ].map((t, idx) => (
-              <motion.div
+              <ItemMotion
                 key={idx}
-                whileHover={{ y: -3, boxShadow: "0 8px 20px rgba(200,169,126,0.25)" }}
+                variant={t.variant}
+                delay={0.35 + idx * 0.05}
                 className="p-3 rounded-lg bg-white border border-[#C8A97E]/30 shadow-xs transition-colors cursor-default"
               >
                 <span className="font-serif text-2xl font-bold text-[#0F2D24] block">
@@ -197,12 +214,12 @@ function RoyalHero() {
                 <span className="text-[9px] font-serif uppercase tracking-widest text-[#8C7456] block mt-0.5">
                   {t.unit}
                 </span>
-              </motion.div>
+              </ItemMotion>
             ))}
           </div>
-        </RoyalMotionReveal>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -214,12 +231,12 @@ function RoyalCouple() {
   const { groom, bride } = data.couple;
 
   return (
-    <section
+    <SectionMotion
       id="couple"
       className="py-16 px-6 sm:px-10 bg-[#F4EFEA] text-[#1A2521] border-y border-[#C8A97E]/20"
     >
       <div className="max-w-xl mx-auto space-y-12">
-        <RoyalMotionReveal variant="fade-up" className="text-center space-y-2">
+        <ItemMotion variant="slide-down" className="text-center space-y-2">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
             Maha Suci Allah
           </span>
@@ -227,10 +244,10 @@ function RoyalCouple() {
             Kedua Mempelai
           </h2>
           <DividerOrnament className="w-36 mx-auto my-2" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Groom Profile */}
-        <RoyalMotionReveal variant="slide-left" delay={0.15} className="flex flex-col items-center text-center space-y-4">
+        <ItemMotion variant="slide-left" delay={0.08} className="flex flex-col items-center text-center space-y-4">
           <motion.div whileHover={{ y: -4, transition: { duration: 0.25 } }}>
             <RoyalArchFrame
               className="w-44 h-56 bg-white shadow-xs overflow-hidden flex items-center justify-center relative cursor-default"
@@ -285,17 +302,17 @@ function RoyalCouple() {
               </a>
             )}
           </div>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Center Golden Ampersand */}
-        <RoyalMotionReveal variant="scale-up" delay={0.25} className="flex items-center justify-center">
+        <ItemMotion variant="pop" delay={0.14} className="flex items-center justify-center">
           <div className="w-10 h-10 rounded-full border border-[#C8A97E] flex items-center justify-center font-serif text-xl text-[#0F2D24] bg-white shadow-xs">
             &amp;
           </div>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Bride Profile */}
-        <RoyalMotionReveal variant="slide-right" delay={0.35} className="flex flex-col items-center text-center space-y-4">
+        <ItemMotion variant="slide-right" delay={0.16} className="flex flex-col items-center text-center space-y-4">
           <motion.div whileHover={{ y: -4, transition: { duration: 0.25 } }}>
             <RoyalArchFrame
               className="w-44 h-56 bg-white shadow-xs overflow-hidden flex items-center justify-center relative cursor-default"
@@ -351,9 +368,9 @@ function RoyalCouple() {
               </a>
             )}
           </div>
-        </RoyalMotionReveal>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -380,12 +397,12 @@ function RoyalEvents() {
   };
 
   return (
-    <section
+    <SectionMotion
       id="events"
       className="py-16 px-6 sm:px-10 bg-[#FAF8F5] text-[#1A2521]"
     >
       <div className="max-w-xl mx-auto space-y-10">
-        <RoyalMotionReveal variant="fade-up" className="text-center space-y-2">
+        <ItemMotion variant="slide-down" className="text-center space-y-2">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
             Waktu &amp; Tempat
           </span>
@@ -393,14 +410,14 @@ function RoyalEvents() {
             Rangkaian Acara
           </h2>
           <DividerOrnament className="w-36 mx-auto my-2" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         <div className="space-y-8">
           {events.map((evt, idx) => (
-            <RoyalMotionReveal
+            <ItemMotion
               key={evt.id || idx}
-              variant="fade-up"
-              delay={0.15 + idx * 0.15}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.08 + idx * 0.12}
             >
               <motion.div
                 whileHover={{
@@ -411,16 +428,34 @@ function RoyalEvents() {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className="relative p-7 sm:p-9 rounded-2xl bg-white border border-[#C8A97E]/40 shadow-xs text-center space-y-5 transition-colors"
               >
-                <CornerFiligree
-                  className="absolute top-2 left-2 w-5 h-5"
-                  position="top-left"
-                  color="#C8A97E"
-                />
-                <CornerFiligree
-                  className="absolute top-2 right-2 w-5 h-5"
-                  position="top-right"
-                  color="#C8A97E"
-                />
+                <ItemMotion
+                  variant="stamp"
+                  delay={0.2}
+                  float={true}
+                  floatDistance={2}
+                  floatDuration={4}
+                  className="absolute top-2 left-2 z-10 pointer-events-none"
+                >
+                  <CornerFiligree
+                    className="w-5 h-5"
+                    position="top-left"
+                    color="#C8A97E"
+                  />
+                </ItemMotion>
+                <ItemMotion
+                  variant="stamp"
+                  delay={0.25}
+                  float={true}
+                  floatDistance={2}
+                  floatDuration={4.5}
+                  className="absolute top-2 right-2 z-10 pointer-events-none"
+                >
+                  <CornerFiligree
+                    className="w-5 h-5"
+                    position="top-right"
+                    color="#C8A97E"
+                  />
+                </ItemMotion>
 
                 <div className="space-y-1">
                   <span className="text-[10px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
@@ -477,11 +512,11 @@ function RoyalEvents() {
                   </motion.button>
                 </div>
               </motion.div>
-            </RoyalMotionReveal>
+            </ItemMotion>
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -503,12 +538,12 @@ function RoyalGallery() {
   };
 
   return (
-    <section
+    <SectionMotion
       id="gallery"
       className="py-16 px-6 sm:px-10 bg-[#F4EFEA] text-[#1A2521] border-t border-[#C8A97E]/20"
     >
       <div className="max-w-xl mx-auto space-y-10">
-        <RoyalMotionReveal variant="fade-up" className="text-center space-y-2">
+        <ItemMotion variant="slide-down" className="text-center space-y-2">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
             Dokumentasi Cinta
           </span>
@@ -516,16 +551,16 @@ function RoyalGallery() {
             Potret Bahagia
           </h2>
           <DividerOrnament className="w-36 mx-auto my-2" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         <div className="grid grid-cols-2 gap-3.5">
           {gallery.map((photo, i) => {
             const photoSrc = getPhotoSrc(photo, i);
             return (
-              <RoyalMotionReveal
+              <ItemMotion
                 key={photo.id}
-                variant="scale-up"
-                delay={0.06 * i}
+                variant={i % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={0.05 + (i % 6) * 0.05}
               >
                 <motion.div
                   onClick={() => setActivePhoto(i)}
@@ -562,7 +597,7 @@ function RoyalGallery() {
                     <ZoomIn className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                 </motion.div>
-              </RoyalMotionReveal>
+              </ItemMotion>
             );
           })}
         </div>
@@ -617,7 +652,7 @@ function RoyalGallery() {
           )}
         </AnimatePresence>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -637,12 +672,12 @@ function RoyalGifts() {
   };
 
   return (
-    <section
+    <SectionMotion
       id="gifts"
       className="py-16 px-6 sm:px-10 bg-[#FAF8F5] text-[#1A2521] border-t border-[#C8A97E]/20"
     >
       <div className="max-w-xl mx-auto space-y-10">
-        <RoyalMotionReveal variant="fade-up" className="text-center space-y-2">
+        <ItemMotion variant="slide-down" className="text-center space-y-2">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
             Tanda Kasih
           </span>
@@ -654,17 +689,17 @@ function RoyalGifts() {
             memberikan tanda kasih, dapat mengirimkan melalui rekening berikut:
           </p>
           <DividerOrnament className="w-36 mx-auto my-2" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         <div className="space-y-4">
           {accounts.map((acc, idx) => {
             const isCopied = copiedIndex === idx;
 
             return (
-              <RoyalMotionReveal
+              <ItemMotion
                 key={idx}
-                variant="fade-up"
-                delay={0.12 * idx}
+                variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={0.08 + 0.1 * idx}
               >
                 <motion.div
                   whileHover={{
@@ -701,13 +736,13 @@ function RoyalGifts() {
                     <span>{isCopied ? "Disalin!" : "Salin Rekening"}</span>
                   </motion.button>
                 </motion.div>
-              </RoyalMotionReveal>
+              </ItemMotion>
             );
           })}
         </div>
 
         {address && (
-          <RoyalMotionReveal variant="scale-up" delay={0.2}>
+          <ItemMotion variant="pop" delay={0.18}>
             <div className="p-6 rounded-xl bg-white border border-[#C8A97E]/30 text-center space-y-2">
               <span className="text-[10px] font-serif uppercase tracking-widest text-[#8C7456] block">
                 Pengiriman Kado Fisik
@@ -719,10 +754,10 @@ function RoyalGifts() {
                 {address.address}
               </p>
             </div>
-          </RoyalMotionReveal>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -832,12 +867,12 @@ function RoyalRsvp({
   };
 
   return (
-    <section
+    <SectionMotion
       id="rsvp"
       className="py-16 px-6 sm:px-10 bg-[#F4EFEA] text-[#1A2521] border-t border-[#C8A97E]/20"
     >
       <div className="max-w-xl mx-auto space-y-10">
-        <RoyalMotionReveal variant="fade-up" className="text-center space-y-2">
+        <ItemMotion variant="slide-down" className="text-center space-y-2">
           <span className="text-[11px] font-serif uppercase tracking-[0.25em] text-[#8C7456] block">
             Konfirmasi Kehadiran
           </span>
@@ -845,10 +880,10 @@ function RoyalRsvp({
             Buku Tamu &amp; Doa Restu
           </h2>
           <DividerOrnament className="w-36 mx-auto my-2" color="#C8A97E" />
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* RSVP Submission Form */}
-        <RoyalMotionReveal variant="scale-up" delay={0.15}>
+        <ItemMotion variant="slide-left" delay={0.08}>
           <form
             onSubmit={handleSubmit}
             className="p-6 sm:p-8 rounded-2xl bg-white border border-[#C8A97E]/40 shadow-xs space-y-4"
@@ -940,16 +975,15 @@ function RoyalRsvp({
               </p>
             )}
           </form>
-        </RoyalMotionReveal>
+        </ItemMotion>
 
         {/* Wishes List Feed */}
-        <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+        <ItemMotion variant="slide-right" delay={0.12} className="space-y-3 max-h-96 overflow-y-auto pr-1">
           {wishes.map((item, idx) => (
-            <motion.div
+            <ItemMotion
               key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.3) }}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.04 + (idx % 6) * 0.04}
               className="p-4 rounded-xl bg-white border border-[#C8A97E]/20 space-y-1.5"
             >
               <div className="flex items-center justify-between">
@@ -963,11 +997,11 @@ function RoyalRsvp({
               <p className="text-xs text-zinc-600 leading-relaxed italic">
                 &ldquo;{item.message}&rdquo;
               </p>
-            </motion.div>
+            </ItemMotion>
           ))}
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -979,18 +1013,31 @@ function RoyalFooter() {
   const { groom, bride } = data.couple;
 
   return (
-    <footer className="py-16 px-6 sm:px-10 bg-[#09221B] text-[#FAF8F5] text-center space-y-6">
-      <RoyalMotionReveal variant="fade-up" className="max-w-md mx-auto space-y-4">
-        <RoyalMonogram className="w-16 h-16 mx-auto" color="#C8A97E" />
+    <SectionMotion id="closing" className="py-16 px-6 sm:px-10 bg-[#09221B] text-[#FAF8F5] text-center space-y-6">
+      <div className="max-w-md mx-auto space-y-4">
+        <ItemMotion
+          variant="stamp"
+          delay={0.08}
+          float={true}
+          floatDistance={3}
+          floatDuration={5}
+          className="flex justify-center"
+        >
+          <RoyalMonogram className="w-16 h-16" color="#C8A97E" />
+        </ItemMotion>
 
-        <p className="text-xs text-[#E8D7B8]/80 leading-relaxed">
-          {data.general.closingMessage ||
-            "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."}
-        </p>
+        <ItemMotion variant="fade" delay={0.12}>
+          <p className="text-xs text-[#E8D7B8]/80 leading-relaxed">
+            {data.general.closingMessage ||
+              "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."}
+          </p>
+        </ItemMotion>
 
-        <DividerOrnament className="w-36 mx-auto my-3" color="#C8A97E" />
+        <ItemMotion variant="pop" delay={0.16}>
+          <DividerOrnament className="w-36 mx-auto my-3" color="#C8A97E" />
+        </ItemMotion>
 
-        <div className="space-y-1 pt-1">
+        <ItemMotion variant="slide-up" delay={0.2} className="space-y-1 pt-1">
           <p className="text-[11px] font-serif uppercase tracking-[0.2em] text-[#C8A97E]">
             Kami yang berbahagia,
           </p>
@@ -1003,15 +1050,17 @@ function RoyalFooter() {
           <p className="text-[10px] font-sans text-[#E8D7B8]/60 pt-1">
             Beserta Keluarga Besar Kedua Mempelai
           </p>
-        </div>
+        </ItemMotion>
 
         {data.general?.hashtag && (
-          <p className="text-xs font-serif text-[#C8A97E] tracking-widest pt-4">
-            {data.general.hashtag}
-          </p>
+          <ItemMotion variant="pop" delay={0.24}>
+            <p className="text-xs font-serif text-[#C8A97E] tracking-widest pt-4">
+              {data.general.hashtag}
+            </p>
+          </ItemMotion>
         )}
-      </RoyalMotionReveal>
-    </footer>
+      </div>
+    </SectionMotion>
   );
 }
 
@@ -1026,14 +1075,14 @@ export function RoyalHeritageTemplate({
   isEditor = false,
   onOpenChange,
 }: TemplateProps) {
-  const [isOpened, setIsOpened] = useState<boolean>(isPreview);
+  const [isOpened, setIsOpened] = useState<boolean>(isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
 
   useEffect(() => {
-    if (isPreview) {
+    if (isEditor) {
       setIsOpened(true);
     }
-  }, [isPreview]);
+  }, [isEditor]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -1098,7 +1147,12 @@ export function RoyalHeritageTemplate({
 
             {/* Main Invitation Content Once Opened */}
             {isOpened && (
-              <div className="animate-in fade-in duration-1000 flex flex-col flex-1 relative bg-[#FAF8F5]">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col flex-1 relative bg-[#FAF8F5]"
+              >
                 {/* Ambient Golden Particles in background */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
                   <RoyalAmbientParticles count={14} />
@@ -1114,7 +1168,7 @@ export function RoyalHeritageTemplate({
 
                 {!isEditor && <NavigationDock theme="royal" />}
                 {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="royal" />}
-              </div>
+              </motion.div>
             )}
           </main>
         </div>

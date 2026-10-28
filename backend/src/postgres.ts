@@ -172,9 +172,16 @@ export async function initPostgres(): Promise<boolean> {
           salt TEXT NOT NULL,
           full_name VARCHAR(255) NOT NULL,
           role VARCHAR(50) DEFAULT 'admin',
+          google_sub VARCHAR(255),
           created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
       `);
+
+      // Keep older databases compatible with Google account linking.
+      await pool.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS google_sub VARCHAR(255)");
+      await pool.query(
+        "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique_idx ON users (google_sub)"
+      );
 
       // 3. Seed data awal jika tabel weddings masih kosong
       const weddingCount = await pool.query("SELECT COUNT(*) FROM weddings");
@@ -349,7 +356,35 @@ export const postgresService = {
   async getWedding(id = "inv_gilang_salsa") {
     if (normalizedWeddingService) {
       try {
-        return await normalizedWeddingService.getAggregatedWeddingData();
+        const normalizedData = await normalizedWeddingService.getAggregatedWeddingData();
+        if (!pool) return normalizedData;
+
+        // Music fields are persisted in the wide row while normalized settings lack them.
+        const saved = await pool.query("SELECT general FROM weddings WHERE id = $1", [id]);
+        const rawGeneral = saved.rows[0]?.general;
+        const general = typeof rawGeneral === "string" ? JSON.parse(rawGeneral) : rawGeneral;
+        const musicSettings: Record<string, string | number> = {};
+
+        if (general && typeof general === "object" && !Array.isArray(general)) {
+          for (const key of ["musicUrl", "musicTitle", "musicArtist"] as const) {
+            if (typeof general[key] === "string") {
+              musicSettings[key] = general[key];
+            }
+          }
+          if (
+            typeof general.musicVolume === "number" &&
+            Number.isFinite(general.musicVolume) &&
+            general.musicVolume >= 0 &&
+            general.musicVolume <= 100
+          ) {
+            musicSettings.musicVolume = general.musicVolume;
+          }
+        }
+
+        return {
+          ...normalizedData,
+          general: { ...normalizedData.general, ...musicSettings },
+        };
       } catch (e: any) {
         console.warn("Fallback to wide weddings table:", e.message);
       }
@@ -467,11 +502,7 @@ export const postgresService = {
   // GUESTS
   async getGuests() {
     if (normalizedWeddingService) {
-      try {
-        return await normalizedWeddingService.getGuests();
-      } catch (e: any) {
-        console.warn("Notice reading normalized guests:", e.message);
-      }
+      return await normalizedWeddingService.getGuests();
     }
     if (!pool) return [];
     const res = await pool.query("SELECT * FROM guests ORDER BY created_at DESC");
@@ -482,6 +513,7 @@ export const postgresService = {
       phone: r.phone || "",
       category: r.category || "Sahabat",
       isSent: Boolean(r.is_sent),
+      quota: 1,
       notes: r.notes || "",
       createdAt: r.created_at,
     }));
@@ -498,17 +530,13 @@ export const postgresService = {
     createdAt?: string;
   }) {
     if (normalizedWeddingService) {
-      try {
-        return await normalizedWeddingService.createGuest({
-          name: guest.name,
-          phone: guest.phone,
-          quota: guest.quota || 1,
-          category: guest.category,
-          notes: guest.notes,
-        });
-      } catch (e: any) {
-        console.warn("Notice inserting normalized guest:", e.message);
-      }
+      return await normalizedWeddingService.createGuest({
+        name: guest.name,
+        phone: guest.phone,
+        quota: guest.quota || 1,
+        category: guest.category,
+        notes: guest.notes,
+      });
     }
     if (!pool) return null;
     const query = `
@@ -534,6 +562,7 @@ export const postgresService = {
       phone: r.phone || "",
       category: r.category,
       isSent: Boolean(r.is_sent),
+      quota: 1,
       notes: r.notes || "",
       createdAt: r.created_at,
     };
@@ -541,12 +570,7 @@ export const postgresService = {
 
   async updateGuest(id: string, updates: Partial<{ name: string; phone: string; category: string; notes: string; isSent: boolean; quota?: number }>) {
     if (normalizedWeddingService) {
-      try {
-        const updated = await normalizedWeddingService.updateGuest(id, updates);
-        if (updated) return updated;
-      } catch (e: any) {
-        console.warn("Notice updating normalized guest:", e.message);
-      }
+      return await normalizedWeddingService.updateGuest(id, updates);
     }
     if (!pool) return null;
     const currentRes = await pool.query("SELECT * FROM guests WHERE id = $1", [id]);
@@ -580,6 +604,7 @@ export const postgresService = {
       phone: r.phone || "",
       category: r.category,
       isSent: Boolean(r.is_sent),
+      quota: 1,
       notes: r.notes || "",
       createdAt: r.created_at,
     };
@@ -587,12 +612,7 @@ export const postgresService = {
 
   async deleteGuest(id: string) {
     if (normalizedWeddingService) {
-      try {
-        const deleted = await normalizedWeddingService.softDeleteGuest(id);
-        if (deleted) return true;
-      } catch (e: any) {
-        console.warn("Notice soft deleting normalized guest:", e.message);
-      }
+      return await normalizedWeddingService.softDeleteGuest(id);
     }
     if (!pool) return false;
     await pool.query("DELETE FROM guests WHERE id = $1", [id]);
@@ -682,6 +702,12 @@ export const postgresService = {
     return res.rows[0] || null;
   },
 
+    async getUserByGoogleSub(googleSub: string) {
+      if (!pool) return null;
+      const res = await pool.query("SELECT * FROM users WHERE google_sub = $1", [googleSub]);
+      return res.rows[0] || null;
+    },
+
   async getUserById(id: string) {
     if (!pool) return null;
     const res = await pool.query(
@@ -704,6 +730,7 @@ export const postgresService = {
     id: string;
     username: string;
     email?: string;
+      googleSub?: string;
     passwordHash: string;
     salt: string;
     fullName: string;
@@ -712,8 +739,9 @@ export const postgresService = {
   }) {
     if (!pool) return null;
     const query = `
-      INSERT INTO users (id, username, email, password_hash, salt, full_name, role, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        INSERT INTO users (
+          id, username, email, password_hash, salt, full_name, role, google_sub, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
     const values = [
@@ -724,6 +752,7 @@ export const postgresService = {
       user.salt,
       user.fullName,
       user.role || "admin",
+        user.googleSub || null,
       user.createdAt || new Date().toISOString(),
     ];
     const res = await pool.query(query, values);
@@ -734,7 +763,17 @@ export const postgresService = {
       email: r.email,
       fullName: r.full_name,
       role: r.role,
+        googleSub: r.google_sub,
       createdAt: r.created_at,
     };
   },
+
+    async linkGoogleSub(userId: string, googleSub: string) {
+      if (!pool) return false;
+      const res = await pool.query(
+        "UPDATE users SET google_sub = $2 WHERE id = $1 AND (google_sub IS NULL OR google_sub = $2)",
+        [userId, googleSub]
+      );
+      return (res.rowCount || 0) > 0;
+    },
 };

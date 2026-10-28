@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 380 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="ticketShadow" x="-5%" y="-10%" width="115%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#261E17" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g filter="url(#ticketShadow)">
+    <!-- Ticket Body with Perforated Tear Notch at x=260 -->
+    <path d="M 16 16 
+             L 252 16 
+             A 12 12 0 0 1 268 16 
+             L 364 16 
+             A 6 6 0 0 1 370 22 
+             L 370 138 
+             A 6 6 0 0 1 364 144 
+             L 268 144 
+             A 12 12 0 0 1 252 144 
+             L 16 144 
+             A 6 6 0 0 1 10 138 
+             L 10 22 
+             A 6 6 0 0 1 16 16 Z" 
+          fill="#FAF6EE" stroke="#DCCFB8" stroke-width="1.5"/>
+    <!-- Perforated dashed line -->
+    <line x1="260" y1="28" x2="260" y2="132" stroke="#9C8B76" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <!-- Boarding Pass Header -->
+    <rect x="22" y="24" width="226" height="28" rx="3" fill="#6E5441"/>
+    <text x="32" y="42" font-family="monospace" font-size="11" font-weight="bold" fill="#FAF6EE" letter-spacing="2">WEDDING BOARDING PASS</text>
+    <text x="238" y="42" text-anchor="end" font-family="monospace" font-size="10" font-weight="bold" fill="#E8D5C4">VIP GUEST</text>
+    <!-- Flight details -->
+    <text x="24" y="74" font-family="monospace" font-size="9" fill="#8C7A6B">FROM: TWO HEARTS</text>
+    <text x="24" y="92" font-family="monospace" font-size="9" fill="#8C7A6B">TO: ONE JOURNEY</text>
+    <text x="24" y="112" font-family="monospace" font-size="9" fill="#8C7A6B">GATE: FOREVER</text>
+    <!-- Barcode simulation -->
+    <g transform="translate(24, 122)">
+      <rect x="0" y="0" width="2" height="14" fill="#3D291D"/><rect x="9" y="0" width="1" height="14" fill="#3D291D"/><rect x="18" y="0" width="3" height="14" fill="#3D291D"/><rect x="27" y="0" width="1" height="14" fill="#3D291D"/><rect x="36" y="0" width="2" height="14" fill="#3D291D"/><rect x="45" y="0" width="4" height="14" fill="#3D291D"/><rect x="54" y="0" width="1" height="14" fill="#3D291D"/><rect x="63" y="0" width="2" height="14" fill="#3D291D"/><rect x="72" y="0" width="1" height="14" fill="#3D291D"/><rect x="81" y="0" width="3" height="14" fill="#3D291D"/><rect x="90" y="0" width="2" height="14" fill="#3D291D"/><rect x="99" y="0" width="1" height="14" fill="#3D291D"/><rect x="108" y="0" width="4" height="14" fill="#3D291D"/><rect x="117" y="0" width="1" height="14" fill="#3D291D"/><rect x="126" y="0" width="2" height="14" fill="#3D291D"/><rect x="135" y="0" width="3" height="14" fill="#3D291D"/><rect x="144" y="0" width="1" height="14" fill="#3D291D"/><rect x="153" y="0" width="2" height="14" fill="#3D291D"/><rect x="162" y="0" width="1" height="14" fill="#3D291D"/><rect x="171" y="0" width="3" height="14" fill="#3D291D"/><rect x="180" y="0" width="1" height="14" fill="#3D291D"/><rect x="189" y="0" width="2" height="14" fill="#3D291D"/><rect x="198" y="0" width="4" height="14" fill="#3D291D"/><rect x="207" y="0" width="2" height="14" fill="#3D291D"/>
+    </g>
+    <!-- Stub side -->
+    <text x="274" y="44" font-family="monospace" font-size="9" font-weight="bold" fill="#C26D53">STUB PASS</text>
+    <text x="274" y="66" font-family="monospace" font-size="8" fill="#8C7A6B">SEAT: 01A</text>
+    <text x="274" y="82" font-family="monospace" font-size="8" fill="#8C7A6B">CLASS: LOVE</text>
+    <circle cx="340" cy="110" r="18" stroke="#C26D53" stroke-width="1" stroke-dasharray="3 2" fill="none"/>
+    <text x="340" y="113" text-anchor="middle" font-family="monospace" font-size="7" font-weight="bold" fill="#C26D53">CONFIRMED</text>
+  </g>
+</svg>

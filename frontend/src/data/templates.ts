@@ -2,6 +2,28 @@ import { TemplateMeta } from "@/types/wedding";
 
 export const AVAILABLE_TEMPLATES: TemplateMeta[] = [
   {
+    id: "craft-book",
+    name: "Craft Scrapbook (Handcrafted Book View)",
+    description: "Buku scrapbook album kenangan interaktif dengan tampilan buka buku (book view), tab pembatas washi tape, frame polaroid miring, amplop kraft kado, dan papan doa tempel.",
+    category: "Paper Art",
+    tag: "Book View & Tabs",
+    badgeColor: "bg-[#6E5441] text-[#FAF7F2]",
+    previewGradient: "from-[#DFD7CC] via-[#ECDCCB] to-[#FAF7F2]",
+    accentHex: "#C26D53",
+    isAvailable: true,
+  },
+  {
+    id: "paper-keepsake",
+    name: "Paper Keepsake (Mahogany Edition)",
+    description: "Sepucuk undangan dalam album kenangan: kertas linen berlapis, ornamen warna kayu mahogany mewah, bunga tekan, dan gerak halaman yang tenang.",
+    category: "Paper Art",
+    tag: "Surat & Album Kenangan",
+    badgeColor: "bg-[#541E24] text-[#FBF8F1]",
+    previewGradient: "from-[#4D181E] via-[#F3EBDD] to-[#FBF8F1]",
+    accentHex: "#541E24",
+    isAvailable: true,
+  },
+  {
     id: "ambient-blur",
     name: "Ambient Chroma (Adaptive Photo Atmosphere)",
     description: "Tema atmosfer foto dinamis dengan ekstraksi warna live, lapisan sheer veil, dan tata letak fotografi asimetris kontemporer.",

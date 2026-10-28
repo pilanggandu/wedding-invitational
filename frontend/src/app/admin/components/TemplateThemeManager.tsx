@@ -5,6 +5,8 @@ import { Check, Music, Eye, Type, Sparkles, SlidersHorizontal } from "lucide-rea
 import { WeddingInvitationData } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { saveInvitationData } from "@/lib/invitationStore";
+import { getMusicUrlError, getMusicVolume, type MusicSettingsValue } from "@/lib/musicSettings";
+import { InvitationMusicSettings } from "./InvitationMusicSettings";
 import {
   TYPOGRAPHY_OPTIONS,
   TypographyCategory,
@@ -29,6 +31,49 @@ function TemplateCardThumbnail({
   eventDate: string;
 }) {
   switch (templateId) {
+    case "craft-book":
+      return (
+        <div className="relative mb-3.5 h-36 overflow-hidden rounded-xl border border-[#B39F8D] bg-[#DFD7CC] p-3 text-[#2B231F] flex flex-col justify-between">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-[9px] font-mono font-bold tracking-wider uppercase bg-[#FAF7F2] text-[#6E5441] px-2 py-0.5 rounded border border-[#B39F8D] shadow-2xs">
+              Book View &amp; Tabs
+            </span>
+            <span className="text-[9px] font-mono text-[#8C3B24] font-semibold flex items-center gap-1">
+              🏷️ Scrapbook
+            </span>
+          </div>
+          <div className="relative mx-auto flex h-full w-4/5 flex-col items-center justify-center bg-[#FAF7F2] border border-dashed border-[#CAA98C] rounded my-1 px-2 text-center shadow-xs">
+            <div className="w-12 h-2 bg-[#D4A753]/80 rounded-xs mb-1 -mt-2 border border-dashed border-[#966F28]/50" />
+            <p className="font-serif font-bold text-base leading-tight text-[#2B231F]">{coupleText}</p>
+            <p className="text-[9px] font-mono text-[#6E5E54] mt-0.5">{eventDate}</p>
+          </div>
+          <div className="text-[8px] font-mono text-center text-[#6E5441] tracking-widest uppercase">
+            Handcrafted Paper Album
+          </div>
+        </div>
+      );
+
+    case "paper-keepsake":
+      return (
+        <div className="relative mb-3.5 h-36 overflow-hidden rounded-xl border border-[#D8C4B8] bg-[#F3EBDD] p-3 text-[#331F22]">
+          <img
+            src="/images/paper-keepsake/hero-paper-keepsake.png"
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="relative mx-auto flex h-full w-3/4 flex-col items-center justify-center bg-[#FBF8F1]/50 px-2 text-center rounded-lg border border-[#541E24]/20 shadow-xs">
+            <span className="text-[8px] uppercase tracking-[0.24em] text-[#541E24] font-semibold">
+              A letter to remember
+            </span>
+            <p className="my-1.5 font-serif text-xl leading-tight text-[#331F22]">{coupleText}</p>
+            <p className="text-[9px] tracking-wider text-[#541E24]">{eventDate}</p>
+            <span className="mt-1.5 text-[8px] uppercase tracking-[0.2em] px-2 py-0.5 rounded bg-[#541E24] text-[#FBF8F1] font-semibold">
+              Paper Keepsake · Mahogany
+            </span>
+          </div>
+        </div>
+      );
+
     case "ambient-blur":
       return (
         <div className="h-36 rounded-xl bg-[#F8FAFC] border border-slate-200/90 p-3.5 flex flex-col justify-between text-slate-800 shadow-inner relative overflow-hidden mb-3.5">
@@ -240,7 +285,35 @@ export function TemplateThemeManager({
   const [musicAutoplay, setMusicAutoplay] = useState<boolean>(
     data.themePalette?.musicAutoplay ?? true
   );
+  const persistedAutoplay = data.themePalette?.musicAutoplay ?? true;
+  const [savedAutoplay, setSavedAutoplay] = useState(persistedAutoplay);
+  if (savedAutoplay !== persistedAutoplay) {
+    setSavedAutoplay(persistedAutoplay);
+    setMusicAutoplay(persistedAutoplay);
+  }
   const [savedNotice, setSavedNotice] = useState<boolean>(false);
+  const [musicDraft, setMusicDraft] = useState<MusicSettingsValue>({
+    musicUrl: data.general.musicUrl || "",
+    musicTitle: data.general.musicTitle || "",
+    musicArtist: data.general.musicArtist || "",
+    musicVolume: getMusicVolume(data.general.musicVolume),
+  });
+  const musicDataKey = JSON.stringify([
+    data.general.musicUrl,
+    data.general.musicTitle,
+    data.general.musicArtist,
+    data.general.musicVolume,
+  ]);
+  const [savedMusicKey, setSavedMusicKey] = useState(musicDataKey);
+  if (savedMusicKey !== musicDataKey) {
+    setSavedMusicKey(musicDataKey);
+    setMusicDraft({
+      musicUrl: data.general.musicUrl || "",
+      musicTitle: data.general.musicTitle || "",
+      musicArtist: data.general.musicArtist || "",
+      musicVolume: getMusicVolume(data.general.musicVolume),
+    });
+  }
 
   const activeFont = getTypographyById(fontStyle);
   const groomName = data.couple?.groom?.name?.trim() || "";
@@ -305,9 +378,18 @@ export function TemplateThemeManager({
   };
 
   const handleSaveThemeSettings = () => {
+    if (getMusicUrlError(musicDraft.musicUrl || "")) return;
     const updated: WeddingInvitationData = {
       ...data,
       activeTemplateId: data.activeTemplateId,
+      general: {
+        ...data.general,
+        ...musicDraft,
+        musicUrl: musicDraft.musicUrl?.trim() || "",
+        musicTitle: musicDraft.musicTitle.trim(),
+        musicArtist: musicDraft.musicArtist.trim(),
+        musicVolume: getMusicVolume(musicDraft.musicVolume),
+      },
       themePalette: {
         ...data.themePalette,
         fontStyle,
@@ -619,6 +701,10 @@ export function TemplateThemeManager({
             );
           })}
         </div>
+        <section aria-label="Pengaturan lagu undangan" className="pt-5 border-t border-[#F0F0EA] space-y-4">
+          <h3 className="text-lg font-semibold text-[#14161C]">Lagu undangan</h3>
+          <InvitationMusicSettings value={musicDraft} onChange={setMusicDraft} />
+        </section>
         <div className="pt-4 border-t border-[#F0F0EA] grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 rounded-xl border border-[#E7E7E1] bg-[#FCFCFB] flex items-start justify-between gap-4">
             <div>
@@ -693,10 +779,11 @@ export function TemplateThemeManager({
           <button
             type="button"
             onClick={handleSaveThemeSettings}
+            disabled={Boolean(getMusicUrlError(musicDraft.musicUrl || ""))}
             className="w-full py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
           >
             <Check className="w-4 h-4 text-white" />
-            <span>Simpan Semua Pengaturan Tipografi &amp; Efek</span>
+            <span>Simpan Pengaturan Tampilan &amp; Musik</span>
           </button>
         </div>
       </div>

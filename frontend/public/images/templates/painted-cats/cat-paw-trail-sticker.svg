@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="stickerShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#D97736" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <g filter="url(#stickerShadow)">
+    <!-- 4 Stepping Cat Paw Prints -->
+    
+      <g transform="translate(45, 65) rotate(-15) scale(0.9)">
+        <!-- White Die-Cut Sticker Outline -->
+        <ellipse cx="0" cy="10" rx="24" ry="18" fill="#FFFFFF"/>
+        <circle cx="-16" cy="-10" r="9" fill="#FFFFFF"/>
+        <circle cx="-6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="16" cy="-10" r="9" fill="#FFFFFF"/>
+        <!-- Inner Paw Pads (Calico Peach / Orange) -->
+        <ellipse cx="0" cy="10" rx="19" ry="14" fill="#FB923C"/>
+        <circle cx="-14" cy="-8" r="6.5" fill="#F472B6"/>
+        <circle cx="-5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="14" cy="-8" r="6.5" fill="#F472B6"/>
+      </g>
+    
+      <g transform="translate(120, 45) rotate(10) scale(1)">
+        <!-- White Die-Cut Sticker Outline -->
+        <ellipse cx="0" cy="10" rx="24" ry="18" fill="#FFFFFF"/>
+        <circle cx="-16" cy="-10" r="9" fill="#FFFFFF"/>
+        <circle cx="-6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="16" cy="-10" r="9" fill="#FFFFFF"/>
+        <!-- Inner Paw Pads (Calico Peach / Orange) -->
+        <ellipse cx="0" cy="10" rx="19" ry="14" fill="#FB923C"/>
+        <circle cx="-14" cy="-8" r="6.5" fill="#F472B6"/>
+        <circle cx="-5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="14" cy="-8" r="6.5" fill="#F472B6"/>
+      </g>
+    
+      <g transform="translate(195, 70) rotate(-10) scale(1.05)">
+        <!-- White Die-Cut Sticker Outline -->
+        <ellipse cx="0" cy="10" rx="24" ry="18" fill="#FFFFFF"/>
+        <circle cx="-16" cy="-10" r="9" fill="#FFFFFF"/>
+        <circle cx="-6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="16" cy="-10" r="9" fill="#FFFFFF"/>
+        <!-- Inner Paw Pads (Calico Peach / Orange) -->
+        <ellipse cx="0" cy="10" rx="19" ry="14" fill="#FB923C"/>
+        <circle cx="-14" cy="-8" r="6.5" fill="#F472B6"/>
+        <circle cx="-5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="14" cy="-8" r="6.5" fill="#F472B6"/>
+      </g>
+    
+      <g transform="translate(270, 50) rotate(15) scale(0.95)">
+        <!-- White Die-Cut Sticker Outline -->
+        <ellipse cx="0" cy="10" rx="24" ry="18" fill="#FFFFFF"/>
+        <circle cx="-16" cy="-10" r="9" fill="#FFFFFF"/>
+        <circle cx="-6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="6" cy="-18" r="9" fill="#FFFFFF"/>
+        <circle cx="16" cy="-10" r="9" fill="#FFFFFF"/>
+        <!-- Inner Paw Pads (Calico Peach / Orange) -->
+        <ellipse cx="0" cy="10" rx="19" ry="14" fill="#FB923C"/>
+        <circle cx="-14" cy="-8" r="6.5" fill="#F472B6"/>
+        <circle cx="-5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="5" cy="-16" r="6.5" fill="#F472B6"/>
+        <circle cx="14" cy="-8" r="6.5" fill="#F472B6"/>
+      </g>
+    
+  </g>
+</svg>

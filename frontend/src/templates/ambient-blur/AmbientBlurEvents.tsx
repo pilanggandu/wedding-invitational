@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, ExternalLink, CalendarCheck } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurEventsProps {
   palette?: ExtractedColors;
@@ -29,16 +31,10 @@ export function AmbientBlurEvents({ palette }: AmbientBlurEventsProps) {
   };
 
   return (
-    <section id="event" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="event" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -61,17 +57,15 @@ export function AmbientBlurEvents({ palette }: AmbientBlurEventsProps) {
           <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
             Kehadiran dan doa restu Bapak/Ibu/Saudara/i merupakan kehormatan serta kebahagiaan terbesar bagi kami.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Event Cards */}
         <div className="space-y-6">
           {events.map((evt, idx) => (
-            <motion.div
+            <ItemMotion
               key={evt.id || idx}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.15 }}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.15}
               style={{
                 borderColor: `${accentColor}33`,
                 boxShadow: `0 20px 45px rgba(15,23,42,0.06), 0 0 25px ${glowColor}`,
@@ -176,17 +170,15 @@ export function AmbientBlurEvents({ palette }: AmbientBlurEventsProps) {
                   <span>Simpan ke Kalender</span>
                 </button>
               </div>
-            </motion.div>
+            </ItemMotion>
           ))}
         </div>
 
         {/* Dresscode Card */}
         {dresscode && dresscode.colors && dresscode.colors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+          <ItemMotion
+            variant="slide-up"
+            delay={0.2}
             style={{
               borderColor: `${accentColor}33`,
             }}
@@ -203,7 +195,7 @@ export function AmbientBlurEvents({ palette }: AmbientBlurEventsProps) {
             </p>
             <div className="flex items-center justify-center gap-2 pt-1">
               {dresscode.colors.map((c: any, i: number) => (
-                <div key={i} className="flex flex-col items-center gap-1">
+                <ItemMotion key={i} variant="pop" delay={0.25 + i * 0.05} className="flex flex-col items-center gap-1">
                   <div
                     className="w-7 h-7 rounded-full border border-slate-300 shadow-sm"
                     style={{ backgroundColor: c.hex }}
@@ -212,12 +204,12 @@ export function AmbientBlurEvents({ palette }: AmbientBlurEventsProps) {
                   <span className="text-[9px] font-mono text-slate-600">
                     {c.name}
                   </span>
-                </div>
+                </ItemMotion>
               ))}
             </div>
-          </motion.div>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }

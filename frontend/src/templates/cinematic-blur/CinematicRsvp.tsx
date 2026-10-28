@@ -9,6 +9,8 @@ import { WishMessage } from "@/types/wedding";
 import { getWishes, submitWish } from "@/lib/invitationStore";
 import { submitRsvpApi } from "@/lib/api";
 import { FilmTimecodeBadge, ModernHairlineDivider } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface CinematicRsvpProps {
   guestName?: string;
@@ -100,16 +102,10 @@ export function CinematicRsvp({ guestName, guestItem }: CinematicRsvpProps) {
   };
 
   return (
-    <section id="rsvp" className="relative py-16 px-6 text-center text-white overflow-hidden">
+    <SectionMotion id="rsvp" className="relative py-16 px-6 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <FilmTimecodeBadge scene="SCENE 07" take="RED CARPET RSVP" className="mb-2" />
           <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Konfirmasi RSVP &amp; Doa
@@ -117,119 +113,117 @@ export function CinematicRsvp({ guestName, guestItem }: CinematicRsvpProps) {
           <p className="text-xs text-white/70 max-w-xs mx-auto leading-relaxed">
             Konfirmasikan kehadiran Anda serta sampaikan untaian doa restu untuk kedua mempelai.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* RSVP Form Card */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left space-y-4"
-        >
-          {isSuccess && (
-            <div className="p-3.5 rounded-2xl bg-white/10 border border-white/30 flex items-center gap-2.5 text-xs text-white">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Terima kasih! Konfirmasi kehadiran dan doa Anda telah tersimpan.</span>
-            </div>
-          )}
+        <ItemMotion variant="slide-left" delay={0.08}>
+          <form
+            onSubmit={handleSubmit}
+            className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left space-y-4"
+          >
+            {isSuccess && (
+              <div className="p-3.5 rounded-2xl bg-white/10 border border-white/30 flex items-center gap-2.5 text-xs text-white">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Terima kasih! Konfirmasi kehadiran dan doa Anda telah tersimpan.</span>
+              </div>
+            )}
 
-          {/* Guest Name */}
-          <div>
-            <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
-              Nama Lengkap
-            </label>
-            <input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Contoh: Budi Santoso"
-              className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-black/40 text-white placeholder-white/40 text-xs sm:text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
-            />
-          </div>
-
-          {/* Attendance Radio Pills */}
-          <div>
-            <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
-              Konfirmasi Kehadiran
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { key: "hadir", label: "Hadir" },
-                { key: "ragu", label: "Ragu-ragu" },
-                { key: "tidak", label: "Berhalangan" },
-              ].map((opt) => (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => setAttendance(opt.key as any)}
-                  className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer text-center ${
-                    attendance === opt.key
-                      ? "bg-white text-black border-white font-semibold shadow-md"
-                      : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Attendee Count Stepper (if Hadir) */}
-          {attendance === "hadir" && (
+            {/* Guest Name */}
             <div>
               <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
-                Jumlah Hadir (Maksimal {maxQuota} Orang)
+                Nama Lengkap
               </label>
-              <div className="flex items-center gap-2">
-                {Array.from({ length: maxQuota }, (_, i) => i + 1).map((cnt) => (
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Contoh: Budi Santoso"
+                className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-black/40 text-white placeholder-white/40 text-xs sm:text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
+              />
+            </div>
+
+            {/* Attendance Radio Pills */}
+            <div>
+              <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
+                Konfirmasi Kehadiran
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { key: "hadir", label: "Hadir" },
+                  { key: "ragu", label: "Ragu-ragu" },
+                  { key: "tidak", label: "Berhalangan" },
+                ].map((opt) => (
                   <button
-                    key={cnt}
+                    key={opt.key}
                     type="button"
-                    onClick={() => setAttendeeCount(cnt)}
-                    className={`flex-1 py-2 rounded-xl text-xs font-mono font-medium border transition-all cursor-pointer text-center ${
-                      attendeeCount === cnt
-                        ? "bg-white text-black border-white font-bold"
+                    onClick={() => setAttendance(opt.key as any)}
+                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all cursor-pointer text-center ${
+                      attendance === opt.key
+                        ? "bg-white text-black border-white font-semibold shadow-md"
                         : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"
                     }`}
                   >
-                    {cnt} Orang
+                    {opt.label}
                   </button>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Message / Wish Textarea */}
-          <div>
-            <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
-              Ucapan &amp; Doa Restu
-            </label>
-            <textarea
-              required
-              rows={3}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tuliskan ucapan dan doa terbaik untuk kedua mempelai..."
-              className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-black/40 text-white placeholder-white/40 text-xs sm:text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white resize-none"
-            />
-          </div>
+            {/* Attendee Count Stepper (if Hadir) */}
+            {attendance === "hadir" && (
+              <div>
+                <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
+                  Jumlah Hadir (Maksimal {maxQuota} Orang)
+                </label>
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: maxQuota }, (_, i) => i + 1).map((cnt) => (
+                    <button
+                      key={cnt}
+                      type="button"
+                      onClick={() => setAttendeeCount(cnt)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-mono font-medium border transition-all cursor-pointer text-center ${
+                        attendeeCount === cnt
+                          ? "bg-white text-black border-white font-bold"
+                          : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {cnt} Orang
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3.5 px-6 rounded-2xl bg-white hover:bg-white/90 text-black font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-md"
-          >
-            <Send className="w-4 h-4 text-black" />
-            <span>{isSubmitting ? "Mengirim..." : "Kirim Konfirmasi"}</span>
-          </button>
-        </motion.form>
+            {/* Message / Wish Textarea */}
+            <div>
+              <label className="block text-[11px] font-mono uppercase text-white/60 mb-1.5">
+                Ucapan &amp; Doa Restu
+              </label>
+              <textarea
+                required
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tuliskan ucapan dan doa terbaik untuk kedua mempelai..."
+                className="w-full px-4 py-2.5 rounded-xl border border-white/20 bg-black/40 text-white placeholder-white/40 text-xs sm:text-sm focus:outline-none focus:border-white focus:ring-1 focus:ring-white resize-none"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3.5 px-6 rounded-2xl bg-white hover:bg-white/90 text-black font-semibold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shadow-md"
+            >
+              <Send className="w-4 h-4 text-black" />
+              <span>{isSubmitting ? "Mengirim..." : "Kirim Konfirmasi"}</span>
+            </button>
+          </form>
+        </ItemMotion>
 
         {/* Wishes List Feed */}
-        <div className="space-y-4 text-left">
+        <ItemMotion variant="slide-right" delay={0.12} className="space-y-4 text-left">
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] font-mono uppercase tracking-wider text-white/60">
               Ucapan &amp; Doa ({wishes.length})
@@ -239,8 +233,10 @@ export function CinematicRsvp({ guestName, guestItem }: CinematicRsvpProps) {
 
           <div className="max-h-80 overflow-y-auto space-y-3 pr-1">
             {wishes.map((w, idx) => (
-              <div
+              <ItemMotion
                 key={w.id || idx}
+                variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={0.04 + (idx % 6) * 0.04}
                 className="bg-black/35 backdrop-blur-xl rounded-2xl p-4 border border-white/15 space-y-1.5"
               >
                 <div className="flex items-center justify-between">
@@ -265,11 +261,11 @@ export function CinematicRsvp({ guestName, guestItem }: CinematicRsvpProps) {
                     })}
                   </span>
                 )}
-              </div>
+              </ItemMotion>
             ))}
           </div>
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

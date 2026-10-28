@@ -63,9 +63,18 @@ db.exec(`
     salt TEXT NOT NULL,
     full_name TEXT NOT NULL,
     role TEXT DEFAULT 'admin',
+    google_sub TEXT,
     created_at TEXT
   );
 `);
+
+const userColumns = db.prepare("PRAGMA table_info(users)").all() as Array<{ name: string }>;
+if (!userColumns.some((column) => column.name === "google_sub")) {
+  db.exec("ALTER TABLE users ADD COLUMN google_sub TEXT;");
+}
+db.exec(
+  "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique_idx ON users (google_sub);"
+);
 
 // ----------------------------------------------------
 // SEED INITIAL DATA (Jika kosong)
@@ -541,6 +550,11 @@ export const sqliteService = {
     return stmt.get(email) as any;
   },
 
+    getUserByGoogleSub(googleSub: string) {
+      const stmt = db.prepare("SELECT * FROM users WHERE google_sub = ?");
+      return stmt.get(googleSub) as any;
+    },
+
   getUserById(id: string) {
     const stmt = db.prepare(
       "SELECT id, username, email, full_name, role, created_at FROM users WHERE id = ?"
@@ -561,6 +575,7 @@ export const sqliteService = {
     id: string;
     username: string;
     email?: string;
+      googleSub?: string;
     passwordHash: string;
     salt: string;
     fullName: string;
@@ -568,8 +583,9 @@ export const sqliteService = {
     createdAt?: string;
   }) {
     const stmt = db.prepare(`
-      INSERT INTO users (id, username, email, password_hash, salt, full_name, role, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (
+          id, username, email, password_hash, salt, full_name, role, google_sub, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
     stmt.run(
       user.id,
@@ -579,6 +595,7 @@ export const sqliteService = {
       user.salt,
       user.fullName,
       user.role || "admin",
+        user.googleSub || null,
       user.createdAt || new Date().toISOString()
     );
     return {
@@ -587,7 +604,17 @@ export const sqliteService = {
       email: user.email || null,
       fullName: user.fullName,
       role: user.role || "admin",
+        googleSub: user.googleSub || null,
       createdAt: user.createdAt || new Date().toISOString(),
     };
   },
+
+    linkGoogleSub(userId: string, googleSub: string) {
+      const result = db
+        .prepare(
+          "UPDATE users SET google_sub = ? WHERE id = ? AND (google_sub IS NULL OR google_sub = ?)"
+        )
+        .run(googleSub, userId, googleSub);
+      return result.changes > 0;
+    },
 };

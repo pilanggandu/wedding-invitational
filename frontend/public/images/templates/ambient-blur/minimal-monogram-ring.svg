@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="monogramRingGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E07A5F"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#F4A261"/>
+    </linearGradient>
+  </defs>
+  <!-- Dual concentric modern rings -->
+  <circle cx="100" cy="100" r="92" stroke="url(#monogramRingGrad)" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="84" stroke="#FFFFFF" stroke-width="0.75" stroke-dasharray="2 4" opacity="0.6"/>
+  <!-- Minimalist Interlocking Letters A & B -->
+  <text x="84" y="114" font-family="'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="200" fill="#FFFFFF" text-anchor="middle" letter-spacing="-2">G</text>
+  <text x="116" y="114" font-family="'Helvetica Neue', Arial, sans-serif" font-size="44" font-weight="600" fill="#E07A5F" text-anchor="middle" letter-spacing="-2">S</text>
+  <!-- Small center ampersand dot -->
+  <circle cx="100" cy="98" r="2.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="100" cy="154" r="2" fill="#E07A5F"/>
+  <circle cx="100" cy="46" r="2" fill="#E07A5F"/>
+</svg>

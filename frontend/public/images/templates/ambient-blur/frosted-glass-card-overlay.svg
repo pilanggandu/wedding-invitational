@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 360 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="glassBorder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+      <stop offset="30%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+      <stop offset="70%" stop-color="#FFFFFF" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#E07A5F" stop-opacity="0.4"/>
+    </linearGradient>
+    <linearGradient id="innerShine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+      <stop offset="40%" stop-color="#FFFFFF" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <!-- Card background with frosted gradient and specular rim -->
+  <rect x="12" y="12" width="336" height="456" rx="24" fill="url(#innerShine)" stroke="url(#glassBorder)" stroke-width="1.5"/>
+  <!-- Delicate corner ticks -->
+  <path d="M 24 36 L 36 36 M 36 24 L 36 36" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 336 36 L 324 36 M 324 24 L 324 36" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 24 444 L 36 444 M 36 456 L 36 444" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 336 444 L 324 444 M 324 456 L 324 444" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  <!-- Top subtle pill accent -->
+  <rect x="144" y="24" width="72" height="4" rx="2" fill="#FFFFFF" opacity="0.3"/>
+</svg>

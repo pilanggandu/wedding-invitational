@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="catTapeShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#3D271D" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <g filter="url(#catTapeShadow)">
+    <!-- Serrated Washi Tape Base -->
+    <path d="M 14 14 
+             L 306 14 
+             L 314 22 L 306 30 L 314 38 L 306 46 L 314 54 L 306 62 L 314 68 
+             L 14 68 
+             L 6 60 L 14 52 L 6 44 L 14 36 L 6 28 L 14 20 Z" 
+          fill="#FED7AA" fill-opacity="0.9"/>
+    <!-- Repeating Cute Cat Paws across tape -->
+    
+      <g transform="translate(40, 41) scale(0.7)">
+        <ellipse cx="0" cy="8" rx="14" ry="10" fill="#EA580C"/>
+        <circle cx="-10" cy="-4" r="4.5" fill="#EA580C"/>
+        <circle cx="-3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="10" cy="-4" r="4.5" fill="#EA580C"/>
+      </g>
+    
+      <g transform="translate(95, 41) scale(0.7)">
+        <ellipse cx="0" cy="8" rx="14" ry="10" fill="#EA580C"/>
+        <circle cx="-10" cy="-4" r="4.5" fill="#EA580C"/>
+        <circle cx="-3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="10" cy="-4" r="4.5" fill="#EA580C"/>
+      </g>
+    
+      <g transform="translate(150, 41) scale(0.7)">
+        <ellipse cx="0" cy="8" rx="14" ry="10" fill="#EA580C"/>
+        <circle cx="-10" cy="-4" r="4.5" fill="#EA580C"/>
+        <circle cx="-3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="10" cy="-4" r="4.5" fill="#EA580C"/>
+      </g>
+    
+      <g transform="translate(205, 41) scale(0.7)">
+        <ellipse cx="0" cy="8" rx="14" ry="10" fill="#EA580C"/>
+        <circle cx="-10" cy="-4" r="4.5" fill="#EA580C"/>
+        <circle cx="-3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="10" cy="-4" r="4.5" fill="#EA580C"/>
+      </g>
+    
+      <g transform="translate(260, 41) scale(0.7)">
+        <ellipse cx="0" cy="8" rx="14" ry="10" fill="#EA580C"/>
+        <circle cx="-10" cy="-4" r="4.5" fill="#EA580C"/>
+        <circle cx="-3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="3" cy="-10" r="4.5" fill="#EA580C"/>
+        <circle cx="10" cy="-4" r="4.5" fill="#EA580C"/>
+      </g>
+    
+  </g>
+</svg>

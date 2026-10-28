@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin, ExternalLink, CalendarCheck } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { FilmTimecodeBadge, ModernHairlineDivider } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 export function CinematicEvents() {
   const data = useWeddingData();
@@ -22,16 +24,10 @@ export function CinematicEvents() {
   };
 
   return (
-    <section id="event" className="relative py-16 px-6 text-center text-white overflow-hidden">
+    <SectionMotion id="event" className="relative py-16 px-6 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <FilmTimecodeBadge scene="SCENE 03" take="THE ITINERARY" className="mb-2" />
           <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Agenda Pernikahan
@@ -39,17 +35,15 @@ export function CinematicEvents() {
           <p className="text-xs text-white/70 max-w-xs mx-auto leading-relaxed">
             Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir di hari bahagia kami.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Event Cards */}
         <div className="space-y-6">
           {events.map((evt, idx) => (
-            <motion.div
+            <ItemMotion
               key={evt.id || idx}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.15 }}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.12}
               className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 sm:p-7 border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] space-y-5 text-left relative overflow-hidden"
             >
               {/* Event Badge Header */}
@@ -134,17 +128,15 @@ export function CinematicEvents() {
                   <span>Simpan ke Kalender</span>
                 </button>
               </div>
-            </motion.div>
+            </ItemMotion>
           ))}
         </div>
 
         {/* Dresscode Card */}
         {dresscode && dresscode.colors && dresscode.colors.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+          <ItemMotion
+            variant="pop"
+            delay={0.15}
             className="bg-black/45 backdrop-blur-2xl rounded-3xl p-6 border border-white/20 shadow-lg text-center space-y-3"
           >
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/60 block">
@@ -158,7 +150,12 @@ export function CinematicEvents() {
             </p>
             <div className="flex items-center justify-center gap-2 pt-1">
               {dresscode.colors.map((c: any, i: number) => (
-                <div key={i} className="flex flex-col items-center gap-1">
+                <ItemMotion
+                  key={i}
+                  variant="pop"
+                  delay={0.2 + i * 0.05}
+                  className="flex flex-col items-center gap-1"
+                >
                   <div
                     className="w-7 h-7 rounded-full border border-white/30 shadow-md"
                     style={{ backgroundColor: c.hex }}
@@ -167,12 +164,12 @@ export function CinematicEvents() {
                   <span className="text-[9px] font-mono text-white/60">
                     {c.name}
                   </span>
-                </div>
+                </ItemMotion>
               ))}
             </div>
-          </motion.div>
+          </ItemMotion>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }

@@ -8,7 +8,9 @@ import { useWeddingData } from "@/context/WeddingDataContext";
 import { WishMessage } from "@/types/wedding";
 import { getWishes, submitWish } from "@/lib/invitationStore";
 import { submitRsvpApi } from "@/lib/api";
-import { CatPawPrint, BrushStrokeDivider } from "./PaintedDecorations";
+import { DoodlePawSticker, DoodleHeartSticker } from "./PaintedDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface PaintedCatsRsvpProps {
   guestName?: string;
@@ -90,7 +92,7 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
         particleCount: 50,
         spread: 60,
         origin: { y: 0.8 },
-        colors: ["#D97736", "#FAF6EE", "#C85A17"],
+        colors: ["#DF7B54", "#F4929D", "#FBBF24", "#8FA876", "#FFFDF9"],
       });
     } catch (err) {
       console.error(err);
@@ -100,49 +102,37 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
   };
 
   return (
-    <section id="rsvp" className="relative py-16 px-6 text-center text-[#2C2623] overflow-hidden">
+    <SectionMotion id="rsvp" className="relative py-16 px-6 text-center text-[#38241B] overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
-          <div className="flex items-center justify-center gap-1.5">
-            <CatPawPrint className="w-3.5 h-3.5 text-[#D97736]" color="#D97736" />
-            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C85A17]">
-              Konfirmasi &amp; Doa Restu
-            </span>
+        <ItemMotion variant="slide-down" delay={0.06} className="space-y-2.5">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#FFF4EC] border border-[#FCD5CE] text-[11px] font-sans font-bold text-[#DF7B54] mx-auto shadow-2xs">
+            <ItemMotion float={true} floatDistance={3} floatDuration={3}>
+              <DoodlePawSticker className="w-3.5 h-3.5" rotate={0} />
+            </ItemMotion>
+            <span>Konfirmasi &amp; Doa Restu</span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#2C2623]">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#38241B]">
             Buku Tamu &amp; RSVP
           </h2>
-          <p className="text-xs text-[#7A6150] max-w-xs mx-auto leading-relaxed">
+          <p className="text-xs text-[#6E5345] max-w-xs mx-auto leading-relaxed">
             Mohon konfirmasikan kehadiran Anda dan sampaikan doa tulus bagi kedua mempelai.
           </p>
-        </motion.div>
+        </ItemMotion>
 
-        {/* RSVP Form Card */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 border-2 border-[#EAD8C7] shadow-[0_15px_35px_rgba(200,90,23,0.08)] text-left space-y-4"
-        >
+        <ItemMotion variant="slide-left" delay={0.1}>
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white/95 backdrop-blur-md rounded-[32px] p-6 sm:p-7 border-[4px] border-white ring-1 ring-[#F3DFD1] shadow-[0_20px_45px_rgba(222,125,84,0.12)] text-left space-y-4"
+          >
           {isSuccess && (
-            <div className="p-3.5 rounded-2xl bg-[#F0F8F3] border border-[#BDE0C7] flex items-center gap-2.5 text-xs text-[#24623E]">
-              <Check className="w-4 h-4 text-[#2E7A4A] shrink-0" />
+            <div className="p-3.5 rounded-2xl bg-[#E8F5E9] border border-[#A5D6A7] flex items-center gap-2.5 text-xs text-[#2E7D32]">
+              <Check className="w-4 h-4 text-[#2E7D32] shrink-0" />
               <span>Terima kasih! Konfirmasi kehadiran dan doa restu Anda telah tersimpan.</span>
             </div>
           )}
 
-          {/* Guest Name */}
           <div>
-            <label className="block text-[11px] font-mono uppercase text-[#A07855] mb-1.5 font-medium">
+            <label className="block text-xs font-sans font-bold text-[#6E5345] mb-1.5">
               Nama Lengkap Tamu
             </label>
             <input
@@ -151,13 +141,12 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Contoh: Budi Santoso"
-              className="w-full px-4 py-2.5 rounded-xl border border-[#DCD0C5] bg-[#FAF6EE] text-[#2C2623] placeholder-[#A07855]/50 text-xs sm:text-sm focus:outline-none focus:border-[#D97736] focus:ring-1 focus:ring-[#D97736]"
+              className="w-full px-4 py-2.5 rounded-2xl border border-[#F3DFD1] bg-[#FFFDF9] text-[#38241B] placeholder-[#8C6D58]/45 text-xs sm:text-sm focus:outline-none focus:border-[#DF7B54] focus:ring-2 focus:ring-[#DF7B54]/20 transition-all"
             />
           </div>
 
-          {/* Attendance Radio Pills */}
           <div>
-            <label className="block text-[11px] font-mono uppercase text-[#A07855] mb-1.5 font-medium">
+            <label className="block text-xs font-sans font-bold text-[#6E5345] mb-1.5">
               Konfirmasi Kehadiran
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -170,10 +159,10 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
                   key={item.id}
                   type="button"
                   onClick={() => setAttendance(item.id as any)}
-                  className={`py-2 px-2 rounded-xl text-xs font-medium transition-all text-center border cursor-pointer ${
+                  className={`py-2.5 px-2 rounded-2xl text-xs font-sans font-bold transition-all text-center border cursor-pointer ${
                     attendance === item.id
-                      ? "bg-[#D97736] text-white border-[#D97736] font-semibold shadow-xs"
-                      : "bg-[#FAF6EE] text-[#5C4A3E] border-[#E8D9CB] hover:bg-[#F3E8DB]"
+                      ? "bg-gradient-to-r from-[#DF7B54] to-[#F4929D] text-white shadow-xs border-transparent"
+                      : "bg-[#FFFDF9] text-[#6E5345] border-[#F3DFD1] hover:bg-[#FFF4EC]"
                   }`}
                 >
                   {item.label}
@@ -182,16 +171,15 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
             </div>
           </div>
 
-          {/* Pax count if Attending */}
           {attendance === "hadir" && (
             <div>
-              <label className="block text-[11px] font-mono uppercase text-[#A07855] mb-1.5 font-medium">
+              <label className="block text-xs font-sans font-bold text-[#6E5345] mb-1.5">
                 Jumlah Kehadiran (Pax)
               </label>
               <select
                 value={attendeeCount}
                 onChange={(e) => setAttendeeCount(parseInt(e.target.value) || 1)}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#DCD0C5] bg-[#FAF6EE] text-[#2C2623] text-xs sm:text-sm focus:outline-none focus:border-[#D97736]"
+                className="w-full px-4 py-2.5 rounded-2xl border border-[#F3DFD1] bg-[#FFFDF9] text-[#38241B] text-xs sm:text-sm focus:outline-none focus:border-[#DF7B54] focus:ring-2 focus:ring-[#DF7B54]/20"
               >
                 {Array.from({ length: Math.max(1, maxQuota) }, (_, i) => i + 1).map((num) => (
                   <option key={num} value={num}>
@@ -202,9 +190,8 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
             </div>
           )}
 
-          {/* Wishes Message */}
           <div>
-            <label className="block text-[11px] font-mono uppercase text-[#A07855] mb-1.5 font-medium">
+            <label className="block text-xs font-sans font-bold text-[#6E5345] mb-1.5">
               Untaian Doa Restu
             </label>
             <textarea
@@ -213,61 +200,63 @@ export function PaintedCatsRsvp({ guestName, guestItem }: PaintedCatsRsvpProps) 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tuliskan doa tulus dan pesan manis Anda..."
-              className="w-full px-4 py-2.5 rounded-xl border border-[#DCD0C5] bg-[#FAF6EE] text-[#2C2623] placeholder-[#A07855]/50 text-xs sm:text-sm focus:outline-none focus:border-[#D97736] focus:ring-1 focus:ring-[#D97736]"
+              className="w-full px-4 py-2.5 rounded-2xl border border-[#F3DFD1] bg-[#FFFDF9] text-[#38241B] placeholder-[#8C6D58]/45 text-xs sm:text-sm focus:outline-none focus:border-[#DF7B54] focus:ring-2 focus:ring-[#DF7B54]/20 transition-all"
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-5 rounded-2xl bg-[#D97736] hover:bg-[#C85A17] text-white font-semibold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-[#DF7B54] to-[#F4929D] hover:opacity-95 text-white font-sans font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_8px_20px_rgba(223,123,84,0.3)] disabled:opacity-50"
           >
             <Send className="w-4 h-4 text-white" />
             <span>{isSubmitting ? "Mengirim..." : "Kirim Konfirmasi &amp; Doa"}</span>
           </button>
-        </motion.form>
+          </form>
+        </ItemMotion>
 
-        {/* Wishes Feed */}
         <div className="space-y-4 text-left">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E8D9CB]">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#C85A17] font-semibold">
+          <div className="flex items-center justify-between pb-2 border-b border-[#F5E6DC]">
+            <span className="text-xs font-sans uppercase tracking-wider text-[#DF7B54] font-bold">
               Koleksi Doa Restu
             </span>
-            <span className="text-xs font-mono text-[#8C6D58]">
+            <span className="text-xs font-sans text-[#8C6D58] font-medium">
               {wishes.length} Pesan
             </span>
           </div>
 
           <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
             {wishes.map((item, idx) => (
-              <div
+              <ItemMotion
                 key={item.id || idx}
-                className="bg-white/90 backdrop-blur-md rounded-2xl p-4 border border-[#EAD8C7] space-y-2 shadow-2xs"
+                variant={idx % 2 === 0 ? "slide-right" : "slide-left"}
+                delay={idx * 0.05}
+                className="bg-white/95 backdrop-blur-md rounded-[24px] p-4 border-[2.5px] border-white ring-1 ring-[#F3DFD1] space-y-2 shadow-2xs"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-serif font-bold text-sm text-[#2C2623] block">
+                    <span className="font-serif font-bold text-sm text-[#38241B] block">
                       {item.name}
                     </span>
-                    <span className="text-[10px] text-[#A07855] font-mono">
+                    <span className="text-[10px] text-[#8C6D58] font-sans">
                       {item.relationship} • {item.date}
                     </span>
                   </div>
                   {item.attendance && (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono bg-[#FAF6EE] border border-[#E8D9CB] text-[#C85A17]">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-sans font-bold bg-[#FFF4EC] border border-[#FCD5CE] text-[#DF7B54]">
                       {item.attendance}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-[#4A3B31] leading-relaxed font-sans italic bg-[#FAF6EE] p-3 rounded-xl border border-[#EFE5DB]">
+                <p className="text-xs text-[#5C4A3E] leading-relaxed font-sans italic bg-[#FFF9F5] p-3 rounded-2xl border border-[#FCEADE]">
                   &ldquo;{item.message}&rdquo;
                 </p>
-              </div>
+              </ItemMotion>
             ))}
           </div>
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
+

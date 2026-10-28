@@ -8,6 +8,8 @@ import {
   ModernHairlineDivider,
   CameraCropMarks,
 } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -32,15 +34,9 @@ export function CinematicCouple() {
   const { groom, bride } = data.couple;
 
   return (
-    <section id="couple" className="relative py-14 px-4 text-center text-white overflow-hidden">
+    <SectionMotion id="couple" className="relative py-14 px-4 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <FilmTimecodeBadge scene="SEQUENCE 02" take="LEAD CAST" className="mb-2" />
           <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Kedua Mempelai
@@ -49,14 +45,12 @@ export function CinematicCouple() {
             {data.general?.openingMessage ||
               "Dengan memohon rahmat dan ridho Tuhan Yang Maha Esa, kami mengundang kehadiran Bapak/Ibu/Saudara/i untuk menyaksikan ikrar suci kami."}
           </p>
-        </motion.div>
+        </ItemMotion>
 
         <div className="space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+          <ItemMotion
+            variant="slide-left"
+            delay={0.08}
             className="bg-black/60 backdrop-blur-2xl rounded-2xl overflow-hidden border border-white/20 shadow-2xl text-left"
           >
             <div className="bg-zinc-950 py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-white/50 border-b border-white/10">
@@ -108,13 +102,11 @@ export function CinematicCouple() {
                 </p>
               )}
             </div>
-          </motion.div>
+          </ItemMotion>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+          <ItemMotion
+            variant="pop"
+            delay={0.14}
             className="flex items-center justify-center gap-3 py-1"
           >
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/25" />
@@ -122,13 +114,11 @@ export function CinematicCouple() {
               &amp;
             </div>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/25" />
-          </motion.div>
+          </ItemMotion>
 
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+          <ItemMotion
+            variant="slide-right"
+            delay={0.16}
             className="bg-black/60 backdrop-blur-2xl rounded-2xl overflow-hidden border border-white/20 shadow-2xl text-left"
           >
             <div className="bg-zinc-950 py-1.5 px-4 flex items-center justify-between text-[9px] font-mono tracking-widest text-white/50 border-b border-white/10">
@@ -180,9 +170,9 @@ export function CinematicCouple() {
                 </p>
               )}
             </div>
-          </motion.div>
+          </ItemMotion>
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

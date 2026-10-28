@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { WeddingDataProvider } from "@/context/WeddingDataContext";
 import { TemplateProps } from "@/templates/types";
 import { getFontFamilyCss } from "@/lib/typography";
@@ -29,14 +29,14 @@ export function CinematicBlurTemplate({
   isEditor = false,
   onOpenChange,
 }: TemplateProps) {
-  const [isOpened, setIsOpened] = useState<boolean>(isPreview);
+  const [isOpened, setIsOpened] = useState<boolean>(isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
 
   useEffect(() => {
-    if (isPreview) {
+    if (isEditor) {
       setIsOpened(true);
     }
-  }, [isPreview]);
+  }, [isEditor]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -103,7 +103,12 @@ export function CinematicBlurTemplate({
 
             {/* Main Invitation Stream */}
             {isOpened && (
-              <div className="flex-1 flex flex-col relative z-10 animate-in fade-in duration-700">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="flex-1 flex flex-col relative z-10"
+              >
                 <CinematicHero />
                 <CinematicCouple />
                 <CinematicEvents />
@@ -114,7 +119,7 @@ export function CinematicBlurTemplate({
                 <CinematicFooter />
 
                 {!isEditor && <NavigationDock theme="cinematic" />}
-              </div>
+              </motion.div>
             )}
           </main>
         </div>

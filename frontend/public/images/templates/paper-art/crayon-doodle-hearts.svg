@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Crayon Textured Doodle Hearts -->
+  <!-- Large Maroon Heart -->
+  <path d="M 70 85 C 70 85 35 62 35 40 C 35 25 46 15 58 15 C 64 15 67 19 70 19 C 73 19 76 15 82 15 C 94 15 105 25 105 40 C 105 62 70 85 70 85 Z" 
+        fill="#7D1128" stroke="#540816" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Medium Dusty Pink Heart -->
+  <path d="M 130 95 C 130 95 108 80 108 64 C 108 52 116 45 125 45 C 129 45 130 48 130 48 C 130 48 131 45 135 45 C 144 45 152 52 152 64 C 152 80 130 95 130 95 Z" 
+        fill="#FDA4AF" stroke="#E11D48" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Small Champagne Gold Heart -->
+  <path d="M 155 42 C 155 42 142 32 142 22 C 142 14 148 10 154 10 C 157 10 155 12 155 12 C 155 12 156 10 159 10 C 165 10 170 14 170 22 C 170 32 155 42 155 42 Z" 
+        fill="#FDE047" stroke="#CA8A04" stroke-width="2" stroke-linejoin="round"/>
+</svg>

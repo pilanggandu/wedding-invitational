@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
+import { randomUUID } from "node:crypto";
 import { getSupabaseClient, isSupabaseConfigured } from "../supabase";
 import { postgresService, isPostgresConnected, getNormalizedWeddingService } from "../postgres";
 import { sqliteService } from "../sqlite";
+import { ensureGuestQuotaSupported, formatLegacyGuest, GuestValidationError, validateGuestCreate, validateGuestUpdate } from "../guestValidation";
 
 const router = Router();
 
@@ -27,22 +29,13 @@ router.get("/", async (_req: Request, res: Response) => {
         return res.status(500).json({ error: error.message });
       }
 
-      const formatted = (data || []).map((row) => ({
-        id: row.id,
-        name: row.name,
-        slug: row.slug,
-        phone: row.phone || "",
-        category: row.category,
-        isSent: row.is_sent,
-        notes: row.notes || "",
-        createdAt: row.created_at,
-      }));
+      const formatted = (data || []).map(formatLegacyGuest);
 
       return res.json({ guests: formatted, source: "supabase" });
     }
 
     // 3. SQLite Local
-    const guests = sqliteService.getGuests();
+    const guests = sqliteService.getGuests().map(formatLegacyGuest);
     res.json({ guests, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in GET /api/guests:", err);
@@ -51,7 +44,7 @@ router.get("/", async (_req: Request, res: Response) => {
 });
 
 // GET /api/guests/verify/:token - Verifikasi token undangan tamu & catat open tracking
-router.get("/verify/:token", async (req: Request, res: Response) => {
+router.get("/verify/:token", async (req: Request<{ token: string }>, res: Response) => {
   try {
     const { token } = req.params;
     const service = getNormalizedWeddingService();
@@ -73,28 +66,23 @@ router.get("/verify/:token", async (req: Request, res: Response) => {
 // POST /api/guests - Tambah tamu baru
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { name, phone = "", category = "Sahabat", notes = "", quota = 1 } = req.body;
-
-    if (!name || !name.trim()) {
-      return res.status(400).json({ error: "Nama tamu wajib diisi" });
-    }
-
-    const cleanName = name.trim();
-    const cleanPhone = phone.trim().replace(/^0/, "62").replace(/[^0-9]/g, "");
-    const slug = encodeURIComponent(cleanName).replace(/%20/g, "+");
-    const id = "g_" + Date.now();
+    const { name, phone, category, notes, quota } = validateGuestCreate(req.body);
+    const postgresConnected = isPostgresConnected();
+    ensureGuestQuotaSupported(quota, postgresConnected && Boolean(getNormalizedWeddingService()));
+    const slug = encodeURIComponent(name).replace(/%20/g, "+");
+    const id = `g_${randomUUID()}`;
     const createdAt = new Date().toISOString();
 
     // 1. PostgreSQL (Local / VPS)
-    if (isPostgresConnected()) {
+    if (postgresConnected) {
       const created = await postgresService.createGuest({
         id,
-        name: cleanName,
+        name,
         slug,
-        phone: cleanPhone,
+        phone,
         category,
         notes,
-        quota: Number(quota || 1),
+        quota,
         createdAt,
       });
       return res.status(201).json({ success: true, guest: created, source: "postgresql" });
@@ -107,9 +95,9 @@ router.post("/", async (req: Request, res: Response) => {
         .from("guests")
         .insert({
           id,
-          name: cleanName,
+          name,
           slug,
-          phone: cleanPhone,
+          phone,
           category,
           is_sent: false,
           notes,
@@ -125,16 +113,7 @@ router.post("/", async (req: Request, res: Response) => {
 
       return res.status(201).json({
         success: true,
-        guest: {
-          id: data.id,
-          name: data.name,
-          slug: data.slug,
-          phone: data.phone,
-          category: data.category,
-          isSent: data.is_sent,
-          notes: data.notes,
-          createdAt: data.created_at,
-        },
+        guest: formatLegacyGuest(data),
         source: "supabase",
       });
     }
@@ -142,37 +121,34 @@ router.post("/", async (req: Request, res: Response) => {
     // 3. Simpan ke database SQLite lokal
     const created = sqliteService.createGuest({
       id,
-      name: cleanName,
+      name,
       slug,
-      phone: cleanPhone,
+      phone,
       category,
       notes,
       createdAt,
     });
 
-    res.status(201).json({ success: true, guest: created, source: "sqlite" });
+    res.status(201).json({ success: true, guest: formatLegacyGuest(created), source: "sqlite" });
   } catch (err: any) {
+    if (err instanceof GuestValidationError) return res.status(400).json({ error: err.message });
     console.error("Error in POST /api/guests:", err);
     res.status(500).json({ error: err.message || "Internal server error" });
   }
 });
 
 // PATCH /api/guests/:id - Update status kirim atau informasi tamu
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
-    const { isSent, notes, category, phone, name, quota } = req.body;
+    const updates = validateGuestUpdate(req.body);
+    const postgresConnected = isPostgresConnected();
+    ensureGuestQuotaSupported(updates.quota, postgresConnected && Boolean(getNormalizedWeddingService()));
+    const { isSent, notes, category, phone, name } = updates;
 
     // 1. PostgreSQL (Local / VPS)
-    if (isPostgresConnected()) {
-      const updated = await postgresService.updateGuest(id, {
-        isSent,
-        notes,
-        category,
-        phone,
-        name,
-        quota: quota !== undefined ? Number(quota) : undefined,
-      });
+    if (postgresConnected) {
+      const updated = await postgresService.updateGuest(id, updates);
       if (!updated) {
         return res.status(404).json({ error: "Tamu tidak ditemukan" });
       }
@@ -182,26 +158,28 @@ router.patch("/:id", async (req: Request, res: Response) => {
     // 2. Supabase Cloud
     const supabase = getSupabaseClient();
     if (isSupabaseConfigured() && supabase) {
-      const updates: any = {};
-      if (typeof isSent === "boolean") updates.is_sent = isSent;
-      if (typeof notes === "string") updates.notes = notes;
-      if (category) updates.category = category;
-      if (phone !== undefined) updates.phone = phone;
-      if (name) updates.name = name;
+      const persistedUpdates: Record<string, unknown> = {};
+      if (isSent !== undefined) persistedUpdates.is_sent = isSent;
+      if (notes !== undefined) persistedUpdates.notes = notes;
+      if (category !== undefined) persistedUpdates.category = category;
+      if (phone !== undefined) persistedUpdates.phone = phone;
+      if (name !== undefined) {
+        persistedUpdates.name = name;
+        persistedUpdates.slug = encodeURIComponent(name).replace(/%20/g, "+");
+      }
 
-      const { data, error } = await supabase
-        .from("guests")
-        .update(updates)
+      const table = supabase.from("guests");
+      const query = Object.keys(persistedUpdates).length ? table.update(persistedUpdates).select("*") : table.select("*");
+      const { data, error } = await query
         .eq("id", id)
-        .select()
         .single();
 
       if (error) {
         console.error("Supabase PATCH guests error:", error);
-        return res.status(500).json({ error: error.message });
+        return res.status(error.code === "PGRST116" ? 404 : 500).json({ error: error.message });
       }
 
-      return res.json({ success: true, guest: data, source: "supabase" });
+      return res.json({ success: true, guest: formatLegacyGuest(data), source: "supabase" });
     }
 
     // 3. Update di database SQLite lokal
@@ -210,15 +188,16 @@ router.patch("/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Tamu tidak ditemukan" });
     }
 
-    res.json({ success: true, guest: updated, source: "sqlite" });
+    res.json({ success: true, guest: formatLegacyGuest(updated), source: "sqlite" });
   } catch (err: any) {
+    if (err instanceof GuestValidationError) return res.status(400).json({ error: err.message });
     console.error("Error in PATCH /api/guests/:id:", err);
     res.status(500).json({ error: err.message || "Internal server error" });
   }
 });
 
 // DELETE /api/guests/:id - Hapus tamu
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
 

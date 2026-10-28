@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 interface AmbientBlurStoryProps {
   palette?: ExtractedColors;
@@ -22,16 +24,10 @@ export function AmbientBlurStory({ palette }: AmbientBlurStoryProps) {
   const glowColor = palette?.glow || "rgba(217,119,54,0.3)";
 
   return (
-    <section id="story" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
+    <SectionMotion id="story" className="relative py-16 px-6 text-center text-slate-800 overflow-hidden">
       <div className="max-w-md mx-auto space-y-10">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <div className="flex justify-center">
             <span
               style={{
@@ -54,7 +50,7 @@ export function AmbientBlurStory({ palette }: AmbientBlurStoryProps) {
           <p className="text-xs text-slate-600 max-w-xs mx-auto leading-relaxed">
             Rangkaian momen berharga dari pertemuan pertama hingga melangkah bersama menuju ikrar suci.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         {/* Timeline Items */}
         <div
@@ -62,25 +58,28 @@ export function AmbientBlurStory({ palette }: AmbientBlurStoryProps) {
           className="relative pl-6 sm:pl-8 space-y-8 text-left border-l-2 ml-4 sm:ml-6"
         >
           {stories.map((story, idx) => (
-            <motion.div
+            <ItemMotion
               key={idx}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.15 }}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.15}
               className="relative space-y-2"
             >
               {/* Timeline Pin */}
-              <div
+              <ItemMotion
+                variant="pop"
+                delay={idx * 0.15 + 0.1}
+                float={true}
+                floatDistance={3}
+                floatDuration={3.5}
                 style={{
                   borderColor: accentColor,
                   backgroundColor: "#FFFFFF",
                   boxShadow: `0 0 14px ${glowColor}`,
                 }}
-                className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center text-white"
+                className="absolute -left-[31px] sm:-left-[39px] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center text-white z-10"
               >
                 <Heart style={{ color: accentColor }} className="w-2.5 h-2.5 fill-current" />
-              </div>
+              </ItemMotion>
 
               {/* Story Card */}
               <div
@@ -116,10 +115,10 @@ export function AmbientBlurStory({ palette }: AmbientBlurStoryProps) {
                   </p>
                 )}
               </div>
-            </motion.div>
+            </ItemMotion>
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }

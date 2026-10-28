@@ -99,6 +99,8 @@ export interface GeneralWeddingInfo {
   funTagline: string;
   musicTitle: string;
   musicArtist: string;
+  musicUrl?: string;
+  musicVolume?: number;
   quote: {
     arabic: string;
     translation: string;

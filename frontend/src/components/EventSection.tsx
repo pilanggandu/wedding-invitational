@@ -12,12 +12,13 @@ import {
   TornPaperDivider,
 } from "./PaperArtDecorations";
 import { MotionReveal } from "./MotionReveal";
+import { SectionMotion } from "./SectionMotion";
 
 export function EventSection() {
   const { events, dresscode } = useWeddingData();
 
   return (
-    <section id="acara" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
+    <SectionMotion id="acara" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
       {/* Decorative Accents */}
       <BotanicalLeaves className="absolute -top-6 -right-6 w-36 sm:w-44 h-52 opacity-30 -rotate-45 pointer-events-none" />
       <div className="absolute top-1/2 -left-2 pointer-events-none opacity-75">
@@ -177,6 +178,6 @@ export function EventSection() {
       <div className="mt-16">
         <TornPaperDivider position="bottom" color="#FFF0F3" />
       </div>
-    </section>
+    </SectionMotion>
   );
 }

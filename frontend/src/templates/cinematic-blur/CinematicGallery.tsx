@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ZoomIn, X, ChevronLeft, ChevronRight, Film } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { FilmTimecodeBadge, CameraCropMarks } from "./CinematicDecorations";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 
 export function CinematicGallery() {
   const data = useWeddingData();
@@ -41,15 +43,9 @@ export function CinematicGallery() {
   };
 
   return (
-    <section id="gallery" className="relative py-14 px-4 text-center text-white overflow-hidden">
+    <SectionMotion id="gallery" className="relative py-14 px-4 text-center text-white overflow-hidden">
       <div className="max-w-md mx-auto space-y-8">
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="space-y-2"
-        >
+        <ItemMotion variant="slide-down" className="space-y-2">
           <FilmTimecodeBadge scene="SEQUENCE 04" take="35MM ARCHIVE" className="mb-2" />
           <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Galeri Prewedding
@@ -57,71 +53,72 @@ export function CinematicGallery() {
           <p className="text-xs text-white/70 max-w-xs mx-auto leading-relaxed font-sans">
             Rekaman visual dan potongan adegan sebelum melangkah ke babak kehidupan baru.
           </p>
-        </motion.div>
+        </ItemMotion>
 
         <div className="space-y-4">
           {galleryItems.map((item, idx) => (
-            <motion.div
+            <ItemMotion
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: idx * 0.1 }}
-              onClick={() => setActiveModalIndex(idx)}
-              className="bg-black rounded-2xl overflow-hidden border border-white/20 shadow-xl cursor-pointer group"
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={idx * 0.1}
             >
-              <div className="bg-zinc-950 py-1 px-3 flex items-center justify-between border-b border-white/10 select-none">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="text-[8px] font-mono tracking-widest text-white/50 ml-1">KODAK 500T</span>
-                </div>
-                <span className="text-[8px] font-mono tracking-widest text-amber-300">{item.frameNumber}</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                </div>
-              </div>
-
-              <div className="relative aspect-[16/10] overflow-hidden bg-black">
-                <CameraCropMarks className="opacity-50" />
-                <img
-                  src={item.src}
-                  alt={item.title}
-                  className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
-                <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between z-20 text-left">
-                  <div>
-                    <span className="text-xs font-serif font-bold text-white block">
-                      {item.title}
-                    </span>
-                    <span className="text-[10px] text-white/70 font-sans truncate block">
-                      {item.caption}
-                    </span>
+              <div
+                onClick={() => setActiveModalIndex(idx)}
+                className="bg-black rounded-2xl overflow-hidden border border-white/20 shadow-xl cursor-pointer group"
+              >
+                <div className="bg-zinc-950 py-1 px-3 flex items-center justify-between border-b border-white/10 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="text-[8px] font-mono tracking-widest text-white/50 ml-1">KODAK 500T</span>
                   </div>
-                  <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-                    <ZoomIn className="w-3.5 h-3.5" />
+                  <span className="text-[8px] font-mono tracking-widest text-amber-300">{item.frameNumber}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
                   </div>
                 </div>
-              </div>
 
-              <div className="bg-zinc-950 py-1 px-3 flex items-center justify-between border-t border-white/10 select-none">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                <div className="relative aspect-[16/10] overflow-hidden bg-black">
+                  <CameraCropMarks className="opacity-50" />
+                  <img
+                    src={item.src}
+                    alt={item.title}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+                  <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between z-20 text-left">
+                    <div>
+                      <span className="text-xs font-serif font-bold text-white block">
+                        {item.title}
+                      </span>
+                      <span className="text-[10px] text-white/70 font-sans truncate block">
+                        {item.caption}
+                      </span>
+                    </div>
+                    <div className="w-7 h-7 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                      <ZoomIn className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
                 </div>
-                <span className="text-[8px] font-mono tracking-widest text-white/40">35MM NEGATIVE FILM</span>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
-                  <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+
+                <div className="bg-zinc-950 py-1 px-3 flex items-center justify-between border-t border-white/10 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                  </div>
+                  <span className="text-[8px] font-mono tracking-widest text-white/40">35MM NEGATIVE FILM</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                    <span className="w-1.5 h-1.5 rounded-sm bg-white/40" />
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </ItemMotion>
           ))}
         </div>
       </div>
@@ -180,6 +177,6 @@ export function CinematicGallery() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionMotion>
   );
 }

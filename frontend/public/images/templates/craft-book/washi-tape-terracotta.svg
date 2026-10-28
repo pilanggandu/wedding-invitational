@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="tapeShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#3D291D" flood-opacity="0.18"/>
+    </filter>
+    <pattern id="botanicalPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 12 28 C 14 20, 26 18, 28 12 C 24 16, 20 24, 18 28 Z" fill="#FAF5EF" opacity="0.35"/>
+      <path d="M 28 12 C 32 16, 30 24, 26 28" stroke="#FAF5EF" stroke-width="1.2" opacity="0.3"/>
+      <circle cx="28" cy="12" r="2" fill="#FAF5EF" opacity="0.4"/>
+      <circle cx="10" cy="34" r="1.5" fill="#FAF5EF" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <g filter="url(#tapeShadow)">
+    <!-- Serrated tape base with ripped deckle edges -->
+    <path d="M 14 12 
+             L 306 12 
+             L 314 20 L 306 28 L 314 36 L 306 44 L 314 52 L 306 60 L 314 68 
+             L 14 68 
+             L 6 60 L 14 52 L 6 44 L 14 36 L 6 28 L 14 20 Z" 
+          fill="#C26D53" fill-opacity="0.88"/>
+    <!-- Botanical pattern overlay -->
+    <path d="M 14 12 L 306 12 L 314 20 L 306 28 L 314 36 L 306 44 L 314 52 L 306 60 L 314 68 L 14 68 L 6 60 L 14 52 L 6 44 L 14 36 L 6 28 L 14 20 Z" 
+          fill="url(#botanicalPattern)"/>
+    <!-- Subtle top and bottom tape translucency highlight -->
+    <line x1="14" y1="13" x2="306" y2="13" stroke="#FFF" stroke-width="1" opacity="0.3"/>
+    <line x1="14" y1="67" x2="306" y2="67" stroke="#000" stroke-width="1" opacity="0.15"/>
+  </g>
+</svg>

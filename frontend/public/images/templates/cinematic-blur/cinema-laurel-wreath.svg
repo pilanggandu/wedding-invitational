@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Film Festival Golden Laurels -->
+  <!-- Left Laurel Wreath -->
+  <path d="M 90 134 C 44 126 28 88 44 42 C 48 54 44 68 52 82 C 60 96 74 114 90 126" stroke="#DFD2BD" stroke-width="2" fill="none"/>
+  
+    <ellipse cx="44" cy="46" rx="10" ry="4.5" transform="rotate(-40 44 46)" fill="#DFD2BD"/>
+  
+    <ellipse cx="38" cy="64" rx="10" ry="4.5" transform="rotate(-60 38 64)" fill="#DFD2BD"/>
+  
+    <ellipse cx="40" cy="84" rx="10" ry="4.5" transform="rotate(-80 40 84)" fill="#DFD2BD"/>
+  
+    <ellipse cx="50" cy="104" rx="10" ry="4.5" transform="rotate(-100 50 104)" fill="#DFD2BD"/>
+  
+    <ellipse cx="68" cy="122" rx="10" ry="4.5" transform="rotate(-120 68 122)" fill="#DFD2BD"/>
+  
+  <!-- Right Laurel Wreath -->
+  <path d="M 150 134 C 196 126 212 88 196 42 C 192 54 196 68 188 82 C 180 96 166 114 150 126" stroke="#DFD2BD" stroke-width="2" fill="none"/>
+  
+    <ellipse cx="196" cy="46" rx="10" ry="4.5" transform="rotate(40 196 46)" fill="#DFD2BD"/>
+  
+    <ellipse cx="202" cy="64" rx="10" ry="4.5" transform="rotate(60 202 64)" fill="#DFD2BD"/>
+  
+    <ellipse cx="200" cy="84" rx="10" ry="4.5" transform="rotate(80 200 84)" fill="#DFD2BD"/>
+  
+    <ellipse cx="190" cy="104" rx="10" ry="4.5" transform="rotate(100 190 104)" fill="#DFD2BD"/>
+  
+    <ellipse cx="172" cy="122" rx="10" ry="4.5" transform="rotate(120 172 122)" fill="#DFD2BD"/>
+  
+  <!-- Center Film Reel Icon -->
+  <circle cx="120" cy="80" r="22" stroke="#DFD2BD" stroke-width="2" fill="#141720"/>
+  <circle cx="120" cy="80" r="6" fill="#DFD2BD"/>
+  <circle cx="133" cy="80" r="3" fill="#DFD2BD"/><circle cx="124.01722092687432" cy="92.363734711837" r="3" fill="#DFD2BD"/><circle cx="109.48277907312568" cy="87.64120827980216" r="3" fill="#DFD2BD"/><circle cx="109.48277907312568" cy="72.35879172019786" r="3" fill="#DFD2BD"/><circle cx="124.01722092687432" cy="67.636265288163" r="3" fill="#DFD2BD"/>
+  <text x="120" y="118" text-anchor="middle" font-family="'Courier New', monospace" font-size="9" font-weight="bold" fill="#DFD2BD" letter-spacing="2">OFFICIAL SELECTION</text>
+</svg>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Vintage Film Reel Countdown Target Circle -->
+  <circle cx="110" cy="110" r="100" fill="#14171F" stroke="#DFD2BD" stroke-width="2"/>
+  <circle cx="110" cy="110" r="82" fill="none" stroke="#DFD2BD" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
+  <circle cx="110" cy="110" r="64" fill="none" stroke="#DFD2BD" stroke-width="1.5"/>
+  <!-- Crosshair lines -->
+  <line x1="10" y1="110" x2="210" y2="110" stroke="#DFD2BD" stroke-width="1.5"/>
+  <line x1="110" y1="10" x2="110" y2="210" stroke="#DFD2BD" stroke-width="1.5"/>
+  <!-- Sweep sector (quarter wipe) -->
+  <path d="M 110 110 L 110 46 A 64 64 0 0 1 174 110 Z" fill="#DFD2BD" fill-opacity="0.25"/>
+  <!-- Center Heart / Big Number Symbol -->
+  <path d="M 110 128 C 110 128 92 114 92 102 C 92 94 98 88 106 88 C 109 88 110 91 110 91 C 110 91 111 88 114 88 C 122 88 128 94 128 102 C 128 114 110 128 110 128 Z" 
+        fill="#DFD2BD"/>
+</svg>

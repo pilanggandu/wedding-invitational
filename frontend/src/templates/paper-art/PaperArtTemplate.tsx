@@ -6,8 +6,6 @@ import {
   Calendar,
   Clock,
   MapPin,
-  Heart,
-  CreditCard,
   Copy,
   Check,
   Send,
@@ -20,14 +18,19 @@ import {
 import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
 import { TemplateProps } from "@/templates/types";
-import { WishMessage } from "@/types/wedding";
+import { WishMessage, BankAccount } from "@/types/wedding";
 import { getWishes, submitWish } from "@/lib/invitationStore";
 import { submitRsvpApi } from "@/lib/api";
 import { DesktopLeftShowcase } from "@/components/DesktopLeftShowcase";
 import { EnvelopeCover } from "@/components/EnvelopeCover";
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
+import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 import { getFontFamilyCss } from "@/lib/typography";
+import { MOTION_TRANSITIONS } from "@/lib/motion";
 import {
   SketchbookSpiralBinding,
   BotanicalBranchSvg,
@@ -86,18 +89,41 @@ function BotanicalSprigOrnament({
       initial={
         shouldReduceMotion
           ? { opacity: 1 }
-          : { opacity: 0, y: 10, rotate: rot.start, scale: 0.94 }
+          : { opacity: 0, y: 8, rotate: rot.start, scale: 0.96 }
       }
       whileInView={
         shouldReduceMotion
           ? { opacity: 1 }
-          : { opacity: 1, y: 0, rotate: rot.end, scale: 1 }
+          : {
+              opacity: 1,
+              scale: 1,
+              rotate: [rot.end, rot.end - 1.5, rot.end + 1.5, rot.end],
+              y: [0, -2, 1, 0],
+              x: [0, -1, 1, 0],
+            }
       }
       viewport={{ once: true, amount: 0.2 }}
       transition={{
-        duration: shouldReduceMotion ? 0 : 0.45,
-        delay: shouldReduceMotion ? 0 : delay,
-        ease: [0.25, 1, 0.5, 1],
+        opacity: { duration: MOTION_TRANSITIONS.romantic.duration, delay: shouldReduceMotion ? 0 : delay, ease: MOTION_TRANSITIONS.romantic.ease },
+        scale: { duration: MOTION_TRANSITIONS.romantic.duration, delay: shouldReduceMotion ? 0 : delay, ease: MOTION_TRANSITIONS.romantic.ease },
+        rotate: {
+          duration: 7.2,
+          delay: delay + 0.6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        },
+        y: {
+          duration: 6.2,
+          delay: delay + 0.6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        },
+        x: {
+          duration: 6.8,
+          delay: delay + 0.6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        },
       }}
       className={`pointer-events-none select-none drop-shadow-xs ${className}`}
     />
@@ -113,10 +139,10 @@ function BotanicalSectionDivider() {
       <motion.img
         src="/images/paper-art/botanical-corner-sprig.png"
         alt="Botanical Divider"
-        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.9, y: 6 }}
-        whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 0.95, scale: 1, y: 0 }}
+        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.94, y: 4 }}
+        whileInView={shouldReduceMotion ? { opacity: 1 } : { opacity: 0.9, scale: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.45, ease: [0.25, 1, 0.5, 1] }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: MOTION_TRANSITIONS.romantic.ease }}
         className="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-2 pointer-events-none drop-shadow-2xs rotate-45"
       />
       <div className="h-px flex-1 bg-[#7D1128]/20 border-t border-dashed border-[#7D1128]/35" />
@@ -126,6 +152,7 @@ function BotanicalSectionDivider() {
 
 function SketchbookHero() {
   const data = useWeddingData();
+  const shouldReduceMotion = useReducedMotion();
   const { groom, bride } = data.couple;
   const mainEvent = data.events?.[0];
   const dateStr = mainEvent?.displayDate || "21 November 2026";
@@ -203,9 +230,14 @@ function SketchbookHero() {
   };
 
   return (
-    <section id="hero" className="relative pt-6 pb-12 px-5 text-center text-[#2C1810]">
+    <SectionMotion id="hero" className="relative pt-6 pb-12 px-5 text-center text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="relative bg-[#FFFDF8] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#7D1128]/35 shadow-[0_8px_24px_rgba(125,17,40,0.08)]">
+        <ItemMotion
+          variant="card-lift"
+          duration={0.82}
+          delay={0.06}
+          className="relative bg-[#FFFDF8] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#7D1128]/35 shadow-[0_8px_24px_rgba(125,17,40,0.08)]"
+        >
           <img
             src="/images/paper-art/paperclip-washi-accent.png"
             alt="Paperclip Washi Accent"
@@ -217,10 +249,44 @@ function SketchbookHero() {
             className="absolute -bottom-6 -left-4 w-20 sm:w-24 z-20"
           />
 
-          <div className="relative w-32 h-32 sm:w-36 sm:h-36 mx-auto flex items-center justify-center mb-2 select-none">
+          {(data.general?.heroPhotoUrl || data.general?.coverPhotoUrl) && (
+            <div className="relative w-full max-w-[240px] sm:max-w-[270px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden mb-4 bg-[#FAF3EA] border-2 border-[#7D1128]/25 shadow-sm">
+              <motion.div
+                initial={
+                  shouldReduceMotion
+                    ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                    : { opacity: 0, clipPath: "inset(18% 0% 0% 0%)", scale: 1.02 }
+                }
+                whileInView={
+                  shouldReduceMotion
+                    ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                    : { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", scale: 1 }
+                }
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.88, delay: 0.12, ease: MOTION_TRANSITIONS.romantic.ease }}
+                className="w-full h-full"
+              >
+                <img
+                  src={data.general?.heroPhotoUrl || data.general?.coverPhotoUrl || "/images/prewedding/couple-2.jpg"}
+                  alt={`${groom.name} & ${bride.name}`}
+                  className="w-full h-full object-cover object-center"
+                />
+              </motion.div>
+              <div className="absolute inset-0 border border-white/40 rounded-2xl pointer-events-none" />
+            </div>
+          )}
+
+          <ItemMotion
+            variant="pop"
+            delay={0.16}
+            float={true}
+            floatDistance={3}
+            floatDuration={5.5}
+            className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto flex items-center justify-center mb-2 select-none"
+          >
             <img
-              src="/images/paper-art/botanical-monogram-wreath.png"
-              alt="Botanical Monogram Wreath"
+              src="/images/templates/paper-art/botanical-olive-wreath.svg"
+              alt="Botanical Olive Wreath"
               className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-xs select-none"
             />
             <span
@@ -229,29 +295,32 @@ function SketchbookHero() {
             >
               {coupleMonogram}
             </span>
-          </div>
+          </ItemMotion>
 
-          <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#7D1128] block font-bold mb-1">
-            Buku Catatan Pernikahan
-          </span>
+          <ItemMotion variant="slide-down" delay={0.22}>
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#7D1128] block font-bold mb-1">
+              Buku Catatan Pernikahan
+            </span>
 
-          <h1
-            style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-            className="text-3xl sm:text-4xl font-bold text-[#7D1128] tracking-tight my-1"
-          >
-            {groom.name} &amp; {bride.name}
-          </h1>
+            <h1
+              style={{ fontFamily: "var(--font-couple-custom, serif)" }}
+              className="text-3xl sm:text-4xl font-bold text-[#7D1128] tracking-tight my-1"
+            >
+              <CharMotionReveal text={groom.name} baseDelay={0.2} /> &amp;{" "}
+              <CharMotionReveal text={bride.name} baseDelay={0.5} />
+            </h1>
 
-          <div className="flex justify-center my-1.5">
-            <CrayonUnderlineSvg className="w-36 h-3" color="#7D1128" />
-          </div>
+            <div className="flex justify-center my-1.5">
+              <CrayonUnderlineSvg className="w-36 h-3" color="#7D1128" />
+            </div>
 
-          <p className="text-xs font-serif italic text-[#6B4B3E] mt-2">
-            {dayStr}, {dateStr}
-          </p>
+            <p className="text-xs font-serif italic text-[#6B4B3E] mt-2">
+              {dayStr}, {dateStr}
+            </p>
+          </ItemMotion>
 
           {data.general?.quote && (
-            <div className="mt-5 pt-4 border-t border-[#7D1128]/20 space-y-2">
+            <ItemMotion variant="fade" delay={0.3} className="mt-5 pt-4 border-t border-[#7D1128]/20 space-y-2">
               {data.general.quote.arabic && (
                 <p className="font-serif text-sm text-[#7D1128] leading-loose dir-rtl">
                   {data.general.quote.arabic}
@@ -263,11 +332,11 @@ function SketchbookHero() {
               <span className="text-[9px] font-mono uppercase tracking-widest text-[#8C6D60] block">
                 {data.general.quote.source}
               </span>
-            </div>
+            </ItemMotion>
           )}
-        </div>
+        </ItemMotion>
 
-        <div className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/30 shadow-sm space-y-3 text-left">
+        <ItemMotion variant="card-lift" delay={0.2} className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/30 shadow-sm space-y-3 text-left">
           <div className="flex items-center justify-between border-b border-[#7D1128]/15 pb-2">
             <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#7D1128] flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-[#7D1128]" />
@@ -278,27 +347,31 @@ function SketchbookHero() {
 
           <div className="grid grid-cols-4 gap-2 text-center font-mono">
             {[
-              { label: "Hari", val: timeLeft.days },
-              { label: "Jam", val: timeLeft.hours },
-              { label: "Menit", val: timeLeft.minutes },
-              { label: "Detik", val: timeLeft.seconds },
+              { label: "Hari", val: timeLeft.days, variant: "slide-left" as const },
+              { label: "Jam", val: timeLeft.hours, variant: "slide-left" as const },
+              { label: "Menit", val: timeLeft.minutes, variant: "slide-right" as const },
+              { label: "Detik", val: timeLeft.seconds, variant: "slide-right" as const },
             ].map((item, idx) => (
-              <div
+              <ItemMotion
                 key={idx}
+                variant={item.variant}
+                delay={0.24 + idx * 0.04}
                 className="bg-[#FAF3EA] p-2.5 rounded-xl border border-[#7D1128]/20 shadow-2xs"
               >
-                <span className="text-xl sm:text-2xl font-bold text-[#7D1128] block">
+                <span className="text-xl sm:text-2xl font-bold text-[#7D1128] block tabular-nums leading-tight py-0.5">
                   {String(item.val).padStart(2, "0")}
                 </span>
                 <span className="text-[8px] uppercase tracking-wider text-[#6B4B3E] font-bold block mt-0.5">
                   {item.label}
                 </span>
-              </div>
+              </ItemMotion>
             ))}
           </div>
 
           <div className="flex items-center justify-center gap-2.5 pt-3 border-t border-[#7D1128]/15">
-            <a
+            <motion.a
+              whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -306,29 +379,32 @@ function SketchbookHero() {
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Google Calendar</span>
-            </a>
-            <button
+            </motion.a>
+            <motion.button
+              whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
               onClick={downloadIcs}
               className="px-3.5 py-2 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-[10px] font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Simpan (.ics)</span>
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
 function SketchbookCouple() {
   const data = useWeddingData();
+  const shouldReduceMotion = useReducedMotion();
   const { groom, bride } = data.couple;
 
   return (
-    <section id="couple" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="couple" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-8">
-        <div className="text-center space-y-1 relative">
+        <ItemMotion variant="slide-down" className="text-center space-y-1 relative">
           <div className="flex justify-center mb-1">
             <BotanicalBranchSvg className="w-24 h-6 text-[#7D1128]" />
           </div>
@@ -338,23 +414,53 @@ function SketchbookCouple() {
           <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
             Kedua Mempelai
           </h2>
-        </div>
+        </ItemMotion>
 
         <div className="space-y-6">
-          <div className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[-0.8deg]">
-            <img
-              src="/images/paper-art/paperclip-washi-accent.png"
-              alt="Paperclip Washi Accent"
-              className="absolute -top-6 -left-3 w-14 sm:w-16 pointer-events-none drop-shadow-md select-none z-20 -rotate-[8deg]"
-            />
+          <ItemMotion
+            variant="frame-mount"
+            delay={0.08}
+            rotate={-0.8}
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[-0.8deg]"
+          >
+            <ItemMotion
+              variant="stamp"
+              delay={0.18}
+              float={true}
+              floatDistance={2.5}
+              floatDuration={5.5}
+              className="absolute -top-6 -left-3 z-20 pointer-events-none"
+            >
+              <img
+                src="/images/paper-art/paperclip-washi-accent.png"
+                alt="Paperclip Washi Accent"
+                className="w-14 sm:w-16 drop-shadow-md select-none -rotate-[8deg]"
+              />
+            </ItemMotion>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
               <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#FAF3EA]">
-                <img
-                  src={groom.photoUrl || "/images/prewedding/couple-3.jpg"}
-                  alt={groom.fullName || groom.name}
-                  className="w-full h-full object-cover object-top"
-                />
+                <motion.div
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                      : { opacity: 0, clipPath: "inset(16% 0% 0% 0%)", scale: 1.02 }
+                  }
+                  whileInView={
+                    shouldReduceMotion
+                      ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                      : { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", scale: 1 }
+                  }
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.88, delay: 0.16, ease: MOTION_TRANSITIONS.romantic.ease }}
+                  className="w-full h-full"
+                >
+                  <img
+                    src={groom.photoUrl || "/images/prewedding/couple-3.jpg"}
+                    alt={groom.fullName || groom.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </motion.div>
               </div>
               <img
                 src="/images/paper-art/deckle-photo-mat.png"
@@ -373,7 +479,7 @@ function SketchbookCouple() {
                 style={{ fontFamily: "var(--font-couple-custom, serif)" }}
                 className="text-2xl font-bold text-[#7D1128]"
               >
-                {groom.name}
+                <CharMotionReveal text={groom.name} baseDelay={0.2} />
               </h3>
               <p className="text-xs font-sans font-bold text-[#4A2E24]">
                 {groom.fullName}
@@ -385,7 +491,9 @@ function SketchbookCouple() {
               )}
               {groom.instagram && (
                 <div className="pt-2">
-                  <a
+                  <motion.a
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                     href={`https://instagram.com/${groom.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -393,39 +501,78 @@ function SketchbookCouple() {
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{groom.instagram.replace("@", "")}</span>
-                  </a>
+                  </motion.a>
                 </div>
               )}
             </div>
-          </div>
+          </ItemMotion>
 
-          <div className="flex items-center justify-center gap-3 py-1">
+          <ItemMotion variant="pop" delay={0.12} className="flex items-center justify-center gap-3 py-1">
             <div className="h-px flex-1 bg-[#7D1128]/25 border-t border-dashed border-[#7D1128]/40" />
             <div className="w-8 h-8 rounded-full bg-[#7D1128] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs">
               &amp;
             </div>
             <div className="h-px flex-1 bg-[#7D1128]/25 border-t border-dashed border-[#7D1128]/40" />
-          </div>
+          </ItemMotion>
 
-          <div className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[0.8deg]">
-            <img
-              src="/images/paper-art/paperclip-washi-accent.png"
-              alt="Paperclip Washi Accent"
-              className="absolute -top-6 -right-3 w-14 sm:w-16 pointer-events-none drop-shadow-md select-none z-20 rotate-[8deg]"
-            />
+          <ItemMotion
+            variant="frame-mount"
+            delay={0.14}
+            rotate={0.8}
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[0.8deg]"
+          >
+            <ItemMotion
+              variant="stamp"
+              delay={0.22}
+              float={true}
+              floatDistance={2.5}
+              floatDuration={5.5}
+              className="absolute -top-6 -right-3 z-20 pointer-events-none"
+            >
+              <img
+                src="/images/paper-art/paperclip-washi-accent.png"
+                alt="Paperclip Washi Accent"
+                className="w-14 sm:w-16 drop-shadow-md select-none rotate-[8deg]"
+              />
+            </ItemMotion>
 
-            <BotanicalSprigOrnament
-              position="bottom-left"
-              className="absolute -bottom-6 -left-3 w-16 sm:w-20 z-20"
-            />
+            <ItemMotion
+              variant="pop"
+              delay={0.25}
+              float={true}
+              floatDistance={3}
+              floatDuration={6.5}
+              className="absolute -bottom-6 -left-3 z-20 pointer-events-none"
+            >
+              <BotanicalSprigOrnament
+                position="bottom-left"
+                className="w-16 sm:w-20"
+              />
+            </ItemMotion>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
               <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#FAF3EA]">
-                <img
-                  src={bride.photoUrl || "/images/prewedding/couple-4.jpg"}
-                  alt={bride.fullName || bride.name}
-                  className="w-full h-full object-cover object-top"
-                />
+                <motion.div
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                      : { opacity: 0, clipPath: "inset(16% 0% 0% 0%)", scale: 1.02 }
+                  }
+                  whileInView={
+                    shouldReduceMotion
+                      ? { opacity: 1, clipPath: "inset(0% 0% 0% 0%)" }
+                      : { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", scale: 1 }
+                  }
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.88, delay: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
+                  className="w-full h-full"
+                >
+                  <img
+                    src={bride.photoUrl || "/images/prewedding/couple-4.jpg"}
+                    alt={bride.fullName || bride.name}
+                    className="w-full h-full object-cover object-top"
+                  />
+                </motion.div>
               </div>
               <img
                 src="/images/paper-art/deckle-photo-mat.png"
@@ -444,7 +591,7 @@ function SketchbookCouple() {
                 style={{ fontFamily: "var(--font-couple-custom, serif)" }}
                 className="text-2xl font-bold text-[#7D1128]"
               >
-                {bride.name}
+                <CharMotionReveal text={bride.name} baseDelay={0.2} />
               </h3>
               <p className="text-xs font-sans font-bold text-[#4A2E24]">
                 {bride.fullName}
@@ -456,7 +603,9 @@ function SketchbookCouple() {
               )}
               {bride.instagram && (
                 <div className="pt-2">
-                  <a
+                  <motion.a
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                     href={`https://instagram.com/${bride.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -464,50 +613,71 @@ function SketchbookCouple() {
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{bride.instagram.replace("@", "")}</span>
-                  </a>
+                  </motion.a>
                 </div>
               )}
             </div>
-          </div>
+          </ItemMotion>
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
 function SketchbookEvents() {
   const data = useWeddingData();
+  const shouldReduceMotion = useReducedMotion();
   const { events } = data;
 
   return (
-    <section id="event" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="event" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1">
+        <ItemMotion variant="slide-down" className="text-center space-y-1">
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
             Jurnal Waktu &amp; Tempat
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
             Rangkaian Acara
           </h2>
-        </div>
+        </ItemMotion>
 
         <div className="space-y-5">
           {events.map((evt, idx) => (
-            <div
+            <ItemMotion
               key={evt.id || idx}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.08 + idx * 0.1}
               className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
             >
               {idx === 0 && (
                 <>
-                  <img
-                    src="/images/paper-art/paperclip-washi-accent.png"
-                    alt="Paperclip Washi Accent"
-                    className="absolute -top-5 -right-3 w-14 sm:w-16 pointer-events-none drop-shadow-md select-none z-20 rotate-[4deg]"
-                  />
-                  <BotanicalSprigOrnament
-                    position="bottom-left"
-                    className="absolute -bottom-6 -left-3 w-18 sm:w-22 z-20"
-                  />
+                  <ItemMotion
+                    variant="stamp"
+                    delay={0.2}
+                    float={true}
+                    floatDistance={2.5}
+                    floatDuration={5.5}
+                    className="absolute -top-5 -right-3 z-20 pointer-events-none"
+                  >
+                    <img
+                      src="/images/paper-art/paperclip-washi-accent.png"
+                      alt="Paperclip Washi Accent"
+                      className="w-14 sm:w-16 drop-shadow-md select-none rotate-[4deg]"
+                    />
+                  </ItemMotion>
+                  <ItemMotion
+                    variant="pop"
+                    delay={0.25}
+                    float={true}
+                    floatDistance={3}
+                    floatDuration={6.5}
+                    className="absolute -bottom-6 -left-3 z-20 pointer-events-none"
+                  >
+                    <BotanicalSprigOrnament
+                      position="bottom-left"
+                      className="w-18 sm:w-22"
+                    />
+                  </ItemMotion>
                 </>
               )}
 
@@ -563,7 +733,9 @@ function SketchbookEvents() {
 
               {evt.mapUrl && (
                 <div className="pt-2 border-t border-[#7D1128]/15">
-                  <a
+                  <motion.a
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
                     href={evt.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -571,14 +743,14 @@ function SketchbookEvents() {
                   >
                     <MapPin className="w-3.5 h-3.5" />
                     <span>Petunjuk Arah (Maps)</span>
-                  </a>
+                  </motion.a>
                 </div>
               )}
-            </div>
+            </ItemMotion>
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -597,57 +769,70 @@ function SketchbookGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   return (
-    <section id="gallery" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="gallery" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1 relative">
-          <BotanicalSprigOrnament
-            position="top-right"
-            className="absolute -top-5 right-2 w-16 sm:w-20 z-10"
-          />
+        <ItemMotion variant="slide-down" className="text-center space-y-1 relative">
+          <ItemMotion
+            variant="stamp"
+            delay={0.16}
+            float={true}
+            floatDistance={2.5}
+            floatDuration={5.5}
+            className="absolute -top-5 right-2 z-10 pointer-events-none"
+          >
+            <BotanicalSprigOrnament
+              position="top-right"
+              className="w-16 sm:w-20"
+            />
+          </ItemMotion>
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
             Koleksi Potret
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
             Galeri Sketsa Kenangan
           </h2>
-        </div>
+        </ItemMotion>
 
         <div className="grid grid-cols-2 gap-3">
           {photoList.map((src, idx) => (
-            <motion.button
+            <ItemMotion
               key={idx}
-              type="button"
-              onClick={() => setSelectedPhoto(src)}
-              whileHover={
-                shouldReduceMotion
-                  ? {}
-                  : {
-                      y: -4,
-                      rotate: idx % 2 === 0 ? 0.8 : -0.8,
-                      boxShadow: "0 10px 22px -4px rgba(125,17,40,0.14)",
-                    }
-              }
-              whileTap={shouldReduceMotion ? {} : { scale: 0.98, y: 0 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-              className={`relative bg-[#FFFDF8] p-2 rounded-xl border-2 border-dashed border-[#7D1128]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1128] focus-visible:ring-offset-2 transition-colors ${
-                idx === 0 ? "col-span-2" : ""
-              }`}
-              aria-label={`Buka potret kenangan ${idx + 1}`}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.06 + idx * 0.04}
+              className={idx === 0 ? "col-span-2" : ""}
             >
-              <div className="w-10 h-3 bg-[#E5B869]/70 absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-2deg] rounded-xs z-10 pointer-events-none" />
-              <div className={`relative overflow-hidden rounded-lg bg-[#FAF3EA] ${idx === 0 ? "h-48 sm:h-56" : "h-36 sm:h-40"}`}>
-                <img
-                  src={src}
-                  alt={`Prewedding ${idx + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-[#7D1128]/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-white/90 text-[#7D1128] flex items-center justify-center shadow-md">
-                    <ZoomIn className="w-4 h-4" />
+              <motion.button
+                type="button"
+                onClick={() => setSelectedPhoto(src)}
+                whileHover={
+                  shouldReduceMotion
+                    ? {}
+                    : {
+                        y: -3,
+                        scale: 1.015,
+                        boxShadow: "0 8px 20px -4px rgba(125,17,40,0.12)",
+                      }
+                }
+                whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
+                transition={{ duration: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
+                className="w-full relative bg-[#FFFDF8] p-2 rounded-xl border-2 border-dashed border-[#7D1128]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1128] focus-visible:ring-offset-2 transition-colors block"
+                aria-label={`Buka potret kenangan ${idx + 1}`}
+              >
+                <div className="w-10 h-3 bg-[#E5B869]/70 absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-2deg] rounded-xs z-10 pointer-events-none" />
+                <div className={`relative overflow-hidden rounded-lg bg-[#FAF3EA] ${idx === 0 ? "h-48 sm:h-56" : "h-36 sm:h-40"}`}>
+                  <img
+                    src={src}
+                    alt={`Prewedding ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-103"
+                  />
+                  <div className="absolute inset-0 bg-[#7D1128]/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-white/90 text-[#7D1128] flex items-center justify-center shadow-md">
+                      <ZoomIn className="w-4 h-4" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.button>
+              </motion.button>
+            </ItemMotion>
           ))}
         </div>
       </div>
@@ -658,16 +843,21 @@ function SketchbookGallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.24 }}
             onClick={() => setSelectedPhoto(null)}
             className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
           >
             <button
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center"
+              className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors hover:bg-white/30"
             >
               <X className="w-5 h-5" />
             </button>
-            <div
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.26, ease: MOTION_TRANSITIONS.romantic.ease }}
               onClick={(e) => e.stopPropagation()}
               className="max-w-md w-full bg-[#FFFDF8] p-3 rounded-2xl border-4 border-[#7D1128] shadow-2xl"
             >
@@ -676,17 +866,18 @@ function SketchbookGallery() {
                 alt="Selected"
                 className="w-full max-h-[70vh] object-contain rounded-xl bg-black"
               />
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </SectionMotion>
   );
 }
 
 function SketchbookGift() {
   const data = useWeddingData();
-  const accounts = data.gifts?.accounts || [];
+  const shouldReduceMotion = useReducedMotion();
+  const accounts: BankAccount[] = data.gifts?.accounts || [];
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   const handleCopy = (num: string, idx: number) => {
@@ -698,9 +889,9 @@ function SketchbookGift() {
   if (!data.gifts || accounts.length === 0) return null;
 
   return (
-    <section id="gift" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="gift" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1">
+        <ItemMotion variant="slide-down" className="text-center space-y-1">
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
             Tanda Kasih
           </span>
@@ -710,12 +901,14 @@ function SketchbookGift() {
           <p className="text-xs font-sans text-[#6B4B3E] max-w-xs mx-auto">
             Doa restu Anda merupakan hadiah terindah bagi kami.
           </p>
-        </div>
+        </ItemMotion>
 
         <div className="space-y-4">
-          {accounts.map((acc: any, idx: number) => (
-            <div
+          {accounts.map((acc, idx) => (
+            <ItemMotion
               key={idx}
+              variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.08 + idx * 0.1}
               className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
             >
               <div className="flex items-center justify-between border-b border-[#7D1128]/15 pb-2">
@@ -734,7 +927,9 @@ function SketchbookGift() {
                     a.n. {acc.accountHolder}
                   </p>
                 </div>
-                <button
+                <motion.button
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
                   onClick={() => handleCopy(acc.accountNumber, idx)}
                   className="px-3 py-1.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
@@ -749,13 +944,13 @@ function SketchbookGift() {
                       <span>Salin</span>
                     </>
                   )}
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </ItemMotion>
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -767,30 +962,20 @@ function SketchbookRsvp({
   guestItem?: { id: string; name: string; quota: number } | null;
 }) {
   const data = useWeddingData();
-  const [name, setName] = useState(guestItem?.name || guestName || "");
+  const shouldReduceMotion = useReducedMotion();
+  const defaultName = guestItem?.name || guestName || "";
+  const [customName, setCustomName] = useState<string | null>(null);
+  const name = customName !== null ? customName : defaultName;
   const [attendance, setAttendance] = useState<"hadir" | "ragu" | "tidak">("hadir");
   const [attendeeCount, setAttendeeCount] = useState<number>(1);
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [wishes, setWishes] = useState<WishMessage[]>([]);
-
-  useEffect(() => {
-    if (guestItem?.name) {
-      setName(guestItem.name);
-    } else if (guestName) {
-      setName(guestName);
-    }
-  }, [guestItem, guestName]);
-
-  useEffect(() => {
+  const [wishes, setWishes] = useState<WishMessage[]>(() => {
     const list = getWishes();
-    if (list && list.length > 0) {
-      setWishes(list);
-    } else if (data.initialWishes && data.initialWishes.length > 0) {
-      setWishes(data.initialWishes);
-    }
-  }, [data.initialWishes]);
+    if (list && list.length > 0) return list;
+    return data.initialWishes || [];
+  });
 
   const maxQuota = guestItem?.quota || 2;
 
@@ -830,10 +1015,10 @@ function SketchbookRsvp({
       setMessage("");
 
       confetti({
-        particleCount: 60,
-        spread: 70,
+        particleCount: 50,
+        spread: 65,
         origin: { y: 0.7 },
-        colors: ["#7D1128", "#E5B869", "#FAF3EA"],
+        colors: ["#7D1128", "#A3B899", "#E5B869", "#F5A8B8", "#FFFDF8"],
       });
     } catch {
     } finally {
@@ -842,125 +1027,148 @@ function SketchbookRsvp({
   };
 
   return (
-    <section id="rsvp" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="rsvp" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
-        <div className="text-center space-y-1">
+        <ItemMotion variant="slide-down" className="text-center space-y-1">
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
             Konfirmasi Kehadiran
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
             Buku Tamu &amp; Doa Restu
           </h2>
-        </div>
+        </ItemMotion>
 
-        <form
-          onSubmit={handleSubmit}
-          className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-4"
-        >
-          <BotanicalSprigOrnament
-            position="top-right"
-            className="absolute -top-5 -right-3 w-16 sm:w-20 z-10"
-          />
+        <ItemMotion variant="slide-left" delay={0.08}>
+          <form
+            onSubmit={handleSubmit}
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-4"
+          >
+            <ItemMotion
+              variant="stamp"
+              delay={0.16}
+              float={true}
+              floatDistance={2.5}
+              floatDuration={5.5}
+              className="absolute -top-5 -right-3 z-10 pointer-events-none"
+            >
+              <BotanicalSprigOrnament
+                position="top-right"
+                className="w-16 sm:w-20"
+              />
+            </ItemMotion>
 
-          <div>
-            <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
-              Nama Lengkap
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Masukkan nama Anda"
-              required
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-xs font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
-            />
-          </div>
-
-          <div>
-            <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
-              Status Kehadiran
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { key: "hadir", label: "Hadir" },
-                { key: "ragu", label: "Ragu-ragu" },
-                { key: "tidak", label: "Tidak Hadir" },
-              ].map((opt) => (
-                <button
-                  type="button"
-                  key={opt.key}
-                  onClick={() => setAttendance(opt.key as any)}
-                  className={`py-2 px-1 text-center rounded-xl text-xs font-mono font-bold border transition-colors cursor-pointer ${
-                    attendance === opt.key
-                      ? "bg-[#7D1128] text-white border-[#7D1128]"
-                      : "bg-[#FAF3EA] text-[#6B4B3E] border-[#7D1128]/25 hover:bg-[#F2E7D9]"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {attendance !== "tidak" && maxQuota > 1 && (
             <div>
               <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
-                Jumlah Hadir (Maks: {maxQuota} Orang)
+                Nama Lengkap
               </label>
-              <select
-                value={attendeeCount}
-                onChange={(e) => setAttendeeCount(Number(e.target.value))}
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setCustomName(e.target.value)}
+                placeholder="Masukkan nama Anda"
+                required
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-xs font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
-              >
-                {Array.from({ length: maxQuota }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>
-                    {n} Orang
-                  </option>
-                ))}
-              </select>
+              />
             </div>
-          )}
 
-          <div>
-            <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
-              Ucapan &amp; Doa Restu
-            </label>
-            <textarea
-              rows={3}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tuliskan ucapan dan doa manis untuk kedua mempelai..."
-              required
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-xs font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
-            />
-          </div>
+            <div>
+              <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+                Status Kehadiran
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(
+                  [
+                    { key: "hadir", label: "Hadir" },
+                    { key: "ragu", label: "Ragu-ragu" },
+                    { key: "tidak", label: "Tidak Hadir" },
+                  ] as const
+                ).map((opt) => (
+                  <motion.button
+                    type="button"
+                    key={opt.key}
+                    whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                    whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
+                    onClick={() => setAttendance(opt.key)}
+                    className={`py-2 px-1 text-center rounded-xl text-xs font-mono font-bold border transition-colors cursor-pointer ${
+                      attendance === opt.key
+                        ? "bg-[#7D1128] text-white border-[#7D1128]"
+                        : "bg-[#FAF3EA] text-[#6B4B3E] border-[#7D1128]/25 hover:bg-[#F2E7D9]"
+                    }`}
+                  >
+                    {opt.label}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl bg-[#7D1128] hover:bg-[#600C1E] text-white font-mono font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>{isSubmitting ? "Mengirim Catatan..." : "Kirim Doa Restu"}</span>
-          </button>
+            {attendance !== "tidak" && maxQuota > 1 && (
+              <div>
+                <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+                  Jumlah Hadir (Maks: {maxQuota} Orang)
+                </label>
+                <select
+                  value={attendeeCount}
+                  onChange={(e) => setAttendeeCount(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-xs font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
+                >
+                  {Array.from({ length: maxQuota }, (_, i) => i + 1).map((n) => (
+                    <option key={n} value={n}>
+                      {n} Orang
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-          {isSuccess && (
-            <p className="text-xs font-mono text-emerald-700 text-center font-bold">
-              Terima kasih! Doa restu Anda telah tersimpan di buku sketsa kami.
-            </p>
-          )}
-        </form>
+            <div>
+              <label className="text-[10px] font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+                Ucapan &amp; Doa Restu
+              </label>
+              <textarea
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tuliskan ucapan dan doa manis untuk kedua mempelai..."
+                required
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-xs font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
+              />
+            </div>
 
-        <div className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3">
+            <motion.button
+              type="submit"
+              disabled={isSubmitting}
+              whileHover={shouldReduceMotion ? {} : { scale: 1.015, y: -1 }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
+              className="w-full py-3 rounded-xl bg-[#7D1128] hover:bg-[#600C1E] text-white font-mono font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>{isSubmitting ? "Mengirim Catatan..." : "Kirim Doa Restu"}</span>
+            </motion.button>
+
+            {isSuccess && (
+              <p className="text-xs font-mono text-emerald-700 text-center font-bold">
+                Terima kasih! Doa restu Anda telah tersimpan di buku sketsa kami.
+              </p>
+            )}
+          </form>
+        </ItemMotion>
+
+        <ItemMotion
+          variant="slide-right"
+          delay={0.12}
+          className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
+        >
           <div className="flex items-center gap-2 border-b border-[#7D1128]/15 pb-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#7D1128]">
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Doa Restu dari Para Sahabat ({wishes.length})</span>
           </div>
 
           <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-            {wishes.map((w) => (
-              <div
+            {wishes.map((w, wIdx) => (
+              <ItemMotion
                 key={w.id}
+                variant={wIdx % 2 === 0 ? "slide-left" : "slide-right"}
+                delay={0.04 + (wIdx % 5) * 0.03}
                 className="p-3 rounded-xl bg-[#FAF3EA] border border-[#7D1128]/20 space-y-1 text-left"
               >
                 <div className="flex items-center justify-between">
@@ -974,20 +1182,32 @@ function SketchbookRsvp({
                 <p className="text-xs font-sans text-[#4A2E24] leading-relaxed">
                   {w.message}
                 </p>
-              </div>
+              </ItemMotion>
             ))}
           </div>
-        </div>
+        </ItemMotion>
 
-        <div className="flex justify-center pt-6 pb-2">
+        <ItemMotion
+          variant="stamp"
+          delay={0.14}
+          float={true}
+          floatDistance={3}
+          floatDuration={5.5}
+          className="flex flex-col items-center justify-center pt-6 pb-2"
+        >
+          <img
+            src="/images/templates/paper-art/maroon-wax-seal-rings.svg"
+            alt="Maroon Wax Seal Rings"
+            className="w-16 h-16 sm:w-20 sm:h-20 object-contain pointer-events-none drop-shadow-md select-none mb-3"
+          />
           <img
             src="/images/paper-art/wedding-rings-closing-vignette.png"
             alt="Wedding Rings Closing Vignette"
             className="w-52 sm:w-60 h-auto object-contain pointer-events-none drop-shadow-sm select-none opacity-90"
           />
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -996,29 +1216,42 @@ function SketchbookFooter() {
   const { groom, bride } = data.couple;
 
   return (
-    <footer className="pt-10 pb-24 px-5 text-center bg-[#2C1810] text-[#FFFDF8] relative">
+    <SectionMotion id="closing" className="pt-10 pb-24 px-5 text-center bg-[#2C1810] text-[#FFFDF8] relative">
       <div className="max-w-md mx-auto space-y-4">
-        <div className="flex justify-center mb-3">
+        <ItemMotion
+          variant="stamp"
+          delay={0.1}
+          float={true}
+          floatDistance={3}
+          floatDuration={5.5}
+          className="flex justify-center mb-3"
+        >
           <img
             src="/images/paper-art/wedding-rings-closing-vignette.png"
             alt="Wedding Rings Closing Vignette"
             className="w-56 sm:w-68 h-auto object-contain pointer-events-none drop-shadow-sm select-none"
           />
-        </div>
-        <p className="text-xs font-serif italic text-white/80 max-w-xs mx-auto leading-relaxed">
-          &ldquo;Merupakan kehormatan serta kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.&rdquo;
-        </p>
-        <h3
-          style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-          className="text-2xl font-bold text-[#E5B869]"
-        >
-          {groom.name} &amp; {bride.name}
-        </h3>
-        <p className="text-[10px] font-mono text-white/50 tracking-widest uppercase">
-          SKETCHBOOK MEMORY &bull; 2026
-        </p>
+        </ItemMotion>
+        <ItemMotion variant="fade" delay={0.14}>
+          <p className="text-xs font-serif italic text-white/80 max-w-xs mx-auto leading-relaxed">
+            &ldquo;Merupakan kehormatan serta kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.&rdquo;
+          </p>
+        </ItemMotion>
+        <ItemMotion variant="slide-up" delay={0.18}>
+          <h3
+            style={{ fontFamily: "var(--font-couple-custom, serif)" }}
+            className="text-2xl font-bold text-[#E5B869]"
+          >
+            {groom.name} &amp; {bride.name}
+          </h3>
+        </ItemMotion>
+        <ItemMotion variant="pop" delay={0.22}>
+          <p className="text-[10px] font-mono text-white/50 tracking-widest uppercase">
+            SKETCHBOOK MEMORY &bull; 2026
+          </p>
+        </ItemMotion>
       </div>
-    </footer>
+    </SectionMotion>
   );
 }
 
@@ -1031,14 +1264,8 @@ export function PaperArtTemplate({
   onOpenChange,
 }: TemplateProps) {
   const shouldReduceMotion = useReducedMotion();
-  const [isOpened, setIsOpened] = useState<boolean>(isPreview);
+  const [isOpened, setIsOpened] = useState<boolean>(isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
-
-  useEffect(() => {
-    if (isPreview) {
-      setIsOpened(true);
-    }
-  }, [isPreview]);
 
   const handleOpen = () => {
     setIsOpened(true);
@@ -1094,11 +1321,11 @@ export function PaperArtTemplate({
 
             {isOpened && (
               <motion.div
-                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+                initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: shouldReduceMotion ? 0.2 : 0.55,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: shouldReduceMotion ? 0.2 : MOTION_TRANSITIONS.romantic.duration,
+                  ease: MOTION_TRANSITIONS.romantic.ease,
                 }}
                 className="flex flex-col flex-1 relative"
               >
@@ -1113,6 +1340,10 @@ export function PaperArtTemplate({
                 <SketchbookGift />
                 <SketchbookRsvp guestName={guestName} guestItem={guestItem} />
                 <SketchbookFooter />
+
+                {!isEditor && data.themePalette?.particlesEnabled !== false && (
+                  <FallingPaperPetals />
+                )}
 
                 {!isEditor && <NavigationDock theme="maroon" />}
                 {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="maroon" />}
