@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useScrollMotion } from "./ScrollMotionContext";
 import { motion, useReducedMotion } from "framer-motion";
 import { MOTION_TRANSITIONS } from "@/lib/motion";
 
@@ -24,8 +25,9 @@ export function SectionMotion({
   variant = "fade-up",
 }: SectionMotionProps) {
   const shouldReduceMotion = useReducedMotion();
+  const scrollMotion = useScrollMotion();
 
-  if (shouldReduceMotion) {
+  if (shouldReduceMotion || scrollMotion) {
     return (
       <section id={id} className={className} style={style}>
         {children}

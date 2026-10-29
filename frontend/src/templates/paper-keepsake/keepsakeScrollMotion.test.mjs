@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
-const filename = new URL('./keepsakeScrollMotion.ts', import.meta.url);
+const filename = new URL('../scrollMotion.ts', import.meta.url);
 function fixture(clipped = false) {
   const values = new Map(), events = new Map();
   const classes = () => ({ add() {}, remove() {} });
@@ -14,7 +14,7 @@ function fixture(clipped = false) {
   const root = { querySelectorAll: () => [element], classList: classes() };
   const context = { exports: {}, getComputedStyle: () => ({ overflowY: 'auto' }), window: { innerHeight: 1000, addEventListener: (k,f) => events.set(k,f), removeEventListener: k => events.delete(k) }, requestAnimationFrame: f => { queued = f; return 1; }, cancelAnimationFrame: () => { queued = null; } };
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(filename,'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText, context);
-  const stop = context.exports.bindKeepsakeScrollMotion(root);
+  const stop = context.exports.bindScrollMotion(root, { selector: '.pk-pages [data-pk-reveal]', rootClass: 'pk-scroll-linked', itemClass: 'pk-scroll-reveal', prefix: '--pk-scroll', photoSelector: '.pk-photo' });
   return { values, events, stop, scroll(top) { position=top; events.get('scroll')(); const run=queued; queued=null; run(); } };
 }
 test('scroll down reveals, scrolling up reverses to the same intermediate position', () => {

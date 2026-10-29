@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useScrollMotion } from "./ScrollMotionContext";
 import { motion, useReducedMotion } from "framer-motion";
 import { MOTION_TRANSITIONS } from "@/lib/motion";
 
@@ -47,10 +48,11 @@ export function ItemMotion({
   onClick,
 }: ItemMotionProps) {
   const shouldReduceMotion = useReducedMotion();
+  const scrollMotion = useScrollMotion();
 
-  if (shouldReduceMotion) {
+  if (shouldReduceMotion || scrollMotion) {
     return (
-      <div className={className} style={style} onClick={onClick}>
+      <div data-scroll-reveal={scrollMotion ? "" : undefined} className={className} style={{ ...style, ...(rotate ? { rotate: `${rotate}deg` } : {}) }} onClick={onClick}>
         {children}
       </div>
     );
@@ -160,8 +162,9 @@ export function StaggerContainer({
   delay?: number;
 }) {
   const shouldReduceMotion = useReducedMotion();
+  const scrollMotion = useScrollMotion();
 
-  if (shouldReduceMotion) {
+  if (shouldReduceMotion || scrollMotion) {
     return <div className={className}>{children}</div>;
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useScrollMotion } from "@/components/ScrollMotionContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface PaintedTextRevealProps {
@@ -23,16 +24,26 @@ export function PaintedTextReveal({
   highlightColor = "#D97736",
 }: PaintedTextRevealProps) {
   const [cycleKey, setCycleKey] = useState(0);
+  const scrollMotion = useScrollMotion();
 
   useEffect(() => {
-    if (!loopFade) return;
+    if (!loopFade || scrollMotion) return;
 
     const timer = setInterval(() => {
       setCycleKey((prev) => prev + 1);
     }, intervalSeconds * 1000);
 
     return () => clearInterval(timer);
-  }, [loopFade, intervalSeconds]);
+  }, [loopFade, intervalSeconds, scrollMotion]);
+
+  if (scrollMotion) {
+    const units = mode === "words" ? text.split(" ") : Array.from(text);
+    return (
+      <div data-scroll-reveal="" aria-label={text} className={`inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 ${className}`}>
+        {units.map((unit, index) => <span key={index} aria-hidden="true" className="inline-block relative select-none" style={{ textShadow: "0 2px 10px rgba(217, 119, 54, 0.15)" }}>{unit === " " ? "\u00A0" : unit}</span>)}
+      </div>
+    );
+  }
 
   // Split text based on mode
   const units = mode === "words" ? text.split(" ") : text.split("");

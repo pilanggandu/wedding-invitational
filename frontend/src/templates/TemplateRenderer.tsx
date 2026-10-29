@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TemplateProps } from "./types";
 import { InvitationMotion } from "./InvitationMotion";
@@ -23,6 +23,12 @@ export { normalizeTemplateId };
 export function TemplateRenderer(props: TemplateProps) {
   const { data } = props;
   const templateId = normalizeTemplateId(data.activeTemplateId);
+  const [scene, setScene] = useState({ templateId, opened: false });
+  if (scene.templateId !== templateId) setScene({ templateId, opened: false });
+  const templateProps = { ...props, onOpenChange: (open: boolean) => {
+    setScene({ templateId, opened: open });
+    props.onOpenChange?.(open);
+  } };
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
   const scrollbarVars = getTemplateScrollbarVars(templateId);
 
@@ -41,22 +47,22 @@ export function TemplateRenderer(props: TemplateProps) {
   const content = (() => {
     switch (templateId) {
       case "craft-book":
-        return <CraftBookTemplate {...props} />;
+        return <CraftBookTemplate {...templateProps} />;
       case "paper-keepsake":
-        return <PaperKeepsakeTemplate {...props} />;
+        return <PaperKeepsakeTemplate {...templateProps} />;
       case "ambient-blur":
-        return <AmbientBlurTemplate {...props} />;
+        return <AmbientBlurTemplate {...templateProps} />;
       case "painted-cats":
-        return <PaintedCatsTemplate {...props} />;
+        return <PaintedCatsTemplate {...templateProps} />;
       case "cinematic-blur":
-        return <CinematicBlurTemplate {...props} />;
+        return <CinematicBlurTemplate {...templateProps} />;
       case "royal-heritage":
-        return <RoyalHeritageTemplate {...props} />;
+        return <RoyalHeritageTemplate {...templateProps} />;
       case "cityscape-skyline":
-        return <CityscapeTemplate {...props} />;
+        return <CityscapeTemplate {...templateProps} />;
       case "paper-art-maroon":
       default:
-        return <PaperArtTemplate {...props} />;
+        return <PaperArtTemplate {...templateProps} />;
     }
   })();
 
@@ -80,7 +86,7 @@ export function TemplateRenderer(props: TemplateProps) {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="contents"
         >
-          <InvitationMotion disabled={Boolean(props.isEditor || props.isPreview || templateId === "paper-keepsake")}>{content}</InvitationMotion>
+          <InvitationMotion disabled={Boolean(templateId === "paper-keepsake" || (!props.isEditor && !(scene.templateId === templateId && scene.opened)))}>{content}</InvitationMotion>
         </motion.div>
       </AnimatePresence>
     </div>

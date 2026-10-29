@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useScrollMotion } from "@/components/ScrollMotionContext";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface RoyalMotionRevealProps {
@@ -19,9 +20,10 @@ export function RoyalMotionReveal({
   className = "",
 }: RoyalMotionRevealProps) {
   const shouldReduceMotion = useReducedMotion();
+  const scrollMotion = useScrollMotion();
 
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
+  if (shouldReduceMotion || scrollMotion) {
+    return <div data-scroll-reveal={scrollMotion ? "" : undefined} className={className}>{children}</div>;
   }
 
   const getInitial = () => {

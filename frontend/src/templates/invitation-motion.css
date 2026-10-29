@@ -1,5 +1,5 @@
 @media (prefers-reduced-motion: no-preference) {
-  .invitation-motion:not(.invitation-motion--disabled) .cm-char {
+  .invitation-motion .cm-char {
     animation-name: invitation-letter-in;
     animation-duration: 0.68s;
   }
@@ -7,5 +7,25 @@
     0% { opacity: 0; transform: translateY(0.35em) rotate(3deg); }
     65% { opacity: 1; transform: translateY(-0.08em) rotate(-1deg); }
     100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+}
+.invitation-scroll-linked .invitation-scroll-reveal {
+  opacity: var(--invitation-scroll-opacity, 1) !important;
+  translate: var(--invitation-scroll-x, 0px) var(--invitation-scroll-y, 0px);
+}
+.invitation-scroll-linked .cm-char {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.invitation-scroll-linked .cb-page.active,
+.invitation-scroll-linked .cb-polaroid {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .invitation-scroll-linked .invitation-scroll-reveal {
+    opacity: 1 !important;
+    translate: none;
   }
 }
