@@ -1,0 +1,11 @@
+@media (prefers-reduced-motion: no-preference) {
+  .invitation-motion:not(.invitation-motion--disabled) .cm-char {
+    animation-name: invitation-letter-in;
+    animation-duration: 0.68s;
+  }
+  @keyframes invitation-letter-in {
+    0% { opacity: 0; transform: translateY(0.35em) rotate(3deg); }
+    65% { opacity: 1; transform: translateY(-0.08em) rotate(-1deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+}

@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TemplateProps } from "./types";
+import { InvitationMotion } from "./InvitationMotion";
 import { PaperArtTemplate } from "./paper-art/PaperArtTemplate";
 import { CityscapeTemplate } from "./cityscape/CityscapeTemplate";
 import { RoyalHeritageTemplate } from "./royal-heritage/RoyalHeritageTemplate";
@@ -79,7 +80,7 @@ export function TemplateRenderer(props: TemplateProps) {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="contents"
         >
-          {content}
+          <InvitationMotion disabled={Boolean(props.isEditor || props.isPreview)}>{content}</InvitationMotion>
         </motion.div>
       </AnimatePresence>
     </div>

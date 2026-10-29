@@ -74,7 +74,7 @@ export function CityscapeCover({
         animate={{ opacity: isOpening ? 0 : 1, y: isOpening ? -30 : 0 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed lg:absolute inset-0 z-50 flex flex-col justify-between overflow-hidden select-none bg-[#0B1E2E] text-white"
+        className="fixed lg:absolute inset-0 z-50 flex flex-col justify-between overflow-x-hidden overflow-y-auto select-none bg-[#0B1E2E] text-white"
       >
         <div className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{
           backgroundImage: "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
@@ -199,7 +199,7 @@ export function CityscapeCover({
           </motion.div>
         </div>
 
-        <div className="relative flex-1 flex flex-col items-center justify-end z-20 pb-8 px-5">
+        <div className="relative flex-1 shrink-0 flex flex-col items-center justify-end z-20 pb-8 px-5">
           <div className="flex justify-center mb-3 pointer-events-none select-none opacity-90">
             <img
               src="/images/templates/cityscape/metro-transit-ticket.svg"

@@ -86,7 +86,7 @@ export function AdminOverview({
   const mainEvent = data.events?.[0];
   const eventDateStr = mainEvent?.displayDate
     ? `${mainEvent.displayDay || "Sabtu"}, ${mainEvent.displayDate}`
-    : "21 November 2026";
+    : "28 November 2026";
 
   const publicUrl =
     typeof window !== "undefined" ? `${window.location.origin}/undangan` : "";

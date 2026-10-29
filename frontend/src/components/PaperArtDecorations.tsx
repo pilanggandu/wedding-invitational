@@ -652,7 +652,7 @@ export function TornPaperDivider({
 // Childlike Postmark Stamp Badge in Maroon & Gold
 export function PaperStamp({
   text = "RESMI SAH",
-  date = "21 • 11 • 2026",
+  date = "28 • 11 • 2026",
 }: {
   text?: string;
   date?: string;

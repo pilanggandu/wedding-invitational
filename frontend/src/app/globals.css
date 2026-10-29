@@ -431,13 +431,16 @@
 .cm-char-reveal {
   display: inline-block;
   line-height: inherit;
+  overflow: visible;
 }
 .cm-char-track {
   display: inline;
+  overflow: visible;
 }
 .cm-char-word {
   display: inline-block;
   white-space: nowrap;
+  overflow: visible;
 }
 .cm-char {
   display: inline-block;
@@ -445,9 +448,11 @@
   transform: translateY(0.32em) rotate(2.5deg);
   animation: cm-char-in 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: transform, opacity;
+  overflow: visible;
 }
 .cm-char-space {
   width: 0.28em;
+  overflow: visible;
 }
 
 @keyframes cm-char-in {

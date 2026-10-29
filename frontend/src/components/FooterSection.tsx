@@ -46,7 +46,7 @@ export function FooterSection() {
               floatDuration={4}
               className="absolute top-4 right-4 hidden sm:block"
             >
-              <PaperStamp text="RESMI SAH" date="21 • 11 • 2026" />
+              <PaperStamp text="RESMI SAH" date="28 • 11 • 2026" />
             </ItemMotion>
 
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-script font-bold bg-[#FFF0F3] text-[#7D1128] border-2 border-[#7D1128] mb-4 shadow-xs">

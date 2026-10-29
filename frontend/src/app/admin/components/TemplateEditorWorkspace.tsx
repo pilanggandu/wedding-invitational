@@ -68,6 +68,7 @@ export function TemplateEditorWorkspace({
   const [showUnsavedModal, setShowUnsavedModal] = useState<boolean>(false);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState<boolean>(false);
   const [canvasKey, setCanvasKey] = useState<number>(0);
+  const [replayCover, setReplayCover] = useState(false);
   const canvasScrollContainerRef = useRef<HTMLDivElement>(null);
   const previewContentRef = useRef<HTMLDivElement>(null);
 
@@ -333,7 +334,7 @@ export function TemplateEditorWorkspace({
           <div className="pt-2 border-t border-[#1E222D]">
             <button
               type="button"
-              onClick={() => setCanvasKey((k) => k + 1)}
+              onClick={() => { setReplayCover(true); setCanvasKey((k) => k + 1); }}
               className="w-full flex items-center justify-center sm:justify-start gap-2 px-2.5 py-2 rounded-xl bg-[#181A22] hover:bg-[#20232E] text-[#8E93A2] hover:text-white text-xs font-mono transition-colors cursor-pointer"
               title="Buka Ulang Amplop / Cover"
             >
@@ -382,7 +383,8 @@ export function TemplateEditorWorkspace({
               <TemplateRenderer
                 data={safePreviewData}
                 isPreview={true}
-                isEditor={true}
+                isEditor={!replayCover}
+                onOpenChange={() => setReplayCover(false)}
                 guestName="Tamu Undangan Terhormat"
               />
             </div>
@@ -547,14 +549,14 @@ export function TemplateEditorWorkspace({
                   </label>
                   <input
                     type="text"
-                    value={draftData.countdownTarget || "2026-11-21T08:00:00+07:00"}
+                    value={draftData.countdownTarget || "2026-11-28T08:00:00+07:00"}
                     onChange={(e) =>
                       updateDraft((prev) => ({
                         ...prev,
                         countdownTarget: e.target.value,
                       }))
                     }
-                    placeholder="2026-11-21T08:00:00+07:00"
+                    placeholder="2026-11-28T08:00:00+07:00"
                     className="w-full px-3 py-2 rounded-xl bg-[#1C1F28] border border-[#2A2E3D] text-xs font-mono text-white focus:outline-none focus:border-[#DFD2BD]"
                   />
                 </div>

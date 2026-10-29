@@ -111,14 +111,14 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
   const resepsi = data.events[1] || akad || {} as any;
 
   const [akadDay, setAkadDay] = useState(akad.displayDay || "Sabtu");
-  const [akadDate, setAkadDate] = useState(akad.displayDate || "21 November 2026");
+  const [akadDate, setAkadDate] = useState(akad.displayDate || "28 November 2026");
   const [akadTime, setAkadTime] = useState(akad.time || "08:00 - 10:00 WIB");
   const [akadVenue, setAkadVenue] = useState(akad.venueName || "Kediaman Mempelai Wanita");
   const [akadAddress, setAkadAddress] = useState(akad.venueAddress || "Merakurak, Tuban, Jawa Timur");
   const [akadMapUrl, setAkadMapUrl] = useState(akad.mapUrl || "https://maps.google.com");
 
   const [resepsiDay, setResepsiDay] = useState(resepsi.displayDay || "Sabtu");
-  const [resepsiDate, setResepsiDate] = useState(resepsi.displayDate || "21 November 2026");
+  const [resepsiDate, setResepsiDate] = useState(resepsi.displayDate || "28 November 2026");
   const [resepsiTime, setResepsiTime] = useState(resepsi.time || "11:00 - Selesai");
   const [resepsiVenue, setResepsiVenue] = useState(resepsi.venueName || "Gedung Serbaguna Merakurak");
   const [resepsiAddress, setResepsiAddress] = useState(resepsi.venueAddress || "Jl. Raya Merakurak, Tuban, Jawa Timur");
@@ -195,7 +195,7 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           subTitle: "Momen Sakral Ijab Kabul",
           badgeCute: "Momen Paling Sakral",
           colorTheme: "red",
-          dateStr: "2026-11-21",
+          dateStr: "2026-11-28",
           displayDate: akadDate.trim(),
           displayDay: akadDay.trim(),
           time: akadTime.trim(),
@@ -206,8 +206,8 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
             title: `Akad Nikah ${groomName} & ${brideName}`,
             description: `Akad Nikah ${groomFullName} & ${brideFullName}`,
             location: akadAddress.trim(),
-            startDate: "20261121T010000Z",
-            endDate: "20261121T030000Z",
+            startDate: "20261128T010000Z",
+            endDate: "20261128T030000Z",
           },
         },
         {
@@ -217,7 +217,7 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           subTitle: "Pesta Syukuran & Temu Kangen",
           badgeCute: "Pesta Bahagia & Temu Syukuran",
           colorTheme: "yellow",
-          dateStr: "2026-11-21",
+          dateStr: "2026-11-28",
           displayDate: resepsiDate.trim(),
           displayDay: resepsiDay.trim(),
           time: resepsiTime.trim(),
@@ -228,8 +228,8 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
             title: `Resepsi Pernikahan ${groomName} & ${brideName}`,
             description: `Pesta Resepsi ${groomFullName} & ${brideFullName}`,
             location: resepsiAddress.trim(),
-            startDate: "20261121T040000Z",
-            endDate: "20261121T090000Z",
+            startDate: "20261128T040000Z",
+            endDate: "20261128T090000Z",
           },
         },
       ],

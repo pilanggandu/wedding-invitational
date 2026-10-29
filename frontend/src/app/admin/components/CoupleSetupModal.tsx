@@ -34,7 +34,7 @@ export function CoupleSetupModal({
     }
     const mainEvent = data?.events?.[0];
     if (mainEvent) {
-      setEventDate(mainEvent.displayDate || "21 November 2026");
+      setEventDate(mainEvent.displayDate || "28 November 2026");
       setEventDay(mainEvent.displayDay || "Sabtu");
     }
   }, [data, isOpen]);
@@ -224,7 +224,7 @@ export function CoupleSetupModal({
                   type="text"
                   value={eventDate}
                   onChange={(e) => setEventDate(e.target.value)}
-                  placeholder="Contoh: 21 November 2026"
+                  placeholder="Contoh: 28 November 2026"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
                 />
               </div>

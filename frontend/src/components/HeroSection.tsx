@@ -23,7 +23,7 @@ export function HeroSection() {
   const { groom, bride } = data.couple;
   const akadEvent = data.events[0] || {
     venueAddress: "Merakurak, Tuban",
-    displayDate: "21 November 2026",
+    displayDate: "28 November 2026",
     displayDay: "Sabtu",
     time: "08:00 - 10:00 WIB",
   };
@@ -37,7 +37,7 @@ export function HeroSection() {
   }>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = new Date(data.countdownTarget || "2026-11-21T08:00:00+07:00").getTime();
+    const target = new Date(data.countdownTarget || "2026-11-28T08:00:00+07:00").getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -63,8 +63,8 @@ export function HeroSection() {
 
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     `Pernikahan ${groom.name} & ${bride.name}`
-  )}&dates=20261121T010000Z/20261121T080000Z&details=${encodeURIComponent(
-    `Undangan Pernikahan Paling Seru: ${groom.fullName} & ${bride.fullName}`
+  )}&dates=20261128T010000Z/20261128T080000Z&details=${encodeURIComponent(
+    `Undangan Pernikahan: ${groom.fullName} & ${bride.fullName}`
   )}&location=${encodeURIComponent(receptionEvent.venueAddress)}`;
 
   const downloadIcs = () => {
@@ -77,8 +77,8 @@ export function HeroSection() {
       `SUMMARY:The Wedding of ${groom.name} & ${bride.name}`,
       `DESCRIPTION:Pernikahan ${groom.fullName} & ${bride.fullName}`,
       `LOCATION:${receptionEvent.venueAddress}`,
-      "DTSTART:20261121T010000Z",
-      "DTEND:20261121T080000Z",
+      "DTSTART:20261128T010000Z",
+      "DTEND:20261128T080000Z",
       "STATUS:CONFIRMED",
       "END:VEVENT",
       "END:VCALENDAR",
