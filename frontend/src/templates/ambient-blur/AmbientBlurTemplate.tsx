@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { WeddingDataProvider } from "@/context/WeddingDataContext";
 import { TemplateProps } from "@/templates/types";
@@ -21,6 +21,7 @@ import { AmbientBlurFooter } from "./AmbientBlurFooter";
 
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { resetAmbientOpeningScroll } from "./resetAmbientOpeningScroll";
 
 export function AmbientBlurTemplate({
   data,
@@ -31,6 +32,14 @@ export function AmbientBlurTemplate({
   onOpenChange,
 }: TemplateProps) {
   const [isOpened, setIsOpened] = useState<boolean>(isEditor);
+  const invitationRoot = useRef<HTMLDivElement>(null);
+  const resetOnOpen = useRef(false);
+
+  useLayoutEffect(() => {
+    if (!isOpened || !resetOnOpen.current || !invitationRoot.current) return;
+    resetAmbientOpeningScroll(invitationRoot.current);
+    resetOnOpen.current = false;
+  }, [isOpened]);
   const [palette, setPalette] = useState<ExtractedColors>(FALLBACK_PALETTE);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
 
@@ -41,6 +50,8 @@ export function AmbientBlurTemplate({
   }, [isEditor]);
 
   const handleOpen = () => {
+    if (isOpened) return;
+    resetOnOpen.current = true;
     setIsOpened(true);
     onOpenChange?.(true);
   };
@@ -53,9 +64,11 @@ export function AmbientBlurTemplate({
   return (
     <WeddingDataProvider data={data}>
       <div
+        ref={invitationRoot}
         style={
           {
             "--font-couple-custom": fontFamilyCss,
+            overflowAnchor: "none",
             "--ambient-accent": palette.dominant,
             "--ambient-secondary": palette.secondary,
             "--ambient-light": palette.light,
