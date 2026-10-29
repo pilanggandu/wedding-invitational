@@ -31,8 +31,6 @@ import {
   createKeepsakeCalendar,
   getKeepsakeSchedule,
 } from "./keepsakeCalendar";
-import { triggerKeepsakeCelebration } from "./keepsakeCelebration";
-import { KeepsakeCelebrationShower } from "./KeepsakeCelebrationShower";
 import { KeepsakeSurrounds } from "./KeepsakeSurrounds";
 import { KeepsakeCharMotion } from "./KeepsakeCharMotion";
 import "./paper-keepsake.css";
@@ -841,8 +839,21 @@ function KeepsakeContent({
   }, [opened, reduced]);
   const open = () => {
     if (leaving || opened) return;
+    const letter = root.current?.querySelector<HTMLElement>(".pk-letter");
+    if (letter && !reduced) {
+      const { transform, opacity } = getComputedStyle(letter);
+      letter.style.animation = "none";
+      letter.style.transform = transform;
+      letter.style.opacity = opacity;
+      void letter.offsetWidth;
+    }
     setLeaving(true);
-    if (!motionDisabled) triggerKeepsakeCelebration(false);
+    if (letter && !reduced) {
+      requestAnimationFrame(() => {
+        letter.style.removeProperty("transform");
+        letter.style.removeProperty("opacity");
+      });
+    }
     timeout.current = setTimeout(
       () => {
         setHasOpened(true);
@@ -898,30 +909,12 @@ function KeepsakeContent({
                 )}
               </button>
             )}
-            <button
-              type="button"
-              className="pk-stamp-celebrate"
-              onClick={() => {
-                if (!motionDisabled) triggerKeepsakeCelebration(false);
-              }}
-              title="Rayakan bersama kami!"
-              aria-label="Rayakan dengan konfeti"
-              disabled={motionDisabled}
-            >
-              <Ornament name="postal-mark" />
-            </button>
           </div>
         </header>
         {!opened ? (
           <Cover guestName={guestName} onOpen={open} leaving={leaving} />
         ) : (
           <div className="pk-pages">
-            {data.themePalette?.particlesEnabled !== false && (
-              <KeepsakeCelebrationShower
-                active={hasOpened}
-                reduced={Boolean(reduced)}
-              />
-            )}
             <KeepsakeHero />
             <KeepsakeCouple />
             <KeepsakeEvents />
@@ -940,16 +933,6 @@ function KeepsakeContent({
               data-pk-reveal
             >
               <KeepsakeSurrounds variant="closing" />
-              <button
-                type="button"
-                className="pk-stamp-celebrate"
-                onClick={() => {
-                  if (!motionDisabled) triggerKeepsakeCelebration(false);
-                }}
-                title="Rayakan bersama kami!"
-                aria-label="Rayakan dengan konfeti"
-                disabled={motionDisabled}
-              >
                 <img
                   src={`${ASSETS}real-gold-wax-seal.png`}
                   alt=""
@@ -958,7 +941,6 @@ function KeepsakeContent({
                   width="84"
                   height="84"
                 />
-              </button>
               <p>{data.general.closingMessage}</p>
               <h2 className="pk-couple-name">
                 <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />

@@ -11,7 +11,6 @@ import {
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { submitRsvpApi } from "@/lib/api";
 import { getWishes, submitWish } from "@/lib/invitationStore";
-import { triggerKeepsakeCelebration } from "./keepsakeCelebration";
 import type { WishMessage } from "@/types/wedding";
 import type { TemplateProps } from "../types";
 
@@ -217,7 +216,6 @@ export function KeepsakeGuestbook({
               : "Terima kasih. Ucapan Anda sudah tersimpan. Kehadiran belum tercatat tanpa tautan undangan pribadi.",
           });
           setMessage("");
-          triggerKeepsakeCelebration();
         } else {
           setFeedback({
             tone: "notice",
@@ -229,7 +227,6 @@ export function KeepsakeGuestbook({
           tone: "success",
           message: "Terima kasih. Konfirmasi kehadiran Anda sudah tersimpan.",
         });
-        triggerKeepsakeCelebration();
       }
     } catch (error) {
       if (controller.signal.aborted) return;
