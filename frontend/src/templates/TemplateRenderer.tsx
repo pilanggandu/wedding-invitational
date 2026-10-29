@@ -80,7 +80,7 @@ export function TemplateRenderer(props: TemplateProps) {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="contents"
         >
-          <InvitationMotion disabled={Boolean(props.isEditor || props.isPreview)}>{content}</InvitationMotion>
+          <InvitationMotion disabled={Boolean(props.isEditor || props.isPreview || templateId === "paper-keepsake")}>{content}</InvitationMotion>
         </motion.div>
       </AnimatePresence>
     </div>

@@ -33,6 +33,7 @@ import {
 } from "./keepsakeCalendar";
 import { KeepsakeSurrounds } from "./KeepsakeSurrounds";
 import { KeepsakeCharMotion } from "./KeepsakeCharMotion";
+import { bindKeepsakeScrollMotion } from "./keepsakeScrollMotion";
 import "./paper-keepsake.css";
 
 const ASSETS = "/images/paper-keepsake/";
@@ -807,36 +808,9 @@ function KeepsakeContent({
     [],
   );
   useEffect(() => {
-    if (
-      !opened ||
-      !root.current ||
-      reduced ||
-      typeof IntersectionObserver === "undefined"
-    )
-      return;
-    const elements =
-      root.current.querySelectorAll<HTMLElement>("[data-pk-reveal]");
-    const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove("pk-waiting");
-            entry.target.classList.add("pk-entered");
-            observer.unobserve(entry.target);
-          }
-        }),
-      { threshold: 0.12 },
-    );
-    elements.forEach((element) => {
-      if (element.getBoundingClientRect().top > window.innerHeight)
-        element.classList.add("pk-waiting");
-      observer.observe(element);
-    });
-    return () => {
-      observer.disconnect();
-      elements.forEach((element) => element.classList.remove("pk-waiting"));
-    };
-  }, [opened, reduced]);
+    if (!opened || !root.current || motionDisabled) return;
+    return bindKeepsakeScrollMotion(root.current);
+  }, [opened, motionDisabled]);
   const open = () => {
     if (leaving || opened) return;
     const letter = root.current?.querySelector<HTMLElement>(".pk-letter");

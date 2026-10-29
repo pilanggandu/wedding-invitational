@@ -2110,3 +2110,27 @@ html[data-template-theme="paper-keepsake"]
     transform: none !important;
   }
 }
+
+/* Scroll owns the reveal position while the invitation is open. */
+.pk-scroll-linked .pk-pages,
+.pk-scroll-linked .pk-pages .pk-photo-mount,
+.pk-scroll-linked .pk-pages .pk-photo-tape {
+  animation: none;
+}
+.pk-scroll-linked .pk-pages .pk-char {
+  animation: none;
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.pk-scroll-linked .pk-scroll-reveal {
+  animation: none;
+  opacity: var(--pk-scroll-opacity, 1);
+  translate: var(--pk-scroll-x, 0px) var(--pk-scroll-y, 0px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk-scroll-linked .pk-scroll-reveal {
+    opacity: 1;
+    translate: none;
+  }
+}

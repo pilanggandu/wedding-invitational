@@ -282,7 +282,7 @@ export function NavigationDock({
       style={{
         left: dockLayout.left,
         maxWidth: dockLayout.maxWidth,
-        transform: "translateX(-50%)",
+        x: "-50%",
       }}
       className="fixed bottom-3 sm:bottom-4 z-40 w-full px-1.5 pointer-events-auto pb-[env(safe-area-inset-bottom,0px)]"
     >
