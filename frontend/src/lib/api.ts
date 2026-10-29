@@ -229,7 +229,7 @@ export async function submitRsvpApi(params: {
       body: JSON.stringify(params),
     }
   );
-  if (error || !data) {
+  if (error || !data || data.success !== true) {
     return { success: false, error: error || "Gagal menyimpan RSVP" };
   }
   return { success: true, data: data.data };

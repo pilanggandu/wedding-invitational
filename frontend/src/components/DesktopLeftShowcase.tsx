@@ -24,12 +24,12 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
   const data = useWeddingData();
   const shouldReduceMotion = useReducedMotion();
   const akadEvent = data.events[0] || {
-    time: "08:00 - 10:00 WIB",
-    displayDay: "Sabtu",
-    displayDate: "21 November 2026",
-    venueAddress: "Merakurak, Tuban",
+    time: "",
+    displayDay: "",
+    displayDate: "",
+    venueAddress: "",
   };
-  const receptionEvent = data.events[1] || akadEvent;
+  const receptionEvent = data.events[1];
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -38,13 +38,13 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
   }>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const target = new Date(data.countdownTarget || "2026-11-21T08:00:00+07:00").getTime();
+    const target = new Date(data.countdownTarget).getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
       const difference = target - now;
 
-      if (difference <= 0) {
+      if (!Number.isFinite(difference) || difference <= 0) {
         setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
         return;
       }
@@ -64,13 +64,6 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
 
   return (
     <div
-      onWheel={(e) => {
-        if (!isOpened && onOpen && e.deltaY > 15) {
-          onOpen();
-        } else {
-          window.scrollBy({ top: e.deltaY, behavior: "auto" });
-        }
-      }}
       className="hidden lg:flex lg:w-[48%] xl:w-[50%] lg:h-screen lg:sticky lg:top-0 p-8 xl:p-12 flex-col justify-between overflow-y-auto bg-[#660F1A] text-white border-r-[4px] border-[#3D070E] shadow-2xl relative select-none"
     >
       <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-20 rotate-45 pointer-events-none" />
@@ -92,13 +85,13 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
       </motion.div>
 
       <div className="absolute top-6 right-6">
-        <PaperStamp text="RESMI SAH" date="21 • 11 • 2026" />
+        <PaperStamp text="RESMI SAH" date="28 • 11 • 2026" />
       </div>
 
       <div className="relative z-10 mt-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-script font-bold tracking-wider uppercase bg-[#FFE58F] text-[#4A0812] border-2 border-[#4A0812] shadow-[2px_2px_0px_#3D070E] mb-3 rotate-[-1.5deg]">
           <Sparkles className="w-3.5 h-3.5 text-[#7D1128]" />
-          Buku Sketsa Bahagia: {data.couple?.groom?.name || "Gilang"} & {data.couple?.bride?.name || "Salsadila"}
+          Buku Sketsa Bahagia: {data.couple?.groom?.name || "Gilang"} &amp; {data.couple?.bride?.name || "Salsa"}
         </div>
 
         <h1
@@ -106,23 +99,23 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
           className="font-couple-title font-handwriting text-6xl xl:text-7xl text-[#FFF0F3] drop-shadow-md my-1 leading-tight tracking-wide"
         >
           <CharMotionReveal text={data.couple?.groom?.name || "Gilang"} baseDelay={0.2} />{" "}
-          <span className="font-script text-4xl text-[#F5A8B8]">&</span>{" "}
-          <CharMotionReveal text={data.couple?.bride?.name || "Salsadila"} baseDelay={0.5} />
+          <span className="font-script text-4xl text-[#F5A8B8]">&amp;</span>{" "}
+          <CharMotionReveal text={data.couple?.bride?.name || "Salsa"} baseDelay={0.5} />
         </h1>
 
         <p className="font-script text-xl xl:text-2xl text-[#FAD2D8] font-bold mt-1 max-w-md">
-          &ldquo;{data.general?.funTagline || "Menemukan cinta itu mudah, tapi menemukan yang sehobi dan sefrekuensi itu anugerah!"}&rdquo;
+          &ldquo;{data.general?.funTagline || "Perayaan pernikahan yang dipenuhi tawa, doa, dan rasa syukur."}&rdquo;
         </p>
 
         <div className="flex flex-wrap items-center gap-2.5 mt-4 text-xs font-mono font-bold">
-          <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
+          {akadEvent.displayDate && <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <Calendar className="w-3.5 h-3.5 text-[#F5A8B8]" />
-            {akadEvent.displayDay || "Sabtu"}, {akadEvent.displayDate || "21 November 2026"}
-          </span>
-          <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
+            {[akadEvent.displayDay, akadEvent.displayDate].filter(Boolean).join(", ")}
+          </span>}
+          {akadEvent.venueAddress && <span className="bg-[#4A0812] text-[#FFE58F] px-3.5 py-1.5 rounded-full border border-[#D63D56]/50 flex items-center gap-1.5 shadow-sm">
             <MapPin className="w-3.5 h-3.5 text-[#F5A8B8]" />
-            {akadEvent.venueAddress || "Merakurak, Tuban"}
-          </span>
+            {akadEvent.venueAddress}
+          </span>}
         </div>
       </div>
 
@@ -140,16 +133,16 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
             </div>
 
             <div className="flex-1 text-left space-y-2.5">
-              <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
+              {akadEvent.time && <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
                   <strong>Akad:</strong> {akadEvent.time}
                 </p>
-              </div>
-              <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
+              </div>}
+              {receptionEvent?.time && <div className="bg-white p-3 rounded-2xl border-2 border-[#660F1A] shadow-[2px_3px_0px_#660F1A]">
                 <p className="text-xs font-script font-bold text-[#660F1A] leading-snug">
                   <strong>Resepsi:</strong> {receptionEvent.time}
                 </p>
-              </div>
+              </div>}
             </div>
           </div>
 

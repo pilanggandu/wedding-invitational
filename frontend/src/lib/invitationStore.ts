@@ -34,10 +34,10 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     groom: {
       name: WEDDING_DATA.couple.groom.name,
       fullName: WEDDING_DATA.couple.groom.fullName,
-      tagline: WEDDING_DATA.couple.groom.tagline || "Calon Suami Idaman & Penyabar",
-      bioFunny: WEDDING_DATA.couple.groom.bioFunny || "Suka kopi, hobi ngobrol, dan siap jadi pendamping setia selamanya.",
-      parents: WEDDING_DATA.couple.groom.parents || "Bpk. Permadi & Ibu",
-      instagram: WEDDING_DATA.couple.groom.instagram || "gilang",
+      tagline: WEDDING_DATA.couple.groom.tagline || "",
+      bioFunny: WEDDING_DATA.couple.groom.bioFunny || "",
+      parents: WEDDING_DATA.couple.groom.parents,
+      instagram: WEDDING_DATA.couple.groom.instagram,
       photoPlaceholder: {
         title: "The Groom",
         caption: "Gilang",
@@ -49,13 +49,13 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     bride: {
       name: WEDDING_DATA.couple.bride.name,
       fullName: WEDDING_DATA.couple.bride.fullName,
-      tagline: WEDDING_DATA.couple.bride.tagline || "Tuan Putri Cantik & Berhati Lembut",
-      bioFunny: WEDDING_DATA.couple.bride.bioFunny || "Pencinta keceriaan, senyum manis, dan siap membangun surga rumah tangga bersama.",
-      parents: WEDDING_DATA.couple.bride.parents || "Bpk. Mokhamad Mokharom & Ibu",
-      instagram: WEDDING_DATA.couple.bride.instagram || "salsadila",
+      tagline: WEDDING_DATA.couple.bride.tagline || "",
+      bioFunny: WEDDING_DATA.couple.bride.bioFunny || "",
+      parents: WEDDING_DATA.couple.bride.parents,
+      instagram: WEDDING_DATA.couple.bride.instagram,
       photoPlaceholder: {
         title: "The Bride",
-        caption: "Salsadila",
+        caption: "Salsa",
         aspectRatio: "3/4",
         variant: "bride",
       },
@@ -89,24 +89,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
   stories: WEDDING_DATA.stories || [],
   gallery: WEDDING_DATA.gallery,
   gifts: {
-    accounts: [
-      {
-        bankName: "BCA",
-        accountNumber: "1234567890",
-        accountHolder: "Gilang Pandu Permadi",
-        logoText: "BCA",
-        cuteLabel: "Rekening Mempelai Pria",
-        cardColor: "maroon",
-      },
-      {
-        bankName: "Bank Mandiri",
-        accountNumber: "0987654321",
-        accountHolder: "Salsadila Nanda Octavia",
-        logoText: "MANDIRI",
-        cuteLabel: "Rekening Mempelai Wanita",
-        cardColor: "gold",
-      },
-    ],
+    accounts: [],
     physicalGiftAddress: WEDDING_DATA.gifts.physicalGiftAddress,
   },
   dresscode: WEDDING_DATA.dresscode,
@@ -487,6 +470,13 @@ export function submitWish(wish: {
     });
 
   return newWish;
+}
+
+export async function submitWishConfirmed(wish: Parameters<typeof submitWish>[0]): Promise<WishMessage> {
+  const saved = await addWishToBackend({ name: wish.name.trim(), relationship: wish.relationship || "Tamu Undangan", attendance: wish.attendance || "Hadir", message: wish.message.trim(), guestId: wish.guestId });
+  if (!saved?.id) throw new Error("Penyimpanan ucapan belum terkonfirmasi. Periksa koneksi sebelum mencoba lagi.");
+  saveWishesLocalOnly([saved, ...getWishes().filter((item) => item.id !== saved.id)]);
+  return saved;
 }
 
 export function deleteWish(id: string): void {

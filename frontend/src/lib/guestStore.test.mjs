@@ -97,3 +97,26 @@ test("validation refusal is retryable, while a server failure after POST remains
     await assert.rejects(api.saveGuestMasterToBackend({ name: "Uji", phone: "", category: "Sahabat", notes: "", quota: 1 }), (error) => error.unconfirmed === unconfirmed);
   }
 });
+
+test("RSVP requires explicit server confirmation even on HTTP 200", async () => {
+  for (const body of [{ success: false, error: "Ditolak" }, {}]) {
+    const api = loadApi(async () => ({ ok: true, json: async () => body }));
+    const result = await api.submitRsvpApi({ guestId: "1", status: 1, attendeeCount: 1 });
+    assert.equal(result.success, false);
+  }
+});
+
+test("confirmed wishes never insert a local success when the server fails", async () => {
+  const { store } = loadStore({ addWishToBackend: async () => null });
+  const previous = plain(store.getWishes());
+  await assert.rejects(async () => store.submitWishConfirmed({ name: "Tamu", message: "Doa" }), /terkonfirmasi/);
+  assert.deepEqual(plain(store.getWishes()), previous);
+});
+
+test("confirmed wishes retain the canonical server ID and update the shared list", async () => {
+  const saved = { id: "server-wish", name: "Tamu", message: "Doa", attendance: "Hadir", relationship: "Tamu Undangan", date: "Hari ini" };
+  const { store, events } = loadStore({ addWishToBackend: async () => saved });
+  assert.deepEqual(plain(await store.submitWishConfirmed({ name: "Tamu", message: "Doa" })), saved);
+  assert.equal(store.getWishes()[0].id, saved.id);
+  assert.equal(events.at(-1).type, "wedding-wishes-changed");
+});

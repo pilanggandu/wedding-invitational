@@ -36,21 +36,20 @@ export function normalizeWeddingData(
       ...(incoming.themePalette || {}),
     },
     events:
-      Array.isArray(incoming.events) && incoming.events.length > 0
+      Array.isArray(incoming.events)
         ? incoming.events
         : DEFAULT_INVITATION_DATA.events,
     stories:
-      Array.isArray(incoming.stories) && incoming.stories.length > 0
+      Array.isArray(incoming.stories)
         ? incoming.stories
         : DEFAULT_INVITATION_DATA.stories,
     gallery:
-      Array.isArray(incoming.gallery) && incoming.gallery.length > 0
+      Array.isArray(incoming.gallery)
         ? incoming.gallery
         : DEFAULT_INVITATION_DATA.gallery,
     gifts: {
       accounts:
-        Array.isArray(incoming.gifts?.accounts) &&
-        incoming.gifts.accounts.length > 0
+        Array.isArray(incoming.gifts?.accounts)
           ? incoming.gifts.accounts
           : DEFAULT_INVITATION_DATA.gifts.accounts,
       physicalGiftAddress: {
@@ -60,11 +59,10 @@ export function normalizeWeddingData(
     },
     dresscode: {
       description:
-        incoming.dresscode?.description ||
+        incoming.dresscode?.description ??
         DEFAULT_INVITATION_DATA.dresscode.description,
       colors:
-        Array.isArray(incoming.dresscode?.colors) &&
-        incoming.dresscode.colors.length > 0
+        Array.isArray(incoming.dresscode?.colors)
           ? incoming.dresscode.colors
           : DEFAULT_INVITATION_DATA.dresscode.colors,
     },
