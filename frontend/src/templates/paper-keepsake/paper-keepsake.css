@@ -431,17 +431,24 @@
   transform: rotate(-1deg);
 }
 .pk-letter-names h1 {
-  font-size: clamp(28px, 10cqw, 44px);
-  line-height: 0.98;
-  letter-spacing: -0.025em;
-  overflow-wrap: anywhere;
+  font-family: var(--pk-couple-font, var(--pk-serif));
+  font-size: clamp(24px, 8cqw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--pk-maroon);
 }
-.pk-letter-names h1 span {
+.pk-letter-names h1 .pk-letter-name {
+  display: block;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+.pk-letter-names h1 .pk-letter-amp {
   display: block;
   font-style: italic;
   font-size: 0.62em;
   color: var(--pk-taupe);
-  margin: 7px 0;
+  margin: 5px 0;
+  line-height: 1;
 }
 .pk-letter-names > p {
   font-size: 10px;

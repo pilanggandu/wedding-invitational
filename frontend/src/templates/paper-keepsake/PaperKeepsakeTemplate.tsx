@@ -133,9 +133,9 @@ function Cover({
         />
         <div className="pk-letter-names">
           <h1>
-            <KeepsakeCharMotion text={groom.name} baseDelay={0.2} />
-            <span>&amp;</span>
-            <KeepsakeCharMotion text={bride.name} baseDelay={0.5} />
+            <KeepsakeCharMotion className="pk-letter-name" text={groom.name} baseDelay={0.2} />
+            <span className="pk-letter-amp" aria-hidden="true">&amp;</span>
+            <KeepsakeCharMotion className="pk-letter-name" text={bride.name} baseDelay={0.5} />
           </h1>
           <p>{data.events[0]?.displayDate}</p>
         </div>
