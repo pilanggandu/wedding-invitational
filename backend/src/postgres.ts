@@ -370,9 +370,10 @@ export const postgresService = {
         const normalizedData = await normalizedWeddingService.getAggregatedWeddingData();
         if (!pool) return normalizedData;
 
-        // Music fields are persisted in the wide row while normalized settings lack them.
-        const saved = await pool.query("SELECT general FROM weddings WHERE id = $1", [id]);
-        const rawGeneral = saved.rows[0]?.general;
+        // Restore fields from the wide weddings row while normalized service provides baseline
+        const saved = await pool.query("SELECT * FROM weddings WHERE id = $1", [id]);
+        const wideRow = saved.rows[0];
+        const rawGeneral = wideRow?.general;
         const general = typeof rawGeneral === "string" ? JSON.parse(rawGeneral) : rawGeneral;
         const musicSettings: Record<string, any> = {};
 
@@ -402,9 +403,32 @@ export const postgresService = {
           }
         }
 
+        const parseJson = (v: any) => {
+          if (!v) return null;
+          return typeof v === "string" ? JSON.parse(v) : v;
+        };
+
+        const wideCouple = parseJson(wideRow?.couple);
+        const wideEvents = parseJson(wideRow?.events);
+        const wideGifts = parseJson(wideRow?.gifts);
+        const wideStories = parseJson(wideRow?.stories);
+        const wideGallery = parseJson(wideRow?.gallery);
+        const wideThemePalette = parseJson(wideRow?.theme_palette);
+
         return {
           ...normalizedData,
+          themePalette: wideThemePalette || normalizedData.themePalette,
+          couple: wideCouple && (wideCouple.groom || wideCouple.bride)
+            ? {
+                groom: { ...(normalizedData.couple?.groom || {}), ...(wideCouple.groom || {}) },
+                bride: { ...(normalizedData.couple?.bride || {}), ...(wideCouple.bride || {}) },
+              }
+            : normalizedData.couple,
+          events: Array.isArray(wideEvents) && wideEvents.length > 0 ? wideEvents : normalizedData.events,
+          gifts: wideGifts?.accounts && Array.isArray(wideGifts.accounts) && wideGifts.accounts.length > 0 ? wideGifts : normalizedData.gifts,
           general: { ...normalizedData.general, ...musicSettings },
+          stories: Array.isArray(wideStories) && wideStories.length > 0 ? wideStories : normalizedData.stories,
+          gallery: Array.isArray(wideGallery) && wideGallery.length > 0 ? wideGallery : normalizedData.gallery,
         };
       } catch (e: any) {
         console.warn("Fallback to wide weddings table:", e.message);

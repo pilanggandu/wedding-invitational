@@ -39,10 +39,9 @@ export class NormalizedWeddingService {
       fullName: groomRow.full_name || "Gilang Pandu Permadi",
       tagline: groomRow.tagline || "Calon Suami Idaman & Penyabar",
       bioFunny: groomRow.bio_funny || "Suka kopi, hobi ngobrol, dan siap jadi pendamping setia selamanya.",
-      parents: groomRow.father_name
-        ? `${groomRow.father_name} & ${groomRow.mother_name || "Ibu"}`
-        : "Bpk. Permadi & Ibu",
+      parents: groomRow.father_name || "Bpk. Permadi & Ibu",
       instagram: groomRow.instagram_url ? groomRow.instagram_url.split("/").pop() : "gilang",
+      photoUrl: groomRow.photo || "/images/prewedding/couple-3.jpg",
       photoPlaceholder: {
         title: "The Groom",
         caption: groomRow.nickname || "Gilang",
@@ -56,10 +55,9 @@ export class NormalizedWeddingService {
       fullName: brideRow.full_name || "Salsadila Nanda Octavia",
       tagline: brideRow.tagline || "Tuan Putri Cantik & Berhati Lembut",
       bioFunny: brideRow.bio_funny || "Pencinta keceriaan, senyum manis, dan siap membangun surga rumah tangga bersama.",
-      parents: brideRow.father_name
-        ? `${brideRow.father_name} & ${brideRow.mother_name || "Ibu"}`
-        : "Bpk. Mokhamad Mokharom & Ibu",
+      parents: brideRow.father_name || "Bpk. Mokhamad Mokharom & Ibu",
       instagram: brideRow.instagram_url ? brideRow.instagram_url.split("/").pop() : "salsadila",
+      photoUrl: brideRow.photo || "/images/prewedding/couple-4.jpg",
       photoPlaceholder: {
         title: "The Bride",
         caption: brideRow.nickname || "Salsadila",

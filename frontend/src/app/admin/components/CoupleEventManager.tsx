@@ -151,7 +151,6 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     data.gifts?.physicalGiftAddress?.address || "Merakurak, Tuban, Jawa Timur"
   );
 
-  const isDirtyRef = React.useRef(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -159,73 +158,6 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     text: string;
     type: "success" | "error";
   } | null>(null);
-
-  // Sinkronisasi data awal jika prop data dari backend dimuat dan user belum mengubah form
-  useEffect(() => {
-    if (isDirtyRef.current) return;
-    if (data.couple?.groom?.name) setGroomName(data.couple.groom.name);
-    if (data.couple?.groom?.fullName) setGroomFullName(data.couple.groom.fullName);
-    if (data.couple?.groom?.parents) setGroomParents(data.couple.groom.parents);
-    if (data.couple?.groom?.instagram) setGroomInstagram(data.couple.groom.instagram);
-    if (data.couple?.groom?.tagline) setGroomTagline(data.couple.groom.tagline);
-    if (data.couple?.groom?.photoUrl) setGroomPhotoUrl(data.couple.groom.photoUrl);
-
-    if (data.couple?.bride?.name) setBrideName(data.couple.bride.name);
-    if (data.couple?.bride?.fullName) setBrideFullName(data.couple.bride.fullName);
-    if (data.couple?.bride?.parents) setBrideParents(data.couple.bride.parents);
-    if (data.couple?.bride?.instagram) setBrideInstagram(data.couple.bride.instagram);
-    if (data.couple?.bride?.tagline) setBrideTagline(data.couple.bride.tagline);
-    if (data.couple?.bride?.photoUrl) setBridePhotoUrl(data.couple.bride.photoUrl);
-
-    if (data.general?.coverPhotoUrl) {
-      setCoverPhotoUrl(data.general.coverPhotoUrl);
-      setPreviewingPhotoSrc(data.general.coverPhotoUrl);
-    }
-    if (data.general?.preweddingPhotos && data.general.preweddingPhotos.length > 0) {
-      setPreweddingPhotos(data.general.preweddingPhotos);
-    }
-    if (data.general?.funTagline) setFunTagline(data.general.funTagline);
-    if (data.general?.hashtag) setHashtag(data.general.hashtag);
-    if (data.general?.closingMessage) setClosingMessage(data.general.closingMessage);
-
-    const ev0 = data.events?.[0];
-    if (ev0) {
-      if (ev0.displayDay) setAkadDay(ev0.displayDay);
-      if (ev0.displayDate) setAkadDate(ev0.displayDate);
-      if (ev0.time) setAkadTime(ev0.time);
-      if (ev0.venueName) setAkadVenue(ev0.venueName);
-      if (ev0.venueAddress) setAkadAddress(ev0.venueAddress);
-      if (ev0.mapUrl) setAkadMapUrl(ev0.mapUrl);
-    }
-
-    const ev1 = data.events?.[1];
-    if (ev1) {
-      if (ev1.displayDay) setResepsiDay(ev1.displayDay);
-      if (ev1.displayDate) setResepsiDate(ev1.displayDate);
-      if (ev1.time) setResepsiTime(ev1.time);
-      if (ev1.venueName) setResepsiVenue(ev1.venueName);
-      if (ev1.venueAddress) setResepsiAddress(ev1.venueAddress);
-      if (ev1.mapUrl) setResepsiMapUrl(ev1.mapUrl);
-    }
-
-    const a1 = data.gifts?.accounts?.[0];
-    if (a1) {
-      if (a1.bankName) setBank1Name(a1.bankName);
-      if (a1.accountNumber) setBank1Number(a1.accountNumber);
-      if (a1.accountHolder) setBank1Holder(a1.accountHolder);
-    }
-
-    const a2 = data.gifts?.accounts?.[1];
-    if (a2) {
-      if (a2.bankName) setBank2Name(a2.bankName);
-      if (a2.accountNumber) setBank2Number(a2.accountNumber);
-      if (a2.accountHolder) setBank2Holder(a2.accountHolder);
-    }
-
-    if (data.gifts?.physicalGiftAddress?.address) {
-      setPhysicalAddress(data.gifts.physicalGiftAddress.address);
-    }
-  }, [data]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -372,7 +304,6 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
 
       const serverSaved = await saveInvitationData(updated);
       onUpdate(updated);
-      isDirtyRef.current = false;
 
       setIsSaved(true);
       setToastNotification({
@@ -398,9 +329,6 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
   return (
     <form
       onSubmit={handleSave}
-      onChange={() => {
-        isDirtyRef.current = true;
-      }}
       className="space-y-6 animate-in fade-in duration-300"
     >
       {/* Action Header */}

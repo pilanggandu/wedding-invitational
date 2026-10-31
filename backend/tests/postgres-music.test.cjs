@@ -61,7 +61,7 @@ test("normalized PostgreSQL reads restore music saved in the wide JSON row", asy
     assert.equal(result.general[key], value, key);
   }
   assert.equal(reads.length, 1);
-  assert.match(reads[0].sql, /^SELECT general FROM weddings WHERE id = \$1$/);
+  assert.match(reads[0].sql, /^SELECT (\*|general) FROM weddings WHERE id = \$1$/);
   assert.equal(reads[0].values[0], "inv_gilang_salsa");
 });
 

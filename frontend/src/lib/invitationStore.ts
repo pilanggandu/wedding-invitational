@@ -186,10 +186,44 @@ export async function syncWithBackend(): Promise<void> {
     // 1. Sync Invitation Data
     if (invitationRes.status === "fulfilled" && invitationRes.value) {
       const serverData = invitationRes.value;
-      localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(serverData));
-      window.dispatchEvent(
-        new CustomEvent("wedding-data-changed", { detail: serverData })
-      );
+      if (serverData && typeof serverData === "object") {
+        const local = getInvitationData();
+        const merged: WeddingInvitationData = {
+          ...DEFAULT_INVITATION_DATA,
+          ...local,
+          ...serverData,
+          couple: {
+            groom: {
+              ...DEFAULT_INVITATION_DATA.couple.groom,
+              ...(local.couple?.groom || {}),
+              ...(serverData.couple?.groom || {}),
+            },
+            bride: {
+              ...DEFAULT_INVITATION_DATA.couple.bride,
+              ...(local.couple?.bride || {}),
+              ...(serverData.couple?.bride || {}),
+            },
+          },
+          general: {
+            ...DEFAULT_INVITATION_DATA.general,
+            ...(local.general || {}),
+            ...(serverData.general || {}),
+          },
+          events:
+            Array.isArray(serverData.events) && serverData.events.length > 0
+              ? serverData.events
+              : local.events,
+          gifts: {
+            ...DEFAULT_INVITATION_DATA.gifts,
+            ...(local.gifts || {}),
+            ...(serverData.gifts || {}),
+          },
+        };
+        localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(merged));
+        window.dispatchEvent(
+          new CustomEvent("wedding-data-changed", { detail: merged })
+        );
+      }
     }
 
     // 2. Sync Guests
