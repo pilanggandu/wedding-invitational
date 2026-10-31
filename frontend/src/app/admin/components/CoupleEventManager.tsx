@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
   Check,
   Save,
+  Loader2,
   User,
   Calendar,
   MapPin,
@@ -150,125 +151,258 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     data.gifts?.physicalGiftAddress?.address || "Merakurak, Tuban, Jawa Timur"
   );
 
+  const isDirtyRef = React.useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [toastNotification, setToastNotification] = useState<{
+    text: string;
+    type: "success" | "error";
+  } | null>(null);
 
-  const handleSave = (e: React.FormEvent) => {
+  // Sinkronisasi data awal jika prop data dari backend dimuat dan user belum mengubah form
+  useEffect(() => {
+    if (isDirtyRef.current) return;
+    if (data.couple?.groom?.name) setGroomName(data.couple.groom.name);
+    if (data.couple?.groom?.fullName) setGroomFullName(data.couple.groom.fullName);
+    if (data.couple?.groom?.parents) setGroomParents(data.couple.groom.parents);
+    if (data.couple?.groom?.instagram) setGroomInstagram(data.couple.groom.instagram);
+    if (data.couple?.groom?.tagline) setGroomTagline(data.couple.groom.tagline);
+    if (data.couple?.groom?.photoUrl) setGroomPhotoUrl(data.couple.groom.photoUrl);
+
+    if (data.couple?.bride?.name) setBrideName(data.couple.bride.name);
+    if (data.couple?.bride?.fullName) setBrideFullName(data.couple.bride.fullName);
+    if (data.couple?.bride?.parents) setBrideParents(data.couple.bride.parents);
+    if (data.couple?.bride?.instagram) setBrideInstagram(data.couple.bride.instagram);
+    if (data.couple?.bride?.tagline) setBrideTagline(data.couple.bride.tagline);
+    if (data.couple?.bride?.photoUrl) setBridePhotoUrl(data.couple.bride.photoUrl);
+
+    if (data.general?.coverPhotoUrl) {
+      setCoverPhotoUrl(data.general.coverPhotoUrl);
+      setPreviewingPhotoSrc(data.general.coverPhotoUrl);
+    }
+    if (data.general?.preweddingPhotos && data.general.preweddingPhotos.length > 0) {
+      setPreweddingPhotos(data.general.preweddingPhotos);
+    }
+    if (data.general?.funTagline) setFunTagline(data.general.funTagline);
+    if (data.general?.hashtag) setHashtag(data.general.hashtag);
+    if (data.general?.closingMessage) setClosingMessage(data.general.closingMessage);
+
+    const ev0 = data.events?.[0];
+    if (ev0) {
+      if (ev0.displayDay) setAkadDay(ev0.displayDay);
+      if (ev0.displayDate) setAkadDate(ev0.displayDate);
+      if (ev0.time) setAkadTime(ev0.time);
+      if (ev0.venueName) setAkadVenue(ev0.venueName);
+      if (ev0.venueAddress) setAkadAddress(ev0.venueAddress);
+      if (ev0.mapUrl) setAkadMapUrl(ev0.mapUrl);
+    }
+
+    const ev1 = data.events?.[1];
+    if (ev1) {
+      if (ev1.displayDay) setResepsiDay(ev1.displayDay);
+      if (ev1.displayDate) setResepsiDate(ev1.displayDate);
+      if (ev1.time) setResepsiTime(ev1.time);
+      if (ev1.venueName) setResepsiVenue(ev1.venueName);
+      if (ev1.venueAddress) setResepsiAddress(ev1.venueAddress);
+      if (ev1.mapUrl) setResepsiMapUrl(ev1.mapUrl);
+    }
+
+    const a1 = data.gifts?.accounts?.[0];
+    if (a1) {
+      if (a1.bankName) setBank1Name(a1.bankName);
+      if (a1.accountNumber) setBank1Number(a1.accountNumber);
+      if (a1.accountHolder) setBank1Holder(a1.accountHolder);
+    }
+
+    const a2 = data.gifts?.accounts?.[1];
+    if (a2) {
+      if (a2.bankName) setBank2Name(a2.bankName);
+      if (a2.accountNumber) setBank2Number(a2.accountNumber);
+      if (a2.accountHolder) setBank2Holder(a2.accountHolder);
+    }
+
+    if (data.gifts?.physicalGiftAddress?.address) {
+      setPhysicalAddress(data.gifts.physicalGiftAddress.address);
+    }
+  }, [data]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSaving) return;
+    setSaveError(null);
 
-    const updated: WeddingInvitationData = {
-      ...data,
-      couple: {
-        ...data.couple,
-        groom: {
-          ...data.couple.groom,
-          name: groomName.trim(),
-          fullName: groomFullName.trim(),
-          parents: groomParents.trim(),
-          instagram: groomInstagram.trim().replace(/^@/, ""),
-          tagline: groomTagline.trim(),
-          photoUrl: groomPhotoUrl.trim(),
-        },
-        bride: {
-          ...data.couple.bride,
-          name: brideName.trim(),
-          fullName: brideFullName.trim(),
-          parents: brideParents.trim(),
-          instagram: brideInstagram.trim().replace(/^@/, ""),
-          tagline: brideTagline.trim(),
-          photoUrl: bridePhotoUrl.trim(),
-        },
-      },
-      general: {
-        ...data.general,
-        funTagline: funTagline.trim(),
-        hashtag: hashtag.trim(),
-        closingMessage: closingMessage.trim(),
-        coverPhotoUrl: coverPhotoUrl.trim(),
-        heroPhotoUrl: coverPhotoUrl.trim(),
-        preweddingPhotos: preweddingPhotos,
-      },
-      events: [
-        {
-          ...(data.events[0] || {}),
-          id: "event_akad",
-          title: "Akad Nikah",
-          subTitle: "Momen Sakral Ijab Kabul",
-          badgeCute: "Momen Paling Sakral",
-          colorTheme: "red",
-          dateStr: "2026-11-28",
-          displayDate: akadDate.trim(),
-          displayDay: akadDay.trim(),
-          time: akadTime.trim(),
-          venueName: akadVenue.trim(),
-          venueAddress: akadAddress.trim(),
-          mapUrl: akadMapUrl.trim(),
-          calendarEvent: {
-            title: `Akad Nikah ${groomName} & ${brideName}`,
-            description: `Akad Nikah ${groomFullName} & ${brideFullName}`,
-            location: akadAddress.trim(),
-            startDate: "20261128T010000Z",
-            endDate: "20261128T030000Z",
+    // Validasi eksplisit sebelum submit
+    if (!groomName.trim()) {
+      const msg = "Nama panggilan mempelai pria wajib diisi.";
+      setSaveError(msg);
+      setToastNotification({ text: msg, type: "error" });
+      setTimeout(() => setToastNotification(null), 4000);
+      return;
+    }
+    if (!groomFullName.trim()) {
+      const msg = "Nama lengkap mempelai pria wajib diisi.";
+      setSaveError(msg);
+      setToastNotification({ text: msg, type: "error" });
+      setTimeout(() => setToastNotification(null), 4000);
+      return;
+    }
+    if (!brideName.trim()) {
+      const msg = "Nama panggilan mempelai wanita wajib diisi.";
+      setSaveError(msg);
+      setToastNotification({ text: msg, type: "error" });
+      setTimeout(() => setToastNotification(null), 4000);
+      return;
+    }
+    if (!brideFullName.trim()) {
+      const msg = "Nama lengkap mempelai wanita wajib diisi.";
+      setSaveError(msg);
+      setToastNotification({ text: msg, type: "error" });
+      setTimeout(() => setToastNotification(null), 4000);
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const updated: WeddingInvitationData = {
+        ...data,
+        couple: {
+          ...data.couple,
+          groom: {
+            ...data.couple.groom,
+            name: groomName.trim(),
+            fullName: groomFullName.trim(),
+            parents: groomParents.trim(),
+            instagram: groomInstagram.trim().replace(/^@/, ""),
+            tagline: groomTagline.trim(),
+            photoUrl: groomPhotoUrl.trim(),
+          },
+          bride: {
+            ...data.couple.bride,
+            name: brideName.trim(),
+            fullName: brideFullName.trim(),
+            parents: brideParents.trim(),
+            instagram: brideInstagram.trim().replace(/^@/, ""),
+            tagline: brideTagline.trim(),
+            photoUrl: bridePhotoUrl.trim(),
           },
         },
-        {
-          ...(data.events[1] || {}),
-          id: "event_resepsi",
-          title: "Resepsi Pernikahan",
-          subTitle: "Pesta Syukuran & Temu Kangen",
-          badgeCute: "Pesta Bahagia & Temu Syukuran",
-          colorTheme: "yellow",
-          dateStr: "2026-11-28",
-          displayDate: resepsiDate.trim(),
-          displayDay: resepsiDay.trim(),
-          time: resepsiTime.trim(),
-          venueName: resepsiVenue.trim(),
-          venueAddress: resepsiAddress.trim(),
-          mapUrl: resepsiMapUrl.trim(),
-          calendarEvent: {
-            title: `Resepsi Pernikahan ${groomName} & ${brideName}`,
-            description: `Pesta Resepsi ${groomFullName} & ${brideFullName}`,
-            location: resepsiAddress.trim(),
-            startDate: "20261128T040000Z",
-            endDate: "20261128T090000Z",
-          },
+        general: {
+          ...data.general,
+          funTagline: funTagline.trim(),
+          hashtag: hashtag.trim(),
+          closingMessage: closingMessage.trim(),
+          coverPhotoUrl: coverPhotoUrl.trim(),
+          heroPhotoUrl: coverPhotoUrl.trim(),
+          preweddingPhotos: preweddingPhotos,
         },
-      ],
-      gifts: {
-        accounts: [
+        events: [
           {
-            bankName: bank1Name.trim(),
-            accountNumber: bank1Number.trim(),
-            accountHolder: bank1Holder.trim(),
-            logoText: bank1Name.trim(),
-            cuteLabel: `Rekening ${groomName}`,
-            cardColor: "maroon",
+            ...(data.events[0] || {}),
+            id: "event_akad",
+            title: "Akad Nikah",
+            subTitle: "Momen Sakral Ijab Kabul",
+            badgeCute: "Momen Paling Sakral",
+            colorTheme: "red",
+            dateStr: "2026-11-28",
+            displayDate: akadDate.trim(),
+            displayDay: akadDay.trim(),
+            time: akadTime.trim(),
+            venueName: akadVenue.trim(),
+            venueAddress: akadAddress.trim(),
+            mapUrl: akadMapUrl.trim(),
+            calendarEvent: {
+              title: `Akad Nikah ${groomName.trim()} & ${brideName.trim()}`,
+              description: `Akad Nikah ${groomFullName.trim()} & ${brideFullName.trim()}`,
+              location: akadAddress.trim(),
+              startDate: "20261128T010000Z",
+              endDate: "20261128T030000Z",
+            },
           },
           {
-            bankName: bank2Name.trim(),
-            accountNumber: bank2Number.trim(),
-            accountHolder: bank2Holder.trim(),
-            logoText: bank2Name.trim(),
-            cuteLabel: `Rekening ${brideName}`,
-            cardColor: "gold",
+            ...(data.events[1] || {}),
+            id: "event_resepsi",
+            title: "Resepsi Pernikahan",
+            subTitle: "Pesta Syukuran & Temu Kangen",
+            badgeCute: "Pesta Bahagia & Temu Syukuran",
+            colorTheme: "yellow",
+            dateStr: "2026-11-28",
+            displayDate: resepsiDate.trim(),
+            displayDay: resepsiDay.trim(),
+            time: resepsiTime.trim(),
+            venueName: resepsiVenue.trim(),
+            venueAddress: resepsiAddress.trim(),
+            mapUrl: resepsiMapUrl.trim(),
+            calendarEvent: {
+              title: `Resepsi Pernikahan ${groomName.trim()} & ${brideName.trim()}`,
+              description: `Pesta Resepsi ${groomFullName.trim()} & ${brideFullName.trim()}`,
+              location: resepsiAddress.trim(),
+              startDate: "20261128T040000Z",
+              endDate: "20261128T090000Z",
+            },
           },
         ],
-        physicalGiftAddress: {
-          recipient: `${groomName} & ${brideName}`,
-          phone: "081234567890",
-          address: physicalAddress.trim(),
+        gifts: {
+          accounts: [
+            {
+              bankName: bank1Name.trim(),
+              accountNumber: bank1Number.trim(),
+              accountHolder: bank1Holder.trim(),
+              logoText: bank1Name.trim(),
+              cuteLabel: `Rekening ${groomName.trim()}`,
+              cardColor: "maroon",
+            },
+            {
+              bankName: bank2Name.trim(),
+              accountNumber: bank2Number.trim(),
+              accountHolder: bank2Holder.trim(),
+              logoText: bank2Name.trim(),
+              cuteLabel: `Rekening ${brideName.trim()}`,
+              cardColor: "gold",
+            },
+          ],
+          physicalGiftAddress: {
+            recipient: `${groomName.trim()} & ${brideName.trim()}`,
+            phone: "081234567890",
+            address: physicalAddress.trim(),
+          },
         },
-      },
-    };
+      };
 
-    saveInvitationData(updated);
-    onUpdate(updated);
+      const serverSaved = await saveInvitationData(updated);
+      onUpdate(updated);
+      isDirtyRef.current = false;
 
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+      setIsSaved(true);
+      setToastNotification({
+        text: serverSaved
+          ? "Seluruh data mempelai & acara berhasil disimpan ke server!"
+          : "Data tersimpan di penyimpanan lokal browser.",
+        type: "success",
+      });
+
+      setTimeout(() => setIsSaved(false), 3500);
+      setTimeout(() => setToastNotification(null), 4000);
+    } catch (err: any) {
+      console.error("Error saving wedding data:", err);
+      const msg = err?.message || "Gagal menyimpan data ke server. Periksa koneksi Anda.";
+      setSaveError(msg);
+      setToastNotification({ text: msg, type: "error" });
+      setTimeout(() => setToastNotification(null), 5000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 animate-in fade-in duration-300">
+    <form
+      onSubmit={handleSave}
+      onChange={() => {
+        isDirtyRef.current = true;
+      }}
+      className="space-y-6 animate-in fade-in duration-300"
+    >
       {/* Action Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white/95 backdrop-blur-md p-6 rounded-2xl border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] sticky top-4 z-20">
         <div>
@@ -286,6 +420,11 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
         </div>
 
         <div className="flex items-center gap-3">
+          {saveError && (
+            <span className="text-xs font-medium text-[#B91C1C] bg-[#FEF2F2] px-3.5 py-1.5 rounded-xl border border-[#FCA5A5] flex items-center gap-1.5 animate-in fade-in">
+              {saveError}
+            </span>
+          )}
           {isSaved && (
             <span className="text-xs font-medium text-[#24623E] bg-[#F3F8F5] px-3.5 py-1.5 rounded-xl border border-[#D4EADB] flex items-center gap-1.5 animate-in fade-in">
               <Check className="w-3.5 h-3.5 text-[#2E7A4A]" />
@@ -294,10 +433,25 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           )}
           <button
             type="submit"
-            className="px-5 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] text-white font-medium text-xs flex items-center gap-2 transition-colors cursor-pointer shadow-xs"
+            disabled={isSaving}
+            className="px-5 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] disabled:opacity-75 disabled:cursor-not-allowed text-white font-medium text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
           >
-            <Save className="w-4 h-4 text-[#DFD2BD]" />
-            <span>Simpan Perubahan</span>
+            {isSaving ? (
+              <>
+                <Loader2 className="w-4 h-4 text-[#DFD2BD] animate-spin" />
+                <span>Menyimpan...</span>
+              </>
+            ) : isSaved ? (
+              <>
+                <Check className="w-4 h-4 text-[#2E7A4A]" />
+                <span className="text-[#DFD2BD]">Tersimpan!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4 text-[#DFD2BD]" />
+                <span>Simpan Perubahan</span>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -1214,15 +1368,65 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       </div>
 
       {/* Bottom Save CTA */}
-      <div className="flex justify-end pt-2 pb-6">
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 pb-8">
+        {saveError && (
+          <span className="text-xs font-medium text-[#B91C1C] bg-[#FEF2F2] px-4 py-2 rounded-xl border border-[#FCA5A5] flex items-center gap-1.5 animate-in fade-in w-full sm:w-auto">
+            {saveError}
+          </span>
+        )}
+        {isSaved && (
+          <span className="text-xs font-medium text-[#24623E] bg-[#F3F8F5] px-4 py-2 rounded-xl border border-[#D4EADB] flex items-center gap-1.5 animate-in fade-in w-full sm:w-auto">
+            <Check className="w-3.5 h-3.5 text-[#2E7A4A]" />
+            Tersimpan Sukses!
+          </span>
+        )}
         <button
           type="submit"
-          className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] text-white font-medium text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+          disabled={isSaving}
+          className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] disabled:opacity-75 disabled:cursor-not-allowed text-white font-medium text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
         >
-          <Save className="w-4 h-4 text-[#DFD2BD]" />
-          <span>Simpan Seluruh Data Mempelai &amp; Acara</span>
+          {isSaving ? (
+            <>
+              <Loader2 className="w-4 h-4 text-[#DFD2BD] animate-spin" />
+              <span>Menyimpan Data...</span>
+            </>
+          ) : isSaved ? (
+            <>
+              <Check className="w-4 h-4 text-[#2E7A4A]" />
+              <span className="text-[#DFD2BD]">Tersimpan Sukses!</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4 text-[#DFD2BD]" />
+              <span>Simpan Seluruh Data Mempelai &amp; Acara</span>
+            </>
+          )}
         </button>
       </div>
+
+      {/* Floating Toast Notification */}
+      {toastNotification && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border text-xs sm:text-sm font-medium transition-all duration-300 animate-in fade-in slide-in-from-bottom-3 ${
+            toastNotification.type === "success"
+              ? "bg-[#14161C] text-white border-[#2E7A4A]/50 shadow-[0_10px_25px_rgba(20,22,28,0.25)]"
+              : "bg-[#7F1D1D] text-white border-red-500 shadow-red-900/30"
+          }`}
+        >
+          {toastNotification.type === "success" ? (
+            <div className="w-5 h-5 rounded-full bg-[#24623E] flex items-center justify-center shrink-0">
+              <Check className="w-3.5 h-3.5 text-white" />
+            </div>
+          ) : (
+            <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center shrink-0 text-white text-xs font-bold">
+              !
+            </div>
+          )}
+          <span>{toastNotification.text}</span>
+        </div>
+      )}
     </form>
   );
 }

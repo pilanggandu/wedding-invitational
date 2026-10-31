@@ -5,9 +5,14 @@ import { hashPassword } from "./auth";
 import { run12TablesMigration } from "./database/migration_service";
 import { NormalizedWeddingService } from "./services/normalizedWeddingService";
 
-dotenv.config();
-dotenv.config({ path: path.resolve(import.meta.dirname, "../.env") });
-dotenv.config({ path: path.resolve(import.meta.dirname, "../../.env") });
+if (typeof path !== "undefined" && typeof path.resolve === "function") {
+  const envDir = typeof __dirname !== "undefined" ? __dirname : typeof process !== "undefined" ? process.cwd() : ".";
+  dotenv.config();
+  dotenv.config({ path: path.resolve(envDir, "../.env") });
+  dotenv.config({ path: path.resolve(envDir, "../../.env") });
+} else {
+  dotenv.config();
+}
 
 let pool: Pool | null = null;
 let isConnected = false;
@@ -369,11 +374,21 @@ export const postgresService = {
         const saved = await pool.query("SELECT general FROM weddings WHERE id = $1", [id]);
         const rawGeneral = saved.rows[0]?.general;
         const general = typeof rawGeneral === "string" ? JSON.parse(rawGeneral) : rawGeneral;
-        const musicSettings: Record<string, string | number> = {};
+        const musicSettings: Record<string, any> = {};
 
         if (general && typeof general === "object" && !Array.isArray(general)) {
-          for (const key of ["musicUrl", "musicTitle", "musicArtist"] as const) {
-            if (typeof general[key] === "string") {
+          for (const key of [
+            "musicUrl",
+            "musicTitle",
+            "musicArtist",
+            "hashtag",
+            "funTagline",
+            "closingMessage",
+            "coverPhotoUrl",
+            "heroPhotoUrl",
+            "preweddingPhotos",
+          ] as const) {
+            if (general[key] !== undefined) {
               musicSettings[key] = general[key];
             }
           }

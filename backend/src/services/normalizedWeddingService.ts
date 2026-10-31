@@ -229,12 +229,20 @@ export class NormalizedWeddingService {
       // 2. Update couples jika ada payload.couple
       if (payload.couple) {
         if (payload.couple.groom) {
+          const groomInstagram = payload.couple.groom.instagram
+            ? (payload.couple.groom.instagram.startsWith("http")
+                ? payload.couple.groom.instagram
+                : `https://instagram.com/${payload.couple.groom.instagram.replace(/^@/, "")}`)
+            : null;
           await client.query(
             `UPDATE couples SET
               full_name = COALESCE($1, full_name),
               nickname = COALESCE($2, nickname),
               tagline = COALESCE($3, tagline),
               bio_funny = COALESCE($4, bio_funny),
+              father_name = COALESCE($5, father_name),
+              instagram_url = COALESCE($6, instagram_url),
+              photo = COALESCE($7, photo),
               updated_at = NOW()
             WHERE type = 1`,
             [
@@ -242,16 +250,27 @@ export class NormalizedWeddingService {
               payload.couple.groom.name,
               payload.couple.groom.tagline,
               payload.couple.groom.bioFunny,
+              payload.couple.groom.parents,
+              groomInstagram,
+              payload.couple.groom.photoUrl,
             ]
           );
         }
         if (payload.couple.bride) {
+          const brideInstagram = payload.couple.bride.instagram
+            ? (payload.couple.bride.instagram.startsWith("http")
+                ? payload.couple.bride.instagram
+                : `https://instagram.com/${payload.couple.bride.instagram.replace(/^@/, "")}`)
+            : null;
           await client.query(
             `UPDATE couples SET
               full_name = COALESCE($1, full_name),
               nickname = COALESCE($2, nickname),
               tagline = COALESCE($3, tagline),
               bio_funny = COALESCE($4, bio_funny),
+              father_name = COALESCE($5, father_name),
+              instagram_url = COALESCE($6, instagram_url),
+              photo = COALESCE($7, photo),
               updated_at = NOW()
             WHERE type = 2`,
             [
@@ -259,9 +278,113 @@ export class NormalizedWeddingService {
               payload.couple.bride.name,
               payload.couple.bride.tagline,
               payload.couple.bride.bioFunny,
+              payload.couple.bride.parents,
+              brideInstagram,
+              payload.couple.bride.photoUrl,
             ]
           );
         }
+      }
+
+      // 3. Update wedding_events jika ada payload.events
+      if (Array.isArray(payload.events) && payload.events.length > 0) {
+        const akadEvent = payload.events[0];
+        if (akadEvent) {
+          await client.query(
+            `UPDATE wedding_events SET
+              name = COALESCE($1, name),
+              venue = COALESCE($2, venue),
+              address = COALESCE($3, address),
+              maps_url = COALESCE($4, maps_url),
+              display_day = COALESCE($5, display_day),
+              display_date = COALESCE($6, display_date),
+              badge_cute = COALESCE($7, badge_cute),
+              color_theme = COALESCE($8, color_theme),
+              updated_at = NOW()
+            WHERE sort_order = 0 OR is_main = TRUE OR id = 1`,
+            [
+              akadEvent.title,
+              akadEvent.venueName,
+              akadEvent.venueAddress,
+              akadEvent.mapUrl,
+              akadEvent.displayDay,
+              akadEvent.displayDate,
+              akadEvent.badgeCute,
+              akadEvent.colorTheme,
+            ]
+          );
+        }
+
+        const resepsiEvent = payload.events[1];
+        if (resepsiEvent) {
+          await client.query(
+            `UPDATE wedding_events SET
+              name = COALESCE($1, name),
+              venue = COALESCE($2, venue),
+              address = COALESCE($3, address),
+              maps_url = COALESCE($4, maps_url),
+              display_day = COALESCE($5, display_day),
+              display_date = COALESCE($6, display_date),
+              badge_cute = COALESCE($7, badge_cute),
+              color_theme = COALESCE($8, color_theme),
+              updated_at = NOW()
+            WHERE sort_order = 1 OR id = 2`,
+            [
+              resepsiEvent.title,
+              resepsiEvent.venueName,
+              resepsiEvent.venueAddress,
+              resepsiEvent.mapUrl,
+              resepsiEvent.displayDay,
+              resepsiEvent.displayDate,
+              resepsiEvent.badgeCute,
+              resepsiEvent.colorTheme,
+            ]
+          );
+        }
+      }
+
+      // 4. Update wedding_gifts jika ada payload.gifts
+      if (payload.gifts?.accounts && Array.isArray(payload.gifts.accounts)) {
+        const acc1 = payload.gifts.accounts[0];
+        if (acc1) {
+          await client.query(
+            `UPDATE wedding_gifts SET
+              provider = COALESCE($1, provider),
+              account_number = COALESCE($2, account_number),
+              account_holder = COALESCE($3, account_holder),
+              updated_at = NOW()
+            WHERE type = 1 OR sort_order = 0 OR id = 1`,
+            [acc1.bankName, acc1.accountNumber, acc1.accountHolder]
+          );
+        }
+        const acc2 = payload.gifts.accounts[1];
+        if (acc2) {
+          await client.query(
+            `UPDATE wedding_gifts SET
+              provider = COALESCE($1, provider),
+              account_number = COALESCE($2, account_number),
+              account_holder = COALESCE($3, account_holder),
+              updated_at = NOW()
+            WHERE type = 2 OR sort_order = 1 OR id = 2`,
+            [acc2.bankName, acc2.accountNumber, acc2.accountHolder]
+          );
+        }
+      }
+
+      if (payload.gifts?.physicalGiftAddress) {
+        await client.query(
+          `UPDATE wedding_gifts SET
+            account_holder = COALESCE($1, account_holder),
+            address = COALESCE($2, address),
+            phone = COALESCE($3, phone),
+            updated_at = NOW()
+          WHERE type = 4 OR sort_order = 2 OR id = 3`,
+          [
+            payload.gifts.physicalGiftAddress.recipient,
+            payload.gifts.physicalGiftAddress.address,
+            payload.gifts.physicalGiftAddress.phone,
+          ]
+        );
       }
 
       await client.query("COMMIT");

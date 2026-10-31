@@ -231,17 +231,17 @@ if (typeof window !== "undefined") {
   }, 100);
 }
 
-export function saveInvitationData(data: WeddingInvitationData): void {
-  if (typeof window === "undefined") return;
+export async function saveInvitationData(data: WeddingInvitationData): Promise<boolean> {
+  if (typeof window === "undefined") return false;
   try {
     localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
     window.dispatchEvent(new CustomEvent("wedding-data-changed", { detail: data }));
-    // Simpan ke backend secara asinkron
-    saveInvitationToBackend(data).catch((err) => {
-      console.warn("Gagal menyimpan data undangan ke backend:", err);
-    });
+    // Simpan ke backend secara terkonfirmasi
+    const ok = await saveInvitationToBackend(data);
+    return ok;
   } catch (err) {
     console.error("Gagal menyimpan invitation data:", err);
+    return false;
   }
 }
 
