@@ -268,8 +268,19 @@ if (typeof window !== "undefined") {
 export async function saveInvitationData(data: WeddingInvitationData): Promise<boolean> {
   if (typeof window === "undefined") return false;
   try {
-    localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
+    try {
+      localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
+    } catch (storageErr) {
+      console.warn("Peringatan: LocalStorage penuh, mencoba membersihkan dan menyimpan ulang:", storageErr);
+      try {
+        localStorage.removeItem(INVITATION_STORAGE_KEY);
+        localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
+      } catch (retryErr) {
+        console.error("LocalStorage quota exceeded:", retryErr);
+      }
+    }
     window.dispatchEvent(new CustomEvent("wedding-data-changed", { detail: data }));
+
     // Simpan ke backend secara terkonfirmasi
     const ok = await saveInvitationToBackend(data);
     return ok;

@@ -194,6 +194,13 @@ export async function initPostgres(): Promise<boolean> {
         "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique_idx ON users (google_sub)"
       );
 
+      // Pastikan kolom foto di tabel-tabel dapat menyimpan path atau base64 tanpa batasan 500 char
+      await pool.query("ALTER TABLE couples ALTER COLUMN photo TYPE TEXT").catch(() => {});
+      await pool.query("ALTER TABLE wedding_settings ALTER COLUMN cover_image TYPE TEXT").catch(() => {});
+      await pool.query("ALTER TABLE wedding_settings ALTER COLUMN hero_image TYPE TEXT").catch(() => {});
+      await pool.query("ALTER TABLE wedding_galleries ALTER COLUMN image_path TYPE TEXT").catch(() => {});
+      await pool.query("ALTER TABLE wedding_stories ALTER COLUMN image TYPE TEXT").catch(() => {});
+
       // 3. Seed data awal jika tabel weddings masih kosong
       const weddingCount = await pool.query("SELECT COUNT(*) FROM weddings");
       if (parseInt(weddingCount.rows[0].count) === 0) {
@@ -420,13 +427,34 @@ export const postgresService = {
           themePalette: wideThemePalette || normalizedData.themePalette,
           couple: wideCouple && (wideCouple.groom || wideCouple.bride)
             ? {
-                groom: { ...(normalizedData.couple?.groom || {}), ...(wideCouple.groom || {}) },
-                bride: { ...(normalizedData.couple?.bride || {}), ...(wideCouple.bride || {}) },
+                groom: {
+                  ...(normalizedData.couple?.groom || {}),
+                  ...(wideCouple.groom || {}),
+                  photoUrl: wideCouple.groom?.photoUrl || normalizedData.couple?.groom?.photoUrl,
+                },
+                bride: {
+                  ...(normalizedData.couple?.bride || {}),
+                  ...(wideCouple.bride || {}),
+                  photoUrl: wideCouple.bride?.photoUrl || normalizedData.couple?.bride?.photoUrl,
+                },
               }
             : normalizedData.couple,
           events: Array.isArray(wideEvents) && wideEvents.length > 0 ? wideEvents : normalizedData.events,
           gifts: wideGifts?.accounts && Array.isArray(wideGifts.accounts) && wideGifts.accounts.length > 0 ? wideGifts : normalizedData.gifts,
-          general: { ...normalizedData.general, ...musicSettings },
+          general: {
+            ...normalizedData.general,
+            ...musicSettings,
+            coverPhotoUrl:
+              musicSettings.coverPhotoUrl ||
+              general?.coverPhotoUrl ||
+              normalizedData.general?.coverPhotoUrl ||
+              "/images/prewedding/couple-1.jpg",
+            heroPhotoUrl:
+              musicSettings.heroPhotoUrl ||
+              general?.heroPhotoUrl ||
+              normalizedData.general?.heroPhotoUrl ||
+              "/images/prewedding/couple-2.jpg",
+          },
           stories: Array.isArray(wideStories) && wideStories.length > 0 ? wideStories : normalizedData.stories,
           gallery: Array.isArray(wideGallery) && wideGallery.length > 0 ? wideGallery : normalizedData.gallery,
         };

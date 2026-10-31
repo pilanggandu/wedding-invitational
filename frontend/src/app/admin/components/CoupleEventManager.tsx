@@ -20,6 +20,7 @@ import {
 import { WeddingInvitationData } from "@/types/wedding";
 import { saveInvitationData } from "@/lib/invitationStore";
 import { extractColorsFromImage, ExtractedColors, FALLBACK_PALETTE } from "@/lib/colorExtractor";
+import { uploadImageFile } from "@/lib/imageUpload";
 
 interface CoupleEventManagerProps {
   data: WeddingInvitationData;
@@ -80,20 +81,27 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     };
   }, [previewingPhotoSrc]);
 
-  const handleFileUpload = (
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (url: string) => void
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setter(reader.result);
-        setPreviewingPhotoSrc(reader.result);
+
+    // Tampilkan preview lokal instan
+    const tempUrl = URL.createObjectURL(file);
+    setter(tempUrl);
+    setPreviewingPhotoSrc(tempUrl);
+
+    try {
+      const permanentUrl = await uploadImageFile(file);
+      if (permanentUrl) {
+        setter(permanentUrl);
+        setPreviewingPhotoSrc(permanentUrl);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.warn("Gagal mengunggah foto ke server:", err);
+    }
   };
 
   const handleAddPreweddingPhoto = () => {
@@ -823,17 +831,23 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        if (typeof reader.result === "string") {
-                          setPreweddingPhotos((prev) => [...prev, reader.result as string]);
-                          setPreviewingPhotoSrc(reader.result as string);
+                      const tempUrl = URL.createObjectURL(file);
+                      setPreweddingPhotos((prev) => [...prev, tempUrl]);
+                      setPreviewingPhotoSrc(tempUrl);
+                      try {
+                        const permanentUrl = await uploadImageFile(file);
+                        if (permanentUrl) {
+                          setPreweddingPhotos((prev) =>
+                            prev.map((p) => (p === tempUrl ? permanentUrl : p))
+                          );
+                          setPreviewingPhotoSrc(permanentUrl);
                         }
-                      };
-                      reader.readAsDataURL(file);
+                      } catch (err) {
+                        console.warn("Gagal upload prewedding photo:", err);
+                      }
                     }}
                   />
                 </label>

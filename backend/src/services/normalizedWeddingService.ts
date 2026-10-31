@@ -169,6 +169,15 @@ export class NormalizedWeddingService {
         closingMessage: settings.closing_text || "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
         openingMessage: settings.opening_text || "Dengan rasa syukur yang melimpah dan senyum paling bahagia, kami mengundang teman-teman dan keluarga:",
         openingGreetings: "Assalamu'alaikum & Halo Teman-Teman Semua!",
+        coverPhotoUrl: settings.cover_image || "/images/prewedding/couple-1.jpg",
+        heroPhotoUrl: settings.hero_image || "/images/prewedding/couple-2.jpg",
+        preweddingPhotos: [
+          settings.cover_image || "/images/prewedding/couple-1.jpg",
+          settings.hero_image || "/images/prewedding/couple-2.jpg",
+          "/images/prewedding/couple-3.jpg",
+          "/images/prewedding/couple-4.jpg",
+          "/images/prewedding/couple-5.jpg",
+        ],
         quote,
       },
       countdownTarget: mainEvent ? `${mainEvent.dateStr}T08:00:00+07:00` : "2026-11-21T08:00:00+07:00",
@@ -211,14 +220,18 @@ export class NormalizedWeddingService {
             cover_subtitle = COALESCE($3, cover_subtitle),
             closing_text = COALESCE($4, closing_text),
             dresscode = COALESCE($5, dresscode),
+            cover_image = COALESCE($6, cover_image),
+            hero_image = COALESCE($7, hero_image),
             updated_at = NOW()
-          WHERE id = $6`,
+          WHERE id = $8`,
           [
             payload.activeTemplateId,
             payload.themePalette ? JSON.stringify(payload.themePalette) : null,
             payload.general?.funTagline,
             payload.general?.closingMessage,
             payload.dresscode ? JSON.stringify(payload.dresscode) : null,
+            payload.general?.coverPhotoUrl,
+            payload.general?.heroPhotoUrl,
             settingsId,
           ]
         );

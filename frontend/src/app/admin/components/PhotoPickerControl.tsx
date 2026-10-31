@@ -10,6 +10,7 @@ import {
   Check,
   Clipboard,
 } from "lucide-react";
+import { uploadImageFile } from "@/lib/imageUpload";
 
 export interface PhotoPresetItem {
   label: string;
@@ -271,16 +272,22 @@ export function PhotoPickerControl({
 
   const badge = getSourceBadge();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        onChange(reader.result);
+
+    // Tampilkan preview lokal instan
+    const tempUrl = URL.createObjectURL(file);
+    onChange(tempUrl);
+
+    try {
+      const permanentUrl = await uploadImageFile(file);
+      if (permanentUrl) {
+        onChange(permanentUrl);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.warn("Gagal upload gambar di PhotoPickerControl:", err);
+    }
   };
 
   const handleApplyCloudUrl = () => {
