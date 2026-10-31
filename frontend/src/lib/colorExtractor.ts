@@ -79,7 +79,9 @@ export async function extractColorsFromImage(imageSrc: string): Promise<Extracte
 
   return new Promise((resolve) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    if (!imageSrc.startsWith("data:") && !imageSrc.startsWith("blob:")) {
+      img.crossOrigin = "anonymous";
+    }
 
     img.onload = () => {
       try {

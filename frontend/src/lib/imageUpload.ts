@@ -10,10 +10,22 @@ export async function compressImageToDataUrl(
   quality = 0.75
 ): Promise<string> {
   return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      resolve("");
+    }, 4000);
+
     const reader = new FileReader();
     reader.onload = (e) => {
+      const result = e.target?.result as string;
+      if (!result) {
+        clearTimeout(timeout);
+        resolve("");
+        return;
+      }
+
       const img = new Image();
       img.onload = () => {
+        clearTimeout(timeout);
         let width = img.width;
         let height = img.height;
 
@@ -34,21 +46,26 @@ export async function compressImageToDataUrl(
         canvas.height = height;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          resolve(e.target?.result as string);
+          resolve(result);
           return;
         }
 
         ctx.drawImage(img, 0, 0, width, height);
-        // Menggunakan JPEG dengan kompresi terarah agar ukuran di bawah 50KB
-        const compressed = canvas.toDataURL("image/jpeg", quality);
-        resolve(compressed);
+        try {
+          const compressed = canvas.toDataURL("image/jpeg", quality);
+          resolve(compressed);
+        } catch {
+          resolve(result);
+        }
       };
       img.onerror = () => {
-        resolve(e.target?.result as string);
+        clearTimeout(timeout);
+        resolve(result);
       };
-      img.src = e.target?.result as string;
+      img.src = result;
     };
     reader.onerror = () => {
+      clearTimeout(timeout);
       resolve("");
     };
     reader.readAsDataURL(file);
@@ -69,6 +86,14 @@ export async function uploadImageFile(file: File): Promise<string> {
     if (res.ok) {
       const data = await res.json();
       if (data.url) {
+        // Preload gambar ke cache browser agar langsung tersedia
+        await new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+          img.src = data.url;
+          setTimeout(resolve, 1500);
+        });
         return data.url;
       }
     }

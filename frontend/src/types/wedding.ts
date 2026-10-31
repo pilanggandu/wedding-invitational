@@ -147,6 +147,8 @@ export interface WeddingInvitationData {
   };
   dresscode: DresscodeConfig;
   initialWishes: WishMessage[];
+  updatedAt?: string;
+  source?: string;
 }
 
 export interface GuestItem {

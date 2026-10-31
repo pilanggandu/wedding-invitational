@@ -17,12 +17,16 @@ const nextConfig: NextConfig = {
     "*.loca.lt",
   ],
   async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: `http://localhost:${process.env.BACKEND_PORT || "5022"}/api/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [],
+      afterFiles: [],
+      fallback: [
+        {
+          source: "/api/:path*",
+          destination: `http://localhost:${process.env.BACKEND_PORT || "5022"}/api/:path*`,
+        },
+      ],
+    };
   },
 };
 

@@ -342,6 +342,9 @@ export function PhotoPickerControl({
             <img
               src={value}
               alt={label}
+              onError={(e) => {
+                e.currentTarget.src = "/images/prewedding/couple-1.jpg";
+              }}
               className="w-full h-full object-cover"
             />
           ) : (

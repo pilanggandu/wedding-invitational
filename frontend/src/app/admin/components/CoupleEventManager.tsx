@@ -81,6 +81,78 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     };
   }, [previewingPhotoSrc]);
 
+  // Sinkronisasi seluruh field form ketika data diperbarui dari server atau background sync
+  useEffect(() => {
+    if (!data) return;
+
+    if (data.couple?.groom) {
+      if (data.couple.groom.name !== undefined) setGroomName(data.couple.groom.name);
+      if (data.couple.groom.fullName !== undefined) setGroomFullName(data.couple.groom.fullName);
+      if (data.couple.groom.parents !== undefined) setGroomParents(data.couple.groom.parents);
+      if (data.couple.groom.instagram !== undefined) setGroomInstagram(data.couple.groom.instagram);
+      if (data.couple.groom.tagline !== undefined) setGroomTagline(data.couple.groom.tagline);
+      if (data.couple.groom.photoUrl) setGroomPhotoUrl(data.couple.groom.photoUrl);
+    }
+
+    if (data.couple?.bride) {
+      if (data.couple.bride.name !== undefined) setBrideName(data.couple.bride.name);
+      if (data.couple.bride.fullName !== undefined) setBrideFullName(data.couple.bride.fullName);
+      if (data.couple.bride.parents !== undefined) setBrideParents(data.couple.bride.parents);
+      if (data.couple.bride.instagram !== undefined) setBrideInstagram(data.couple.bride.instagram);
+      if (data.couple.bride.tagline !== undefined) setBrideTagline(data.couple.bride.tagline);
+      if (data.couple.bride.photoUrl) setBridePhotoUrl(data.couple.bride.photoUrl);
+    }
+
+    if (data.general) {
+      if (data.general.coverPhotoUrl) {
+        setCoverPhotoUrl(data.general.coverPhotoUrl);
+        setPreviewingPhotoSrc((prev) => (prev.startsWith("blob:") ? prev : data.general.coverPhotoUrl!));
+      }
+      if (Array.isArray(data.general.preweddingPhotos) && data.general.preweddingPhotos.length > 0) {
+        setPreweddingPhotos(data.general.preweddingPhotos);
+      }
+      if (data.general.funTagline !== undefined) setFunTagline(data.general.funTagline);
+      if (data.general.hashtag !== undefined) setHashtag(data.general.hashtag);
+      if (data.general.closingMessage !== undefined) setClosingMessage(data.general.closingMessage);
+    }
+
+    const evAkad = data.events?.[0];
+    if (evAkad) {
+      if (evAkad.displayDay) setAkadDay(evAkad.displayDay);
+      if (evAkad.displayDate) setAkadDate(evAkad.displayDate);
+      if (evAkad.time) setAkadTime(evAkad.time);
+      if (evAkad.venueName) setAkadVenue(evAkad.venueName);
+      if (evAkad.venueAddress) setAkadAddress(evAkad.venueAddress);
+      if (evAkad.mapUrl) setAkadMapUrl(evAkad.mapUrl);
+    }
+
+    const evResepsi = data.events?.[1] || evAkad;
+    if (evResepsi) {
+      if (evResepsi.displayDay) setResepsiDay(evResepsi.displayDay);
+      if (evResepsi.displayDate) setResepsiDate(evResepsi.displayDate);
+      if (evResepsi.time) setResepsiTime(evResepsi.time);
+      if (evResepsi.venueName) setResepsiVenue(evResepsi.venueName);
+      if (evResepsi.venueAddress) setResepsiAddress(evResepsi.venueAddress);
+      if (evResepsi.mapUrl) setResepsiMapUrl(evResepsi.mapUrl);
+    }
+
+    const a1 = data.gifts?.accounts?.[0];
+    if (a1) {
+      if (a1.bankName) setBank1Name(a1.bankName);
+      if (a1.accountNumber !== undefined) setBank1Number(a1.accountNumber);
+      if (a1.accountHolder !== undefined) setBank1Holder(a1.accountHolder);
+    }
+    const a2 = data.gifts?.accounts?.[1];
+    if (a2) {
+      if (a2.bankName) setBank2Name(a2.bankName);
+      if (a2.accountNumber !== undefined) setBank2Number(a2.accountNumber);
+      if (a2.accountHolder !== undefined) setBank2Holder(a2.accountHolder);
+    }
+    if (data.gifts?.physicalGiftAddress?.address) {
+      setPhysicalAddress(data.gifts.physicalGiftAddress.address);
+    }
+  }, [data]);
+
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (url: string) => void
@@ -517,6 +589,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                     <img
                       src={groomPhotoUrl}
                       alt="Groom Preview"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/prewedding/couple-3.jpg";
+                      }}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -668,6 +743,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                     <img
                       src={bridePhotoUrl}
                       alt="Bride Preview"
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/prewedding/couple-4.jpg";
+                      }}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -868,6 +946,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                     <img
                       src={photoUrl}
                       alt={`Foto Prewedding ${idx + 1}`}
+                      onError={(e) => {
+                        e.currentTarget.src = "/images/prewedding/couple-1.jpg";
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -918,6 +999,11 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                   <img
                     src={previewingPhotoSrc}
                     alt="Inspected Sample"
+                    onError={(e) => {
+                      if (previewingPhotoSrc !== "/images/prewedding/couple-1.jpg") {
+                        e.currentTarget.src = "/images/prewedding/couple-1.jpg";
+                      }
+                    }}
                     className="w-full h-full object-cover object-center"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">

@@ -36,6 +36,12 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// Static serving untuk direktori unggahan foto dan audio publik
+const frontendUploads = path.resolve(import.meta.dirname, "../../frontend/public/uploads");
+const frontendAudio = path.resolve(import.meta.dirname, "../../frontend/public/audio");
+app.use("/uploads", express.static(frontendUploads));
+app.use("/audio", express.static(frontendAudio));
+
 // Request Logger sederhana
 app.use((req, _res, next) => {
   const timestamp = new Date().toLocaleTimeString("id-ID");

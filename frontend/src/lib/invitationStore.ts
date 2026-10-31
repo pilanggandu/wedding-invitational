@@ -188,26 +188,70 @@ export async function syncWithBackend(): Promise<void> {
       const serverData = invitationRes.value;
       if (serverData && typeof serverData === "object") {
         const local = getInvitationData();
+
+        const localTime = local.updatedAt ? new Date(local.updatedAt).getTime() : 0;
+        const serverTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
+
+        if (localTime > 0 && serverTime > 0 && localTime > serverTime + 1000) {
+          saveInvitationToBackend(local).catch((e) => console.warn("Background push to server notice:", e));
+          return;
+        }
+
+        const isDefaultOrEmptyPhoto = (url?: string) => {
+          if (!url) return true;
+          return url.includes("/images/prewedding/couple-");
+        };
+
+        const resolvedGroomPhoto =
+          serverData.couple?.groom?.photoUrl && !isDefaultOrEmptyPhoto(serverData.couple.groom.photoUrl)
+            ? serverData.couple.groom.photoUrl
+            : local.couple?.groom?.photoUrl || serverData.couple?.groom?.photoUrl || DEFAULT_INVITATION_DATA.couple.groom.photoUrl;
+
+        const resolvedBridePhoto =
+          serverData.couple?.bride?.photoUrl && !isDefaultOrEmptyPhoto(serverData.couple.bride.photoUrl)
+            ? serverData.couple.bride.photoUrl
+            : local.couple?.bride?.photoUrl || serverData.couple?.bride?.photoUrl || DEFAULT_INVITATION_DATA.couple.bride.photoUrl;
+
+        const resolvedCoverPhoto =
+          serverData.general?.coverPhotoUrl && !isDefaultOrEmptyPhoto(serverData.general.coverPhotoUrl)
+            ? serverData.general.coverPhotoUrl
+            : local.general?.coverPhotoUrl || serverData.general?.coverPhotoUrl || DEFAULT_INVITATION_DATA.general.coverPhotoUrl;
+
+        const resolvedPreweddingPhotos =
+          Array.isArray(serverData.general?.preweddingPhotos) && serverData.general.preweddingPhotos.length > 0
+            ? serverData.general.preweddingPhotos
+            : Array.isArray(local.general?.preweddingPhotos) && local.general.preweddingPhotos.length > 0
+            ? local.general.preweddingPhotos
+            : DEFAULT_INVITATION_DATA.general.preweddingPhotos;
+
         const merged: WeddingInvitationData = {
           ...DEFAULT_INVITATION_DATA,
           ...local,
           ...serverData,
           couple: {
+            ...DEFAULT_INVITATION_DATA.couple,
+            ...local.couple,
+            ...serverData.couple,
             groom: {
               ...DEFAULT_INVITATION_DATA.couple.groom,
               ...(local.couple?.groom || {}),
               ...(serverData.couple?.groom || {}),
+              photoUrl: resolvedGroomPhoto,
             },
             bride: {
               ...DEFAULT_INVITATION_DATA.couple.bride,
               ...(local.couple?.bride || {}),
               ...(serverData.couple?.bride || {}),
+              photoUrl: resolvedBridePhoto,
             },
           },
           general: {
             ...DEFAULT_INVITATION_DATA.general,
             ...(local.general || {}),
             ...(serverData.general || {}),
+            coverPhotoUrl: resolvedCoverPhoto,
+            heroPhotoUrl: resolvedCoverPhoto,
+            preweddingPhotos: resolvedPreweddingPhotos,
           },
           events:
             Array.isArray(serverData.events) && serverData.events.length > 0
@@ -218,6 +262,7 @@ export async function syncWithBackend(): Promise<void> {
             ...(local.gifts || {}),
             ...(serverData.gifts || {}),
           },
+          updatedAt: serverData.updatedAt || local.updatedAt || new Date().toISOString(),
         };
         localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(merged));
         window.dispatchEvent(
@@ -268,6 +313,7 @@ if (typeof window !== "undefined") {
 export async function saveInvitationData(data: WeddingInvitationData): Promise<boolean> {
   if (typeof window === "undefined") return false;
   try {
+    data.updatedAt = new Date().toISOString();
     try {
       localStorage.setItem(INVITATION_STORAGE_KEY, JSON.stringify(data));
     } catch (storageErr) {

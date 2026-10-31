@@ -263,7 +263,7 @@ export class NormalizedWeddingService {
               payload.couple.groom.bioFunny,
               payload.couple.groom.parents,
               groomInstagram,
-              payload.couple.groom.photoUrl,
+              payload.couple.groom.photoUrl || null,
             ]
           );
         }
@@ -291,7 +291,7 @@ export class NormalizedWeddingService {
               payload.couple.bride.bioFunny,
               payload.couple.bride.parents,
               brideInstagram,
-              payload.couple.bride.photoUrl,
+              payload.couple.bride.photoUrl || null,
             ]
           );
         }

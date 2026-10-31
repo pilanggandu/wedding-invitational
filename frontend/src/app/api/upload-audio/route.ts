@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
+import fsSync from "fs";
 import path from "path";
 
 export const dynamic = "force-dynamic";
+
+function getAudioDir(): string {
+  const cwd = process.cwd();
+  if (path.basename(cwd) === "frontend") {
+    return path.join(cwd, "public", "audio");
+  }
+  if (fsSync.existsSync(path.join(cwd, "frontend", "public"))) {
+    return path.join(cwd, "frontend", "public", "audio");
+  }
+  return path.join(cwd, "public", "audio");
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,19 +29,20 @@ export async function POST(req: NextRequest) {
     const validExts = ["mp3", "wav", "ogg", "m4a", "aac", "weba", "flac"];
     const ext = validExts.includes(rawExt) ? rawExt : "mp3";
 
-    const baseName = file.name
-      .replace(/\.[^/.]+$/, "")
-      .replace(/[^a-zA-Z0-9_\- ]/g, "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .slice(0, 40) || "custom_audio";
+    const baseName =
+      file.name
+        .replace(/\.[^/.]+$/, "")
+        .replace(/[^a-zA-Z0-9_\- ]/g, "")
+        .trim()
+        .replace(/\s+/g, "_")
+        .slice(0, 40) || "custom_audio";
 
     const fileName = `${baseName}_${Date.now()}.${ext}`;
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const publicAudioDir = path.join(process.cwd(), "public", "audio");
+    const publicAudioDir = getAudioDir();
     await fs.mkdir(publicAudioDir, { recursive: true });
     await fs.writeFile(path.join(publicAudioDir, fileName), buffer);
 

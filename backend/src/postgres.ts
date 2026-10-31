@@ -454,9 +454,16 @@ export const postgresService = {
               general?.heroPhotoUrl ||
               normalizedData.general?.heroPhotoUrl ||
               "/images/prewedding/couple-2.jpg",
+            preweddingPhotos:
+              (Array.isArray(musicSettings.preweddingPhotos) && musicSettings.preweddingPhotos.length > 0)
+                ? musicSettings.preweddingPhotos
+                : (Array.isArray(general?.preweddingPhotos) && general.preweddingPhotos.length > 0)
+                ? general.preweddingPhotos
+                : normalizedData.general?.preweddingPhotos,
           },
           stories: Array.isArray(wideStories) && wideStories.length > 0 ? wideStories : normalizedData.stories,
           gallery: Array.isArray(wideGallery) && wideGallery.length > 0 ? wideGallery : normalizedData.gallery,
+          updatedAt: wideRow?.updated_at || normalizedData.updatedAt || new Date().toISOString(),
         };
       } catch (e: any) {
         console.warn("Fallback to wide weddings table:", e.message);
