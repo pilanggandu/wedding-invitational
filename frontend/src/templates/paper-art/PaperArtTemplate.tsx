@@ -448,7 +448,7 @@ function SketchbookCouple() {
             </div>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
-              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#F8EFEA]">
+              <div className="absolute top-[13.5%] bottom-[15.5%] left-[17.5%] right-[16.5%] overflow-hidden bg-[#F8EFEA] rounded-xs">
                 <motion.div
                   initial={
                     shouldReduceMotion
@@ -476,7 +476,7 @@ function SketchbookCouple() {
                 alt="Deckle Photo Frame"
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-md select-none z-10"
               />
-              <div className="absolute bottom-[21%] left-[22%] right-[22%] flex justify-between items-end z-20 pointer-events-none">
+              <div className="absolute bottom-[18%] left-[20%] right-[20%] flex justify-between items-end z-20 pointer-events-none">
                 <span className="text-xs font-mono uppercase bg-[#541E24]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
                   Mempelai Pria
                 </span>
@@ -548,7 +548,7 @@ function SketchbookCouple() {
             </div>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
-              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#F8EFEA]">
+              <div className="absolute top-[13.5%] bottom-[15.5%] left-[17.5%] right-[16.5%] overflow-hidden bg-[#F8EFEA] rounded-xs">
                 <motion.div
                   initial={
                     shouldReduceMotion
@@ -576,7 +576,7 @@ function SketchbookCouple() {
                 alt="Deckle Photo Frame"
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-md select-none z-10"
               />
-              <div className="absolute bottom-[21%] left-[22%] right-[22%] flex justify-between items-end z-20 pointer-events-none">
+              <div className="absolute bottom-[18%] left-[20%] right-[20%] flex justify-between items-end z-20 pointer-events-none">
                 <span className="text-xs font-mono uppercase bg-[#541E24]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
                   Mempelai Wanita
                 </span>
