@@ -83,7 +83,7 @@ export function PhotoPlaceholder({
 
       {/* Floating Childlike Sticker Badge */}
       {stickerText && (
-        <div className="absolute -bottom-3 -right-3 z-20 bg-[#FFE58F] border-2 border-[#4A0812] text-[#4A0812] px-2.5 py-1 rounded-full text-xs font-script font-bold doodle-sticker rotate-6 shadow-xs">
+        <div className="absolute -bottom-3 -right-3 z-20 bg-[#F2DFBA] border-2 border-[#3A1116] text-[#3A1116] px-2.5 py-1 rounded-full text-xs font-script font-bold doodle-sticker rotate-6 shadow-xs">
           {stickerText}
         </div>
       )}
@@ -96,19 +96,19 @@ export function PhotoPlaceholder({
             animate={{ opacity: 1, y: -42, scale: 1.2 }}
             exit={{ opacity: 0, y: -60 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none flex items-center gap-1 bg-[#7D1128] text-white px-2.5 py-1 rounded-full border border-[#FFE58F] shadow-lg text-xs font-mono font-bold"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none flex items-center gap-1 bg-[#541E24] text-white px-2.5 py-1 rounded-full border border-[#F2DFBA] shadow-lg text-xs font-mono font-bold"
           >
             <span>+1</span>
-            <Heart className="w-3.5 h-3.5 text-[#FAD2D8] fill-current animate-ping" />
+            <Heart className="w-3.5 h-3.5 text-[#F2DFBA] fill-current animate-ping" />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Hand-Drawn Polaroid Sketch Card */}
-      <div className="crayon-box p-3.5 pb-5 bg-white relative overflow-hidden group shadow-[3px_4px_0px_#660F1A]">
+      <div className="crayon-box p-3.5 pb-5 bg-white relative overflow-hidden group shadow-[3px_4px_0px_#541E24]">
         {/* Inner Crayon Drawing Sheet in soft blush-ivory */}
-        <div className="border-2 border-dashed border-[#7D1128]/30 rounded-xl p-1 bg-[#FFF9FA]">
-          <div className="relative aspect-[3/4] w-full min-w-[220px] bg-gradient-to-b from-[#FFFDF8] via-[#FFF5F6] to-[#FFEBEF] rounded-lg overflow-hidden flex flex-col items-center justify-center p-0">
+        <div className="border-2 border-dashed border-[#541E24]/30 rounded-xl p-1 bg-[#F8EFEA]">
+          <div className="relative aspect-[3/4] w-full min-w-[220px] bg-gradient-to-b from-[#FFFDFB] via-[#FAF4EE] to-[#F8EFEA] rounded-lg overflow-hidden flex flex-col items-center justify-center p-0">
             {imageUrl ? (
               <img
                 src={imageUrl}
@@ -128,7 +128,7 @@ export function PhotoPlaceholder({
 
             {/* Tag Badge */}
             {tag && (
-              <span className="absolute bottom-2.5 left-2.5 text-[10px] tracking-wider uppercase font-mono font-bold px-2.5 py-0.5 rounded-full bg-white text-[#4A0812] border-1.5 border-[#4A0812] shadow-xs z-10">
+              <span className="absolute bottom-2.5 left-2.5 text-[10px] tracking-wider uppercase font-mono font-bold px-2.5 py-0.5 rounded-full bg-white text-[#3A1116] border-1.5 border-[#3A1116] shadow-xs z-10">
                 {tag}
               </span>
             )}
@@ -140,15 +140,15 @@ export function PhotoPlaceholder({
           <div className="mt-3 text-center px-1 flex items-center justify-center">
             <button
               onClick={handleHeartClick}
-              className="font-script text-lg sm:text-xl text-[#4A0812] font-bold tracking-wide leading-tight flex items-center justify-center gap-1.5 hover:text-[#7D1128] transition-colors cursor-pointer group/btn"
+              className="font-script text-lg sm:text-xl text-[#3A1116] font-bold tracking-wide leading-tight flex items-center justify-center gap-1.5 hover:text-[#541E24] transition-colors cursor-pointer group/btn"
               title="Kirim Cinta ♥"
             >
               <span>{caption}</span>
-              <span className="relative flex items-center justify-center p-1 rounded-full group-hover/btn:bg-[#FFF0F3] transition-colors">
-                <Heart className={`w-3.5 h-3.5 text-[#7D1128] fill-current shrink-0 transition-transform ${likes > 0 ? "scale-125 text-[#D63D56]" : "group-hover/btn:scale-125"}`} />
+              <span className="relative flex items-center justify-center p-1 rounded-full group-hover/btn:bg-[#F8EFEA] transition-colors">
+                <Heart className={`w-3.5 h-3.5 text-[#541E24] fill-current shrink-0 transition-transform ${likes > 0 ? "scale-125 text-[#541E24]" : "group-hover/btn:scale-125"}`} />
               </span>
               {likes > 0 && (
-                <span className="text-[10px] font-mono font-bold text-[#7D1128] bg-[#FFF0F3] px-1.5 py-0.2 rounded-full border border-[#7D1128]/30">
+                <span className="text-[10px] font-mono font-bold text-[#541E24] bg-[#F8EFEA] px-1.5 py-0.2 rounded-full border border-[#541E24]/30">
                   {likes}
                 </span>
               )}
@@ -560,8 +560,8 @@ export function WaxSeal({
     >
       {/* Harmonious Ribbon Ends in Maroon & Gold */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-28 flex justify-center -z-10 pointer-events-none">
-        <div className="w-3.5 h-full bg-[#7D1128] border border-[#4A0812] shadow-xs transform -rotate-12 rounded-xs" />
-        <div className="w-3.5 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-12 -ml-1 rounded-xs" />
+        <div className="w-3.5 h-full bg-[#541E24] border border-[#3A1116] shadow-xs transform -rotate-12 rounded-xs" />
+        <div className="w-3.5 h-full bg-[#E5B869] border border-[#3A1116] shadow-xs transform rotate-12 -ml-1 rounded-xs" />
       </div>
 
       {/* 3D Wax Seal with Maroon Charm */}
@@ -569,12 +569,12 @@ export function WaxSeal({
         className={`${sizeClasses} wax-seal-maroon rounded-full flex flex-col items-center justify-center text-white p-1.5 transition-transform duration-300 group-hover:scale-105 active:scale-95`}
       >
         <div className="w-full h-full rounded-full border-2 border-dashed border-[#FFE58F]/70 flex flex-col items-center justify-center text-center p-1">
-          <Heart className="w-3.5 h-3.5 text-[#FAD2D8] mb-0.5 fill-current" />
+          <Heart className="w-3.5 h-3.5 text-[#F2DFBA] mb-0.5 fill-current" />
           <span className="font-script font-bold tracking-wider text-[14px] drop-shadow-sm text-white">
             {initials}
           </span>
           {label && (
-            <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#FFE58F]">
+            <span className="text-[8px] uppercase tracking-wider font-mono font-bold text-[#F2DFBA]">
               {label}
             </span>
           )}
@@ -658,16 +658,16 @@ export function PaperStamp({
   date?: string;
 }) {
   return (
-    <div className="inline-block p-1.5 border-3 border-dashed border-[#7D1128] rounded-full text-[#4A0812] select-none rotate-[-6deg] doodle-sticker bg-[#FFF0F3]">
-      <div className="w-22 h-22 rounded-full border-2 border-[#7D1128] flex flex-col items-center justify-center p-1 text-center bg-white">
+    <div className="inline-block p-1.5 border-3 border-dashed border-[#541E24] rounded-full text-[#3A1116] select-none rotate-[-6deg] doodle-sticker bg-[#F8EFEA]">
+      <div className="w-22 h-22 rounded-full border-2 border-[#541E24] flex flex-col items-center justify-center p-1 text-center bg-white">
         <Sparkles className="w-3.5 h-3.5 text-[#E5B869] mb-0.5" />
-        <span className="text-[8px] font-mono tracking-wider uppercase font-bold text-[#7D1128]">
+        <span className="text-[8px] font-mono tracking-wider uppercase font-bold text-[#541E24]">
           {text}
         </span>
-        <span className="text-[12px] font-script font-bold tracking-wider text-[#660F1A]">
+        <span className="text-[12px] font-script font-bold tracking-wider text-[#3A1116]">
           {date}
         </span>
-        <span className="text-[7px] font-mono uppercase tracking-widest text-[#B3394B]">
+        <span className="text-[7px] font-mono uppercase tracking-widest text-[#541E24]">
           ★ LOVE & JOY ★
         </span>
       </div>

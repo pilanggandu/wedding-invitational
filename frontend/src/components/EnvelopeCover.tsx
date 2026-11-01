@@ -43,7 +43,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
           particleCount: 55,
           spread: 65,
           origin: { y: 0.65 },
-          colors: ["#7D1128", "#A3B899", "#E5B869", "#F5A8B8", "#FFFDF8"],
+          colors: ["#541E24", "#A3B899", "#E5B869", "#F2DFBA", "#FFFDFB"],
         });
       }
     } catch {
@@ -82,7 +82,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             backgroundRepeat: "repeat",
             backgroundSize: "380px",
           }}
-          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none bg-[#FBF6EE] overflow-y-auto min-h-full"
+          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none bg-[#FAF4EE] overflow-y-auto min-h-full"
         >
           {/* Subtle Botanical Corner Foliage */}
           <BotanicalLeaves className="absolute -top-8 -left-8 w-32 sm:w-40 h-44 sm:h-52 opacity-25 rotate-45 pointer-events-none" />
@@ -95,7 +95,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             className="relative w-full max-w-sm sm:max-w-md my-auto py-5 px-1 sm:px-2 overflow-visible"
           >
             {/* Authentic Ivory Sketchbook Card (No overflow-hidden to preserve flourished script glyphs and pins) */}
-            <div className="relative bg-[#FFFDF8] rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#7D1128]/35 shadow-[0_12px_36px_rgba(125,17,40,0.12),3px_5px_0px_#7D1128] overflow-visible">
+            <div className="relative bg-[#FFFDFB] rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#541E24]/35 shadow-[0_12px_36px_rgba(84,30,36,0.12),3px_5px_0px_#2C0A0E] overflow-visible">
 
               {/* Brass Paperclip Washi Accent (Pins naturally over the card edge) */}
               <img
@@ -111,10 +111,10 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 transition={{ duration: 0.6, delay: 0.1, ease: MOTION_TRANSITIONS.romantic.ease }}
                 className="flex justify-center mb-2 sm:mb-3"
               >
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase bg-[#FFF0F3] text-[#7D1128] border border-[#7D1128]/30 shadow-2xs">
-                  <Sparkles className="w-3 h-3 text-[#B3394B]" />
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase bg-[#F8EFEA] text-[#541E24] border border-[#541E24]/30 shadow-2xs">
+                  <Sparkles className="w-3 h-3 text-[#541E24]" />
                   Buku Catatan Pernikahan
-                  <Sparkles className="w-3 h-3 text-[#B3394B]" />
+                  <Sparkles className="w-3 h-3 text-[#541E24]" />
                 </span>
               </motion.div>
 
@@ -123,7 +123,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                   initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.12, ease: MOTION_TRANSITIONS.romantic.ease }}
-                  className="relative w-32 sm:w-36 mx-auto aspect-[4/5] rounded-2xl overflow-hidden my-3 bg-[#FAF3EA] border-2 border-[#7D1128]/25 shadow-sm"
+                  className="relative w-32 sm:w-36 mx-auto aspect-[4/5] rounded-2xl overflow-hidden my-3 bg-[#F8EFEA] border-2 border-[#541E24]/25 shadow-sm"
                 >
                   <img
                     src={data.general.heroPhotoUrl || data.general.coverPhotoUrl}
@@ -148,7 +148,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 />
                 <span
                   style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-                  className="text-xl sm:text-2xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-0.5 -mt-1.5"
+                  className="text-xl sm:text-2xl font-bold text-[#541E24] tracking-widest z-10 select-none pl-0.5 -mt-1.5"
                 >
                   {(data.couple?.groom?.name || "G")[0]} &amp; {(data.couple?.bride?.name || "S")[0]}
                 </span>
@@ -160,10 +160,10 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.72, delay: 0.22, ease: MOTION_TRANSITIONS.romantic.ease }}
                 style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-                className="font-couple-title text-3xl min-[380px]:text-4xl sm:text-5xl text-[#7D1128] my-1 sm:my-2 leading-[1.3] tracking-wide font-bold py-1 overflow-visible"
+                className="font-couple-title text-3xl min-[380px]:text-4xl sm:text-5xl text-[#541E24] my-1 sm:my-2 leading-[1.3] tracking-wide font-bold py-1 overflow-visible"
               >
                 <CharMotionReveal text={data.couple?.groom?.name || "Gilang"} baseDelay={0.2} />{" "}
-                <span className="font-script text-2xl min-[380px]:text-3xl sm:text-4xl text-[#7D1128]/85 mx-1">&amp;</span>{" "}
+                <span className="font-script text-2xl min-[380px]:text-3xl sm:text-4xl text-[#541E24]/85 mx-1">&amp;</span>{" "}
                 <CharMotionReveal text={data.couple?.bride?.name || "Salsa"} baseDelay={0.45} />
               </motion.h1>
 
@@ -177,7 +177,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 >
                   <path
                     d="M 4 7 Q 40 2 80 7 T 156 5"
-                    stroke="#7D1128"
+                    stroke="#541E24"
                     strokeWidth="3.2"
                     strokeLinecap="round"
                     opacity="0.8"
@@ -191,7 +191,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                   initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.65, delay: 0.3, ease: MOTION_TRANSITIONS.romantic.ease }}
-                  className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 py-1 rounded-full border border-[#4A0812]/40 text-xs font-mono font-bold my-1 rotate-[-0.5deg] shadow-[2px_2px_0px_rgba(74,8,18,0.2)] max-w-full"
+                  className="inline-block bg-[#F2DFBA] text-[#3A1116] px-3.5 py-1 rounded-full border border-[#3A1116]/40 text-xs font-mono font-bold my-1 rotate-[-0.5deg] shadow-[2px_2px_0px_rgba(58,17,22,0.2)] max-w-full"
                 >
                   {[data.events[0].displayDay, data.events[0].displayDate].filter(Boolean).join(", ")}
                 </motion.div>
@@ -202,15 +202,15 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.68, delay: 0.38, ease: MOTION_TRANSITIONS.romantic.ease }}
-                className="border-2 border-dashed border-[#7D1128]/30 py-3.5 px-3.5 sm:py-4 sm:px-5 my-3 sm:my-4 bg-[#FFF9FA] rounded-2xl overflow-visible"
+                className="border-2 border-dashed border-[#541E24]/30 py-3.5 px-3.5 sm:py-4 sm:px-5 my-3 sm:my-4 bg-[#F8EFEA] rounded-2xl overflow-visible"
               >
-                <p className="text-xs font-mono font-bold text-[#7D1128] uppercase tracking-wider mb-1">
+                <p className="text-xs font-mono font-bold text-[#541E24] uppercase tracking-wider mb-1">
                   Kepada Yth. Bapak/Ibu/Saudara/i:
                 </p>
-                <p className="font-script text-2xl min-[380px]:text-3xl sm:text-4xl text-[#4A0812] font-bold px-2 py-2 leading-normal overflow-visible">
+                <p className="font-script text-2xl min-[380px]:text-3xl sm:text-4xl text-[#3A1116] font-bold px-2 py-2 leading-normal overflow-visible">
                   <CharMotionReveal text={displayGuestName} baseDelay={0.65} />
                 </p>
-                <p className="text-xs text-[#8A1C2C] mt-1 font-sans leading-relaxed">
+                <p className="text-xs text-[#6B4B3E] mt-1 font-sans leading-relaxed">
                   Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.
                 </p>
               </motion.div>
@@ -242,13 +242,13 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                   title="Buka Undangan"
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-16 flex justify-center -z-10 pointer-events-none">
-                    <div className="w-3.5 h-full bg-[#4A0812] border border-[#2D050B] shadow-xs transform -rotate-12 rounded-xs" />
-                    <div className="w-3.5 h-full bg-[#E5B869] border border-[#4A0812] shadow-xs transform rotate-12 -ml-1 rounded-xs" />
+                    <div className="w-3.5 h-full bg-[#3A1116] border border-[#2C0A0E] shadow-xs transform -rotate-12 rounded-xs" />
+                    <div className="w-3.5 h-full bg-[#E5B869] border border-[#3A1116] shadow-xs transform rotate-12 -ml-1 rounded-xs" />
                   </div>
 
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-[#FFF0F3] p-1 shadow-[2px_3px_0px_#4A0812]">
-                    <div className="w-full h-full rounded-full border border-dashed border-[#FFE58F]/80 flex flex-col items-center justify-center text-center">
-                      <Heart className="w-3.5 h-3.5 text-[#FAD2D8] fill-current" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 wax-seal-maroon rounded-full flex flex-col items-center justify-center text-white p-1 shadow-[2px_3px_0px_#2C0A0E]">
+                    <div className="w-full h-full rounded-full border border-dashed border-[#F2DFBA]/80 flex flex-col items-center justify-center text-center">
+                      <Heart className="w-3.5 h-3.5 text-[#F2DFBA] fill-current" />
                       <span className="font-script font-bold tracking-wider text-[10px] sm:text-[11px] text-white">
                         {(data.couple?.groom?.name || "G")[0]} &amp; {(data.couple?.bride?.name || "S")[0]}
                       </span>
@@ -261,17 +261,17 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                   whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
                   onClick={handleOpenInvitation}
                   disabled={isOpening}
-                  className="w-full max-w-xs mx-auto py-3.5 px-6 rounded-full bg-[#7D1128] hover:bg-[#660F1A] text-white border-2 border-[#4A0812] shadow-[4px_5px_0px_#4A0812] flex items-center justify-center gap-3 transition-colors cursor-pointer group min-h-[48px] focus:outline-none focus:ring-4 focus:ring-[#F5A8B8]/60"
+                  className="w-full max-w-xs mx-auto py-3.5 px-6 rounded-full bg-[#541E24] hover:bg-[#3A1116] text-white border-2 border-[#2C0A0E] shadow-[4px_5px_0px_#2C0A0E] flex items-center justify-center gap-3 transition-colors cursor-pointer group min-h-[48px] focus:outline-none focus:ring-4 focus:ring-[#541E24]/30"
                   aria-label="Buka Undangan (Open Invitation)"
                 >
-                  <div className="w-8 h-8 rounded-full bg-[#FFF0F3] border border-[#FFE58F] flex items-center justify-center shrink-0">
-                    <Mail className="w-4 h-4 text-[#7D1128] group-hover:scale-110 transition-transform" />
+                  <div className="w-8 h-8 rounded-full bg-[#F8EFEA] border border-[#F2DFBA] flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4 text-[#541E24] group-hover:scale-110 transition-transform" />
                   </div>
                   <div className="flex flex-col text-left">
                     <span className="font-script font-bold text-lg sm:text-xl text-white leading-none">
                       {isOpening ? "Membuka Undangan..." : "Buka Undangan"}
                     </span>
-                    <span className="text-[10px] font-mono tracking-widest uppercase text-[#FFE58F] font-bold mt-0.5">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-[#F2DFBA] font-bold mt-0.5">
                       Open Invitation 💌
                     </span>
                   </div>

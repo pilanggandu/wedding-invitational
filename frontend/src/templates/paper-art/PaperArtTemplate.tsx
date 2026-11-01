@@ -238,7 +238,7 @@ function SketchbookHero() {
           variant="card-lift"
           duration={0.82}
           delay={0.06}
-          className="relative bg-[#FFFDF8] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#541E24]/35 shadow-[0_8px_24px_rgba(84,30,36,0.08)]"
+          className="relative bg-[#FFFDFB] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#541E24]/35 shadow-[0_8px_24px_rgba(84,30,36,0.08)]"
         >
           <img
             src="/images/paper-art/paperclip-washi-accent.png"
@@ -253,7 +253,7 @@ function SketchbookHero() {
           />
 
           {(data.general?.heroPhotoUrl || data.general?.coverPhotoUrl) && (
-            <div className="relative w-full max-w-[240px] sm:max-w-[270px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden mb-4 bg-[#FAF3EA] border-2 border-[#541E24]/25 shadow-sm">
+            <div className="relative w-full max-w-[240px] sm:max-w-[270px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden mb-4 bg-[#F8EFEA] border-2 border-[#541E24]/25 shadow-sm">
               <motion.div
                 initial={
                   shouldReduceMotion
@@ -341,7 +341,7 @@ function SketchbookHero() {
           )}
         </ItemMotion>
 
-        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/30 shadow-sm space-y-3 text-left">
+        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/30 shadow-sm space-y-3 text-left">
           <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#541E24] flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-[#541E24]" />
@@ -359,7 +359,7 @@ function SketchbookHero() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#FAF3EA] p-2.5 rounded-xl border border-[#541E24]/20 shadow-2xs"
+                className="bg-[#F8EFEA] p-2.5 rounded-xl border border-[#541E24]/20 shadow-2xs"
               >
                 <span className="text-xl sm:text-2xl font-bold text-[#541E24] block tabular-nums leading-tight py-0.5">
                   {String(item.val).padStart(2, "0")}
@@ -389,7 +389,7 @@ function SketchbookHero() {
               whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
               onClick={downloadIcs}
               disabled={!schedule}
-              className="px-4 py-2.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 rounded-xl bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Simpan (.ics)</span>
@@ -426,7 +426,7 @@ function SketchbookCouple() {
             variant="frame-mount"
             delay={0.08}
             rotate={-0.8}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[-0.8deg]"
+            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[-0.8deg]"
           >
             <div className="absolute -top-6 -left-3 z-20 pointer-events-none">
               <img
@@ -437,7 +437,7 @@ function SketchbookCouple() {
             </div>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
-              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#FAF3EA]">
+              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#F8EFEA]">
                 <motion.div
                   initial={
                     shouldReduceMotion
@@ -495,7 +495,7 @@ function SketchbookCouple() {
                     href={`https://instagram.com/${groom.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{groom.instagram.replace("@", "")}</span>
@@ -517,7 +517,7 @@ function SketchbookCouple() {
             variant="frame-mount"
             delay={0.12}
             rotate={0.8}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[0.8deg]"
+            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[0.8deg]"
           >
             <div className="absolute -top-6 -right-3 z-20 pointer-events-none">
               <img
@@ -536,7 +536,7 @@ function SketchbookCouple() {
             </div>
 
             <div className="relative w-full max-w-[270px] sm:max-w-[290px] mx-auto aspect-[819/1024] flex items-center justify-center mb-4 select-none">
-              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#FAF3EA]">
+              <div className="absolute inset-[20%] overflow-hidden rounded-xs bg-[#F8EFEA]">
                 <motion.div
                   initial={
                     shouldReduceMotion
@@ -594,7 +594,7 @@ function SketchbookCouple() {
                     href={`https://instagram.com/${bride.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{bride.instagram.replace("@", "")}</span>
@@ -632,7 +632,7 @@ function SketchbookEvents() {
               key={evt.id || idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.08}
-              className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+              className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               {idx === 0 && (
                 <>
@@ -796,11 +796,11 @@ function SketchbookGallery() {
                 }
                 whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
                 transition={{ duration: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
-                className="w-full relative bg-[#FFFDF8] p-2 rounded-xl border-2 border-dashed border-[#541E24]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#541E24] focus-visible:ring-offset-2 transition-colors block"
+                className="w-full relative bg-[#FFFDFB] p-2 rounded-xl border-2 border-dashed border-[#541E24]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#541E24] focus-visible:ring-offset-2 transition-colors block"
                 aria-label={`Buka potret kenangan ${idx + 1}`}
               >
                 <div className="w-10 h-3 bg-[#E5B869]/70 absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-2deg] rounded-xs z-10 pointer-events-none" />
-                <div className={`relative overflow-hidden rounded-lg bg-[#FAF3EA] ${idx === 0 ? "h-48 sm:h-56" : "h-36 sm:h-40"}`}>
+                <div className={`relative overflow-hidden rounded-lg bg-[#F8EFEA] ${idx === 0 ? "h-48 sm:h-56" : "h-36 sm:h-40"}`}>
                   <img
                     src={src}
                     alt={`Prewedding ${idx + 1}`}
@@ -842,7 +842,7 @@ function SketchbookGallery() {
               exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.26, ease: MOTION_TRANSITIONS.romantic.ease }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-md w-full bg-[#FFFDF8] p-3 rounded-2xl border-4 border-[#541E24] shadow-2xl"
+              className="max-w-md w-full bg-[#FFFDFB] p-3 rounded-2xl border-4 border-[#541E24] shadow-2xl"
             >
               <img
                 src={selectedPhoto}
@@ -907,7 +907,7 @@ function SketchbookGift() {
               key={idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.1}
-              className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+              className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
                 <span className="font-mono font-bold text-sm text-[#541E24] uppercase">
@@ -929,7 +929,7 @@ function SketchbookGift() {
                   whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
                   onClick={() => handleCopy(acc.accountNumber, idx)}
-                  className="px-3 py-1.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedIdx === idx ? (
                     <>
@@ -1011,7 +1011,7 @@ function SketchbookRsvp({
       if (result.clearMessage) setMessage("");
       if (result.tone === "success" && !shouldReduceMotion) {
         try {
-          confetti({ particleCount: 50, spread: 65, origin: { y: 0.7 }, colors: ["#541E24", "#A3B899", "#E5B869", "#F5A8B8", "#FFFDF8"] });
+          confetti({ particleCount: 50, spread: 65, origin: { y: 0.7 }, colors: ["#541E24", "#A3B899", "#E5B869", "#F2DFBA", "#FFFDFB"] });
         } catch {}
       }
     } finally {
@@ -1036,7 +1036,7 @@ function SketchbookRsvp({
           <form
             onSubmit={handleSubmit}
             aria-busy={isSubmitting}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-4"
+            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-4"
           >
             <div className="absolute -top-5 -right-3 z-10 pointer-events-none">
               <BotanicalSprigOrnament
@@ -1060,7 +1060,7 @@ function SketchbookRsvp({
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder="Masukkan nama Anda"
                 required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#F8EFEA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
               />
             </div>
 
@@ -1086,7 +1086,7 @@ function SketchbookRsvp({
                     className={`py-2.5 px-2 text-center rounded-xl text-xs font-mono font-bold border transition-colors cursor-pointer min-h-[44px] ${
                       attendance === opt.key
                         ? "bg-[#541E24] text-white border-[#541E24]"
-                        : "bg-[#FAF3EA] text-[#6B4B3E] border-[#541E24]/25 hover:bg-[#F2E7D9]"
+                        : "bg-[#F8EFEA] text-[#6B4B3E] border-[#541E24]/25 hover:bg-[#F0E3DC]"
                     }`}
                   >
                     {opt.label}
@@ -1105,7 +1105,7 @@ function SketchbookRsvp({
                   disabled={isSubmitting}
                   value={attendeeCount}
                   onChange={(e) => setAttendeeCount(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40 min-h-[44px]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#F8EFEA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40 min-h-[44px]"
                 >
                   {Array.from({ length: maxQuota }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>
@@ -1129,7 +1129,7 @@ function SketchbookRsvp({
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={`Tuliskan ucapan dan doa untuk ${data.couple.groom.name} & ${data.couple.bride.name}...`}
                 required={!guestItem}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#F8EFEA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
               />
             </div>
 
@@ -1155,7 +1155,7 @@ function SketchbookRsvp({
         <ItemMotion
           variant="slide-right"
           delay={0.12}
-          className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+          className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
         >
           <div className="flex items-center gap-2 border-b border-[#541E24]/15 pb-2 text-xs font-mono font-bold uppercase tracking-wider text-[#541E24]">
             <MessageSquare className="w-3.5 h-3.5" />
@@ -1168,7 +1168,7 @@ function SketchbookRsvp({
                 key={w.id}
                 variant={wIdx % 2 === 0 ? "slide-left" : "slide-right"}
                 delay={0.04 + (wIdx % 5) * 0.03}
-                className="p-3 rounded-xl bg-[#FAF3EA] border border-[#541E24]/20 space-y-1 text-left"
+                className="p-3 rounded-xl bg-[#F8EFEA] border border-[#541E24]/20 space-y-1 text-left"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-sans font-bold text-xs text-[#541E24]">
@@ -1208,7 +1208,7 @@ function SketchbookFooter() {
   const { groom, bride } = data.couple;
 
   return (
-    <SectionMotion id="closing" className="pt-10 pb-24 px-5 text-center bg-[#2C1810] text-[#FFFDF8] relative">
+    <SectionMotion id="closing" className="pt-10 pb-24 px-5 text-center bg-[#33171A] text-[#FFFDFB] relative">
       <div className="max-w-md mx-auto space-y-4">
         <div className="flex justify-center mb-3">
           <img
@@ -1261,7 +1261,7 @@ export function PaperArtTemplate({
     <WeddingDataProvider data={data}>
       <div
         style={{ "--font-couple-custom": fontFamilyCss } as React.CSSProperties}
-        className="min-h-screen bg-[#F5EBE1] flex flex-col lg:flex-row relative selection:bg-[#541E24] selection:text-white"
+        className="min-h-screen bg-[#F5ECE5] flex flex-col lg:flex-row relative selection:bg-[#541E24] selection:text-white"
       >
         {!isPreview && (
           <DesktopLeftShowcase
@@ -1275,12 +1275,12 @@ export function PaperArtTemplate({
             isPreview ? "w-full" : "lg:w-[52%] xl:w-[50%]"
           } min-h-screen flex justify-center py-0 ${
             isPreview ? "p-0" : "lg:py-8 lg:px-6"
-          } bg-[#F5EBE1] relative`}
+          } bg-[#F5ECE5] relative`}
         >
           <main
             className={`w-full max-w-full ${
               isPreview ? "max-w-full" : "lg:max-w-[480px]"
-            } min-h-screen bg-[#FBF6EE] ${
+            } min-h-screen bg-[#FAF4EE] ${
               isPreview
                 ? "rounded-2xl border-2 border-[#541E24]"
                 : "lg:rounded-[44px] lg:border-[5px] lg:border-[#541E24] lg:shadow-[8px_10px_0px_#2C0A0E]"

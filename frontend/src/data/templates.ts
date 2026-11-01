@@ -85,7 +85,7 @@ export const AVAILABLE_TEMPLATES: TemplateMeta[] = [
     category: "Paper Art",
     tag: "Kreatif & Ceria",
     badgeColor: "bg-[#541E24] text-white",
-    previewGradient: "from-[#3A1116] via-[#541E24] to-[#F5EBE1]",
+    previewGradient: "from-[#3A1116] via-[#541E24] to-[#F5ECE5]",
     accentHex: "#541E24",
     isAvailable: true,
   },

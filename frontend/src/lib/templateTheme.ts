@@ -34,8 +34,8 @@ export const TEMPLATE_THEMES: Record<string, TemplateScrollbarTheme> = {
     name: "2D Paper Art Craft (Mahogany)",
     thumb: "#541E24",
     thumbHover: "#3A1116",
-    thumbBorder: "#F5EBE1",
-    track: "#FAF3EA",
+    thumbBorder: "#F5ECE5",
+    track: "#F8EFEA",
     accent: "#541E24",
   },
   "painted-cats": {
