@@ -323,20 +323,6 @@ function SketchbookHero() {
             </div>
 
             {dateStr && <p className="text-sm font-serif italic text-[#6B4B3E] mt-2">{[dayStr, dateStr].filter(Boolean).join(", ")}</p>}
-
-            {data.general?.funTagline && (
-              <p className="font-script text-lg sm:text-xl text-[#541E24] font-bold mt-2.5 max-w-sm mx-auto leading-relaxed">
-                &ldquo;{data.general.funTagline}&rdquo;
-              </p>
-            )}
-
-            {data.general?.hashtag && (
-              <div className="pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#3A1116]/30 shadow-2xs rotate-[-0.5deg]">
-                  {data.general.hashtag}
-                </span>
-              </div>
-            )}
           </div>
 
           {data.general?.quote && (
@@ -1392,15 +1378,22 @@ function SketchbookFooter() {
             {groom.name} &amp; {bride.name}
           </h3>
         </ItemMotion>
+        {data.general?.funTagline && (
+          <ItemMotion variant="fade" delay={0.18}>
+            <p className="font-script text-base sm:text-lg text-[#F2DFBA] font-bold max-w-sm mx-auto leading-relaxed italic opacity-95">
+              &ldquo;{data.general.funTagline}&rdquo;
+            </p>
+          </ItemMotion>
+        )}
         {data.general?.hashtag && (
-          <ItemMotion variant="pop" delay={0.18}>
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#541E24]/40 shadow-xs">
+          <ItemMotion variant="pop" delay={0.2}>
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#541E24]/40 shadow-xs">
               {data.general.hashtag}
             </span>
           </ItemMotion>
         )}
-        <ItemMotion variant="pop" delay={0.2}>
-          <p className="text-xs font-mono text-white/60 tracking-widest uppercase font-medium">
+        <ItemMotion variant="pop" delay={0.22}>
+          <p className="text-xs font-mono text-white/60 tracking-widest uppercase font-medium pt-1">
             SKETCHBOOK MEMORY &bull; 2026
           </p>
         </ItemMotion>
