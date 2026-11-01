@@ -1003,7 +1003,7 @@ function SketchbookGift() {
                 <motion.button
                   whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
-                  onClick={() => handleCopyAddress(physicalAddress.address)}
+                  onClick={() => handleCopyAddress(`${physicalAddress.recipient ? `Penerima: ${physicalAddress.recipient}${physicalAddress.phone ? ` (${physicalAddress.phone})` : ""}\n` : ""}${physicalAddress.address}`)}
                   className="px-3.5 py-2 rounded-xl bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedAddress ? (

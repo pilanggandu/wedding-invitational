@@ -139,8 +139,16 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     if (data.gifts?.accounts && data.gifts.accounts.length > 0) {
       setAccounts(data.gifts.accounts);
     }
-    if (data.gifts?.physicalGiftAddress?.address) {
-      setPhysicalAddress(data.gifts.physicalGiftAddress.address);
+    if (data.gifts?.physicalGiftAddress) {
+      if (data.gifts.physicalGiftAddress.recipient !== undefined) {
+        setPhysicalRecipient(data.gifts.physicalGiftAddress.recipient);
+      }
+      if (data.gifts.physicalGiftAddress.phone !== undefined) {
+        setPhysicalPhone(data.gifts.physicalGiftAddress.phone);
+      }
+      if (data.gifts.physicalGiftAddress.address !== undefined) {
+        setPhysicalAddress(data.gifts.physicalGiftAddress.address);
+      }
     }
   }, [data]);
 
@@ -261,8 +269,14 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
     });
   };
 
+  const [physicalRecipient, setPhysicalRecipient] = useState(
+    data.gifts?.physicalGiftAddress?.recipient || ""
+  );
+  const [physicalPhone, setPhysicalPhone] = useState(
+    data.gifts?.physicalGiftAddress?.phone || ""
+  );
   const [physicalAddress, setPhysicalAddress] = useState(
-    data.gifts?.physicalGiftAddress?.address || "Merakurak, Tuban, Jawa Timur"
+    data.gifts?.physicalGiftAddress?.address || ""
   );
 
   const [isSaving, setIsSaving] = useState(false);
@@ -401,8 +415,8 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
               cardColor: acc.cardColor || (idx % 2 === 0 ? "maroon" : "gold"),
             })),
           physicalGiftAddress: {
-            recipient: `${groomName.trim()} & ${brideName.trim()}`,
-            phone: "081234567890",
+            recipient: physicalRecipient.trim() || `${groomName.trim()} & ${brideName.trim()}`,
+            phone: physicalPhone.trim(),
             address: physicalAddress.trim(),
           },
         },
@@ -1380,17 +1394,55 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           </button>
         </div>
 
-        <div>
-          <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1.5 font-medium">
-            Alamat Pengiriman Kado Fisik
-          </label>
-          <input
-            type="text"
-            value={physicalAddress}
-            onChange={(e) => setPhysicalAddress(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
-            placeholder="Alamat lengkap penerimaan kado fisik"
-          />
+        <div className="pt-4 border-t border-[#EFEFE8] space-y-3.5">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-mono uppercase tracking-wider text-[#14161C] font-bold">
+              Kirim Kado Fisik
+            </h4>
+            <span className="text-[11px] text-[#717686]">
+              Alamat &amp; kontak penerimaan kado/paket
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                Nama Penerima Paket
+              </label>
+              <input
+                type="text"
+                value={physicalRecipient}
+                onChange={(e) => setPhysicalRecipient(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
+                placeholder={`${groomName.trim() || "Gilang"} & ${brideName.trim() || "Salsadila"}`}
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                Nomor Telepon / WhatsApp Penerima
+              </label>
+              <input
+                type="text"
+                value={physicalPhone}
+                onChange={(e) => setPhysicalPhone(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] font-mono text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
+                placeholder="Contoh: 081234567890"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+              Alamat Lengkap Pengiriman
+            </label>
+            <textarea
+              rows={2}
+              value={physicalAddress}
+              onChange={(e) => setPhysicalAddress(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
+              placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota/kabupaten, kode pos..."
+            />
+          </div>
         </div>
       </div>
 

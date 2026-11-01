@@ -1263,10 +1263,60 @@ export function TemplateEditorWorkspace({
                   </div>
                 ))}
 
-                <div className="pt-3 border-t border-[#2A2E3D] space-y-2">
+                <div className="pt-3 border-t border-[#2A2E3D] space-y-2.5">
                   <span className="text-[11px] font-mono uppercase tracking-wider text-[#DFD2BD] font-bold block">
                     Alamat Pengiriman Kado Fisik
                   </span>
+                  <div>
+                    <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                      Nama Penerima Paket
+                    </label>
+                    <input
+                      type="text"
+                      value={draftData.gifts?.physicalGiftAddress?.recipient || ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateDraft((prev) => ({
+                          ...prev,
+                          gifts: {
+                            accounts: prev.gifts?.accounts || [],
+                            physicalGiftAddress: {
+                              recipient: val,
+                              phone: prev.gifts?.physicalGiftAddress?.phone || "",
+                              address: prev.gifts?.physicalGiftAddress?.address || "",
+                            },
+                          },
+                        }));
+                      }}
+                      placeholder={`${draftData.couple?.groom?.name || "Gilang"} & ${draftData.couple?.bride?.name || "Salsadila"}`}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white placeholder:text-[#5A6072]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                      Nomor Telepon / WhatsApp Penerima
+                    </label>
+                    <input
+                      type="text"
+                      value={draftData.gifts?.physicalGiftAddress?.phone || ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateDraft((prev) => ({
+                          ...prev,
+                          gifts: {
+                            accounts: prev.gifts?.accounts || [],
+                            physicalGiftAddress: {
+                              recipient: prev.gifts?.physicalGiftAddress?.recipient || "",
+                              phone: val,
+                              address: prev.gifts?.physicalGiftAddress?.address || "",
+                            },
+                          },
+                        }));
+                      }}
+                      placeholder="081234567890"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs font-mono text-white placeholder:text-[#5A6072]"
+                    />
+                  </div>
                   <div>
                     <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
                       Alamat Lengkap
@@ -1281,11 +1331,8 @@ export function TemplateEditorWorkspace({
                           gifts: {
                             accounts: prev.gifts?.accounts || [],
                             physicalGiftAddress: {
-                              recipient:
-                                prev.gifts?.physicalGiftAddress?.recipient ||
-                                `${prev.couple?.groom?.name || ""} & ${prev.couple?.bride?.name || ""}`.trim() ||
-                                "Gilang & Salsadila",
-                              phone: prev.gifts?.physicalGiftAddress?.phone || "081234567890",
+                              recipient: prev.gifts?.physicalGiftAddress?.recipient || "",
+                              phone: prev.gifts?.physicalGiftAddress?.phone || "",
                               address: val,
                             },
                           },
