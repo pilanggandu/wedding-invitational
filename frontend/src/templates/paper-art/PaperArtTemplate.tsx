@@ -322,6 +322,20 @@ function SketchbookHero() {
             </div>
 
             {dateStr && <p className="text-sm font-serif italic text-[#6B4B3E] mt-2">{[dayStr, dateStr].filter(Boolean).join(", ")}</p>}
+
+            {data.general?.funTagline && (
+              <p className="font-script text-lg sm:text-xl text-[#541E24] font-bold mt-2.5 max-w-sm mx-auto leading-relaxed">
+                &ldquo;{data.general.funTagline}&rdquo;
+              </p>
+            )}
+
+            {data.general?.hashtag && (
+              <div className="pt-2">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#3A1116]/30 shadow-2xs rotate-[-0.5deg]">
+                  {data.general.hashtag}
+                </span>
+              </div>
+            )}
           </div>
 
           {data.general?.quote && (
@@ -498,6 +512,13 @@ function SketchbookCouple() {
                   {groom.parents}
                 </p>
               )}
+              {groom.tagline && (
+                <div className="pt-1.5">
+                  <p className="inline-block text-xs font-script font-bold text-[#541E24] bg-[#F2DFBA]/75 py-1 px-3 rounded-lg border border-[#541E24]/20 shadow-2xs">
+                    &ldquo;{groom.tagline}&rdquo;
+                  </p>
+                </div>
+              )}
               {groom.instagram && (
                 <div className="pt-2">
                   <motion.a
@@ -597,6 +618,13 @@ function SketchbookCouple() {
                 <p className="text-xs sm:text-sm font-serif italic text-[#6B4B3E] pt-1">
                   {bride.parents}
                 </p>
+              )}
+              {bride.tagline && (
+                <div className="pt-1.5">
+                  <p className="inline-block text-xs font-script font-bold text-[#541E24] bg-[#F2DFBA]/75 py-1 px-3 rounded-lg border border-[#541E24]/20 shadow-2xs">
+                    &ldquo;{bride.tagline}&rdquo;
+                  </p>
+                </div>
               )}
               {bride.instagram && (
                 <div className="pt-2">
@@ -1327,6 +1355,13 @@ function SketchbookFooter() {
             {groom.name} &amp; {bride.name}
           </h3>
         </ItemMotion>
+        {data.general?.hashtag && (
+          <ItemMotion variant="pop" delay={0.18}>
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#541E24]/40 shadow-xs">
+              {data.general.hashtag}
+            </span>
+          </ItemMotion>
+        )}
         <ItemMotion variant="pop" delay={0.2}>
           <p className="text-xs font-mono text-white/60 tracking-widest uppercase font-medium">
             SKETCHBOOK MEMORY &bull; 2026

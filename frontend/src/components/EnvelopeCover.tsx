@@ -197,6 +197,32 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 </motion.div>
               )}
 
+              {/* Fun Tagline */}
+              {data.general?.funTagline && (
+                <motion.p
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.65, delay: 0.32, ease: MOTION_TRANSITIONS.romantic.ease }}
+                  className="font-script text-base sm:text-lg text-[#541E24] font-bold mt-2 mb-1 max-w-xs mx-auto leading-snug"
+                >
+                  &ldquo;{data.general.funTagline}&rdquo;
+                </motion.p>
+              )}
+
+              {/* Official Hashtag Badge */}
+              {data.general?.hashtag && (
+                <motion.div
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.65, delay: 0.35, ease: MOTION_TRANSITIONS.romantic.ease }}
+                  className="my-1"
+                >
+                  <span className="inline-block px-3 py-0.5 rounded-full text-[11px] font-mono font-bold tracking-wider bg-[#F2DFBA] text-[#3A1116] border border-[#3A1116]/30 shadow-2xs rotate-[0.5deg]">
+                    {data.general.hashtag}
+                  </span>
+                </motion.div>
+              )}
+
               {/* Dedicated Guest Recipient Card (Ample line-height and padding so flourishes never get clipped) */}
               <motion.div
                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}

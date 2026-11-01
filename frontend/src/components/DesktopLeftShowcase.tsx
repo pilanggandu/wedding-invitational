@@ -119,6 +119,12 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
             <MapPin className="w-3.5 h-3.5 text-[#F2DFBA]" />
             {akadEvent.venueAddress}
           </span>}
+          {data.general?.hashtag && (
+            <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-[#F2DFBA]" />
+              {data.general.hashtag}
+            </span>
+          )}
         </div>
       </div>
 
