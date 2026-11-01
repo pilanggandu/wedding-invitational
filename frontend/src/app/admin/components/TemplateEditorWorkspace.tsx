@@ -1539,16 +1539,16 @@ export function TemplateEditorWorkspace({
                           themePalette: {
                             ...prev.themePalette,
                             colorSchemeId: "krem-mahogany",
-                            paperColor: "#D3B49F",
-                            primaryColor: "#48181D",
-                            secondaryColor: "#331115",
+                            paperColor: "#F4E3C9",
+                            primaryColor: "#49271B",
+                            secondaryColor: "#361B12",
                             accentColor: "#F2DFBA",
                           },
                         }))
                       }
                       className="text-[10px] font-mono text-[#DFD2BD] hover:underline cursor-pointer"
                     >
-                      Reset #D3B49F
+                      Reset #F4E3C9
                     </button>
                   </div>
 
@@ -1577,7 +1577,7 @@ export function TemplateEditorWorkspace({
                         />
                         <input
                           type="text"
-                          value={draftData.themePalette?.paperColor || "#D3B49F"}
+                          value={draftData.themePalette?.paperColor || "#F4E3C9"}
                           onChange={(e) => {
                             const val = e.target.value;
                             updateDraft((prev) => ({
@@ -1590,7 +1590,7 @@ export function TemplateEditorWorkspace({
                             }));
                           }}
                           className="w-full bg-transparent text-[11px] font-mono text-white focus:outline-none uppercase"
-                          placeholder="#D3B49F"
+                          placeholder="#F4E3C9"
                         />
                       </div>
                     </div>
@@ -1619,7 +1619,7 @@ export function TemplateEditorWorkspace({
                         />
                         <input
                           type="text"
-                          value={draftData.themePalette?.primaryColor || "#48181D"}
+                          value={draftData.themePalette?.primaryColor || "#49271B"}
                           onChange={(e) => {
                             const val = e.target.value;
                             updateDraft((prev) => ({
@@ -1632,7 +1632,7 @@ export function TemplateEditorWorkspace({
                             }));
                           }}
                           className="w-full bg-transparent text-[11px] font-mono text-white focus:outline-none uppercase"
-                          placeholder="#48181D"
+                          placeholder="#49271B"
                         />
                       </div>
                     </div>

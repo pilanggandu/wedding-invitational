@@ -1331,6 +1331,7 @@ function SketchbookRsvp({
 
 function SketchbookFooter() {
   const data = useWeddingData();
+  const { primaryColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
   const { groom, bride } = data.couple;
   const closingPhoto =
@@ -1339,7 +1340,7 @@ function SketchbookFooter() {
     "/images/prewedding/couple-1.jpg";
 
   return (
-    <SectionMotion id="closing" className="pt-10 pb-24 px-5 text-center bg-[#33171A] text-[#FFFDFB] relative">
+    <SectionMotion id="closing" style={{ backgroundColor: primaryColor }} className="pt-10 pb-24 px-5 text-center text-[#FFFDFB] relative">
       <div className="max-w-md mx-auto space-y-4">
         <div className="flex justify-center mb-1">
           <img

@@ -10,9 +10,9 @@ test("COLOR_PALETTE_PRESETS contains valid preset definitions", () => {
   assert.ok(COLOR_PALETTE_PRESETS.length >= 6);
   const defaultPreset = COLOR_PALETTE_PRESETS.find((p) => p.id === "krem-mahogany");
   assert.ok(defaultPreset);
-  assert.equal(defaultPreset.paperColor, "#D3B49F");
-  assert.equal(defaultPreset.primaryColor, "#48181D");
-  assert.equal(defaultPreset.secondaryColor, "#331115");
+  assert.equal(defaultPreset.paperColor, "#F4E3C9");
+  assert.equal(defaultPreset.primaryColor, "#49271B");
+  assert.equal(defaultPreset.secondaryColor, "#361B12");
 });
 
 test("isDarkHex identifies dark and light hex values correctly", () => {
@@ -29,9 +29,9 @@ test("isDarkHex identifies dark and light hex values correctly", () => {
 
 test("resolveThemeColors provides fallbacks for undefined palette", () => {
   const result = resolveThemeColors(undefined);
-  assert.equal(result.paperColor, "#D3B49F");
-  assert.equal(result.primaryColor, "#48181D");
-  assert.equal(result.textColor, "#3A1116");
+  assert.equal(result.paperColor, "#F4E3C9");
+  assert.equal(result.primaryColor, "#49271B");
+  assert.equal(result.textColor, "#3A210B");
   assert.equal(result.isDark, false);
 });
 

@@ -18,7 +18,7 @@ interface EnvelopeCoverProps {
 
 export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCoverProps) {
   const data = useWeddingData();
-  const { paperColor, textColor } = resolveThemeColors(data.themePalette);
+  const { paperColor, textColor, primaryColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
   const [paramGuestName] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -79,7 +79,8 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             duration: shouldReduceMotion ? 0.2 : MOTION_TRANSITIONS.opening.duration,
             ease: MOTION_TRANSITIONS.romantic.ease,
           }}
-          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none bg-[#48181D] overflow-y-auto min-h-full"
+          style={{ backgroundColor: primaryColor }}
+          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none overflow-y-auto min-h-full"
         >
           {/* Subtle Botanical Corner Foliage */}
           <BotanicalLeaves className="absolute -top-8 -left-8 w-32 sm:w-40 h-44 sm:h-52 opacity-25 rotate-45 pointer-events-none" />

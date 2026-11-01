@@ -16,35 +16,35 @@ export const COLOR_PALETTE_PRESETS: ColorPalettePreset[] = [
   {
     id: "krem-mahogany",
     name: "Krem Mahogany",
-    description: "Krem hangat (#D3B49F) dengan kontras mahogany marun elegan.",
-    paperColor: "#D3B49F",
-    primaryColor: "#48181D",
-    secondaryColor: "#331115",
+    description: "Krem almond lembut (#F4E3C9) dengan kontras warm roasted mahogany (#49271B).",
+    paperColor: "#F4E3C9",
+    primaryColor: "#49271B",
+    secondaryColor: "#361B12",
     accentColor: "#F2DFBA",
-    textColor: "#3A1116",
-    borderColor: "#541E24",
+    textColor: "#3A210B",
+    borderColor: "#49271B",
   },
   {
     id: "warm-ivory",
     name: "Warm Ivory",
     description: "Krem gading lembut klasik khas buku sketsa watercolor.",
     paperColor: "#F7EBE4",
-    primaryColor: "#48181D",
-    secondaryColor: "#331115",
+    primaryColor: "#49271B",
+    secondaryColor: "#361B12",
     accentColor: "#F2DFBA",
-    textColor: "#3A1116",
-    borderColor: "#541E24",
+    textColor: "#3A210B",
+    borderColor: "#49271B",
   },
   {
     id: "pure-white",
     name: "Pure White",
     description: "Kertas sketsa putih bersih kontras dengan latar mahogany pekat.",
     paperColor: "#FFFDFB",
-    primaryColor: "#48181D",
-    secondaryColor: "#331115",
+    primaryColor: "#49271B",
+    secondaryColor: "#361B12",
     accentColor: "#E5B869",
-    textColor: "#3A1116",
-    borderColor: "#541E24",
+    textColor: "#3A210B",
+    borderColor: "#49271B",
   },
   {
     id: "rustic-kraft",
@@ -116,9 +116,9 @@ export function isDarkHex(hex?: string): boolean {
 }
 
 export function resolveThemeColors(palette?: Partial<ThemePaletteConfig>) {
-  const paperColor = palette?.paperColor || "#D3B49F";
-  const primaryColor = palette?.primaryColor || "#48181D";
-  const secondaryColor = palette?.secondaryColor || "#331115";
+  const paperColor = palette?.paperColor || "#F4E3C9";
+  const primaryColor = palette?.primaryColor || "#49271B";
+  const secondaryColor = palette?.secondaryColor || "#361B12";
   const accentColor = palette?.accentColor || "#F2DFBA";
 
   const matchedPreset = COLOR_PALETTE_PRESETS.find(
@@ -130,8 +130,8 @@ export function resolveThemeColors(palette?: Partial<ThemePaletteConfig>) {
   );
 
   const isDark = isDarkHex(paperColor);
-  const textColor = matchedPreset?.textColor || (isDark ? "#F7EFE8" : "#3A1116");
-  const borderColor = matchedPreset?.borderColor || (isDark ? "rgba(255,255,255,0.2)" : "#541E24");
+  const textColor = matchedPreset?.textColor || (isDark ? "#F7EFE8" : "#3A210B");
+  const borderColor = matchedPreset?.borderColor || (isDark ? "rgba(255,255,255,0.2)" : "#49271B");
 
   return {
     paperColor,

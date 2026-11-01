@@ -896,12 +896,12 @@ export function TemplateThemeManager({
                       id: "krem-mahogany",
                       name: "Krem Mahogany",
                       description: "",
-                      paperColor: "#D3B49F",
-                      primaryColor: "#48181D",
-                      secondaryColor: "#331115",
+                      paperColor: "#F4E3C9",
+                      primaryColor: "#49271B",
+                      secondaryColor: "#361B12",
                       accentColor: "#F2DFBA",
-                      textColor: "#3A1116",
-                      borderColor: "#541E24",
+                      textColor: "#3A210B",
+                      borderColor: "#49271B",
                     }
                   )
                 }

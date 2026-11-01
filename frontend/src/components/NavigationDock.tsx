@@ -213,11 +213,11 @@ export function NavigationDock({
   const themeStyles = {
     maroon: {
       container:
-        "bg-white/95 border-2 border-[#7D1128] shadow-[3px_4px_0px_#7D1128]",
+        "bg-white/95 border-2 border-[#49271B] shadow-[3px_4px_0px_#49271B]",
       activeText: "text-white",
-      inactiveText: "text-[#7D1128] hover:text-[#4A0812]",
+      inactiveText: "text-[#49271B] hover:text-[#2A130B]",
       activePill:
-        "bg-[#7D1128] border-1.5 border-[#4A0812] shadow-xs",
+        "bg-[#49271B] border-1.5 border-[#2A130B] shadow-xs",
       font: "font-mono font-bold",
       layoutId: "dockPill-maroon",
     },

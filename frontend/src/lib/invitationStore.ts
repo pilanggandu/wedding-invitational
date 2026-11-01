@@ -23,10 +23,10 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
   id: "inv_gilang_salsa",
   activeTemplateId: "paper-art-maroon",
   themePalette: {
-    primaryColor: "#48181D",
-    secondaryColor: "#331115",
+    primaryColor: "#49271B",
+    secondaryColor: "#361B12",
     accentColor: "#F2DFBA",
-    paperColor: "#D3B49F",
+    paperColor: "#F4E3C9",
     colorSchemeId: "krem-mahogany",
     fontStyle: "caveat",
     particlesEnabled: true,
@@ -150,6 +150,17 @@ export function getInvitationData(): WeddingInvitationData {
     const raw = localStorage.getItem(INVITATION_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      if (parsed.themePalette) {
+        if (parsed.themePalette.paperColor === "#D3B49F") {
+          parsed.themePalette.paperColor = "#F4E3C9";
+        }
+        if (parsed.themePalette.primaryColor === "#48181D") {
+          parsed.themePalette.primaryColor = "#49271B";
+        }
+        if (parsed.themePalette.secondaryColor === "#331115") {
+          parsed.themePalette.secondaryColor = "#361B12";
+        }
+      }
       return {
         ...DEFAULT_INVITATION_DATA,
         ...parsed,
