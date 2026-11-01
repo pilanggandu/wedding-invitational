@@ -120,7 +120,7 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
       </div>
 
       <div className="my-5 relative z-10">
-        <div className="bg-[#F7EBE4] text-[#3A1116] rounded-3xl p-6 border-[3px] border-[#2C0A0E] shadow-[6px_7px_0px_#2C0A0E] relative">
+        <div className="bg-[#D3B49F] text-[#3A1116] rounded-3xl p-6 border-[3px] border-[#2C0A0E] shadow-[6px_7px_0px_#2C0A0E] relative">
           <CrayonWashiTape
             text="♥ LOVEBIRDS CUTE ♥"
             color="gold"
