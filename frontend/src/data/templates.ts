@@ -80,13 +80,13 @@ export const AVAILABLE_TEMPLATES: TemplateMeta[] = [
   },
   {
     id: "paper-art-maroon",
-    name: "2D Paper Art Craft (Maroon Sketchbook)",
-    description: "Buku sketsa seniman marun berlapis dengan kertas bertekstur, jilid kawat spiral, klip kertas kuningan, sketsa botani, dan catatan pinggir.",
+    name: "2D Paper Art Craft (Mahogany Sketchbook)",
+    description: "Buku sketsa seniman berkarakter mahogany berlapis kertas bertekstur, jilid kawat spiral, klip kertas kuningan, sketsa botani, dan catatan pinggir.",
     category: "Paper Art",
     tag: "Kreatif & Ceria",
-    badgeColor: "bg-[#7D1128] text-white",
-    previewGradient: "from-[#660F1A] via-[#7D1128] to-[#FFE58F]",
-    accentHex: "#7D1128",
+    badgeColor: "bg-[#541E24] text-white",
+    previewGradient: "from-[#3A1116] via-[#541E24] to-[#F5EBE1]",
+    accentHex: "#541E24",
     isAvailable: true,
   },
 ];

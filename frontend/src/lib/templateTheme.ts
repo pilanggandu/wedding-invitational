@@ -31,12 +31,12 @@ export const TEMPLATE_THEMES: Record<string, TemplateScrollbarTheme> = {
   },
   "paper-art-maroon": {
     id: "paper-art-maroon",
-    name: "2D Paper Art Craft (Maroon)",
-    thumb: "#7D1128",
-    thumbHover: "#540914",
-    thumbBorder: "#FFE58F",
-    track: "#FFF5F6",
-    accent: "#7D1128",
+    name: "2D Paper Art Craft (Mahogany)",
+    thumb: "#541E24",
+    thumbHover: "#3A1116",
+    thumbBorder: "#F5EBE1",
+    track: "#FAF3EA",
+    accent: "#541E24",
   },
   "painted-cats": {
     id: "painted-cats",

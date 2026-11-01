@@ -46,7 +46,7 @@ export function BrassPaperclip({ className = "" }: { className?: string }) {
 
 export function BotanicalBranchSvg({
   className = "w-16 h-8",
-  color = "#7D1128",
+  color = "#541E24",
 }: {
   className?: string;
   color?: string;
@@ -143,7 +143,7 @@ export function BotanicalBranchSvg({
 
 export function BotanicalWreathSvg({
   className = "w-24 h-24",
-  color = "#7D1128",
+  color = "#541E24",
 }: {
   className?: string;
   color?: string;
@@ -225,7 +225,7 @@ export function BotanicalWreathSvg({
 
 export function CrayonUnderlineSvg({
   className = "w-32 h-3",
-  color = "#7D1128",
+  color = "#541E24",
 }: {
   className?: string;
   color?: string;

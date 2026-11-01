@@ -151,7 +151,7 @@ function BotanicalSectionDivider() {
 
   return (
     <div className="flex items-center justify-center my-6 px-8 select-none">
-      <div className="h-px flex-1 bg-[#7D1128]/20 border-t border-dashed border-[#7D1128]/35" />
+      <div className="h-px flex-1 bg-[#541E24]/20 border-t border-dashed border-[#541E24]/35" />
       <motion.img
         src="/images/paper-art/botanical-corner-sprig.png"
         alt="Botanical Divider"
@@ -161,7 +161,7 @@ function BotanicalSectionDivider() {
         transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: MOTION_TRANSITIONS.romantic.ease }}
         className="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-2 pointer-events-none drop-shadow-2xs rotate-45"
       />
-      <div className="h-px flex-1 bg-[#7D1128]/20 border-t border-dashed border-[#7D1128]/35" />
+      <div className="h-px flex-1 bg-[#541E24]/20 border-t border-dashed border-[#541E24]/35" />
     </div>
   );
 }
@@ -238,7 +238,7 @@ function SketchbookHero() {
           variant="card-lift"
           duration={0.82}
           delay={0.06}
-          className="relative bg-[#FFFDF8] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#7D1128]/35 shadow-[0_8px_24px_rgba(125,17,40,0.08)]"
+          className="relative bg-[#FFFDF8] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#541E24]/35 shadow-[0_8px_24px_rgba(84,30,36,0.08)]"
         >
           <img
             src="/images/paper-art/paperclip-washi-accent.png"
@@ -253,7 +253,7 @@ function SketchbookHero() {
           />
 
           {(data.general?.heroPhotoUrl || data.general?.coverPhotoUrl) && (
-            <div className="relative w-full max-w-[240px] sm:max-w-[270px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden mb-4 bg-[#FAF3EA] border-2 border-[#7D1128]/25 shadow-sm">
+            <div className="relative w-full max-w-[240px] sm:max-w-[270px] mx-auto aspect-[4/5] rounded-2xl overflow-hidden mb-4 bg-[#FAF3EA] border-2 border-[#541E24]/25 shadow-sm">
               <motion.div
                 initial={
                   shouldReduceMotion
@@ -294,36 +294,36 @@ function SketchbookHero() {
             />
             <span
               style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-              className="text-2xl sm:text-3xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-1 -mt-2"
+              className="text-2xl sm:text-3xl font-bold text-[#541E24] tracking-widest z-10 select-none pl-1 -mt-2"
             >
               {coupleMonogram}
             </span>
           </ItemMotion>
 
           <div className="pt-2">
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#7D1128] block font-bold mb-1">
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#541E24] block font-bold mb-1">
               Buku Catatan Pernikahan
             </span>
 
             <h1
               style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-              className="text-3xl sm:text-4xl font-bold text-[#7D1128] tracking-tight my-1"
+              className="text-3xl sm:text-4xl font-bold text-[#541E24] tracking-tight my-1"
             >
               <CharMotionReveal text={groom.name} baseDelay={0.15} /> &amp;{" "}
               <CharMotionReveal text={bride.name} baseDelay={0.35} />
             </h1>
 
             <div className="flex justify-center my-1.5">
-              <CrayonUnderlineSvg className="w-36 h-3" color="#7D1128" />
+              <CrayonUnderlineSvg className="w-36 h-3" color="#541E24" />
             </div>
 
             {dateStr && <p className="text-sm font-serif italic text-[#6B4B3E] mt-2">{[dayStr, dateStr].filter(Boolean).join(", ")}</p>}
           </div>
 
           {data.general?.quote && (
-            <div className="mt-5 pt-4 border-t border-[#7D1128]/20 space-y-2">
+            <div className="mt-5 pt-4 border-t border-[#541E24]/20 space-y-2">
               {data.general.quote.arabic && !data.general.quote.arabic.includes("?") && data.general.quote.arabic.trim().length > 0 && (
-                <p className="font-serif text-sm text-[#7D1128] leading-loose dir-rtl">
+                <p className="font-serif text-sm text-[#541E24] leading-loose dir-rtl">
                   {data.general.quote.arabic}
                 </p>
               )}
@@ -341,10 +341,10 @@ function SketchbookHero() {
           )}
         </ItemMotion>
 
-        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/30 shadow-sm space-y-3 text-left">
-          <div className="flex items-center justify-between border-b border-[#7D1128]/15 pb-2">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#7D1128] flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#7D1128]" />
+        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/30 shadow-sm space-y-3 text-left">
+          <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#541E24] flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#541E24]" />
               Catatan Hitung Mundur
             </span>
             <span className="text-xs font-mono text-[#8C6D60] font-medium">WAKTU TERSISA</span>
@@ -359,9 +359,9 @@ function SketchbookHero() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-[#FAF3EA] p-2.5 rounded-xl border border-[#7D1128]/20 shadow-2xs"
+                className="bg-[#FAF3EA] p-2.5 rounded-xl border border-[#541E24]/20 shadow-2xs"
               >
-                <span className="text-xl sm:text-2xl font-bold text-[#7D1128] block tabular-nums leading-tight py-0.5">
+                <span className="text-xl sm:text-2xl font-bold text-[#541E24] block tabular-nums leading-tight py-0.5">
                   {String(item.val).padStart(2, "0")}
                 </span>
                 <span className="text-[11px] uppercase tracking-wider text-[#6B4B3E] font-bold block mt-0.5">
@@ -371,7 +371,7 @@ function SketchbookHero() {
             ))}
           </div>
 
-          <div className="flex items-center justify-center gap-2.5 pt-3 border-t border-[#7D1128]/15">
+          <div className="flex items-center justify-center gap-2.5 pt-3 border-t border-[#541E24]/15">
             <motion.a
               whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
@@ -379,7 +379,7 @@ function SketchbookHero() {
               aria-disabled={!googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-[#7D1128] hover:bg-[#600C1E] text-white text-xs font-mono font-bold flex items-center gap-1.5 shadow-xs transition-colors min-h-[44px]"
+              className="px-4 py-2.5 rounded-xl bg-[#541E24] hover:bg-[#3A1116] text-white text-xs font-mono font-bold flex items-center gap-1.5 shadow-xs transition-colors min-h-[44px]"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Google Calendar</span>
@@ -389,7 +389,7 @@ function SketchbookHero() {
               whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
               onClick={downloadIcs}
               disabled={!schedule}
-              className="px-4 py-2.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Simpan (.ics)</span>
@@ -411,12 +411,12 @@ function SketchbookCouple() {
       <div className="max-w-md mx-auto space-y-8">
         <ItemMotion variant="slide-down" className="text-center space-y-1 relative">
           <div className="flex justify-center mb-1">
-            <BotanicalBranchSvg className="w-24 h-6 text-[#7D1128]" />
+            <BotanicalBranchSvg className="w-24 h-6 text-[#541E24]" />
           </div>
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
             Lembar Studi Sketsa
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
             Kedua Mempelai
           </h2>
         </ItemMotion>
@@ -426,7 +426,7 @@ function SketchbookCouple() {
             variant="frame-mount"
             delay={0.08}
             rotate={-0.8}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[-0.8deg]"
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[-0.8deg]"
           >
             <div className="absolute -top-6 -left-3 z-20 pointer-events-none">
               <img
@@ -466,7 +466,7 @@ function SketchbookCouple() {
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-md select-none z-10"
               />
               <div className="absolute bottom-[21%] left-[22%] right-[22%] flex justify-between items-end z-20 pointer-events-none">
-                <span className="text-xs font-mono uppercase bg-[#7D1128]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
+                <span className="text-xs font-mono uppercase bg-[#541E24]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
                   Mempelai Pria
                 </span>
               </div>
@@ -475,7 +475,7 @@ function SketchbookCouple() {
             <div className="space-y-1.5 text-center">
               <h3
                 style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-                className="text-2xl sm:text-3xl font-bold text-[#7D1128]"
+                className="text-2xl sm:text-3xl font-bold text-[#541E24]"
               >
                 <CharMotionReveal text={groom.name} baseDelay={0.15} />
               </h3>
@@ -495,7 +495,7 @@ function SketchbookCouple() {
                     href={`https://instagram.com/${groom.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-xs font-mono font-medium transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{groom.instagram.replace("@", "")}</span>
@@ -506,18 +506,18 @@ function SketchbookCouple() {
           </ItemMotion>
 
           <ItemMotion variant="pop" delay={0.1} className="flex items-center justify-center gap-3 py-1">
-            <div className="h-px flex-1 bg-[#7D1128]/25 border-t border-dashed border-[#7D1128]/40" />
-            <div className="w-8 h-8 rounded-full bg-[#7D1128] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs">
+            <div className="h-px flex-1 bg-[#541E24]/25 border-t border-dashed border-[#541E24]/40" />
+            <div className="w-8 h-8 rounded-full bg-[#541E24] text-white flex items-center justify-center font-serif text-sm font-bold shadow-xs">
               &amp;
             </div>
-            <div className="h-px flex-1 bg-[#7D1128]/25 border-t border-dashed border-[#7D1128]/40" />
+            <div className="h-px flex-1 bg-[#541E24]/25 border-t border-dashed border-[#541E24]/40" />
           </ItemMotion>
 
           <ItemMotion
             variant="frame-mount"
             delay={0.12}
             rotate={0.8}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm transform rotate-[0.8deg]"
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[0.8deg]"
           >
             <div className="absolute -top-6 -right-3 z-20 pointer-events-none">
               <img
@@ -565,7 +565,7 @@ function SketchbookCouple() {
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-md select-none z-10"
               />
               <div className="absolute bottom-[21%] left-[22%] right-[22%] flex justify-between items-end z-20 pointer-events-none">
-                <span className="text-xs font-mono uppercase bg-[#7D1128]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
+                <span className="text-xs font-mono uppercase bg-[#541E24]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
                   Mempelai Wanita
                 </span>
               </div>
@@ -574,7 +574,7 @@ function SketchbookCouple() {
             <div className="space-y-1.5 text-center">
               <h3
                 style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-                className="text-2xl sm:text-3xl font-bold text-[#7D1128]"
+                className="text-2xl sm:text-3xl font-bold text-[#541E24]"
               >
                 <CharMotionReveal text={bride.name} baseDelay={0.15} />
               </h3>
@@ -594,7 +594,7 @@ function SketchbookCouple() {
                     href={`https://instagram.com/${bride.instagram.replace("@", "")}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-xs font-mono font-medium transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-medium transition-colors"
                   >
                     <InstagramIcon className="w-3.5 h-3.5" />
                     <span>@{bride.instagram.replace("@", "")}</span>
@@ -618,10 +618,10 @@ function SketchbookEvents() {
     <SectionMotion id="event" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
             Jurnal Waktu &amp; Tempat
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
             Rangkaian Acara
           </h2>
         </ItemMotion>
@@ -632,7 +632,7 @@ function SketchbookEvents() {
               key={evt.id || idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.08}
-              className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
+              className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               {idx === 0 && (
                 <>
@@ -653,18 +653,18 @@ function SketchbookEvents() {
                 </>
               )}
 
-              <div className="flex items-center justify-between border-b border-[#7D1128]/20 pb-2">
-                <span className="px-3 py-1 rounded-full bg-[#7D1128] text-white text-xs font-mono font-bold uppercase tracking-wider">
+              <div className="flex items-center justify-between border-b border-[#541E24]/20 pb-2">
+                <span className="px-3 py-1 rounded-full bg-[#541E24] text-white text-xs font-mono font-bold uppercase tracking-wider">
                   {evt.title}
                 </span>
-                <span className="text-xs font-mono font-bold text-[#7D1128]">
+                <span className="text-xs font-mono font-bold text-[#541E24]">
                   {evt.displayDay}
                 </span>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-start gap-2.5">
-                  <Calendar className="w-4 h-4 text-[#7D1128] shrink-0 mt-0.5" />
+                  <Calendar className="w-4 h-4 text-[#541E24] shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-mono uppercase text-[#8C6D60] block font-bold">
                       Hari &amp; Tanggal
@@ -676,7 +676,7 @@ function SketchbookEvents() {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <Clock className="w-4 h-4 text-[#7D1128] shrink-0 mt-0.5" />
+                  <Clock className="w-4 h-4 text-[#541E24] shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-mono uppercase text-[#8C6D60] block font-bold">
                       Waktu
@@ -688,12 +688,12 @@ function SketchbookEvents() {
                 </div>
 
                 <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-[#7D1128] shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-[#541E24] shrink-0 mt-0.5" />
                   <div>
                     <span className="text-xs font-mono uppercase text-[#8C6D60] block font-bold">
                       Tempat &amp; Lokasi
                     </span>
-                    <p className="text-sm sm:text-base font-bold text-[#7D1128]">
+                    <p className="text-sm sm:text-base font-bold text-[#541E24]">
                       {evt.venueName}
                     </p>
                     <p className="text-xs sm:text-sm text-[#5C4538] leading-relaxed mt-0.5">
@@ -704,14 +704,14 @@ function SketchbookEvents() {
               </div>
 
               {evt.mapUrl && (
-                <div className="pt-2 border-t border-[#7D1128]/15">
+                <div className="pt-2 border-t border-[#541E24]/15">
                   <motion.a
                     whileHover={shouldReduceMotion ? {} : { scale: 1.02, y: -1 }}
                     whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
                     href={evt.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-[44px] items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#7D1128] hover:bg-[#600C1E] text-white text-xs font-mono font-bold shadow-xs transition-colors"
+                    className="inline-flex min-h-[44px] items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#541E24] hover:bg-[#3A1116] text-white text-xs font-mono font-bold shadow-xs transition-colors"
                   >
                     <MapPin className="w-3.5 h-3.5" />
                     <span>Petunjuk Arah (Maps)</span>
@@ -766,10 +766,10 @@ function SketchbookGallery() {
               animateFloat={false}
             />
           </div>
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
             Koleksi Potret
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
             Galeri Sketsa Kenangan
           </h2>
         </ItemMotion>
@@ -791,12 +791,12 @@ function SketchbookGallery() {
                     : {
                         y: -3,
                         scale: 1.015,
-                        boxShadow: "0 8px 20px -4px rgba(125,17,40,0.12)",
+                        boxShadow: "0 8px 20px -4px rgba(84,30,36,0.12)",
                       }
                 }
                 whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
                 transition={{ duration: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
-                className="w-full relative bg-[#FFFDF8] p-2 rounded-xl border-2 border-dashed border-[#7D1128]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1128] focus-visible:ring-offset-2 transition-colors block"
+                className="w-full relative bg-[#FFFDF8] p-2 rounded-xl border-2 border-dashed border-[#541E24]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#541E24] focus-visible:ring-offset-2 transition-colors block"
                 aria-label={`Buka potret kenangan ${idx + 1}`}
               >
                 <div className="w-10 h-3 bg-[#E5B869]/70 absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-2deg] rounded-xs z-10 pointer-events-none" />
@@ -807,8 +807,8 @@ function SketchbookGallery() {
                     loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-103"
                   />
-                  <div className="absolute inset-0 bg-[#7D1128]/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-white/90 text-[#7D1128] flex items-center justify-center shadow-md">
+                  <div className="absolute inset-0 bg-[#541E24]/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-white/90 text-[#541E24] flex items-center justify-center shadow-md">
                       <ZoomIn className="w-4 h-4" />
                     </div>
                   </div>
@@ -842,7 +842,7 @@ function SketchbookGallery() {
               exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.26, ease: MOTION_TRANSITIONS.romantic.ease }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-md w-full bg-[#FFFDF8] p-3 rounded-2xl border-4 border-[#7D1128] shadow-2xl"
+              className="max-w-md w-full bg-[#FFFDF8] p-3 rounded-2xl border-4 border-[#541E24] shadow-2xl"
             >
               <img
                 src={selectedPhoto}
@@ -886,14 +886,14 @@ function SketchbookGift() {
     <SectionMotion id="gift" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
         <div aria-live="polite" aria-atomic="true">
-          {copyError && <p role="alert" className="text-sm text-[#7D1128]">{copyError}</p>}
+          {copyError && <p role="alert" className="text-sm text-[#541E24]">{copyError}</p>}
           {copiedIdx !== null && <p role="status" className="text-sm text-emerald-800">Nomor rekening sudah disalin.</p>}
         </div>
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
             Tanda Kasih
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
             Kado Pernikahan
           </h2>
           <p className="text-xs font-sans text-[#6B4B3E] max-w-xs mx-auto">
@@ -907,10 +907,10 @@ function SketchbookGift() {
               key={idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.1}
-              className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
+              className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
-              <div className="flex items-center justify-between border-b border-[#7D1128]/15 pb-2">
-                <span className="font-mono font-bold text-sm text-[#7D1128] uppercase">
+              <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
+                <span className="font-mono font-bold text-sm text-[#541E24] uppercase">
                   {acc.bankName}
                 </span>
                 <span className="text-[10px] font-mono text-[#8C6D60]">REKENING RESMI</span>
@@ -929,7 +929,7 @@ function SketchbookGift() {
                   whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
                   whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
                   onClick={() => handleCopy(acc.accountNumber, idx)}
-                  className="px-3 py-1.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#7D1128] border border-[#7D1128]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-[#FAF3EA] hover:bg-[#F2E7D9] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   {copiedIdx === idx ? (
                     <>
@@ -1011,7 +1011,7 @@ function SketchbookRsvp({
       if (result.clearMessage) setMessage("");
       if (result.tone === "success" && !shouldReduceMotion) {
         try {
-          confetti({ particleCount: 50, spread: 65, origin: { y: 0.7 }, colors: ["#7D1128", "#A3B899", "#E5B869", "#F5A8B8", "#FFFDF8"] });
+          confetti({ particleCount: 50, spread: 65, origin: { y: 0.7 }, colors: ["#541E24", "#A3B899", "#E5B869", "#F5A8B8", "#FFFDF8"] });
         } catch {}
       }
     } finally {
@@ -1024,10 +1024,10 @@ function SketchbookRsvp({
     <SectionMotion id="rsvp" className="relative py-12 px-5 text-[#2C1810]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#7D1128] block">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
             Konfirmasi Kehadiran
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#7D1128]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
             Buku Tamu &amp; Doa Restu
           </h2>
         </ItemMotion>
@@ -1036,7 +1036,7 @@ function SketchbookRsvp({
           <form
             onSubmit={handleSubmit}
             aria-busy={isSubmitting}
-            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-4"
+            className="relative bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-4"
           >
             <div className="absolute -top-5 -right-3 z-10 pointer-events-none">
               <BotanicalSprigOrnament
@@ -1047,7 +1047,7 @@ function SketchbookRsvp({
             </div>
 
             <div>
-              <label htmlFor={`${formId}-name`} className="text-xs font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+              <label htmlFor={`${formId}-name`} className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1">
                 Nama Lengkap
               </label>
               <input
@@ -1060,12 +1060,12 @@ function SketchbookRsvp({
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder="Masukkan nama Anda"
                 required
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
               />
             </div>
 
             <div>
-              <label className="text-xs font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1.5">
                 Status Kehadiran
               </label>
               <div className="grid grid-cols-2 gap-2" role="group" aria-label="Status kehadiran">
@@ -1085,8 +1085,8 @@ function SketchbookRsvp({
                     disabled={isSubmitting}
                     className={`py-2.5 px-2 text-center rounded-xl text-xs font-mono font-bold border transition-colors cursor-pointer min-h-[44px] ${
                       attendance === opt.key
-                        ? "bg-[#7D1128] text-white border-[#7D1128]"
-                        : "bg-[#FAF3EA] text-[#6B4B3E] border-[#7D1128]/25 hover:bg-[#F2E7D9]"
+                        ? "bg-[#541E24] text-white border-[#541E24]"
+                        : "bg-[#FAF3EA] text-[#6B4B3E] border-[#541E24]/25 hover:bg-[#F2E7D9]"
                     }`}
                   >
                     {opt.label}
@@ -1097,7 +1097,7 @@ function SketchbookRsvp({
 
             {attendance === "hadir" && guestItem && maxQuota > 1 && (
               <div>
-                <label htmlFor={`${formId}-count`} className="text-xs font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+                <label htmlFor={`${formId}-count`} className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1">
                   Jumlah Hadir (Maks: {maxQuota} Orang)
                 </label>
                 <select
@@ -1105,7 +1105,7 @@ function SketchbookRsvp({
                   disabled={isSubmitting}
                   value={attendeeCount}
                   onChange={(e) => setAttendeeCount(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40 min-h-[44px]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40 min-h-[44px]"
                 >
                   {Array.from({ length: maxQuota }, (_, i) => i + 1).map((n) => (
                     <option key={n} value={n}>
@@ -1117,7 +1117,7 @@ function SketchbookRsvp({
             )}
 
             <div>
-              <label htmlFor={`${formId}-message`} className="text-xs font-mono uppercase tracking-wider text-[#7D1128] font-bold block mb-1">
+              <label htmlFor={`${formId}-message`} className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1">
                 Ucapan &amp; Doa {guestItem && "(opsional)"}
               </label>
               <textarea
@@ -1129,7 +1129,7 @@ function SketchbookRsvp({
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={`Tuliskan ucapan dan doa untuk ${data.couple.groom.name} & ${data.couple.bride.name}...`}
                 required={!guestItem}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-[#7D1128]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#7D1128]/40"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#FAF3EA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
               />
             </div>
 
@@ -1138,14 +1138,14 @@ function SketchbookRsvp({
               disabled={isSubmitting}
               whileHover={shouldReduceMotion ? {} : { scale: 1.015, y: -1 }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.96 }}
-              className="w-full py-3.5 rounded-xl bg-[#7D1128] hover:bg-[#600C1E] text-white font-mono font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors min-h-[48px]"
+              className="w-full py-3.5 rounded-xl bg-[#541E24] hover:bg-[#3A1116] text-white font-mono font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors min-h-[48px]"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{isSubmitting ? "Mengirim..." : guestItem ? "Kirim Kehadiran & Ucapan" : "Kirim Ucapan"}</span>
             </motion.button>
 
             <div aria-live="polite" aria-atomic="true">
-              {feedback && <p role={feedback.tone === "error" ? "alert" : "status"} className={`text-sm text-center leading-relaxed ${feedback.tone === "error" ? "text-[#7D1128]" : feedback.tone === "success" ? "text-emerald-800" : "text-[#6B4B3E]"}`}>{feedback.message}</p>}
+              {feedback && <p role={feedback.tone === "error" ? "alert" : "status"} className={`text-sm text-center leading-relaxed ${feedback.tone === "error" ? "text-[#541E24]" : feedback.tone === "success" ? "text-emerald-800" : "text-[#6B4B3E]"}`}>{feedback.message}</p>}
             </div>
             {preview && <p className="text-xs text-[#6B4B3E]">Mode pratinjau: formulir tidak mengirim data.</p>}
             {!guestItem && <p className="text-xs text-[#6B4B3E]">Pencatatan kehadiran memerlukan tautan undangan pribadi.</p>}
@@ -1155,9 +1155,9 @@ function SketchbookRsvp({
         <ItemMotion
           variant="slide-right"
           delay={0.12}
-          className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#7D1128]/35 shadow-sm space-y-3"
+          className="bg-[#FFFDF8] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
         >
-          <div className="flex items-center gap-2 border-b border-[#7D1128]/15 pb-2 text-xs font-mono font-bold uppercase tracking-wider text-[#7D1128]">
+          <div className="flex items-center gap-2 border-b border-[#541E24]/15 pb-2 text-xs font-mono font-bold uppercase tracking-wider text-[#541E24]">
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Ucapan &amp; Doa ({wishes.length})</span>
           </div>
@@ -1168,10 +1168,10 @@ function SketchbookRsvp({
                 key={w.id}
                 variant={wIdx % 2 === 0 ? "slide-left" : "slide-right"}
                 delay={0.04 + (wIdx % 5) * 0.03}
-                className="p-3 rounded-xl bg-[#FAF3EA] border border-[#7D1128]/20 space-y-1 text-left"
+                className="p-3 rounded-xl bg-[#FAF3EA] border border-[#541E24]/20 space-y-1 text-left"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-sans font-bold text-xs text-[#7D1128]">
+                  <span className="font-sans font-bold text-xs text-[#541E24]">
                     {w.name}
                   </span>
                   <span className="text-xs font-mono text-[#8C6D60]">
@@ -1261,7 +1261,7 @@ export function PaperArtTemplate({
     <WeddingDataProvider data={data}>
       <div
         style={{ "--font-couple-custom": fontFamilyCss } as React.CSSProperties}
-        className="min-h-screen bg-[#F5EBE1] flex flex-col lg:flex-row relative selection:bg-[#7D1128] selection:text-white"
+        className="min-h-screen bg-[#F5EBE1] flex flex-col lg:flex-row relative selection:bg-[#541E24] selection:text-white"
       >
         {!isPreview && (
           <DesktopLeftShowcase
@@ -1282,8 +1282,8 @@ export function PaperArtTemplate({
               isPreview ? "max-w-full" : "lg:max-w-[480px]"
             } min-h-screen bg-[#FBF6EE] ${
               isPreview
-                ? "rounded-2xl border-2 border-[#7D1128]"
-                : "lg:rounded-[44px] lg:border-[5px] lg:border-[#7D1128] lg:shadow-[8px_10px_0px_#4A0812]"
+                ? "rounded-2xl border-2 border-[#541E24]"
+                : "lg:rounded-[44px] lg:border-[5px] lg:border-[#541E24] lg:shadow-[8px_10px_0px_#2C0A0E]"
             } relative overflow-clip flex flex-col`}
             style={{
               backgroundImage: "url('/images/paper-art/paper-texture-ivory.png')",
