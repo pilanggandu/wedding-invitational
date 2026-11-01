@@ -1331,24 +1331,59 @@ function SketchbookRsvp({
 
 function SketchbookFooter() {
   const data = useWeddingData();
+  const shouldReduceMotion = useReducedMotion();
   const { groom, bride } = data.couple;
+  const closingPhoto =
+    data.general?.closingPhotoUrl ||
+    data.general?.coverPhotoUrl ||
+    "/images/prewedding/couple-1.jpg";
 
   return (
     <SectionMotion id="closing" className="pt-10 pb-24 px-5 text-center bg-[#33171A] text-[#FFFDFB] relative">
       <div className="max-w-md mx-auto space-y-4">
-        <div className="flex justify-center mb-3">
+        <div className="flex justify-center mb-1">
           <img
             src="/images/paper-art/wedding-rings-closing-vignette.png"
             alt="Wedding Rings Closing Vignette"
-            className="w-56 sm:w-68 h-auto object-contain pointer-events-none drop-shadow-sm select-none"
+            className="w-48 sm:w-56 h-auto object-contain pointer-events-none drop-shadow-sm select-none opacity-95"
           />
         </div>
-        <ItemMotion variant="fade" delay={0.1}>
+
+        {/* Bingkai Foto Bersama Mempelai (Deckle Mat & Overflow Hidden) */}
+        <ItemMotion variant="card-lift" delay={0.08}>
+          <div className="relative w-full max-w-[270px] sm:max-w-[300px] mx-auto aspect-[4/5] my-2">
+            <div className="absolute top-[13.5%] bottom-[15.5%] left-[17.5%] right-[16.5%] overflow-hidden rounded-[2px] shadow-inner bg-[#EFE6DC]">
+              <motion.div
+                whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
+                transition={{ duration: 0.4 }}
+                className="w-full h-full"
+              >
+                <img
+                  src={closingPhoto}
+                  alt={`${groom.name} & ${bride.name}`}
+                  className="w-full h-full object-cover object-center"
+                />
+              </motion.div>
+            </div>
+            <img
+              src="/images/paper-art/deckle-photo-mat.png"
+              alt="Deckle Photo Frame"
+              className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-md select-none z-10"
+            />
+            <div className="absolute bottom-[18%] left-[20%] right-[20%] flex justify-center items-end z-20 pointer-events-none">
+              <span className="text-xs font-mono uppercase bg-[#541E24]/95 text-white px-2.5 py-0.5 rounded font-bold shadow-xs">
+                {groom.name} &amp; {bride.name}
+              </span>
+            </div>
+          </div>
+        </ItemMotion>
+
+        <ItemMotion variant="fade" delay={0.12}>
           <p className="text-sm sm:text-base font-serif italic text-white/90 max-w-sm mx-auto leading-relaxed">
             {data.general?.closingMessage || "Kehadiran dan doa restu Anda akan menjadi kebahagiaan bagi kami."}
           </p>
         </ItemMotion>
-        <ItemMotion variant="slide-up" delay={0.15}>
+        <ItemMotion variant="slide-up" delay={0.16}>
           <h3
             style={{ fontFamily: "var(--font-couple-custom, serif)" }}
             className="text-3xl sm:text-4xl font-bold text-[#E5B869]"

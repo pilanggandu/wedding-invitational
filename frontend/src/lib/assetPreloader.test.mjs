@@ -14,6 +14,7 @@ test("collectInvitationAssets gathers template and custom photos uniquely", () =
     general: {
       heroPhotoUrl: "/custom-hero.jpg",
       coverPhotoUrl: "/custom-cover.jpg",
+      closingPhotoUrl: "/custom-closing.jpg",
       preweddingPhotos: ["/pw-1.jpg", "/pw-2.jpg"],
     },
     gallery: [
@@ -27,6 +28,7 @@ test("collectInvitationAssets gathers template and custom photos uniquely", () =
   assert.ok(assets.includes("/custom-groom.jpg"));
   assert.ok(assets.includes("/custom-bride.jpg"));
   assert.ok(assets.includes("/custom-hero.jpg"));
+  assert.ok(assets.includes("/custom-closing.jpg"));
   assert.ok(assets.includes("/pw-1.jpg"));
   assert.ok(assets.includes("/gal-1.jpg"));
   assert.ok(assets.includes("/images/paper-art/deckle-photo-mat.png"));

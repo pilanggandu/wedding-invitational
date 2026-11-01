@@ -454,6 +454,24 @@ export function TemplateEditorWorkspace({
                   }
                 />
 
+                <PhotoPickerControl
+                  label="Foto Bersama Penutup (Closing / Footer Photo)"
+                  value={draftData.general?.closingPhotoUrl || draftData.general?.coverPhotoUrl || ""}
+                  onChange={(newUrl) =>
+                    updateDraft((prev) => ({
+                      ...prev,
+                      general: {
+                        ...prev.general,
+                        closingPhotoUrl: newUrl,
+                      },
+                    }))
+                  }
+                  templateId={templateId}
+                  slot="closing"
+                  aspectHint="Rasio Potret (4:5 / 3:4)"
+                  helpText="Foto bersama kedua mempelai yang dibingkai pada bagian penutup / footer undangan."
+                />
+
                 <div>
                   <label className="text-xs font-mono font-medium text-[#A6ABB9] block mb-1">
                     Tagline Undangan
@@ -1368,6 +1386,42 @@ export function TemplateEditorWorkspace({
                     className="w-full px-3 py-2 rounded-xl bg-[#1C1F28] border border-[#2A2E3D] text-xs text-white focus:outline-none focus:border-[#DFD2BD]"
                   />
                 </div>
+
+                <div>
+                  <label className="text-xs font-mono font-medium text-[#A6ABB9] block mb-1">
+                    Pesan Penutup Undangan (Closing Message)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={draftData.general?.closingMessage || ""}
+                    onChange={(e) =>
+                      updateDraft((prev) => ({
+                        ...prev,
+                        general: { ...prev.general, closingMessage: e.target.value },
+                      }))
+                    }
+                    placeholder="Kehadiran dan doa restu Anda akan menjadi kebahagiaan bagi kami..."
+                    className="w-full px-3 py-2 rounded-xl bg-[#1C1F28] border border-[#2A2E3D] text-xs text-white focus:outline-none focus:border-[#DFD2BD]"
+                  />
+                </div>
+
+                <PhotoPickerControl
+                  label="Foto Bersama Penutup (Closing / Footer Photo)"
+                  value={draftData.general?.closingPhotoUrl || draftData.general?.coverPhotoUrl || ""}
+                  onChange={(newUrl) =>
+                    updateDraft((prev) => ({
+                      ...prev,
+                      general: {
+                        ...prev.general,
+                        closingPhotoUrl: newUrl,
+                      },
+                    }))
+                  }
+                  templateId={templateId}
+                  slot="closing"
+                  aspectHint="Rasio Potret (4:5 / 3:4)"
+                  helpText="Foto bersama kedua mempelai yang dibingkai pada bagian penutup / footer undangan."
+                />
               </div>
             )}
 

@@ -25,9 +25,10 @@ export function collectInvitationAssets(data?: Partial<WeddingInvitationData>): 
   if (data.couple?.groom?.photoUrl) assets.add(data.couple.groom.photoUrl.trim());
   if (data.couple?.bride?.photoUrl) assets.add(data.couple.bride.photoUrl.trim());
 
-  // 3. General photos (Hero, Cover, Background)
+  // 3. General photos (Hero, Cover, Closing, Background)
   if (data.general?.heroPhotoUrl) assets.add(data.general.heroPhotoUrl.trim());
   if (data.general?.coverPhotoUrl) assets.add(data.general.coverPhotoUrl.trim());
+  if (data.general?.closingPhotoUrl) assets.add(data.general.closingPhotoUrl.trim());
   if (data.general?.backgroundPhotoUrl) assets.add(data.general.backgroundPhotoUrl.trim());
 
   // 4. Prewedding photo array

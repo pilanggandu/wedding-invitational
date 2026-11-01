@@ -120,6 +120,7 @@ export const WEDDING_DATA = {
     closingMessage: "Kehadiran dan doa restu Anda akan menjadi kebahagiaan bagi kami.",
     coverPhotoUrl: "/images/prewedding/couple-1.jpg",
     heroPhotoUrl: "/images/prewedding/couple-2.jpg",
+    closingPhotoUrl: "/images/prewedding/couple-1.jpg",
     backgroundPhotoUrl: "/images/prewedding/couple-1.jpg",
     preweddingPhotos: [
       "/images/prewedding/couple-1.jpg",

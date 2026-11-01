@@ -228,7 +228,7 @@ export interface PhotoPickerControlProps {
   value: string;
   onChange: (url: string) => void;
   templateId: string;
-  slot: "cover" | "groom" | "bride" | "gallery";
+  slot: "cover" | "closing" | "groom" | "bride" | "gallery";
   helpText?: string;
   aspectHint?: string;
 }
@@ -255,7 +255,7 @@ export function PhotoPickerControl({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const presetsConfig = TEMPLATE_PHOTO_PRESETS[templateId] || TEMPLATE_PHOTO_PRESETS["ambient-blur"];
-  const slotPresets = presetsConfig[slot] || [];
+  const slotPresets = (slot === "closing" ? presetsConfig.cover : presetsConfig[slot]) || [];
 
   const getSourceBadge = () => {
     if (!value) {

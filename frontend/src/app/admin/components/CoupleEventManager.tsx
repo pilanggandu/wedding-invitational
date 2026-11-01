@@ -52,6 +52,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
   const [coverPhotoUrl, setCoverPhotoUrl] = useState(
     data.general?.coverPhotoUrl || "/images/prewedding/couple-1.jpg"
   );
+  const [closingPhotoUrl, setClosingPhotoUrl] = useState(
+    data.general?.closingPhotoUrl || data.general?.coverPhotoUrl || "/images/prewedding/couple-1.jpg"
+  );
   const [preweddingPhotos, setPreweddingPhotos] = useState<string[]>(
     data.general?.preweddingPhotos && data.general.preweddingPhotos.length > 0
       ? data.general.preweddingPhotos
@@ -107,6 +110,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       if (data.general.coverPhotoUrl) {
         setCoverPhotoUrl(data.general.coverPhotoUrl);
         setPreviewingPhotoSrc((prev) => (prev.startsWith("blob:") ? prev : data.general.coverPhotoUrl!));
+      }
+      if (data.general.closingPhotoUrl) {
+        setClosingPhotoUrl(data.general.closingPhotoUrl);
       }
       if (Array.isArray(data.general.preweddingPhotos) && data.general.preweddingPhotos.length > 0) {
         setPreweddingPhotos(data.general.preweddingPhotos);
@@ -355,6 +361,7 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           closingMessage: closingMessage.trim(),
           coverPhotoUrl: coverPhotoUrl.trim(),
           heroPhotoUrl: coverPhotoUrl.trim(),
+          closingPhotoUrl: closingPhotoUrl.trim(),
           preweddingPhotos: preweddingPhotos,
         },
         events: [
@@ -888,6 +895,72 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
                       setPreviewingPhotoSrc(p.src);
                     }}
                     className="px-2 py-0.5 rounded-md bg-white hover:bg-[#F0F0EB] text-[#5C6070] border border-[#DCDCD5] cursor-pointer"
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Foto Bersama Penutup (Closing Photo) */}
+            <div className="p-4 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
+                <div>
+                  <span className="text-xs font-semibold text-[#14161C] block">
+                    Foto Bersama Penutup (Closing Photo)
+                  </span>
+                  <span className="text-[10px] text-[#717686]">
+                    Foto berdua yang dibingkai indah di bagian footer / penutup undangan
+                  </span>
+                </div>
+                {closingPhotoUrl && (
+                  <div className="w-9 h-9 rounded-lg overflow-hidden border border-[#DCDCD5] shrink-0 bg-[#EFE6DC]">
+                    <img
+                      src={closingPhotoUrl}
+                      alt="Closing Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={closingPhotoUrl}
+                  onChange={(e) => setClosingPhotoUrl(e.target.value)}
+                  className="flex-1 px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs text-[#14161C] focus:outline-none focus:border-[#14161C]"
+                  placeholder="https://... atau /images/prewedding/couple-1.jpg"
+                />
+                <label className="px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white hover:bg-[#F5F5F0] text-xs text-[#14161C] font-medium flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors">
+                  <Upload className="w-3.5 h-3.5 text-[#717686]" />
+                  <span>Unggah</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, setClosingPhotoUrl)}
+                  />
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1 text-[10px]">
+                <span className="text-[#888D9C]">Pilihan Cepat:</span>
+                {[
+                  { label: "Foto 1 (Berdua)", src: "/images/prewedding/couple-1.jpg" },
+                  { label: "Foto 2 (Sunset)", src: "/images/prewedding/couple-2.jpg" },
+                  { label: "Foto 5 (Casual)", src: "/images/prewedding/couple-5.jpg" },
+                  { label: "Kucing Pasangan", src: "/images/cats/cats-couple.jpg" },
+                ].map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setClosingPhotoUrl(p.src)}
+                    className={`px-2 py-0.5 rounded-md border cursor-pointer transition-colors ${
+                      closingPhotoUrl === p.src
+                        ? "bg-[#14161C] text-white border-[#14161C] font-medium"
+                        : "bg-white hover:bg-[#F0F0EB] text-[#5C6070] border-[#DCDCD5]"
+                    }`}
                   >
                     {p.label}
                   </button>
@@ -1493,6 +1566,36 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
             onChange={(e) => setClosingMessage(e.target.value)}
             className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
           />
+        </div>
+
+        <div className="pt-2 border-t border-[#EFEFE8] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-14 rounded-lg overflow-hidden border border-[#DCDCD5] bg-[#EFE6DC] shrink-0 shadow-xs">
+              <img
+                src={closingPhotoUrl || "/images/prewedding/couple-1.jpg"}
+                alt="Foto Penutup"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <span className="text-xs font-semibold text-[#14161C] block">
+                Foto Bersama Penutup
+              </span>
+              <span className="text-[11px] text-[#717686]">
+                Foto ini tampil dalam bingkai elegan di akhir undangan
+              </span>
+            </div>
+          </div>
+          <label className="px-3 py-1.5 rounded-xl border border-[#DCDCD5] bg-white hover:bg-[#F5F5F0] text-xs text-[#14161C] font-medium flex items-center gap-1.5 cursor-pointer shrink-0 transition-colors shadow-2xs">
+            <Upload className="w-3.5 h-3.5 text-[#717686]" />
+            <span>Ganti Foto Penutup</span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFileUpload(e, setClosingPhotoUrl)}
+            />
+          </label>
         </div>
       </div>
 

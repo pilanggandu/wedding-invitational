@@ -77,6 +77,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     closingMessage: WEDDING_DATA.general.closingMessage,
     coverPhotoUrl: "/images/prewedding/couple-1.jpg",
     heroPhotoUrl: "/images/prewedding/couple-2.jpg",
+    closingPhotoUrl: "/images/prewedding/couple-1.jpg",
     backgroundPhotoUrl: "/images/prewedding/couple-1.jpg",
     preweddingPhotos: [
       "/images/prewedding/couple-1.jpg",
@@ -219,6 +220,11 @@ export async function syncWithBackend(): Promise<void> {
             ? serverData.general.coverPhotoUrl
             : local.general?.coverPhotoUrl || serverData.general?.coverPhotoUrl || DEFAULT_INVITATION_DATA.general.coverPhotoUrl;
 
+        const resolvedClosingPhoto =
+          serverData.general?.closingPhotoUrl && !isDefaultOrEmptyPhoto(serverData.general.closingPhotoUrl)
+            ? serverData.general.closingPhotoUrl
+            : local.general?.closingPhotoUrl || serverData.general?.closingPhotoUrl || DEFAULT_INVITATION_DATA.general.closingPhotoUrl;
+
         const resolvedPreweddingPhotos =
           Array.isArray(serverData.general?.preweddingPhotos) && serverData.general.preweddingPhotos.length > 0
             ? serverData.general.preweddingPhotos
@@ -253,6 +259,7 @@ export async function syncWithBackend(): Promise<void> {
             ...(serverData.general || {}),
             coverPhotoUrl: resolvedCoverPhoto,
             heroPhotoUrl: resolvedCoverPhoto,
+            closingPhotoUrl: resolvedClosingPhoto,
             preweddingPhotos: resolvedPreweddingPhotos,
           },
           events:

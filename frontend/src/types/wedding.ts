@@ -111,6 +111,7 @@ export interface GeneralWeddingInfo {
   closingMessage: string;
   coverPhotoUrl?: string;
   heroPhotoUrl?: string;
+  closingPhotoUrl?: string;
   backgroundPhotoUrl?: string;
   preweddingPhotos?: string[];
 }

@@ -394,6 +394,7 @@ export const postgresService = {
             "closingMessage",
             "coverPhotoUrl",
             "heroPhotoUrl",
+            "closingPhotoUrl",
             "preweddingPhotos",
           ] as const) {
             if (general[key] !== undefined) {
@@ -454,6 +455,11 @@ export const postgresService = {
               general?.heroPhotoUrl ||
               normalizedData.general?.heroPhotoUrl ||
               "/images/prewedding/couple-2.jpg",
+            closingPhotoUrl:
+              musicSettings.closingPhotoUrl ||
+              general?.closingPhotoUrl ||
+              normalizedData.general?.closingPhotoUrl ||
+              "/images/prewedding/couple-1.jpg",
             preweddingPhotos:
               (Array.isArray(musicSettings.preweddingPhotos) && musicSettings.preweddingPhotos.length > 0)
                 ? musicSettings.preweddingPhotos
