@@ -271,8 +271,8 @@ export function KeepsakeGuestbook({
             width="100"
             height="76"
             loading="lazy"
-            animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: -3.5 }}
+            transition={{ duration: 7.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
           />
         </ItemMotion>
         <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
@@ -481,8 +481,8 @@ export function KeepsakeGifts() {
             width="100"
             height="76"
             loading="lazy"
-            animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: -3.5 }}
+            transition={{ duration: 7.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
           />
         </ItemMotion>
         <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>

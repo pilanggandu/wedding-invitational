@@ -25,6 +25,7 @@ import {
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { SectionMotion } from "@/components/SectionMotion";
 import { ItemMotion } from "@/components/ItemMotion";
+import { useScrollMotion } from "@/components/ScrollMotionContext";
 import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 import { getFontFamilyCss } from "@/lib/typography";
 import type { TemplateProps } from "@/templates/types";
@@ -93,12 +94,13 @@ function Ornament({
       className={`pk-ornament ${className}`}
       loading="lazy"
       animate={{
-        y: [0, -2.5, 1, 0],
-        rotate: [0, -1.2, 1.2, 0],
+        y: -3,
+        rotate: 1.5,
       }}
       transition={{
         duration: isCuteSilkBow ? 8.5 : 10.5,
         repeat: Infinity,
+        repeatType: "reverse",
         ease: "easeInOut",
       }}
     />
@@ -469,8 +471,8 @@ function KeepsakeCouple() {
           width="110"
           height="150"
           loading="lazy"
-          animate={{ y: [0, -3, 0], rotate: [0, 1.5, 0] }}
-          transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ y: -3.5, rotate: 1.8 }}
+          transition={{ duration: 9.5, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         />
         <Ornament name="leaf-spray" className="pk-couple-leaf" />
       </ItemMotion>
@@ -522,8 +524,8 @@ function KeepsakeEvents() {
           width="240"
           height="82"
           loading="lazy"
-          animate={{ scale: [1, 1.025, 1] }}
-          transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ scale: 1.03 }}
+          transition={{ duration: 7.2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         />
       </ItemMotion>
       <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
@@ -956,10 +958,11 @@ function KeepsakeContent({
     },
     [],
   );
+  const scrollMotion = useScrollMotion();
   useEffect(() => {
-    if (!opened || !root.current || motionDisabled) return;
+    if (!opened || !root.current || motionDisabled || scrollMotion) return;
     return bindKeepsakeScrollMotion(root.current);
-  }, [opened, motionDisabled]);
+  }, [opened, motionDisabled, scrollMotion]);
   const open = () => {
     if (leaving || opened) return;
     triggerKeepsakeCelebration(Boolean(reduced));

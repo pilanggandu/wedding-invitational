@@ -13,6 +13,7 @@ export interface SectionMotionProps {
   delay?: number;
   duration?: number;
   variant?: "fade-up" | "fade" | "scale-up" | "slide-left" | "slide-right";
+  viewportOnce?: boolean;
 }
 
 export function SectionMotion({
@@ -23,6 +24,7 @@ export function SectionMotion({
   delay = 0,
   duration = MOTION_TRANSITIONS.romantic.duration,
   variant = "fade-up",
+  viewportOnce = false,
 }: SectionMotionProps) {
   const shouldReduceMotion = useReducedMotion();
   const scrollMotion = useScrollMotion();
@@ -56,7 +58,7 @@ export function SectionMotion({
       id={id}
       initial={getInitial()}
       whileInView={{ opacity: 1, y: 0, x: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.12, margin: "0px 0px -30px 0px" }}
+      viewport={{ once: viewportOnce, amount: 0.12, margin: "0px 0px -30px 0px" }}
       transition={{
         duration,
         delay,

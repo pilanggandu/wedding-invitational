@@ -86,7 +86,7 @@ export function TemplateRenderer(props: TemplateProps) {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="contents"
         >
-          <InvitationMotion disabled={Boolean(templateId === "paper-keepsake" || (!props.isEditor && !(scene.templateId === templateId && scene.opened)))}>{content}</InvitationMotion>
+          <InvitationMotion disabled={Boolean(!props.isEditor && !(scene.templateId === templateId && scene.opened))}>{content}</InvitationMotion>
         </motion.div>
       </AnimatePresence>
     </div>

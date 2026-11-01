@@ -43,7 +43,7 @@ export function ItemMotion({
   floatDuration = 5.2,
   floatDistance = 4,
   rotate = 0,
-  viewportOnce = true,
+  viewportOnce = false,
   amount = 0.12,
   onClick,
 }: ItemMotionProps) {

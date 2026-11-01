@@ -2120,13 +2120,23 @@ html[data-template-theme="paper-keepsake"]
 
 /* Preserve smooth animated transitions while scroll linked */
 
-.pk-scroll-linked .pk-scroll-reveal {
+.pk-scroll-linked .pk-scroll-reveal,
+.invitation-scroll-linked .pk-scroll-reveal {
   animation: none;
-  opacity: var(--pk-scroll-opacity, 1);
-  translate: var(--pk-scroll-x, 0px) var(--pk-scroll-y, 0px);
+  opacity: var(--pk-scroll-opacity, var(--invitation-scroll-opacity, 1));
+  translate: var(--pk-scroll-x, var(--invitation-scroll-x, 0px)) var(--pk-scroll-y, var(--invitation-scroll-y, 0px));
 }
+
+.invitation-scroll-linked .pk-pages .pk-char,
+.pk-scroll-linked .pk-pages .pk-char {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .pk-scroll-linked .pk-scroll-reveal {
+  .pk-scroll-linked .pk-scroll-reveal,
+  .invitation-scroll-linked .pk-scroll-reveal {
     opacity: 1;
     translate: none;
   }
