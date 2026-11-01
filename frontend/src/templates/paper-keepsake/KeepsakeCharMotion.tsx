@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface KeepsakeCharMotionProps {
@@ -11,6 +11,17 @@ interface KeepsakeCharMotionProps {
   as?: "span" | "h1" | "h2" | "h3" | "h4" | "p";
 }
 
+const MOTION_ELEMENTS = {
+  span: motion.span,
+  h1: motion.h1,
+  h2: motion.h2,
+  h3: motion.h3,
+  h4: motion.h4,
+  p: motion.p,
+} as const;
+
+const CHAR_EASE = [0.16, 1, 0.3, 1] as const;
+
 export function KeepsakeCharMotion({
   text,
   className = "",
@@ -19,41 +30,46 @@ export function KeepsakeCharMotion({
   as: Component = "span",
 }: KeepsakeCharMotionProps) {
   const shouldReduceMotion = useReducedMotion();
-  const words = text.split(" ");
+  const words = useMemo(() => text.split(" "), [text]);
+  const MotionComponent = MOTION_ELEMENTS[Component] || motion.span;
+
+  const containerVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: {
+          staggerChildren: stagger,
+          delayChildren: baseDelay,
+        },
+      },
+    }),
+    [stagger, baseDelay],
+  );
+
+  const charVariants = useMemo(
+    () => ({
+      hidden: {
+        opacity: 0,
+        y: 10,
+        rotate: 2.5,
+      },
+      visible: {
+        opacity: 1,
+        y: 0,
+        rotate: 0,
+        transition: {
+          duration: 0.55,
+          ease: CHAR_EASE,
+        },
+      },
+    }),
+    [],
+  );
 
   if (shouldReduceMotion) {
     return <Component className={`pk-char-motion ${className}`}>{text}</Component>;
   }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: stagger,
-        delayChildren: baseDelay,
-      },
-    },
-  };
-
-  const charVariants = {
-    hidden: {
-      opacity: 0,
-      y: 10,
-      rotate: 2.5,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotate: 0,
-      transition: {
-        duration: 0.55,
-        ease: [0.16, 1, 0.3, 1] as const,
-      },
-    },
-  };
-
-  const MotionComponent = motion(Component as React.ElementType);
 
   return (
     <MotionComponent
@@ -61,7 +77,7 @@ export function KeepsakeCharMotion({
       aria-label={text}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: false, amount: 0.15 }}
+      viewport={{ once: false, amount: 0.3, margin: "0px 0px -30px 0px" }}
       variants={containerVariants}
     >
       <span className="pk-char-screenreader sr-only">{text}</span>

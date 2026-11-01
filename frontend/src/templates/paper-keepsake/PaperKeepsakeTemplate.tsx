@@ -493,17 +493,17 @@ function downloadCalendar(event: EventDetail, coupleNames: string) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function KeepsakeEvents() {
-  const data = useWeddingData();
+function KeepsakeCountdown({ countdownTarget }: { countdownTarget: string }) {
   const [remaining, setRemaining] = useState<number | null>(null);
   useEffect(() => {
-    const target = new Date(data.countdownTarget).getTime();
+    const target = new Date(countdownTarget).getTime();
     if (Number.isNaN(target)) return;
     const update = () => setRemaining(Math.max(0, target - Date.now()));
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [data.countdownTarget]);
+  }, [countdownTarget]);
+
   const ticks =
     remaining === null
       ? null
@@ -513,30 +513,9 @@ function KeepsakeEvents() {
           Math.floor(remaining / 60000) % 60,
           Math.floor(remaining / 1000) % 60,
         ];
+
   return (
-    <SectionMotion id="event" className="pk-section pk-events" duration={PK_SECTION_DURATION}>
-      <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
-        <motion.img
-          src={`${ASSETS}wedding-rings-closing-vignette.png`}
-          alt=""
-          aria-hidden="true"
-          className="pk-rings-vignette"
-          width="240"
-          height="82"
-          loading="lazy"
-          animate={{ scale: 1.03 }}
-          transition={{ duration: 7.2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-        />
-      </ItemMotion>
-      <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
-        <h2>
-          <KeepsakeCharMotion text="Hari yang" baseDelay={0.15} />
-          <br />
-          <em>
-            <KeepsakeCharMotion text="kami nantikan." baseDelay={0.45} />
-          </em>
-        </h2>
-      </ItemMotion>
+    <>
       <div
         className="pk-countdown"
         aria-label="Hitung mundur menuju pernikahan"
@@ -574,6 +553,64 @@ function KeepsakeEvents() {
           <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
         </ItemMotion>
       )}
+    </>
+  );
+}
+
+const agendaCardVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.65,
+      ease: [0.22, 1, 0.36, 1] as const,
+      staggerChildren: 0.09,
+      delayChildren: 0.12,
+    },
+  },
+};
+
+const agendaItemVariants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
+
+function KeepsakeEvents() {
+  const data = useWeddingData();
+
+  return (
+    <SectionMotion id="event" className="pk-section pk-events" duration={PK_SECTION_DURATION}>
+      <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
+        <motion.img
+          src={`${ASSETS}wedding-rings-closing-vignette.png`}
+          alt=""
+          aria-hidden="true"
+          className="pk-rings-vignette"
+          width="240"
+          height="82"
+          loading="lazy"
+          animate={{ scale: 1.03 }}
+          transition={{ duration: 7.2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+        />
+      </ItemMotion>
+      <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
+        <h2>
+          <KeepsakeCharMotion text="Hari yang" baseDelay={0.15} />
+          <br />
+          <em>
+            <KeepsakeCharMotion text="kami nantikan." baseDelay={0.45} />
+          </em>
+        </h2>
+      </ItemMotion>
+      <KeepsakeCountdown countdownTarget={data.countdownTarget} />
       <div className="pk-agendas">
         {data.events.map((event, index) => (
           <ItemMotion
@@ -585,62 +622,35 @@ function KeepsakeEvents() {
           >
             <motion.article
               className="pk-agenda"
+              variants={agendaCardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: false, amount: 0.25, margin: "0px 0px -30px 0px" }}
               whileHover={{ y: -4, transition: { duration: 0.25 } }}
             >
               <Ornament name="washi-tape" className="pk-agenda-tape" />
-              <h3>
-                <KeepsakeCharMotion text={event.title} baseDelay={0.2} stagger={0.05} />
-              </h3>
-              <motion.p
-                className="pk-event-date"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.h3 variants={agendaItemVariants}>
+                <KeepsakeCharMotion text={event.title} baseDelay={0.1} stagger={0.045} />
+              </motion.h3>
+              <motion.p className="pk-event-date" variants={agendaItemVariants}>
                 <span>{event.displayDay}</span>
                 <strong>{event.displayDate}</strong>
               </motion.p>
-              <motion.p
-                className="pk-event-time"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.p className="pk-event-time" variants={agendaItemVariants}>
                 {event.time}
               </motion.p>
               <motion.div
                 className="pk-perforation"
-                initial={{ opacity: 0, scaleX: 0.6 }}
-                whileInView={{ opacity: 1, scaleX: 1 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.58, ease: [0.22, 1, 0.36, 1] }}
+                variants={{
+                  hidden: { opacity: 0, scaleX: 0.6 },
+                  visible: { opacity: 1, scaleX: 1, transition: { duration: 0.45 } },
+                }}
               />
-              <motion.h4
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.68, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {event.venueName}
-              </motion.h4>
-              <motion.p
-                className="pk-address"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.h4 variants={agendaItemVariants}>{event.venueName}</motion.h4>
+              <motion.p className="pk-address" variants={agendaItemVariants}>
                 {event.venueAddress}
               </motion.p>
-              <motion.div
-                className="pk-actions"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.65, delay: 0.88, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.div className="pk-actions" variants={agendaItemVariants}>
                 {event.mapUrl && /^https?:\/\//i.test(event.mapUrl) && (
                   <motion.a
                     className="pk-button pk-button-outline"
