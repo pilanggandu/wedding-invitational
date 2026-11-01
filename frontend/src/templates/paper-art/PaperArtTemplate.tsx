@@ -29,6 +29,7 @@ import { saveGuestResponse, type GuestResponseFeedback } from "@/lib/guestRespon
 import { createKeepsakeCalendar, getKeepsakeSchedule } from "../paper-keepsake/keepsakeCalendar";
 import { DesktopLeftShowcase } from "@/components/DesktopLeftShowcase";
 import { EnvelopeCover } from "@/components/EnvelopeCover";
+import { InvitationPreloader } from "@/components/InvitationPreloader";
 import { NavigationDock } from "@/components/NavigationDock";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { SectionMotion } from "@/components/SectionMotion";
@@ -848,7 +849,7 @@ function SketchbookGallery() {
                   <img
                     src={src}
                     alt={`Prewedding ${idx + 1}`}
-                    loading="lazy"
+                    loading="eager"
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-103"
                   />
                   <div className="absolute inset-0 bg-[#541E24]/20 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -1382,6 +1383,7 @@ export function PaperArtTemplate({
 }: TemplateProps) {
   const shouldReduceMotion = useReducedMotion();
   const [isOpened, setIsOpened] = useState<boolean>(isEditor);
+  const [isPreloading, setIsPreloading] = useState<boolean>(!isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
   const { primaryColor, secondaryColor } = resolveThemeColors(data.themePalette);
 
@@ -1392,6 +1394,16 @@ export function PaperArtTemplate({
 
   return (
     <WeddingDataProvider data={data}>
+      <AnimatePresence>
+        {isPreloading && (
+          <InvitationPreloader
+            key="invitation-preloader"
+            data={data}
+            onComplete={() => setIsPreloading(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <div
         style={{
           "--font-couple-custom": fontFamilyCss,
@@ -1430,7 +1442,7 @@ export function PaperArtTemplate({
             <SketchbookSpiralBinding />
 
             <AnimatePresence mode="wait">
-              {!isOpened && (
+              {!isOpened && !isPreloading && (
                 <EnvelopeCover
                   key="envelope-cover"
                   isOpen={isOpened}
