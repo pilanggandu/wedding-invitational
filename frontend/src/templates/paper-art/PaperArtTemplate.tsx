@@ -239,7 +239,7 @@ function SketchbookHero() {
           variant="card-lift"
           duration={0.82}
           delay={0.06}
-          className="relative bg-[#FFFDFB] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#541E24]/35 shadow-[0_8px_24px_rgba(84,30,36,0.08)]"
+          className="relative bg-[#F7EBE4] rounded-2xl p-6 sm:p-8 border-2 border-dashed border-[#541E24]/35 shadow-[0_8px_24px_rgba(84,30,36,0.08)]"
         >
           <img
             src="/images/paper-art/paperclip-washi-accent.png"
@@ -342,7 +342,7 @@ function SketchbookHero() {
           )}
         </ItemMotion>
 
-        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/30 shadow-sm space-y-3 text-left">
+        <ItemMotion variant="card-lift" delay={0.12} className="bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/30 shadow-sm space-y-3 text-left">
           <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#541E24] flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-[#541E24]" />
@@ -427,7 +427,7 @@ function SketchbookCouple() {
             variant="frame-mount"
             delay={0.08}
             rotate={-0.8}
-            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[-0.8deg]"
+            className="relative bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[-0.8deg]"
           >
             <div className="absolute -top-6 -left-3 z-20 pointer-events-none">
               <img
@@ -518,7 +518,7 @@ function SketchbookCouple() {
             variant="frame-mount"
             delay={0.12}
             rotate={0.8}
-            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[0.8deg]"
+            className="relative bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm transform rotate-[0.8deg]"
           >
             <div className="absolute -top-6 -right-3 z-20 pointer-events-none">
               <img
@@ -633,7 +633,7 @@ function SketchbookEvents() {
               key={evt.id || idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.08}
-              className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+              className="relative bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               {idx === 0 && (
                 <>
@@ -797,7 +797,7 @@ function SketchbookGallery() {
                 }
                 whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
                 transition={{ duration: 0.2, ease: MOTION_TRANSITIONS.romantic.ease }}
-                className="w-full relative bg-[#FFFDFB] p-2 rounded-xl border-2 border-dashed border-[#541E24]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#541E24] focus-visible:ring-offset-2 transition-colors block"
+                className="w-full relative bg-[#F7EBE4] p-2 rounded-xl border-2 border-dashed border-[#541E24]/30 shadow-xs cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#541E24] focus-visible:ring-offset-2 transition-colors block"
                 aria-label={`Buka potret kenangan ${idx + 1}`}
               >
                 <div className="w-10 h-3 bg-[#E5B869]/70 absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-2deg] rounded-xs z-10 pointer-events-none" />
@@ -843,7 +843,7 @@ function SketchbookGallery() {
               exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.26, ease: MOTION_TRANSITIONS.romantic.ease }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-md w-full bg-[#FFFDFB] p-3 rounded-2xl border-4 border-[#541E24] shadow-2xl"
+              className="max-w-md w-full bg-[#F7EBE4] p-3 rounded-2xl border-4 border-[#541E24] shadow-2xl"
             >
               <img
                 src={selectedPhoto}
@@ -932,7 +932,7 @@ function SketchbookGift() {
               key={idx}
               variant={idx % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + idx * 0.1}
-              className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+              className="bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
                 <span className="font-mono font-bold text-sm text-[#541E24] uppercase">
@@ -976,7 +976,7 @@ function SketchbookGift() {
             <ItemMotion
               variant={accounts.length % 2 === 0 ? "slide-left" : "slide-right"}
               delay={0.08 + accounts.length * 0.1}
-              className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+              className="bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
             >
               <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
                 <div className="flex items-center gap-2">
@@ -1111,7 +1111,7 @@ function SketchbookRsvp({
           <form
             onSubmit={handleSubmit}
             aria-busy={isSubmitting}
-            className="relative bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-4"
+            className="relative bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-4"
           >
             <div className="absolute -top-5 -right-3 z-10 pointer-events-none">
               <BotanicalSprigOrnament
@@ -1230,7 +1230,7 @@ function SketchbookRsvp({
         <ItemMotion
           variant="slide-right"
           delay={0.12}
-          className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+          className="bg-[#F7EBE4] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
         >
           <div className="flex items-center gap-2 border-b border-[#541E24]/15 pb-2 text-xs font-mono font-bold uppercase tracking-wider text-[#541E24]">
             <MessageSquare className="w-3.5 h-3.5" />

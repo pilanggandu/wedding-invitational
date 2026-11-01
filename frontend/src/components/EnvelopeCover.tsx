@@ -90,7 +90,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             className="relative w-full max-w-sm sm:max-w-md my-auto py-5 px-1 sm:px-2 overflow-visible"
           >
             {/* Authentic Ivory Sketchbook Card (No overflow-hidden to preserve flourished script glyphs and pins) */}
-            <div className="relative bg-[#FFFDFB] rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#541E24]/35 shadow-[0_12px_36px_rgba(84,30,36,0.12),3px_5px_0px_#2C0A0E] overflow-visible">
+            <div className="relative bg-[#F7EBE4] rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#541E24]/35 shadow-[0_12px_36px_rgba(84,30,36,0.12),3px_5px_0px_#2C0A0E] overflow-visible">
 
               {/* Brass Paperclip Washi Accent (Pins naturally over the card edge) */}
               <img
