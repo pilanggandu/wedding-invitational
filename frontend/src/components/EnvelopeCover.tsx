@@ -77,12 +77,7 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             duration: shouldReduceMotion ? 0.2 : MOTION_TRANSITIONS.opening.duration,
             ease: MOTION_TRANSITIONS.romantic.ease,
           }}
-          style={{
-            backgroundImage: "url('/images/paper-art/paper-texture-ivory.png')",
-            backgroundRepeat: "repeat",
-            backgroundSize: "380px",
-          }}
-          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none bg-[#FAF4EE] overflow-y-auto min-h-full"
+          className="absolute inset-0 z-50 flex items-center justify-center p-3 sm:p-5 select-none bg-[#48181D] overflow-y-auto min-h-full"
         >
           {/* Subtle Botanical Corner Foliage */}
           <BotanicalLeaves className="absolute -top-8 -left-8 w-32 sm:w-40 h-44 sm:h-52 opacity-25 rotate-45 pointer-events-none" />

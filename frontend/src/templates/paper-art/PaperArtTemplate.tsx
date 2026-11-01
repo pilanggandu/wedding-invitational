@@ -36,6 +36,7 @@ import { CharMotionReveal } from "@/components/CharMotionReveal";
 import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 import { getFontFamilyCss } from "@/lib/typography";
 import { MOTION_TRANSITIONS } from "@/lib/motion";
+import { BotanicalLeaves } from "@/components/PaperArtDecorations";
 import {
   SketchbookSpiralBinding,
   BotanicalBranchSvg,
@@ -151,7 +152,7 @@ function BotanicalSectionDivider() {
 
   return (
     <div className="flex items-center justify-center my-6 px-8 select-none">
-      <div className="h-px flex-1 bg-[#541E24]/20 border-t border-dashed border-[#541E24]/35" />
+      <div className="h-px flex-1 border-t border-dashed border-[#F2DFBA]/30" />
       <motion.img
         src="/images/paper-art/botanical-corner-sprig.png"
         alt="Botanical Divider"
@@ -161,7 +162,7 @@ function BotanicalSectionDivider() {
         transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: MOTION_TRANSITIONS.romantic.ease }}
         className="w-16 h-16 sm:w-20 sm:h-20 object-contain mx-2 pointer-events-none drop-shadow-2xs rotate-45"
       />
-      <div className="h-px flex-1 bg-[#541E24]/20 border-t border-dashed border-[#541E24]/35" />
+      <div className="h-px flex-1 border-t border-dashed border-[#F2DFBA]/30" />
     </div>
   );
 }
@@ -232,7 +233,7 @@ function SketchbookHero() {
   };
 
   return (
-    <SectionMotion id="hero" className="relative pt-6 pb-12 px-5 text-center text-[#2C1810]">
+    <SectionMotion id="hero" className="relative pt-6 pb-12 px-5 text-center text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion
           variant="card-lift"
@@ -407,16 +408,16 @@ function SketchbookCouple() {
   const { groom, bride } = data.couple;
 
   return (
-    <SectionMotion id="couple" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="couple" className="relative py-12 px-5 text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-8">
         <ItemMotion variant="slide-down" className="text-center space-y-1 relative">
           <div className="flex justify-center mb-1">
-            <BotanicalBranchSvg className="w-24 h-6 text-[#541E24]" />
+            <BotanicalBranchSvg className="w-24 h-6 text-[#F2DFBA]" color="#F2DFBA" />
           </div>
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#F2DFBA] block">
             Lembar Studi Sketsa
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#FFFDFB]">
             Kedua Mempelai
           </h2>
         </ItemMotion>
@@ -615,13 +616,13 @@ function SketchbookEvents() {
   const { events } = data;
 
   return (
-    <SectionMotion id="event" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="event" className="relative py-12 px-5 text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#F2DFBA] block">
             Jurnal Waktu &amp; Tempat
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#FFFDFB]">
             Rangkaian Acara
           </h2>
         </ItemMotion>
@@ -756,7 +757,7 @@ function SketchbookGallery() {
   }, [selectedPhoto]);
 
   return (
-    <SectionMotion id="gallery" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="gallery" className="relative py-12 px-5 text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion variant="slide-down" className="text-center space-y-1 relative">
           <div className="absolute -top-5 right-2 z-10 pointer-events-none">
@@ -766,10 +767,10 @@ function SketchbookGallery() {
               animateFloat={false}
             />
           </div>
-          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
+          <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-[#F2DFBA] block">
             Koleksi Potret
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#FFFDFB]">
             Galeri Sketsa Kenangan
           </h2>
         </ItemMotion>
@@ -906,21 +907,21 @@ function SketchbookGift() {
   if (!data.gifts || (!hasAccounts && !hasPhysicalAddress)) return null;
 
   return (
-    <SectionMotion id="gift" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="gift" className="relative py-12 px-5 text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-6">
         <div aria-live="polite" aria-atomic="true">
-          {copyError && <p role="alert" className="text-sm text-[#541E24]">{copyError}</p>}
-          {copiedIdx !== null && <p role="status" className="text-sm text-emerald-800">Nomor rekening sudah disalin.</p>}
-          {copiedAddress && <p role="status" className="text-sm text-emerald-800">Alamat pengiriman kado fisik sudah disalin.</p>}
+          {copyError && <p role="alert" className="text-sm text-[#FCA5A5]">{copyError}</p>}
+          {copiedIdx !== null && <p role="status" className="text-sm text-[#86EFAC]">Nomor rekening sudah disalin.</p>}
+          {copiedAddress && <p role="status" className="text-sm text-[#86EFAC]">Alamat pengiriman kado fisik sudah disalin.</p>}
         </div>
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#F2DFBA] block">
             Tanda Kasih
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#FFFDFB]">
             Kado Pernikahan
           </h2>
-          <p className="text-xs font-sans text-[#6B4B3E] max-w-xs mx-auto">
+          <p className="text-xs font-sans text-[#E8DCD4] max-w-xs mx-auto">
             Doa restu Anda merupakan hadiah terindah bagi kami.
           </p>
         </ItemMotion>
@@ -1095,13 +1096,13 @@ function SketchbookRsvp({
   };
 
   return (
-    <SectionMotion id="rsvp" className="relative py-12 px-5 text-[#2C1810]">
+    <SectionMotion id="rsvp" className="relative py-12 px-5 text-[#FFFDFB]">
       <div className="max-w-md mx-auto space-y-6">
         <ItemMotion variant="slide-down" className="text-center space-y-1">
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#F2DFBA] block">
             Konfirmasi Kehadiran
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#541E24]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#FFFDFB]">
             Buku Tamu &amp; Doa Restu
           </h2>
         </ItemMotion>
@@ -1335,7 +1336,7 @@ export function PaperArtTemplate({
     <WeddingDataProvider data={data}>
       <div
         style={{ "--font-couple-custom": fontFamilyCss } as React.CSSProperties}
-        className="min-h-screen bg-[#F5ECE5] flex flex-col lg:flex-row relative selection:bg-[#541E24] selection:text-white"
+        className="min-h-screen bg-[#331115] flex flex-col lg:flex-row relative selection:bg-[#541E24] selection:text-white"
       >
         {!isPreview && (
           <DesktopLeftShowcase
@@ -1349,22 +1350,20 @@ export function PaperArtTemplate({
             isPreview ? "w-full" : "lg:w-[52%] xl:w-[50%]"
           } min-h-screen flex justify-center py-0 ${
             isPreview ? "p-0" : "lg:py-8 lg:px-6"
-          } bg-[#F5ECE5] relative`}
+          } bg-[#331115] relative`}
         >
           <main
             className={`w-full max-w-full ${
               isPreview ? "max-w-full" : "lg:max-w-[480px]"
-            } min-h-screen bg-[#FAF4EE] ${
+            } min-h-screen bg-[#48181D] text-[#FFFDFB] ${
               isPreview
-                ? "rounded-2xl border-2 border-[#541E24]"
-                : "lg:rounded-[44px] lg:border-[5px] lg:border-[#541E24] lg:shadow-[8px_10px_0px_#2C0A0E]"
+                ? "rounded-2xl border-2 border-[#2C0A0E]"
+                : "lg:rounded-[44px] lg:border-[5px] lg:border-[#2C0A0E] lg:shadow-[8px_10px_0px_#1A0507]"
             } relative overflow-clip flex flex-col`}
-            style={{
-              backgroundImage: "url('/images/paper-art/paper-texture-ivory.png')",
-              backgroundRepeat: "repeat",
-              backgroundSize: "380px",
-            }}
           >
+            <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-20 rotate-45 pointer-events-none" />
+            <BotanicalLeaves className="absolute -bottom-10 -right-10 w-48 h-68 opacity-20 -rotate-135 pointer-events-none" />
+
             <SketchbookSpiralBinding />
 
             <AnimatePresence mode="wait">

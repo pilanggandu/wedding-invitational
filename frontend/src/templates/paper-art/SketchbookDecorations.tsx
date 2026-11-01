@@ -6,11 +6,11 @@ import { MOTION_TRANSITIONS } from "@/lib/motion";
 
 export function SketchbookSpiralBinding({ className = "" }: { className?: string }) {
   return (
-    <div className={`w-full flex items-center justify-around px-4 py-2 bg-[#EFE4DC] border-b border-[#DFD0C5] select-none ${className}`}>
+    <div className={`w-full flex items-center justify-around px-4 py-2 bg-[#381216] border-b border-[#2C0A0E] select-none ${className}`}>
       {Array.from({ length: 12 }).map((_, i) => (
         <div key={i} className="flex flex-col items-center">
           <div className="w-2.5 h-6 rounded-full bg-gradient-to-r from-[#8C7A68] via-[#F5EFE6] to-[#6A5A4A] shadow-xs border border-[#5A4A3A]/40 -my-1 transform rotate-[-8deg]" />
-          <div className="w-1.5 h-1.5 rounded-full bg-[#3A1116]/60 -mt-0.5" />
+          <div className="w-1.5 h-1.5 rounded-full bg-[#1A0507] -mt-0.5" />
         </div>
       ))}
     </div>
