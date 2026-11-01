@@ -17,7 +17,7 @@ import {
   Palette,
   Sparkles,
 } from "lucide-react";
-import { WeddingInvitationData } from "@/types/wedding";
+import { WeddingInvitationData, BankAccount } from "@/types/wedding";
 import { saveInvitationData } from "@/lib/invitationStore";
 import { extractColorsFromImage, ExtractedColors, FALLBACK_PALETTE } from "@/lib/colorExtractor";
 import { uploadImageFile } from "@/lib/imageUpload";
@@ -136,17 +136,8 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       if (evResepsi.mapUrl) setResepsiMapUrl(evResepsi.mapUrl);
     }
 
-    const a1 = data.gifts?.accounts?.[0];
-    if (a1) {
-      if (a1.bankName) setBank1Name(a1.bankName);
-      if (a1.accountNumber !== undefined) setBank1Number(a1.accountNumber);
-      if (a1.accountHolder !== undefined) setBank1Holder(a1.accountHolder);
-    }
-    const a2 = data.gifts?.accounts?.[1];
-    if (a2) {
-      if (a2.bankName) setBank2Name(a2.bankName);
-      if (a2.accountNumber !== undefined) setBank2Number(a2.accountNumber);
-      if (a2.accountHolder !== undefined) setBank2Holder(a2.accountHolder);
+    if (data.gifts?.accounts && data.gifts.accounts.length > 0) {
+      setAccounts(data.gifts.accounts);
     }
     if (data.gifts?.physicalGiftAddress?.address) {
       setPhysicalAddress(data.gifts.physicalGiftAddress.address);
@@ -215,17 +206,60 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."
   );
 
-  // Bank accounts
-  const acc1 = data.gifts?.accounts?.[0] || { bankName: "BCA", accountNumber: "", accountHolder: "" };
-  const acc2 = data.gifts?.accounts?.[1] || { bankName: "Mandiri", accountNumber: "", accountHolder: "" };
+  // Bank accounts (Dynamic)
+  const [accounts, setAccounts] = useState<BankAccount[]>(() => {
+    if (data.gifts?.accounts && data.gifts.accounts.length > 0) {
+      return data.gifts.accounts;
+    }
+    return [
+      {
+        bankName: "BCA",
+        accountNumber: "",
+        accountHolder: data.couple?.groom?.fullName || data.couple?.groom?.name || "Gilang Pandu Permadi",
+        logoText: "BCA",
+        cuteLabel: `Rekening 01 (${data.couple?.groom?.name || "Gilang"})`,
+        cardColor: "maroon",
+      },
+      {
+        bankName: "Bank Mandiri",
+        accountNumber: "",
+        accountHolder: data.couple?.bride?.fullName || data.couple?.bride?.name || "Salsadila Nanda Octavia",
+        logoText: "Mandiri",
+        cuteLabel: `Rekening 02 (${data.couple?.bride?.name || "Salsadila"})`,
+        cardColor: "gold",
+      },
+    ];
+  });
 
-  const [bank1Name, setBank1Name] = useState(acc1.bankName);
-  const [bank1Number, setBank1Number] = useState(acc1.accountNumber);
-  const [bank1Holder, setBank1Holder] = useState(acc1.accountHolder);
+  const handleAddAccount = () => {
+    const nextIdx = accounts.length + 1;
+    const padIdx = String(nextIdx).padStart(2, "0");
+    const newAcc: BankAccount = {
+      bankName: "BCA",
+      accountNumber: "",
+      accountHolder: "",
+      logoText: "BCA",
+      cuteLabel: `Rekening ${padIdx}`,
+      cardColor: nextIdx % 2 === 0 ? "gold" : "maroon",
+    };
+    setAccounts((prev) => [...prev, newAcc]);
+  };
 
-  const [bank2Name, setBank2Name] = useState(acc2.bankName);
-  const [bank2Number, setBank2Number] = useState(acc2.accountNumber);
-  const [bank2Holder, setBank2Holder] = useState(acc2.accountHolder);
+  const handleRemoveAccount = (index: number) => {
+    setAccounts((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAccountChange = (index: number, field: keyof BankAccount, value: string) => {
+    setAccounts((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+        ...(field === "bankName" ? { logoText: value } : {}),
+      };
+      return updated;
+    });
+  };
 
   const [physicalAddress, setPhysicalAddress] = useState(
     data.gifts?.physicalGiftAddress?.address || "Merakurak, Tuban, Jawa Timur"
@@ -356,24 +390,16 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           },
         ],
         gifts: {
-          accounts: [
-            {
-              bankName: bank1Name.trim(),
-              accountNumber: bank1Number.trim(),
-              accountHolder: bank1Holder.trim(),
-              logoText: bank1Name.trim(),
-              cuteLabel: `Rekening ${groomName.trim()}`,
-              cardColor: "maroon",
-            },
-            {
-              bankName: bank2Name.trim(),
-              accountNumber: bank2Number.trim(),
-              accountHolder: bank2Holder.trim(),
-              logoText: bank2Name.trim(),
-              cuteLabel: `Rekening ${brideName.trim()}`,
-              cardColor: "gold",
-            },
-          ],
+          accounts: accounts
+            .filter((acc) => acc.bankName.trim() || acc.accountNumber.trim())
+            .map((acc, idx) => ({
+              bankName: acc.bankName.trim() || "BCA",
+              accountNumber: acc.accountNumber.trim(),
+              accountHolder: acc.accountHolder.trim(),
+              logoText: acc.logoText?.trim() || acc.bankName.trim() || "BANK",
+              cuteLabel: acc.cuteLabel?.trim() || `Rekening 0${idx + 1}`,
+              cardColor: acc.cardColor || (idx % 2 === 0 ? "maroon" : "gold"),
+            })),
           physicalGiftAddress: {
             recipient: `${groomName.trim()} & ${brideName.trim()}`,
             phone: "081234567890",
@@ -1235,100 +1261,123 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
         </div>
       </div>
 
-      {/* Amplop Digital & Rekening Bank */}
+      {/* Amplop Digital & Rekening Bank (Dinamis) */}
       <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
-        <div className="flex items-center gap-3 pb-4 border-b border-[#F0F0EA]">
-          <div className="w-9 h-9 rounded-xl bg-[#14161C] text-[#DFD2BD] flex items-center justify-center font-bold text-xs shrink-0 border border-[#2D313E]">
-            <CreditCard className="w-4 h-4 text-[#DFD2BD]" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#F0F0EA]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#14161C] text-[#DFD2BD] flex items-center justify-center font-bold text-xs shrink-0 border border-[#2D313E]">
+              <CreditCard className="w-4 h-4 text-[#DFD2BD]" />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
+                Amplop Digital &amp; Hadiah Pernikahan
+              </h3>
+              <p className="text-[11px] text-[#717686]">
+                Nomor rekening untuk kemudahan transfer hadiah serta alamat penerimaan kado fisik
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
-              Amplop Digital &amp; Hadiah Pernikahan
-            </h3>
-            <p className="text-[11px] text-[#717686]">
-              Nomor rekening untuk kemudahan transfer hadiah serta alamat penerimaan kado fisik
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={handleAddAccount}
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-[#14161C] bg-[#F5F5F0] hover:bg-[#EBEBE5] border border-[#DCDCD5] rounded-xl transition-colors shadow-sm self-start sm:self-auto"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Tambah Rekening
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Rekening 1 */}
-          <div className="p-5 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
-              <span className="text-xs font-semibold text-[#14161C]">
-                Rekening 01 ({groomName || "Groom"})
-              </span>
-              <span className="text-[10px] font-mono text-[#717686] uppercase">Tersimpan</span>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Bank</label>
-                <input
-                  type="text"
-                  value={bank1Name}
-                  onChange={(e) => setBank1Name(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Nomor Rekening</label>
-                <input
-                  type="text"
-                  value={bank1Number}
-                  onChange={(e) => setBank1Number(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm font-mono text-[#14161C] focus:outline-none focus:border-[#14161C]"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Atas Nama Pemilik</label>
-              <input
-                type="text"
-                value={bank1Holder}
-                onChange={(e) => setBank1Holder(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
-              />
-            </div>
-          </div>
+          {accounts.map((acc, index) => {
+            const padIdx = String(index + 1).padStart(2, "0");
+            const defaultLabel =
+              index === 0
+                ? `Rekening 01 (${groomName || "Groom"})`
+                : index === 1
+                ? `Rekening 02 (${brideName || "Bride"})`
+                : `Rekening ${padIdx}`;
+            const displayTitle = acc.cuteLabel || defaultLabel;
 
-          {/* Rekening 2 */}
-          <div className="p-5 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
-              <span className="text-xs font-semibold text-[#14161C]">
-                Rekening 02 ({brideName || "Bride"})
-              </span>
-              <span className="text-[10px] font-mono text-[#717686] uppercase">Tersimpan</span>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Bank</label>
-                <input
-                  type="text"
-                  value={bank2Name}
-                  onChange={(e) => setBank2Name(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
-                />
+            return (
+              <div
+                key={index}
+                className="p-5 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-3 relative group transition-all hover:border-[#D0D0C8]"
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
+                  <span className="text-xs font-semibold text-[#14161C]">
+                    {displayTitle}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono text-[#717686] uppercase">
+                      Tersimpan
+                    </span>
+                    {accounts.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAccount(index)}
+                        className="text-[#9E9E94] hover:text-[#DC2626] p-1 rounded-md transition-colors"
+                        title="Hapus rekening"
+                        aria-label={`Hapus ${displayTitle}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Bank
+                    </label>
+                    <input
+                      type="text"
+                      value={acc.bankName}
+                      onChange={(e) => handleAccountChange(index, "bankName", e.target.value)}
+                      placeholder="BCA"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Nomor Rekening
+                    </label>
+                    <input
+                      type="text"
+                      value={acc.accountNumber}
+                      onChange={(e) => handleAccountChange(index, "accountNumber", e.target.value)}
+                      placeholder="Nomor rekening / e-wallet"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm font-mono text-[#14161C] focus:outline-none focus:border-[#14161C]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                    Atas Nama Pemilik
+                  </label>
+                  <input
+                    type="text"
+                    value={acc.accountHolder}
+                    onChange={(e) => handleAccountChange(index, "accountHolder", e.target.value)}
+                    placeholder="Nama pemilik rekening"
+                    className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
+                  />
+                </div>
               </div>
-              <div className="col-span-2">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Nomor Rekening</label>
-                <input
-                  type="text"
-                  value={bank2Number}
-                  onChange={(e) => setBank2Number(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm font-mono text-[#14161C] focus:outline-none focus:border-[#14161C]"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Atas Nama Pemilik</label>
-              <input
-                type="text"
-                value={bank2Holder}
-                onChange={(e) => setBank2Holder(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C]"
-              />
-            </div>
-          </div>
+            );
+          })}
+        </div>
+
+        <div className="flex justify-start">
+          <button
+            type="button"
+            onClick={handleAddAccount}
+            className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[#14161C] bg-[#F5F5F0] hover:bg-[#EAEAE4] border border-[#D4D4CD] rounded-xl transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4 text-[#14161C]" />
+            Tambah Rekening Baru
+          </button>
         </div>
 
         <div>

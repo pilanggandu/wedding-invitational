@@ -1119,15 +1119,71 @@ export function TemplateEditorWorkspace({
             {/* 5. GIFTS & ACCOUNTS INSPECTOR */}
             {activeSection === "gifts" && (
               <div className="space-y-4">
-                <span className="text-[11px] font-mono text-[#8E93A2] block">
-                  Daftar Rekening Bank &amp; Dompet Digital
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-[#8E93A2] block">
+                    Daftar Rekening Bank &amp; Dompet Digital
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateDraft((prev) => {
+                        const newAccs = [...(prev.gifts?.accounts || [])];
+                        newAccs.push({
+                          bankName: "BCA",
+                          accountNumber: "",
+                          accountHolder: "",
+                          logoText: "BCA",
+                          cuteLabel: `Rekening #${newAccs.length + 1}`,
+                          cardColor: newAccs.length % 2 === 0 ? "gold" : "maroon",
+                        });
+                        return {
+                          ...prev,
+                          gifts: {
+                            physicalGiftAddress: prev.gifts?.physicalGiftAddress || {
+                              recipient: "",
+                              phone: "",
+                              address: "",
+                            },
+                            accounts: newAccs,
+                          },
+                        };
+                      });
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#242835] hover:bg-[#2F3445] text-[10px] font-mono text-[#DFD2BD] border border-[#3A3F52] transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Tambah Rekening
+                  </button>
+                </div>
                 {(draftData.gifts?.accounts || []).map((acc: any, idx: number) => (
                   <div key={idx} className="p-3.5 rounded-xl bg-[#1A1D26] border border-[#272B38] space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono text-[#DFD2BD] font-bold">
                         Rekening #{idx + 1}
                       </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateDraft((prev) => {
+                            const newAccs = (prev.gifts?.accounts || []).filter((_: any, i: number) => i !== idx);
+                            return {
+                              ...prev,
+                              gifts: {
+                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || {
+                                  recipient: "",
+                                  phone: "",
+                                  address: "",
+                                },
+                                accounts: newAccs,
+                              },
+                            };
+                          });
+                        }}
+                        className="text-[#8E93A2] hover:text-red-400 p-0.5 transition-colors"
+                        title="Hapus Rekening"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
 
                     <div>
