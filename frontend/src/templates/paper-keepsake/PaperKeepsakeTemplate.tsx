@@ -569,22 +569,6 @@ function KeepsakeEvents() {
           );
         })}
       </div>
-      <ItemMotion variant="fade" delay={0.22} duration={PK_ITEM_DURATION}>
-        <div className="pk-ticker-wrapper" aria-hidden="true">
-          <motion.div
-            className="pk-ticker-track"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{
-              duration: 26,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
-            <span>SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦ SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦</span>
-            <span>SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦ SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦</span>
-          </motion.div>
-        </div>
-      </ItemMotion>
       {remaining === 0 && (
         <ItemMotion variant="fade" duration={PK_ITEM_DURATION}>
           <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
@@ -605,17 +589,58 @@ function KeepsakeEvents() {
             >
               <Ornament name="washi-tape" className="pk-agenda-tape" />
               <h3>
-                <KeepsakeCharMotion text={event.title} baseDelay={0.25} />
+                <KeepsakeCharMotion text={event.title} baseDelay={0.2} stagger={0.05} />
               </h3>
-              <p className="pk-event-date">
-                {event.displayDay}
+              <motion.p
+                className="pk-event-date"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span>{event.displayDay}</span>
                 <strong>{event.displayDate}</strong>
-              </p>
-              <p className="pk-event-time">{event.time}</p>
-              <div className="pk-perforation" />
-              <h4>{event.venueName}</h4>
-              <p className="pk-address">{event.venueAddress}</p>
-              <div className="pk-actions">
+              </motion.p>
+              <motion.p
+                className="pk-event-time"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {event.time}
+              </motion.p>
+              <motion.div
+                className="pk-perforation"
+                initial={{ opacity: 0, scaleX: 0.6 }}
+                whileInView={{ opacity: 1, scaleX: 1 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.58, ease: [0.22, 1, 0.36, 1] }}
+              />
+              <motion.h4
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.68, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {event.venueName}
+              </motion.h4>
+              <motion.p
+                className="pk-address"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.78, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {event.venueAddress}
+              </motion.p>
+              <motion.div
+                className="pk-actions"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.65, delay: 0.88, ease: [0.22, 1, 0.36, 1] }}
+              >
                 {event.mapUrl && /^https?:\/\//i.test(event.mapUrl) && (
                   <motion.a
                     className="pk-button pk-button-outline"
@@ -646,7 +671,7 @@ function KeepsakeEvents() {
                     Simpan tanggal
                   </motion.button>
                 )}
-              </div>
+              </motion.div>
             </motion.article>
           </ItemMotion>
         ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface KeepsakeCharMotionProps {
   text: string;
@@ -14,48 +15,77 @@ export function KeepsakeCharMotion({
   text,
   className = "",
   baseDelay = 0.2,
-  stagger = 0.05,
+  stagger = 0.045,
   as: Component = "span",
 }: KeepsakeCharMotionProps) {
+  const shouldReduceMotion = useReducedMotion();
   const words = text.split(" ");
-  let runningIndex = 0;
+
+  if (shouldReduceMotion) {
+    return <Component className={`pk-char-motion ${className}`}>{text}</Component>;
+  }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: stagger,
+        delayChildren: baseDelay,
+      },
+    },
+  };
+
+  const charVariants = {
+    hidden: {
+      opacity: 0,
+      y: 10,
+      rotate: 2.5,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotate: 0,
+      transition: {
+        duration: 0.55,
+        ease: [0.16, 1, 0.3, 1] as const,
+      },
+    },
+  };
+
+  const MotionComponent = motion(Component as React.ElementType);
 
   return (
-    <Component className={`pk-char-motion ${className}`} aria-label={text}>
+    <MotionComponent
+      className={`pk-char-motion ${className}`}
+      aria-label={text}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.15 }}
+      variants={containerVariants}
+    >
       <span className="pk-char-screenreader sr-only">{text}</span>
       <span aria-hidden="true" className="pk-char-track">
         {words.map((word, wordIndex) => {
           const chars = word.split("");
           return (
             <span key={`word-${wordIndex}-${word}`} className="pk-char-word">
-              {chars.map((char, charIndex) => {
-                const delay = baseDelay + runningIndex * stagger;
-                runningIndex += 1;
-                return (
-                  <span
-                    key={`char-${wordIndex}-${charIndex}-${char}`}
-                    className="pk-char"
-                    style={{ animationDelay: `${delay.toFixed(3)}s` }}
-                  >
-                    {char}
-                  </span>
-                );
-              })}
-              {wordIndex < words.length - 1 && (
-                <span
-                  key={`space-${wordIndex}`}
-                  className="pk-char pk-char-space"
-                  style={{
-                    animationDelay: `${(baseDelay + runningIndex * stagger).toFixed(3)}s`,
-                  }}
+              {chars.map((char, charIndex) => (
+                <motion.span
+                  key={`char-${wordIndex}-${charIndex}-${char}`}
+                  className="pk-char"
+                  variants={charVariants}
                 >
-                  &nbsp;
-                </span>
+                  {char}
+                </motion.span>
+              ))}
+              {wordIndex < words.length - 1 && (
+                <span className="pk-char pk-char-space">&nbsp;</span>
               )}
             </span>
           );
         })}
       </span>
-    </Component>
+    </MotionComponent>
   );
 }
