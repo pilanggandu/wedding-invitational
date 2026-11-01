@@ -2,11 +2,11 @@ import confetti from "canvas-confetti";
 
 /**
  * Memicu pesta konfeti dan kelopak kertas berpalet Paper Keepsake:
+ * - Mahogany (#541E24)
  * - Rose petal (#C7887D)
  * - Warm gold (#E5B869)
  * - Metallic gold (#D4AF37)
  * - Ivory paper (#FBF8F1)
- * - Sage leaf (#79806B)
  */
 export function triggerKeepsakeCelebration(reduced = false) {
   if (reduced || typeof window === "undefined") return;
@@ -19,11 +19,12 @@ export function triggerKeepsakeCelebration(reduced = false) {
       startVelocity: 38,
       origin: { y: 0.64 },
       colors: [
+        "#541E24",
         "#C7887D",
         "#E5B869",
         "#D4AF37",
         "#FBF8F1",
-        "#79806B",
+        "#7D2E38",
         "#DDB0A3",
         "#E4D4B8",
       ],
@@ -41,7 +42,7 @@ export function triggerKeepsakeCelebration(reduced = false) {
         spread: 68,
         startVelocity: 32,
         origin: { x: 0.08, y: 0.7 },
-        colors: ["#C7887D", "#E5B869", "#FBF8F1", "#79806B"],
+        colors: ["#541E24", "#C7887D", "#E5B869", "#FBF8F1"],
         ticks: 400,
         gravity: 0.48,
         scalar: 1.0,
@@ -53,7 +54,7 @@ export function triggerKeepsakeCelebration(reduced = false) {
         spread: 68,
         startVelocity: 32,
         origin: { x: 0.92, y: 0.7 },
-        colors: ["#C7887D", "#D4AF37", "#FBF8F1", "#79806B"],
+        colors: ["#541E24", "#C7887D", "#D4AF37", "#FBF8F1"],
         ticks: 400,
         gravity: 0.48,
         scalar: 1.0,

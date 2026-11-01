@@ -1042,6 +1042,11 @@ function KeepsakeContent({
       reduced ? 0 : 950,
     );
   };
+  const primaryMahogany =
+    data.themePalette?.primaryColor && data.themePalette.primaryColor !== "#7D1128"
+      ? data.themePalette.primaryColor
+      : "#541e24";
+
   return (
     <div
       ref={root}
@@ -1049,8 +1054,8 @@ function KeepsakeContent({
       style={
         {
           "--pk-couple-font": getFontFamilyCss(data.themePalette?.fontStyle),
-          "--pk-primary": data.themePalette?.primaryColor || "#541e24",
-          "--pk-taupe": data.themePalette?.primaryColor || "#541e24",
+          "--pk-primary": primaryMahogany,
+          "--pk-taupe": primaryMahogany,
         } as React.CSSProperties
       }
     >

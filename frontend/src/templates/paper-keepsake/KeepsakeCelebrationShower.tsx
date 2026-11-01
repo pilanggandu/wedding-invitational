@@ -21,11 +21,12 @@ interface Particle {
 }
 
 const COLORS = [
+  "#541E24", // deep mahogany petal
+  "#7D2E38", // mahogany rose
   "#C7887D", // rose petal
   "#E5B869", // warm gold
   "#D4AF37", // metallic gold
   "#FBF8F1", // ivory card
-  "#79806B", // sage leaf
   "#DDB0A3", // soft blush
   "#E4D4B8", // kraft paper
 ];
