@@ -530,29 +530,61 @@ function KeepsakeEvents() {
       </ItemMotion>
       <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
         <h2>
-          Hari yang
+          <KeepsakeCharMotion text="Hari yang" baseDelay={0.15} />
           <br />
-          <em>kami nantikan.</em>
+          <em>
+            <KeepsakeCharMotion text="kami nantikan." baseDelay={0.45} />
+          </em>
         </h2>
       </ItemMotion>
       <div
         className="pk-countdown"
         aria-label="Hitung mundur menuju pernikahan"
       >
-        {["Hari", "Jam", "Menit", "Detik"].map((label, index) => (
-          <ItemMotion key={label} variant="pop" delay={0.18 + index * 0.08} duration={PK_ITEM_DURATION}>
-            <motion.div
-              whileHover={{ y: -3, scale: 1.04 }}
-              transition={{ duration: 0.2 }}
-            >
-              <strong>
-                {ticks ? String(ticks[index]).padStart(2, "0") : "—"}
-              </strong>
-              <span>{label}</span>
-            </motion.div>
-          </ItemMotion>
-        ))}
+        {["Hari", "Jam", "Menit", "Detik"].map((label, index) => {
+          const val = ticks ? String(ticks[index]).padStart(2, "0") : "—";
+          return (
+            <ItemMotion key={label} variant="pop" delay={0.18 + index * 0.08} duration={PK_ITEM_DURATION}>
+              <motion.div
+                whileHover={{ y: -3, scale: 1.04 }}
+                transition={{ duration: 0.2 }}
+              >
+                <strong className="pk-countdown-num">
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      key={`${label}-${val}`}
+                      initial={{ y: -12, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 12, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="pk-countdown-digit"
+                    >
+                      {val}
+                    </motion.span>
+                  </AnimatePresence>
+                </strong>
+                <span>{label}</span>
+              </motion.div>
+            </ItemMotion>
+          );
+        })}
       </div>
+      <ItemMotion variant="fade" delay={0.22} duration={PK_ITEM_DURATION}>
+        <div className="pk-ticker-wrapper" aria-hidden="true">
+          <motion.div
+            className="pk-ticker-track"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{
+              duration: 26,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          >
+            <span>SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦ SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦</span>
+            <span>SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦ SAVE THE DATE ✦ MENUJU HARI BAHAGIA ✦ {data.couple.groom.name.toUpperCase()} &amp; {data.couple.bride.name.toUpperCase()} ✦ COUNTDOWN TO OUR SPECIAL DAY ✦</span>
+          </motion.div>
+        </div>
+      </ItemMotion>
       {remaining === 0 && (
         <ItemMotion variant="fade" duration={PK_ITEM_DURATION}>
           <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
@@ -571,7 +603,10 @@ function KeepsakeEvents() {
               className="pk-agenda"
               whileHover={{ y: -4, transition: { duration: 0.25 } }}
             >
-              <h3>{event.title}</h3>
+              <Ornament name="washi-tape" className="pk-agenda-tape" />
+              <h3>
+                <KeepsakeCharMotion text={event.title} baseDelay={0.25} />
+              </h3>
               <p className="pk-event-date">
                 {event.displayDay}
                 <strong>{event.displayDate}</strong>
