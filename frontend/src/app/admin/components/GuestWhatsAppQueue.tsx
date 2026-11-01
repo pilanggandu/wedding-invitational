@@ -6,6 +6,7 @@ import { getGuestInputError, normalizeGuestPhone } from "@/lib/guestData";
 import {
   buildGuestWhatsAppMessage,
   DEFAULT_GUEST_WHATSAPP_TEMPLATE,
+  GUEST_WHATSAPP_PRESETS,
   getPersonalInvitationUrl,
   getWhatsAppWebUrl,
 } from "@/lib/guestWhatsApp";
@@ -198,11 +199,34 @@ export function GuestWhatsAppQueue({ guests, data, onConfirmSent, onClose }: Gue
                   </p>
                 </div>
                 <div>
-                  <label htmlFor={`${id}-template`} className="mb-2 block text-sm font-semibold">Template pesan</label>
+                  <div className="mb-2 flex flex-wrap items-center justify-between gap-1.5">
+                    <label htmlFor={`${id}-template`} className="block text-sm font-semibold">Template pesan</label>
+                    <div className="flex flex-wrap items-center gap-1">
+                      {GUEST_WHATSAPP_PRESETS.map((preset) => (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          disabled={saving}
+                          onClick={() => {
+                            setTemplate(preset.template);
+                            setOpenedGuestId(null);
+                            setError(null);
+                          }}
+                          className={`rounded-md px-2 py-0.5 text-xs font-medium transition-colors ${
+                            template === preset.template
+                              ? "bg-slate-900 text-white"
+                              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                          }`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <textarea
                     id={`${id}-template`}
                     value={template}
-                    rows={10}
+                    rows={12}
                     disabled={saving}
                     onChange={(event) => { setTemplate(event.target.value); setOpenedGuestId(null); setError(null); }}
                     aria-describedby={`${id}-placeholders`}

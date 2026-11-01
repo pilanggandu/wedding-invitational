@@ -364,7 +364,7 @@ export class NormalizedWeddingService {
               account_number = COALESCE($2, account_number),
               account_holder = COALESCE($3, account_holder),
               updated_at = NOW()
-            WHERE type = 1 OR sort_order = 0 OR id = 1`,
+            WHERE id = '1' OR (type != 4 AND (sort_order = 10 OR sort_order = 0))`,
             [acc1.bankName, acc1.accountNumber, acc1.accountHolder]
           );
         }
@@ -376,7 +376,7 @@ export class NormalizedWeddingService {
               account_number = COALESCE($2, account_number),
               account_holder = COALESCE($3, account_holder),
               updated_at = NOW()
-            WHERE type = 2 OR sort_order = 1 OR id = 2`,
+            WHERE id = '2' OR (type != 4 AND (sort_order = 20 OR sort_order = 1))`,
             [acc2.bankName, acc2.accountNumber, acc2.accountHolder]
           );
         }
@@ -389,7 +389,7 @@ export class NormalizedWeddingService {
             address = COALESCE($2, address),
             phone = COALESCE($3, phone),
             updated_at = NOW()
-          WHERE type = 4 OR sort_order = 2 OR id = 3`,
+          WHERE type = 4 OR id = '3' OR sort_order = 99`,
           [
             payload.gifts.physicalGiftAddress.recipient,
             payload.gifts.physicalGiftAddress.address,

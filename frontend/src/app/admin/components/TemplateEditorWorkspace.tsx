@@ -1281,8 +1281,11 @@ export function TemplateEditorWorkspace({
                           gifts: {
                             accounts: prev.gifts?.accounts || [],
                             physicalGiftAddress: {
-                              recipient: prev.gifts?.physicalGiftAddress?.recipient || "",
-                              phone: prev.gifts?.physicalGiftAddress?.phone || "",
+                              recipient:
+                                prev.gifts?.physicalGiftAddress?.recipient ||
+                                `${prev.couple?.groom?.name || ""} & ${prev.couple?.bride?.name || ""}`.trim() ||
+                                "Gilang & Salsadila",
+                              phone: prev.gifts?.physicalGiftAddress?.phone || "081234567890",
                               address: val,
                             },
                           },

@@ -1404,7 +1404,7 @@ export function PaperArtTemplate({
                   <FallingPaperPetals />
                 )}
 
-                {!isEditor && <NavigationDock theme="maroon" customItems={[{ id: "hero", label: "Beranda", icon: Home }, { id: "couple", label: "Mempelai", icon: Users }, { id: "event", label: "Acara", icon: Calendar }, { id: "gallery", label: "Galeri", icon: ImageIcon }, ...(data.gifts?.accounts?.length ? [{ id: "gift", label: "Kado", icon: Gift }] : []), { id: "rsvp", label: "Doa", icon: MessageSquare }]} />}
+                {!isEditor && <NavigationDock theme="maroon" customItems={[{ id: "hero", label: "Beranda", icon: Home }, { id: "couple", label: "Mempelai", icon: Users }, { id: "event", label: "Acara", icon: Calendar }, { id: "gallery", label: "Galeri", icon: ImageIcon }, ...((data.gifts?.accounts?.length || data.gifts?.physicalGiftAddress?.address?.trim()) ? [{ id: "gift", label: "Kado", icon: Gift }] : []), { id: "rsvp", label: "Doa", icon: MessageSquare }]} />}
                 {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="maroon" />}
               </motion.div>
             )}
