@@ -8,11 +8,15 @@ import {
   useSyncExternalStore,
   type FormEvent,
 } from "react";
+import { motion } from "framer-motion";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { submitRsvpApi } from "@/lib/api";
 import { getWishes, submitWish } from "@/lib/invitationStore";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
 import type { WishMessage } from "@/types/wedding";
 import type { TemplateProps } from "../types";
+import { triggerKeepsakeCelebration } from "./keepsakeCelebration";
 
 type GuestbookProps = Pick<
   TemplateProps,
@@ -209,6 +213,7 @@ export function KeepsakeGuestbook({
 
         if (controller.signal.aborted) return;
         if (wishConfirmed) {
+          triggerKeepsakeCelebration();
           setFeedback({
             tone: "success",
             message: rsvpSaved
@@ -223,6 +228,7 @@ export function KeepsakeGuestbook({
           });
         }
       } else {
+        triggerKeepsakeCelebration();
         setFeedback({
           tone: "success",
           message: "Terima kasih. Konfirmasi kehadiran Anda sudah tersimpan.",
@@ -246,156 +252,176 @@ export function KeepsakeGuestbook({
   };
 
   return (
-    <section
+    <SectionMotion
       id="rsvp"
       data-editor-section="rsvp"
       className="pk-section pk-rsvp"
-      aria-labelledby={`${formId}-heading`}
     >
       <header className="pk-section-heading">
-        <img
-          src="/images/paper-keepsake/mini-envelope.svg"
-          alt=""
-          aria-hidden="true"
-          className="pk-envelope-art"
-          width="100"
-          height="76"
-          loading="lazy"
-        />
-        <h2 id={`${formId}-heading`}>Sepucuk kabar darimu</h2>
-        <p>Konfirmasikan kehadiran dan titipkan doa untuk hari bahagia kami.</p>
+        <ItemMotion variant="pop">
+          <motion.img
+            src="/images/paper-keepsake/mini-envelope.svg"
+            alt=""
+            aria-hidden="true"
+            className="pk-envelope-art"
+            width="100"
+            height="76"
+            loading="lazy"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </ItemMotion>
+        <ItemMotion variant="slide-down" delay={0.06}>
+          <h2 id={`${formId}-heading`}>Sepucuk kabar darimu</h2>
+          <p>Konfirmasikan kehadiran dan titipkan doa untuk hari bahagia kami.</p>
+        </ItemMotion>
       </header>
 
       <div className="pk-guestbook-layout">
-        <form
-          onSubmit={handleSubmit}
-          className="pk-paper-slip pk-rsvp-form"
-          aria-busy={isSubmitting}
-        >
-          <div className="pk-form-field">
-            <label htmlFor={`${formId}-name`}>Nama</label>
-            <input
-              id={`${formId}-name`}
-              name="name"
-              autoComplete="name"
-              required
-              maxLength={150}
-              value={name}
-              onChange={(event) => setEditedName(event.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
+        <ItemMotion variant="slide-left" delay={0.08}>
+          <form
+            onSubmit={handleSubmit}
+            className="pk-paper-slip pk-rsvp-form"
+            aria-busy={isSubmitting}
+          >
+            <div className="pk-form-field">
+              <label htmlFor={`${formId}-name`}>Nama</label>
+              <input
+                id={`${formId}-name`}
+                name="name"
+                autoComplete="name"
+                required
+                maxLength={150}
+                value={name}
+                onChange={(event) => setEditedName(event.target.value)}
+                disabled={isSubmitting}
+              />
+            </div>
 
-          <div className="pk-form-field">
-            <label htmlFor={`${formId}-attendance`}>Kehadiran</label>
-            <select
-              id={`${formId}-attendance`}
-              name="attendance"
-              required
-              value={attendance}
-              onChange={(event) =>
-                setAttendance(event.target.value as typeof attendance)
-              }
-              disabled={isSubmitting}
-            >
-              <option value="">Pilih kehadiran</option>
-              <option value="attending">Saya akan hadir</option>
-              <option value="absent">Maaf, belum bisa hadir</option>
-            </select>
-          </div>
-
-          <div className="pk-form-field">
-            <label htmlFor={`${formId}-count`}>Jumlah tamu</label>
-            <input
-              id={`${formId}-count`}
-              name="attendeeCount"
-              type="number"
-              inputMode="numeric"
-              min={1}
-              max={maxQuota}
-              step={1}
-              required={attendance === "attending"}
-              disabled={attendance !== "attending" || isSubmitting}
-              value={
-                attendance === "absent"
-                  ? 0
-                  : Number.isFinite(attendeeCount)
-                    ? attendeeCount
-                    : ""
-              }
-              onChange={(event) => setAttendeeCount(event.target.valueAsNumber)}
-              aria-describedby={`${formId}-quota`}
-            />
-            <p id={`${formId}-quota`} className="pk-form-note">
-              {guestItem
-                ? `Termasuk Anda, maksimal ${maxQuota} orang sesuai undangan.`
-                : "Pencatatan kehadiran memerlukan tautan undangan pribadi."}
-            </p>
-          </div>
-
-          <div className="pk-form-field">
-            <label htmlFor={`${formId}-message`}>
-              Ucapan &amp; doa <span className="pk-form-note">(opsional)</span>
-            </label>
-            <textarea
-              id={`${formId}-message`}
-              name="message"
-              rows={4}
-              maxLength={2000}
-              placeholder="Tulis pesan untuk kedua mempelai…"
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {previewMode && (
-            <p className="pk-form-note">
-              Mode pratinjau: formulir dapat dicoba tanpa mengirim data.
-            </p>
-          )}
-          <button type="submit" className="pk-button" disabled={isSubmitting}>
-            {isSubmitting
-              ? "Sedang mengirim…"
-              : guestItem
-                ? "Kirim kabar & doa"
-                : "Kirim ucapan"}
-          </button>
-          <div aria-live="polite" aria-atomic="true">
-            {feedback && (
-              <p
-                className="pk-feedback"
-                data-tone={feedback.tone}
-                role={feedback.tone === "error" ? "alert" : "status"}
+            <div className="pk-form-field">
+              <label htmlFor={`${formId}-attendance`}>Kehadiran</label>
+              <select
+                id={`${formId}-attendance`}
+                name="attendance"
+                required
+                value={attendance}
+                onChange={(event) =>
+                  setAttendance(event.target.value as typeof attendance)
+                }
+                disabled={isSubmitting}
               >
-                {feedback.message}
+                <option value="">Pilih kehadiran</option>
+                <option value="attending">Saya akan hadir</option>
+                <option value="absent">Maaf, belum bisa hadir</option>
+              </select>
+            </div>
+
+            <div className="pk-form-field">
+              <label htmlFor={`${formId}-count`}>Jumlah tamu</label>
+              <input
+                id={`${formId}-count`}
+                name="attendeeCount"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={maxQuota}
+                step={1}
+                required={attendance === "attending"}
+                disabled={attendance !== "attending" || isSubmitting}
+                value={
+                  attendance === "absent"
+                    ? 0
+                    : Number.isFinite(attendeeCount)
+                      ? attendeeCount
+                      : ""
+                }
+                onChange={(event) => setAttendeeCount(event.target.valueAsNumber)}
+                aria-describedby={`${formId}-quota`}
+              />
+              <p id={`${formId}-quota`} className="pk-form-note">
+                {guestItem
+                  ? `Termasuk Anda, maksimal ${maxQuota} orang sesuai undangan.`
+                  : "Pencatatan kehadiran memerlukan tautan undangan pribadi."}
+              </p>
+            </div>
+
+            <div className="pk-form-field">
+              <label htmlFor={`${formId}-message`}>
+                Ucapan &amp; doa <span className="pk-form-note">(opsional)</span>
+              </label>
+              <textarea
+                id={`${formId}-message`}
+                name="message"
+                rows={4}
+                maxLength={2000}
+                placeholder="Tulis pesan untuk kedua mempelai…"
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            {previewMode && (
+              <p className="pk-form-note">
+                Mode pratinjau: formulir dapat dicoba tanpa mengirim data.
+              </p>
+            )}
+            <motion.button
+              type="submit"
+              className="pk-button"
+              disabled={isSubmitting}
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {isSubmitting
+                ? "Sedang mengirim…"
+                : guestItem
+                  ? "Kirim kabar & doa"
+                  : "Kirim ucapan"}
+            </motion.button>
+            <div aria-live="polite" aria-atomic="true">
+              {feedback && (
+                <p
+                  className="pk-feedback"
+                  data-tone={feedback.tone}
+                  role={feedback.tone === "error" ? "alert" : "status"}
+                >
+                  {feedback.message}
+                </p>
+              )}
+            </div>
+          </form>
+        </ItemMotion>
+
+        <ItemMotion variant="slide-right" delay={0.12}>
+          <div className="pk-wishes" aria-labelledby={`${formId}-wishes`}>
+            <h3 id={`${formId}-wishes`}>Catatan penuh kasih</h3>
+            {wishes.length > 0 ? (
+              <ul className="pk-wish-list">
+                {wishes.slice(0, 20).map((wish) => (
+                  <motion.li
+                    key={wish.id}
+                    className="pk-paper-slip pk-wish"
+                    whileHover={{ x: 3 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="pk-wish-heading">
+                      <h4>{wish.name}</h4>
+                      <span className="pk-wish-meta">{wish.date}</span>
+                    </div>
+                    <p className="pk-wish-message">{wish.message}</p>
+                  </motion.li>
+                ))}
+              </ul>
+            ) : (
+              <p className="pk-empty">
+                Belum ada catatan. Doa Anda akan menjadi kenangan pertama di sini.
               </p>
             )}
           </div>
-        </form>
-
-        <div className="pk-wishes" aria-labelledby={`${formId}-wishes`}>
-          <h3 id={`${formId}-wishes`}>Catatan penuh kasih</h3>
-          {wishes.length > 0 ? (
-            <ul className="pk-wish-list">
-              {wishes.slice(0, 20).map((wish) => (
-                <li key={wish.id} className="pk-paper-slip pk-wish">
-                  <div className="pk-wish-heading">
-                    <h4>{wish.name}</h4>
-                    <span className="pk-wish-meta">{wish.date}</span>
-                  </div>
-                  <p className="pk-wish-message">{wish.message}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="pk-empty">
-              Belum ada catatan. Doa Anda akan menjadi kenangan pertama di sini.
-            </p>
-          )}
-        </div>
+        </ItemMotion>
       </div>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -435,102 +461,122 @@ export function KeepsakeGifts() {
   };
 
   return (
-    <section
+    <SectionMotion
       id="gift"
       data-editor-section="gift"
       className="pk-section pk-gifts"
-      aria-labelledby={headingId}
     >
       <header className="pk-section-heading">
-        <img
-          src="/images/paper-keepsake/paper-hearts.svg"
-          alt=""
-          aria-hidden="true"
-          className="pk-envelope-art"
-          width="100"
-          height="76"
-          loading="lazy"
-        />
-        <h2 id={headingId}>Tanda kasih</h2>
-        <p>
-          Kehadiran dan doa Anda berarti bagi kami. Jika ingin mengirim hadiah,
-          berikut informasi yang dapat digunakan.
-        </p>
+        <ItemMotion variant="pop">
+          <motion.img
+            src="/images/paper-keepsake/paper-hearts.svg"
+            alt=""
+            aria-hidden="true"
+            className="pk-envelope-art"
+            width="100"
+            height="76"
+            loading="lazy"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </ItemMotion>
+        <ItemMotion variant="slide-down" delay={0.06}>
+          <h2 id={headingId}>Tanda kasih</h2>
+          <p>
+            Kehadiran dan doa Anda berarti bagi kami. Jika ingin mengirim hadiah,
+            berikut informasi yang dapat digunakan.
+          </p>
+        </ItemMotion>
       </header>
       <div className="pk-gift-list">
         {accounts.map((account, index) => {
           const key = `account-${index}`;
           return (
-            <article
-              className="pk-paper-slip pk-gift-card"
+            <ItemMotion
               key={`${account.bankName}-${account.accountNumber}-${index}`}
+              variant="card-lift"
+              delay={index * 0.1}
             >
-              {index === 0 && (
-                <img
-                  src="/images/paper-keepsake/paperclip-washi-accent.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="pk-gift-clip-accent"
-                  width="90"
-                  height="80"
-                  loading="lazy"
-                />
-              )}
-              <h3 className="pk-bank-name">{account.bankName}</h3>
-              <p className="pk-account-number">{account.accountNumber}</p>
-              <p className="pk-account-holder">
-                Atas nama {account.accountHolder}
-              </p>
-              <button
-                type="button"
-                className="pk-button pk-button-secondary"
-                disabled={copyingKey !== null}
-                onClick={() =>
-                  copyText(
-                    account.accountNumber,
-                    key,
-                    `Nomor rekening ${account.bankName}`,
-                  )
-                }
+              <motion.article
+                className="pk-paper-slip pk-gift-card"
+                whileHover={{ y: -3, transition: { duration: 0.25 } }}
               >
-                {copyingKey === key
-                  ? "Menyalin…"
-                  : copiedKey === key
-                    ? "Nomor rekening tersalin"
-                    : "Salin nomor rekening"}
-              </button>
-            </article>
+                {index === 0 && (
+                  <img
+                    src="/images/paper-keepsake/paperclip-washi-accent.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="pk-gift-clip-accent"
+                    width="90"
+                    height="80"
+                    loading="lazy"
+                  />
+                )}
+                <h3 className="pk-bank-name">{account.bankName}</h3>
+                <p className="pk-account-number">{account.accountNumber}</p>
+                <p className="pk-account-holder">
+                  Atas nama {account.accountHolder}
+                </p>
+                <motion.button
+                  type="button"
+                  className="pk-button pk-button-secondary"
+                  disabled={copyingKey !== null}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    copyText(
+                      account.accountNumber,
+                      key,
+                      `Nomor rekening ${account.bankName}`,
+                    )
+                  }
+                >
+                  {copyingKey === key
+                    ? "Menyalin…"
+                    : copiedKey === key
+                      ? "Nomor rekening tersalin"
+                      : "Salin nomor rekening"}
+                </motion.button>
+              </motion.article>
+            </ItemMotion>
           );
         })}
         {address?.address?.trim() && (
-          <article className="pk-paper-slip pk-gift-card">
-            <h3>Alamat pengiriman</h3>
-            <address className="pk-gift-address">
-              {address.recipient && <strong>{address.recipient}</strong>}
-              <span>{address.address}</span>
-              {address.phone && <span>{address.phone}</span>}
-            </address>
-            <button
-              type="button"
-              className="pk-button pk-button-secondary"
-              disabled={copyingKey !== null}
-              onClick={() =>
-                copyText(
-                  [address.recipient, address.address, address.phone]
-                    .filter(Boolean)
-                    .join("\n"),
-                  "address",
-                  "Alamat pengiriman",
-                )
-              }
+          <ItemMotion variant="card-lift" delay={accounts.length * 0.1}>
+            <motion.article
+              className="pk-paper-slip pk-gift-card"
+              whileHover={{ y: -3, transition: { duration: 0.25 } }}
             >
-              {copyingKey === "address"
-                ? "Menyalin…"
-                : copiedKey === "address"
-                  ? "Alamat tersalin"
-                  : "Salin alamat pengiriman"}
-            </button>
-          </article>
+              <h3>Alamat pengiriman</h3>
+              <address className="pk-gift-address">
+                {address.recipient && <strong>{address.recipient}</strong>}
+                <span>{address.address}</span>
+                {address.phone && <span>{address.phone}</span>}
+              </address>
+              <motion.button
+                type="button"
+                className="pk-button pk-button-secondary"
+                disabled={copyingKey !== null}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() =>
+                  copyText(
+                    [address.recipient, address.address, address.phone]
+                      .filter(Boolean)
+                      .join("\n"),
+                    "address",
+                    "Alamat pengiriman",
+                  )
+                }
+              >
+                {copyingKey === "address"
+                  ? "Menyalin…"
+                  : copiedKey === "address"
+                    ? "Alamat tersalin"
+                    : "Salin alamat pengiriman"}
+              </motion.button>
+            </motion.article>
+          </ItemMotion>
         )}
         {!accounts.length && !address?.address?.trim() && (
           <p className="pk-empty">Informasi tanda kasih belum ditambahkan.</p>
@@ -547,6 +593,6 @@ export function KeepsakeGifts() {
           </p>
         )}
       </div>
-    </section>
+    </SectionMotion>
   );
 }

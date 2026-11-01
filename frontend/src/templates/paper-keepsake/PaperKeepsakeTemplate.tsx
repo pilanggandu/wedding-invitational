@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowDown,
   ArrowRight,
@@ -23,6 +23,9 @@ import {
   useWeddingData,
 } from "@/context/WeddingDataContext";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { SectionMotion } from "@/components/SectionMotion";
+import { ItemMotion } from "@/components/ItemMotion";
+import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 import { getFontFamilyCss } from "@/lib/typography";
 import type { TemplateProps } from "@/templates/types";
 import type { EventDetail, GroomBrideInfo } from "@/types/wedding";
@@ -31,6 +34,8 @@ import {
   createKeepsakeCalendar,
   getKeepsakeSchedule,
 } from "./keepsakeCalendar";
+import { triggerKeepsakeCelebration } from "./keepsakeCelebration";
+import { KeepsakeCelebrationShower } from "./KeepsakeCelebrationShower";
 import { KeepsakeSurrounds } from "./KeepsakeSurrounds";
 import { KeepsakeCharMotion } from "./KeepsakeCharMotion";
 import { bindKeepsakeScrollMotion } from "./keepsakeScrollMotion";
@@ -41,13 +46,19 @@ const ASSETS = "/images/paper-keepsake/";
 function Ornament({
   name,
   className = "",
+  animate = true,
 }: {
   name: string;
   className?: string;
+  animate?: boolean;
 }) {
+  const shouldReduceMotion = useReducedMotion();
   const isCutePressedCorner = name === "botanical-corner";
   const isCutePressedCluster = name === "flower-cluster";
   const isCuteSilkBow = name === "ivory-bow";
+  const isFloatingAccented =
+    isCutePressedCluster || isCuteSilkBow || isCutePressedCorner;
+
   const src = isCutePressedCorner
     ? `${ASSETS}real-pressed-corner-cute.png`
     : isCutePressedCluster
@@ -55,8 +66,23 @@ function Ornament({
       : isCuteSilkBow
         ? `${ASSETS}real-cute-silk-bow.png`
         : `${ASSETS}${name}.svg`;
+
+  if (shouldReduceMotion || !animate || !isFloatingAccented) {
+    return (
+      <img
+        src={src}
+        alt=""
+        aria-hidden="true"
+        width="220"
+        height="220"
+        className={`pk-ornament ${className}`}
+        loading="lazy"
+      />
+    );
+  }
+
   return (
-    <img
+    <motion.img
       src={src}
       alt=""
       aria-hidden="true"
@@ -64,6 +90,15 @@ function Ornament({
       height="220"
       className={`pk-ornament ${className}`}
       loading="lazy"
+      animate={{
+        y: [0, -3, 1, 0],
+        rotate: [0, -1.5, 1.5, 0],
+      }}
+      transition={{
+        duration: isCuteSilkBow ? 5.8 : 6.8,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
     />
   );
 }
@@ -121,7 +156,12 @@ function Cover({
       data-pk-motion-zone
     >
       <KeepsakeSurrounds variant="cover" />
-      <div className="pk-letter">
+      <motion.div
+        className="pk-letter"
+        initial={{ opacity: 0, y: 22, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+      >
         <img
           className="pk-letter-art"
           src={`${ASSETS}hero-paper-keepsake.png`}
@@ -148,13 +188,16 @@ function Cover({
             />
           </strong>
         </div>
-        <button
+        <motion.button
           type="button"
           className="pk-letter-seal"
           onClick={onOpen}
           disabled={leaving}
           aria-label="Buka segel lilin undangan pernikahan"
           title="Klik segel lilin untuk membuka undangan"
+          whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
           <img
             src={`${ASSETS}wax-seal-authentic.png`}
@@ -169,19 +212,22 @@ function Cover({
             {bride.name.charAt(0)}
           </span>
           <span className="pk-seal-shine" aria-hidden="true" />
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
       <div className="pk-cover-action">
         <p>Sepucuk undangan untuk hari bahagia kami.</p>
-        <button
+        <motion.button
           type="button"
           className="pk-button pk-button-festive"
           onClick={onOpen}
           disabled={leaving}
+          whileHover={{ scale: 1.03, y: -2 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
         >
           <Mail size={17} aria-hidden="true" />
           {leaving ? "Membuka undangan…" : "Buka undangan"}
-        </button>
+        </motion.button>
         <small>Dengan senang hati, kami menantikan kehadiranmu.</small>
       </div>
     </section>
@@ -205,7 +251,12 @@ function KeepsakeDesktop({
           {data.events[0]?.displayDay ? ", " : ""}
           {data.events[0]?.displayDate}
         </span>
-        <div className="pk-desktop-photo pk-photo-mount" data-pk-motion-zone>
+        <motion.div
+          className="pk-desktop-photo pk-photo-mount"
+          data-pk-motion-zone
+          whileHover={{ scale: 1.02, rotate: 0.5 }}
+          transition={{ duration: 0.35 }}
+        >
           <div className="pk-photo-tape" aria-hidden="true" />
           <div className="pk-photo-matte">
             <Photo
@@ -216,7 +267,7 @@ function KeepsakeDesktop({
           </div>
           <Ornament name="botanical-corner" className="pk-desktop-botanical" />
           <Ornament name="ivory-bow" className="pk-desktop-bow" />
-        </div>
+        </motion.div>
         <h2 className="pk-couple-name">
           <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.3} />
           <em>&amp;</em>
@@ -228,9 +279,15 @@ function KeepsakeDesktop({
           Sebuah kenangan untuk kita simpan.
         </p>
         {!opened ? (
-          <button type="button" className="pk-text-button" onClick={onOpen}>
+          <motion.button
+            type="button"
+            className="pk-text-button"
+            onClick={onOpen}
+            whileHover={{ x: 4 }}
+            whileTap={{ scale: 0.96 }}
+          >
             Buka surat kami <ArrowRight size={17} aria-hidden="true" />
-          </button>
+          </motion.button>
         ) : (
           <span className="pk-desktop-scroll">
             Gulir untuk membaca undangan{" "}
@@ -247,53 +304,78 @@ function KeepsakeHero() {
   const data = useWeddingData();
   return (
     <>
-      <section id="hero" className="pk-section pk-hero" data-pk-reveal>
+      <SectionMotion id="hero" className="pk-section pk-hero">
         <KeepsakeSurrounds variant="hero" />
-        <div className="pk-hero-photo pk-photo-mount" data-pk-motion-zone>
-          <div className="pk-photo-tape" aria-hidden="true" />
-          <div className="pk-photo-matte">
-            <Photo
-              src={data.general.heroPhotoUrl || data.general.coverPhotoUrl}
-              alt={`${data.couple.groom.name} dan ${data.couple.bride.name}`}
-              eager
-            />
-          </div>
-          <Ornament name="washi-tape" className="pk-tape" />
-          <Ornament name="flower-cluster" className="pk-hero-flower" />
-        </div>
-        <h2 tabIndex={-1} className="pk-couple-name">
-          <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
-          <em>&amp;</em>
-          <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
-        </h2>
-        <p className="pk-date">
-          {data.events[0]?.displayDay}, {data.events[0]?.displayDate}
-        </p>
-        <a
-          href="#couple"
-          className="pk-text-button"
-          aria-label="Lanjut membaca tentang mempelai"
-        >
-          Simpan hari ini bersama kami{" "}
-          <ArrowDown size={16} aria-hidden="true" />
-        </a>
-      </section>
-      <section className="pk-section pk-intro" data-pk-reveal>
-        <Ornament name="botanical-divider" className="pk-divider" />
-        <p className="pk-greeting">{data.general.openingGreetings}</p>
-        <p>{data.general.openingMessage}</p>
-        {data.general.quote?.arabic && (
-          <p lang="ar" dir="rtl" className="pk-arabic">
-            {data.general.quote.arabic}
+        <ItemMotion variant="frame-mount" delay={0.08}>
+          <motion.div
+            className="pk-hero-photo pk-photo-mount"
+            data-pk-motion-zone
+            whileHover={{ scale: 1.02, rotate: -0.5 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="pk-photo-tape" aria-hidden="true" />
+            <div className="pk-photo-matte">
+              <Photo
+                src={data.general.heroPhotoUrl || data.general.coverPhotoUrl}
+                alt={`${data.couple.groom.name} dan ${data.couple.bride.name}`}
+                eager
+              />
+            </div>
+            <Ornament name="washi-tape" className="pk-tape" />
+            <Ornament name="flower-cluster" className="pk-hero-flower" />
+          </motion.div>
+        </ItemMotion>
+        <ItemMotion variant="slide-up" delay={0.16}>
+          <h2 tabIndex={-1} className="pk-couple-name">
+            <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
+            <em>&amp;</em>
+            <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
+          </h2>
+        </ItemMotion>
+        <ItemMotion variant="pop" delay={0.24}>
+          <p className="pk-date">
+            {data.events[0]?.displayDay}, {data.events[0]?.displayDate}
           </p>
+        </ItemMotion>
+        <ItemMotion variant="fade" delay={0.3}>
+          <motion.a
+            href="#couple"
+            className="pk-text-button"
+            aria-label="Lanjut membaca tentang mempelai"
+            whileHover={{ y: 2 }}
+            whileTap={{ scale: 0.96 }}
+          >
+            Simpan hari ini bersama kami{" "}
+            <ArrowDown size={16} aria-hidden="true" />
+          </motion.a>
+        </ItemMotion>
+      </SectionMotion>
+      <SectionMotion className="pk-section pk-intro">
+        <ItemMotion variant="pop">
+          <Ornament name="botanical-divider" className="pk-divider" />
+        </ItemMotion>
+        <ItemMotion variant="slide-down" delay={0.08}>
+          <p className="pk-greeting">{data.general.openingGreetings}</p>
+        </ItemMotion>
+        <ItemMotion variant="fade" delay={0.14}>
+          <p>{data.general.openingMessage}</p>
+        </ItemMotion>
+        {data.general.quote?.arabic && (
+          <ItemMotion variant="card-lift" delay={0.2}>
+            <p lang="ar" dir="rtl" className="pk-arabic">
+              {data.general.quote.arabic}
+            </p>
+          </ItemMotion>
         )}
         {data.general.quote?.translation && (
-          <blockquote>
-            “{data.general.quote.translation}”
-            <cite>{data.general.quote.source}</cite>
-          </blockquote>
+          <ItemMotion variant="card-lift" delay={0.24}>
+            <blockquote>
+              “{data.general.quote.translation}”
+              <cite>{data.general.quote.source}</cite>
+            </blockquote>
+          </ItemMotion>
         )}
-      </section>
+      </SectionMotion>
     </>
   );
 }
@@ -312,8 +394,16 @@ function Person({
     ? person.instagram
     : `https://www.instagram.com/${encodeURIComponent(handle || "")}/`;
   return (
-    <article className={`pk-person pk-person-${index}`} data-pk-reveal>
-      <div className="pk-person-frame pk-photo-mount">
+    <ItemMotion
+      variant={index === 0 ? "slide-left" : "slide-right"}
+      delay={0.1 + index * 0.12}
+      className={`pk-person pk-person-${index}`}
+    >
+      <motion.div
+        className="pk-person-frame pk-photo-mount"
+        whileHover={{ scale: 1.025, rotate: index === 0 ? -1.5 : 1.5 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="pk-photo-matte">
           <Photo src={person.photoUrl} alt={person.fullName || person.name} />
         </div>
@@ -322,7 +412,7 @@ function Person({
           className="pk-person-fastener"
         />
         <Ornament name="photo-corners" className="pk-photo-corners" />
-      </div>
+      </motion.div>
       <div className="pk-person-copy">
         <span className="pk-person-role">{role}</span>
         <h3 className="pk-couple-name">
@@ -331,38 +421,44 @@ function Person({
         <p className="pk-full-name">{person.fullName}</p>
         {person.parents && <p className="pk-parents">{person.parents}</p>}
         {handle && (
-          <a
+          <motion.a
             href={socialUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="pk-social"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
           >
             @{handle.includes("/") ? person.name : handle}
-          </a>
+          </motion.a>
         )}
       </div>
-    </article>
+    </ItemMotion>
   );
 }
 
 function KeepsakeCouple() {
   const { couple } = useWeddingData();
   return (
-    <section id="couple" className="pk-section pk-couple">
-      <h2 data-pk-reveal>
-        Dua nama,
-        <br />
-        <em>satu cerita.</em>
-      </h2>
+    <SectionMotion id="couple" className="pk-section pk-couple">
+      <ItemMotion variant="slide-down">
+        <h2>
+          Dua nama,
+          <br />
+          <em>satu cerita.</em>
+        </h2>
+      </ItemMotion>
       <div className="pk-couple-grid">
         <Person person={couple.groom} role="Mempelai pria" index={0} />
-        <span className="pk-between" aria-hidden="true">
-          &amp;
-        </span>
+        <ItemMotion variant="pop" delay={0.2} className="pk-between-wrapper flex items-center justify-center">
+          <span className="pk-between" aria-hidden="true">
+            &amp;
+          </span>
+        </ItemMotion>
         <Person person={couple.bride} role="Mempelai wanita" index={1} />
       </div>
-      <div className="pk-couple-botanical-row" data-pk-reveal>
-        <img
+      <ItemMotion variant="fade" delay={0.25} className="pk-couple-botanical-row">
+        <motion.img
           src={`${ASSETS}real-pressed-wildflower.png`}
           alt=""
           aria-hidden="true"
@@ -370,10 +466,12 @@ function KeepsakeCouple() {
           width="110"
           height="150"
           loading="lazy"
+          animate={{ y: [0, -3, 0], rotate: [0, 1.5, 0] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
         />
         <Ornament name="leaf-spray" className="pk-couple-leaf" />
-      </div>
-    </section>
+      </ItemMotion>
+    </SectionMotion>
   );
 }
 
@@ -411,87 +509,109 @@ function KeepsakeEvents() {
           Math.floor(remaining / 1000) % 60,
         ];
   return (
-    <section id="event" className="pk-section pk-events">
-      <img
-        src={`${ASSETS}wedding-rings-closing-vignette.png`}
-        alt=""
-        aria-hidden="true"
-        className="pk-rings-vignette"
-        width="240"
-        height="82"
-        loading="lazy"
-      />
-      <h2 data-pk-reveal>
-        Hari yang
-        <br />
-        <em>kami nantikan.</em>
-      </h2>
+    <SectionMotion id="event" className="pk-section pk-events">
+      <ItemMotion variant="pop">
+        <motion.img
+          src={`${ASSETS}wedding-rings-closing-vignette.png`}
+          alt=""
+          aria-hidden="true"
+          className="pk-rings-vignette"
+          width="240"
+          height="82"
+          loading="lazy"
+          animate={{ scale: [1, 1.025, 1] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </ItemMotion>
+      <ItemMotion variant="slide-down" delay={0.08}>
+        <h2>
+          Hari yang
+          <br />
+          <em>kami nantikan.</em>
+        </h2>
+      </ItemMotion>
       <div
         className="pk-countdown"
         aria-label="Hitung mundur menuju pernikahan"
       >
         {["Hari", "Jam", "Menit", "Detik"].map((label, index) => (
-          <div key={label}>
-            <strong>
-              {ticks ? String(ticks[index]).padStart(2, "0") : "—"}
-            </strong>
-            <span>{label}</span>
-          </div>
+          <ItemMotion key={label} variant="pop" delay={0.12 + index * 0.05}>
+            <motion.div
+              whileHover={{ y: -3, scale: 1.04 }}
+              transition={{ duration: 0.2 }}
+            >
+              <strong>
+                {ticks ? String(ticks[index]).padStart(2, "0") : "—"}
+              </strong>
+              <span>{label}</span>
+            </motion.div>
+          </ItemMotion>
         ))}
       </div>
       {remaining === 0 && (
-        <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
+        <ItemMotion variant="fade">
+          <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
+        </ItemMotion>
       )}
       <div className="pk-agendas">
         {data.events.map((event, index) => (
-          <article
+          <ItemMotion
             key={event.id}
-            className="pk-agenda"
-            data-pk-reveal
-            style={{ "--pk-delay": `${index * 80}ms` } as React.CSSProperties}
+            variant="card-lift"
+            delay={0.15 + index * 0.12}
+            className="pk-agenda-wrapper"
           >
-            <h3>{event.title}</h3>
-            <p className="pk-event-date">
-              {event.displayDay}
-              <strong>{event.displayDate}</strong>
-            </p>
-            <p className="pk-event-time">{event.time}</p>
-            <div className="pk-perforation" />
-            <h4>{event.venueName}</h4>
-            <p className="pk-address">{event.venueAddress}</p>
-            <div className="pk-actions">
-              {event.mapUrl && /^https?:\/\//i.test(event.mapUrl) && (
-                <a
-                  className="pk-button pk-button-outline"
-                  href={event.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <MapPin size={16} aria-hidden="true" />
-                  Buka peta
-                </a>
-              )}
-              {getKeepsakeSchedule(event) && (
-                <button
-                  type="button"
-                  className="pk-button pk-button-outline"
-                  onClick={() =>
-                    downloadCalendar(
-                      event,
-                      `${data.couple.groom.name} & ${data.couple.bride.name}`,
-                    )
-                  }
-                >
-                  <CalendarDays size={16} aria-hidden="true" />
-                  Simpan tanggal
-                </button>
-              )}
-            </div>
-          </article>
+            <motion.article
+              className="pk-agenda"
+              whileHover={{ y: -4, transition: { duration: 0.25 } }}
+            >
+              <h3>{event.title}</h3>
+              <p className="pk-event-date">
+                {event.displayDay}
+                <strong>{event.displayDate}</strong>
+              </p>
+              <p className="pk-event-time">{event.time}</p>
+              <div className="pk-perforation" />
+              <h4>{event.venueName}</h4>
+              <p className="pk-address">{event.venueAddress}</p>
+              <div className="pk-actions">
+                {event.mapUrl && /^https?:\/\//i.test(event.mapUrl) && (
+                  <motion.a
+                    className="pk-button pk-button-outline"
+                    href={event.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <MapPin size={16} aria-hidden="true" />
+                    Buka peta
+                  </motion.a>
+                )}
+                {getKeepsakeSchedule(event) && (
+                  <motion.button
+                    type="button"
+                    className="pk-button pk-button-outline"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() =>
+                      downloadCalendar(
+                        event,
+                        `${data.couple.groom.name} & ${data.couple.bride.name}`,
+                      )
+                    }
+                  >
+                    <CalendarDays size={16} aria-hidden="true" />
+                    Simpan tanggal
+                  </motion.button>
+                )}
+              </div>
+            </motion.article>
+          </ItemMotion>
         ))}
       </div>
       {data.dresscode?.description && (
-        <div className="pk-dresscode">
+        <ItemMotion variant="slide-up" delay={0.2} className="pk-dresscode">
           <h3>Pilihan busana</h3>
           <p>{data.dresscode.description}</p>
           <div>
@@ -508,9 +628,9 @@ function KeepsakeEvents() {
               </span>
             ))}
           </div>
-        </div>
+        </ItemMotion>
       )}
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -518,37 +638,52 @@ function KeepsakeStory() {
   const { stories } = useWeddingData();
   if (!stories.length) return null;
   return (
-    <section id="story" className="pk-section pk-story">
+    <SectionMotion id="story" className="pk-section pk-story">
       <KeepsakeSurrounds variant="story" />
       <Ornament name="postal-mark" className="pk-postmark" />
-      <div className="pk-story-specimen" data-pk-reveal>
-        <img
-          src={`${ASSETS}real-pressed-lavender-card.png`}
-          alt=""
-          aria-hidden="true"
-          className="pk-specimen-card"
-          loading="lazy"
-          width="260"
-          height="320"
-        />
-      </div>
-      <h2 data-pk-reveal>
-        Halaman
-        <br />
-        <em>cerita kami.</em>
-      </h2>
+      <ItemMotion variant="stamp" delay={0.06}>
+        <div className="pk-story-specimen">
+          <motion.img
+            src={`${ASSETS}real-pressed-lavender-card.png`}
+            alt=""
+            aria-hidden="true"
+            className="pk-specimen-card"
+            loading="lazy"
+            width="260"
+            height="320"
+            whileHover={{ rotate: 1.5, scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
+      </ItemMotion>
+      <ItemMotion variant="slide-down" delay={0.1}>
+        <h2>
+          Halaman
+          <br />
+          <em>cerita kami.</em>
+        </h2>
+      </ItemMotion>
       <ol>
         {stories.map((story, index) => (
-          <li key={`${story.year}-${index}`} data-pk-reveal>
-            <time>{story.year}</time>
-            <div>
-              <h3>{story.title}</h3>
-              <p>{story.story}</p>
-            </div>
-          </li>
+          <ItemMotion
+            key={`${story.year}-${index}`}
+            variant={index % 2 === 0 ? "slide-left" : "slide-right"}
+            delay={0.12 + index * 0.08}
+          >
+            <motion.li
+              whileHover={{ x: index % 2 === 0 ? 4 : -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <time>{story.year}</time>
+              <div>
+                <h3>{story.title}</h3>
+                <p>{story.story}</p>
+              </div>
+            </motion.li>
+          </ItemMotion>
         ))}
       </ol>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -590,42 +725,49 @@ function KeepsakeGallery() {
     setActive((index) => (index + direction + photos.length) % photos.length);
   if (!photos.length) return null;
   return (
-    <section id="gallery" className="pk-section pk-gallery">
-      <h2 data-pk-reveal>
-        Yang ingin
-        <br />
-        <em>kami kenang.</em>
-      </h2>
-      <p>Beberapa potong cerita, sebelum halaman baru dimulai.</p>
+    <SectionMotion id="gallery" className="pk-section pk-gallery">
+      <ItemMotion variant="slide-down">
+        <h2>
+          Yang ingin
+          <br />
+          <em>kami kenang.</em>
+        </h2>
+        <p>Beberapa potong cerita, sebelum halaman baru dimulai.</p>
+      </ItemMotion>
       <div className="pk-gallery-grid">
         {photos.map((item, index) => (
-          <figure
-            className="pk-gallery-frame"
+          <ItemMotion
             key={item.id}
-            data-pk-reveal
-            style={
-              { "--pk-delay": `${(index % 2) * 90}ms` } as React.CSSProperties
-            }
+            variant="card-lift"
+            delay={0.08 + (index % 4) * 0.08}
           >
-            <button
-              type="button"
-              onClick={(event) => openPhoto(index, event.currentTarget)}
-              aria-label={`Perbesar foto: ${item.caption}`}
+            <motion.figure
+              className="pk-gallery-frame"
+              whileHover={{ scale: 1.03, y: -3 }}
+              transition={{ duration: 0.25 }}
             >
-              <Photo src={item.imageUrl} alt={item.caption} />
-              <span className="pk-photo-hint">
-                <Images size={16} aria-hidden="true" />
-                Lihat foto
-              </span>
-            </button>
-            <figcaption>{item.caption}</figcaption>
-            {index === 0 && (
-              <Ornament name="brass-clip" className="pk-gallery-clip" />
-            )}
-          </figure>
+              <button
+                type="button"
+                onClick={(event) => openPhoto(index, event.currentTarget)}
+                aria-label={`Perbesar foto: ${item.caption}`}
+              >
+                <Photo src={item.imageUrl} alt={item.caption} />
+                <span className="pk-photo-hint">
+                  <Images size={16} aria-hidden="true" />
+                  Lihat foto
+                </span>
+              </button>
+              <figcaption>{item.caption}</figcaption>
+              {index === 0 && (
+                <Ornament name="brass-clip" className="pk-gallery-clip" />
+              )}
+            </motion.figure>
+          </ItemMotion>
         ))}
       </div>
-      <Ornament name="botanical-divider" className="pk-divider" />
+      <ItemMotion variant="pop" delay={0.2}>
+        <Ornament name="botanical-divider" className="pk-divider" />
+      </ItemMotion>
       <dialog
         ref={dialog}
         className="pk-lightbox"
@@ -692,7 +834,7 @@ function KeepsakeGallery() {
           )}
         </div>
       </dialog>
-    </section>
+    </SectionMotion>
   );
 }
 
@@ -766,6 +908,7 @@ function KeepsakeContent({
   const [hasOpened, setHasOpened] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [motionPaused, setMotionPaused] = useState(false);
+  const [celebrationActive, setCelebrationActive] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduced = useReducedMotion();
@@ -813,21 +956,9 @@ function KeepsakeContent({
   }, [opened, motionDisabled]);
   const open = () => {
     if (leaving || opened) return;
-    const letter = root.current?.querySelector<HTMLElement>(".pk-letter");
-    if (letter && !reduced) {
-      const { transform, opacity } = getComputedStyle(letter);
-      letter.style.animation = "none";
-      letter.style.transform = transform;
-      letter.style.opacity = opacity;
-      void letter.offsetWidth;
-    }
+    triggerKeepsakeCelebration(Boolean(reduced));
+    setCelebrationActive(true);
     setLeaving(true);
-    if (letter && !reduced) {
-      requestAnimationFrame(() => {
-        letter.style.removeProperty("transform");
-        letter.style.removeProperty("opacity");
-      });
-    }
     timeout.current = setTimeout(
       () => {
         setHasOpened(true);
@@ -839,7 +970,7 @@ function KeepsakeContent({
             ?.focus({ preventScroll: true }),
         );
       },
-      reduced ? 0 : 650,
+      reduced ? 0 : 500,
     );
   };
   return (
@@ -885,50 +1016,87 @@ function KeepsakeContent({
             )}
           </div>
         </header>
-        {!opened ? (
-          <Cover guestName={guestName} onOpen={open} leaving={leaving} />
-        ) : (
-          <div className="pk-pages">
-            <KeepsakeHero />
-            <KeepsakeCouple />
-            <KeepsakeEvents />
-            <KeepsakeStory />
-            <KeepsakeGallery />
-            <KeepsakeGifts />
-            <KeepsakeGuestbook
-              guestName={guestName}
-              guestItem={guestItem}
-              isPreview={isPreview}
-              isEditor={isEditor}
-            />
-            <footer
-              id="closing"
-              className="pk-section pk-closing"
-              data-pk-reveal
-            >
-              <KeepsakeSurrounds variant="closing" />
-                <img
-                  src={`${ASSETS}real-gold-wax-seal.png`}
-                  alt=""
-                  aria-hidden="true"
-                  className="pk-closing-gold-seal"
-                  width="84"
-                  height="84"
-                />
-              <p>{data.general.closingMessage}</p>
-              <h2 className="pk-couple-name">
-                <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
-                <em>&amp;</em>
-                <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
-              </h2>
-              <span>{data.general.hashtag}</span>
-              <Ornament name="botanical-corner" className="pk-closing-flower" />
-              <p className="pk-colophon">
-                Paper Keepsake · Sebuah kenangan bersama.
-              </p>
-            </footer>
-          </div>
+        {opened && !motionDisabled && (
+          <FallingPaperPetals />
         )}
+        <KeepsakeCelebrationShower
+          active={celebrationActive}
+          reduced={Boolean(reduced)}
+          durationMs={6000}
+        />
+        <AnimatePresence mode="wait">
+          {!opened ? (
+            <motion.div
+              key="cover"
+              initial={{ opacity: 1 }}
+              exit={{
+                opacity: 0,
+                scale: 0.98,
+                y: -16,
+                transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+              }}
+              className="pk-cover-wrapper contents"
+            >
+              <Cover guestName={guestName} onOpen={open} leaving={leaving} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="pages"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              className="pk-pages"
+            >
+              <KeepsakeHero />
+              <KeepsakeCouple />
+              <KeepsakeEvents />
+              <KeepsakeStory />
+              <KeepsakeGallery />
+              <KeepsakeGifts />
+              <KeepsakeGuestbook
+                guestName={guestName}
+                guestItem={guestItem}
+                isPreview={isPreview}
+                isEditor={isEditor}
+              />
+              <SectionMotion
+                id="closing"
+                className="pk-section pk-closing"
+              >
+                <KeepsakeSurrounds variant="closing" />
+                <ItemMotion variant="stamp" delay={0.1}>
+                  <motion.img
+                    src={`${ASSETS}real-gold-wax-seal.png`}
+                    alt=""
+                    aria-hidden="true"
+                    className="pk-closing-gold-seal"
+                    width="84"
+                    height="84"
+                    whileHover={{ scale: 1.1, rotate: [0, -3, 3, 0] }}
+                    transition={{ duration: 0.35 }}
+                  />
+                </ItemMotion>
+                <ItemMotion variant="fade" delay={0.16}>
+                  <p>{data.general.closingMessage}</p>
+                </ItemMotion>
+                <ItemMotion variant="slide-up" delay={0.22}>
+                  <h2 className="pk-couple-name">
+                    <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
+                    <em>&amp;</em>
+                    <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
+                  </h2>
+                </ItemMotion>
+                <ItemMotion variant="pop" delay={0.28}>
+                  <span>{data.general.hashtag}</span>
+                </ItemMotion>
+                <Ornament name="botanical-corner" className="pk-closing-flower" />
+                <p className="pk-colophon">
+                  Paper Keepsake · Sebuah kenangan bersama.
+                </p>
+              </SectionMotion>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       {opened && !isEditor && <KeepsakeNavigation root={root} />}
       {opened && !isEditor && (

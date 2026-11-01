@@ -2118,18 +2118,8 @@ html[data-template-theme="paper-keepsake"]
   }
 }
 
-/* Scroll owns the reveal position while the invitation is open. */
-.pk-scroll-linked .pk-pages,
-.pk-scroll-linked .pk-pages .pk-photo-mount,
-.pk-scroll-linked .pk-pages .pk-photo-tape {
-  animation: none;
-}
-.pk-scroll-linked .pk-pages .pk-char {
-  animation: none;
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
+/* Preserve smooth animated transitions while scroll linked */
+
 .pk-scroll-linked .pk-scroll-reveal {
   animation: none;
   opacity: var(--pk-scroll-opacity, 1);
