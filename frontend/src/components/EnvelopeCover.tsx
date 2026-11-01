@@ -139,16 +139,16 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.65, delay: 0.16, ease: MOTION_TRANSITIONS.romantic.ease }}
-                className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto flex items-center justify-center my-1 select-none"
+                className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto flex items-center justify-center my-1 select-none"
               >
                 <img
-                  src="/images/templates/paper-art/botanical-olive-wreath.svg"
+                  src="/images/templates/paper-art/real-botanical-olive-wreath.png"
                   alt="Botanical Wreath"
                   className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-2xs select-none"
                 />
                 <span
                   style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-                  className="text-xl sm:text-2xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-0.5"
+                  className="text-xl sm:text-2xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-0.5 -mt-1.5"
                 >
                   {(data.couple?.groom?.name || "G")[0]} &amp; {(data.couple?.bride?.name || "S")[0]}
                 </span>

@@ -8,7 +8,18 @@ Collection of 10 handcrafted artist sketchbook, wax seal, stationery clips, and 
 - Botanical Olive & Sage: `#7D8D66`, `#4D593D`
 - Textured Ivory Paper: `#FAF7F0`, `#E7DEC8`
 
-## Asset Catalog
+## Authentic Photographic Real Assets (Fotografi Studio Fisik Asli)
+
+Seri aset fotografi studio makro nyata berlatar transparan (PNG) untuk meningkatkan estetika buket botani dan monogram:
+
+1. **`real-botanical-monogram-gs.png`** (`1024 × 1024`, PNG transparan):
+   - Karangan ranting zaitun asli berbentuk lingkaran rapi (*delicate botanical olive wreath*) dengan daun alami, butir buah beri merah maroon/crimson, pita sutra merah burgundy dengan lekukan alami, dan inisial monogram **"GS"** di bagian tengah bertipografi serif klasik elegan.
+2. **`real-botanical-olive-wreath.png`** (`1024 × 1024`, PNG transparan):
+   - Karangan ranting zaitun asli yang sama dengan bagian tengah kosong (*empty center*) transparan, memungkinkan nama inisial mempelai di-render secara dinamis di Next.js dengan font monogram kustom.
+3. **`real-lush-botanical-wreath.png`** (`1024 × 1024`, PNG transparan):
+   - Varian karangan bunga rimbun (*lush full botanical wreath*) yang memadukan daun zaitun segar, eukaliptus, sage, kluster buah beri merah pekat, serta simpul pita satin beludru maroon mewah berlatar transparan.
+
+## Asset Catalog (Vector & Doodles)
 
 1. **`maroon-wax-seal-rings.svg`** (`160 × 160`): Velvet maroon wax seal stamped with interlocking wedding rings, diamond sparkle, and laurel branch rim.
 2. **`spiral-sketchbook-rings.svg`** (`80 × 500`): Double-wire silver coil binding rings with paper hole punch indentations.

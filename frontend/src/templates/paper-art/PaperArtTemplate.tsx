@@ -285,16 +285,16 @@ function SketchbookHero() {
             float={true}
             floatDistance={3}
             floatDuration={5.5}
-            className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto flex items-center justify-center mb-2 select-none"
+            className="relative w-32 h-32 sm:w-36 sm:h-36 mx-auto flex items-center justify-center mb-2 select-none"
           >
             <img
-              src="/images/templates/paper-art/botanical-olive-wreath.svg"
+              src="/images/templates/paper-art/real-botanical-olive-wreath.png"
               alt="Botanical Olive Wreath"
               className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-xs select-none"
             />
             <span
               style={{ fontFamily: "var(--font-couple-custom, serif)" }}
-              className="text-2xl sm:text-3xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-1"
+              className="text-2xl sm:text-3xl font-bold text-[#7D1128] tracking-widest z-10 select-none pl-1 -mt-2"
             >
               {coupleMonogram}
             </span>
