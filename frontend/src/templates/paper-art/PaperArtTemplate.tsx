@@ -861,7 +861,9 @@ function SketchbookGift() {
   const data = useWeddingData();
   const shouldReduceMotion = useReducedMotion();
   const accounts: BankAccount[] = data.gifts?.accounts || [];
+  const physicalAddress = data.gifts?.physicalGiftAddress;
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [copiedAddress, setCopiedAddress] = useState(false);
   const [copyError, setCopyError] = useState("");
   const copyingRef = useRef(false);
 
@@ -869,6 +871,7 @@ function SketchbookGift() {
     if (copyingRef.current) return;
     copyingRef.current = true;
     setCopiedIdx(null);
+    setCopiedAddress(false);
     setCopyError("");
     try {
       await navigator.clipboard.writeText(num);
@@ -880,7 +883,27 @@ function SketchbookGift() {
     }
   };
 
-  if (!data.gifts || accounts.length === 0) return null;
+  const handleCopyAddress = async (addr: string) => {
+    if (copyingRef.current) return;
+    copyingRef.current = true;
+    setCopiedIdx(null);
+    setCopiedAddress(false);
+    setCopyError("");
+    try {
+      await navigator.clipboard.writeText(addr);
+      setCopiedAddress(true);
+      setTimeout(() => setCopiedAddress(false), 3000);
+    } catch {
+      setCopyError("Alamat pengiriman belum bisa disalin. Salin alamat di atas secara manual.");
+    } finally {
+      copyingRef.current = false;
+    }
+  };
+
+  const hasAccounts = accounts.length > 0;
+  const hasPhysicalAddress = Boolean(physicalAddress?.address?.trim());
+
+  if (!data.gifts || (!hasAccounts && !hasPhysicalAddress)) return null;
 
   return (
     <SectionMotion id="gift" className="relative py-12 px-5 text-[#2C1810]">
@@ -888,6 +911,7 @@ function SketchbookGift() {
         <div aria-live="polite" aria-atomic="true">
           {copyError && <p role="alert" className="text-sm text-[#541E24]">{copyError}</p>}
           {copiedIdx !== null && <p role="status" className="text-sm text-emerald-800">Nomor rekening sudah disalin.</p>}
+          {copiedAddress && <p role="status" className="text-sm text-emerald-800">Alamat pengiriman kado fisik sudah disalin.</p>}
         </div>
         <ItemMotion variant="slide-down" className="text-center space-y-1">
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[#541E24] block">
@@ -946,6 +970,56 @@ function SketchbookGift() {
               </div>
             </ItemMotion>
           ))}
+
+          {hasPhysicalAddress && physicalAddress && (
+            <ItemMotion
+              variant={accounts.length % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={0.08 + accounts.length * 0.1}
+              className="bg-[#FFFDFB] rounded-2xl p-5 border-2 border-dashed border-[#541E24]/35 shadow-sm space-y-3"
+            >
+              <div className="flex items-center justify-between border-b border-[#541E24]/15 pb-2">
+                <div className="flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-[#541E24]" />
+                  <span className="font-mono font-bold text-sm text-[#541E24] uppercase">
+                    Kirim Kado Fisik
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#8C6D60]">ALAMAT RESMI</span>
+              </div>
+
+              <div className="space-y-1.5 text-left">
+                {physicalAddress.recipient && (
+                  <p className="text-xs font-mono font-bold text-[#541E24]">
+                    Penerima: {physicalAddress.recipient} {physicalAddress.phone ? `(${physicalAddress.phone})` : ""}
+                  </p>
+                )}
+                <p className="text-xs sm:text-sm font-sans text-[#2C1810] leading-relaxed">
+                  {physicalAddress.address}
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-[#541E24]/15 flex items-center justify-end">
+                <motion.button
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.03, y: -1 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
+                  onClick={() => handleCopyAddress(physicalAddress.address)}
+                  className="px-3.5 py-2 rounded-xl bg-[#F8EFEA] hover:bg-[#F0E3DC] text-[#541E24] border border-[#541E24]/30 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  {copiedAddress ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700">Alamat Tersalin</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin Alamat</span>
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </ItemMotion>
+          )}
         </div>
       </div>
     </SectionMotion>

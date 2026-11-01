@@ -1201,7 +1201,7 @@ export function TemplateEditorWorkspace({
                             return {
                               ...prev,
                               gifts: {
-                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipientName: "", phone: "", fullAddress: "" },
+                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipient: "", phone: "", address: "" },
                                 accounts: newAccs,
                               },
                             };
@@ -1226,7 +1226,7 @@ export function TemplateEditorWorkspace({
                             return {
                               ...prev,
                               gifts: {
-                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipientName: "", phone: "", fullAddress: "" },
+                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipient: "", phone: "", address: "" },
                                 accounts: newAccs,
                               },
                             };
@@ -1251,7 +1251,7 @@ export function TemplateEditorWorkspace({
                             return {
                               ...prev,
                               gifts: {
-                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipientName: "", phone: "", fullAddress: "" },
+                                physicalGiftAddress: prev.gifts?.physicalGiftAddress || { recipient: "", phone: "", address: "" },
                                 accounts: newAccs,
                               },
                             };
@@ -1262,6 +1262,37 @@ export function TemplateEditorWorkspace({
                     </div>
                   </div>
                 ))}
+
+                <div className="pt-3 border-t border-[#2A2E3D] space-y-2">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-[#DFD2BD] font-bold block">
+                    Alamat Pengiriman Kado Fisik
+                  </span>
+                  <div>
+                    <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                      Alamat Lengkap
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={draftData.gifts?.physicalGiftAddress?.address || ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateDraft((prev) => ({
+                          ...prev,
+                          gifts: {
+                            accounts: prev.gifts?.accounts || [],
+                            physicalGiftAddress: {
+                              recipient: prev.gifts?.physicalGiftAddress?.recipient || "",
+                              phone: prev.gifts?.physicalGiftAddress?.phone || "",
+                              address: val,
+                            },
+                          },
+                        }));
+                      }}
+                      placeholder="Alamat lengkap penerimaan kado fisik..."
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white placeholder:text-[#5A6072]"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
