@@ -28,6 +28,9 @@ type Feedback = {
   message: string;
 } | null;
 
+const PK_SECTION_DURATION = 1.05;
+const PK_ITEM_DURATION = 0.95;
+
 const EMPTY_WISHES: WishMessage[] = [];
 let cachedWishes = EMPTY_WISHES;
 let cachedWishesJson: string | undefined;
@@ -256,9 +259,10 @@ export function KeepsakeGuestbook({
       id="rsvp"
       data-editor-section="rsvp"
       className="pk-section pk-rsvp"
+      duration={PK_SECTION_DURATION}
     >
       <header className="pk-section-heading">
-        <ItemMotion variant="pop">
+        <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
           <motion.img
             src="/images/paper-keepsake/mini-envelope.svg"
             alt=""
@@ -268,17 +272,17 @@ export function KeepsakeGuestbook({
             height="76"
             loading="lazy"
             animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
           />
         </ItemMotion>
-        <ItemMotion variant="slide-down" delay={0.06}>
+        <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
           <h2 id={`${formId}-heading`}>Sepucuk kabar darimu</h2>
           <p>Konfirmasikan kehadiran dan titipkan doa untuk hari bahagia kami.</p>
         </ItemMotion>
       </header>
 
       <div className="pk-guestbook-layout">
-        <ItemMotion variant="slide-left" delay={0.08}>
+        <ItemMotion variant="slide-left" delay={0.16} duration={PK_ITEM_DURATION}>
           <form
             onSubmit={handleSubmit}
             className="pk-paper-slip pk-rsvp-form"
@@ -393,7 +397,7 @@ export function KeepsakeGuestbook({
           </form>
         </ItemMotion>
 
-        <ItemMotion variant="slide-right" delay={0.12}>
+        <ItemMotion variant="slide-right" delay={0.24} duration={PK_ITEM_DURATION}>
           <div className="pk-wishes" aria-labelledby={`${formId}-wishes`}>
             <h3 id={`${formId}-wishes`}>Catatan penuh kasih</h3>
             {wishes.length > 0 ? (
@@ -465,9 +469,10 @@ export function KeepsakeGifts() {
       id="gift"
       data-editor-section="gift"
       className="pk-section pk-gifts"
+      duration={PK_SECTION_DURATION}
     >
       <header className="pk-section-heading">
-        <ItemMotion variant="pop">
+        <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
           <motion.img
             src="/images/paper-keepsake/paper-hearts.svg"
             alt=""
@@ -477,10 +482,10 @@ export function KeepsakeGifts() {
             height="76"
             loading="lazy"
             animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
           />
         </ItemMotion>
-        <ItemMotion variant="slide-down" delay={0.06}>
+        <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
           <h2 id={headingId}>Tanda kasih</h2>
           <p>
             Kehadiran dan doa Anda berarti bagi kami. Jika ingin mengirim hadiah,
@@ -495,7 +500,8 @@ export function KeepsakeGifts() {
             <ItemMotion
               key={`${account.bankName}-${account.accountNumber}-${index}`}
               variant="card-lift"
-              delay={index * 0.1}
+              delay={0.15 + index * 0.12}
+              duration={PK_ITEM_DURATION}
             >
               <motion.article
                 className="pk-paper-slip pk-gift-card"
@@ -542,7 +548,7 @@ export function KeepsakeGifts() {
           );
         })}
         {address?.address?.trim() && (
-          <ItemMotion variant="card-lift" delay={accounts.length * 0.1}>
+          <ItemMotion variant="card-lift" delay={0.15 + accounts.length * 0.12} duration={PK_ITEM_DURATION}>
             <motion.article
               className="pk-paper-slip pk-gift-card"
               whileHover={{ y: -3, transition: { duration: 0.25 } }}

@@ -13,8 +13,8 @@ interface KeepsakeCharMotionProps {
 export function KeepsakeCharMotion({
   text,
   className = "",
-  baseDelay = 0.15,
-  stagger = 0.035,
+  baseDelay = 0.2,
+  stagger = 0.05,
   as: Component = "span",
 }: KeepsakeCharMotionProps) {
   const words = text.split(" ");

@@ -42,6 +42,8 @@ import { bindKeepsakeScrollMotion } from "./keepsakeScrollMotion";
 import "./paper-keepsake.css";
 
 const ASSETS = "/images/paper-keepsake/";
+const PK_SECTION_DURATION = 1.05;
+const PK_ITEM_DURATION = 0.95;
 
 function Ornament({
   name,
@@ -91,11 +93,11 @@ function Ornament({
       className={`pk-ornament ${className}`}
       loading="lazy"
       animate={{
-        y: [0, -3, 1, 0],
-        rotate: [0, -1.5, 1.5, 0],
+        y: [0, -2.5, 1, 0],
+        rotate: [0, -1.2, 1.2, 0],
       }}
       transition={{
-        duration: isCuteSilkBow ? 5.8 : 6.8,
+        duration: isCuteSilkBow ? 8.5 : 10.5,
         repeat: Infinity,
         ease: "easeInOut",
       }}
@@ -160,7 +162,7 @@ function Cover({
         className="pk-letter"
         initial={{ opacity: 0, y: 22, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1] }}
       >
         <img
           className="pk-letter-art"
@@ -173,9 +175,9 @@ function Cover({
         />
         <div className="pk-letter-names">
           <h1>
-            <KeepsakeCharMotion className="pk-letter-name" text={groom.name} baseDelay={0.2} />
+            <KeepsakeCharMotion className="pk-letter-name" text={groom.name} baseDelay={0.35} />
             <span className="pk-letter-amp" aria-hidden="true">&amp;</span>
-            <KeepsakeCharMotion className="pk-letter-name" text={bride.name} baseDelay={0.5} />
+            <KeepsakeCharMotion className="pk-letter-name" text={bride.name} baseDelay={0.75} />
           </h1>
           <p>{data.events[0]?.displayDate}</p>
         </div>
@@ -184,7 +186,7 @@ function Cover({
           <strong>
             <KeepsakeCharMotion
               text={guestName || "Bapak / Ibu / Saudara/i"}
-              baseDelay={0.7}
+              baseDelay={1.1}
             />
           </strong>
         </div>
@@ -269,9 +271,9 @@ function KeepsakeDesktop({
           <Ornament name="ivory-bow" className="pk-desktop-bow" />
         </motion.div>
         <h2 className="pk-couple-name">
-          <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.3} />
+          <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.35} />
           <em>&amp;</em>
-          <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.6} />
+          <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.7} />
         </h2>
         <p>
           Sebuah awal baru.
@@ -304,9 +306,9 @@ function KeepsakeHero() {
   const data = useWeddingData();
   return (
     <>
-      <SectionMotion id="hero" className="pk-section pk-hero">
+      <SectionMotion id="hero" className="pk-section pk-hero" duration={PK_SECTION_DURATION}>
         <KeepsakeSurrounds variant="hero" />
-        <ItemMotion variant="frame-mount" delay={0.08}>
+        <ItemMotion variant="frame-mount" delay={0.12} duration={PK_ITEM_DURATION}>
           <motion.div
             className="pk-hero-photo pk-photo-mount"
             data-pk-motion-zone
@@ -325,19 +327,19 @@ function KeepsakeHero() {
             <Ornament name="flower-cluster" className="pk-hero-flower" />
           </motion.div>
         </ItemMotion>
-        <ItemMotion variant="slide-up" delay={0.16}>
+        <ItemMotion variant="slide-up" delay={0.24} duration={PK_ITEM_DURATION}>
           <h2 tabIndex={-1} className="pk-couple-name">
-            <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
+            <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.3} />
             <em>&amp;</em>
-            <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
+            <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.65} />
           </h2>
         </ItemMotion>
-        <ItemMotion variant="pop" delay={0.24}>
+        <ItemMotion variant="pop" delay={0.36} duration={PK_ITEM_DURATION}>
           <p className="pk-date">
             {data.events[0]?.displayDay}, {data.events[0]?.displayDate}
           </p>
         </ItemMotion>
-        <ItemMotion variant="fade" delay={0.3}>
+        <ItemMotion variant="fade" delay={0.46} duration={PK_ITEM_DURATION}>
           <motion.a
             href="#couple"
             className="pk-text-button"
@@ -350,25 +352,25 @@ function KeepsakeHero() {
           </motion.a>
         </ItemMotion>
       </SectionMotion>
-      <SectionMotion className="pk-section pk-intro">
-        <ItemMotion variant="pop">
+      <SectionMotion className="pk-section pk-intro" duration={PK_SECTION_DURATION}>
+        <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
           <Ornament name="botanical-divider" className="pk-divider" />
         </ItemMotion>
-        <ItemMotion variant="slide-down" delay={0.08}>
+        <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
           <p className="pk-greeting">{data.general.openingGreetings}</p>
         </ItemMotion>
-        <ItemMotion variant="fade" delay={0.14}>
+        <ItemMotion variant="fade" delay={0.22} duration={PK_ITEM_DURATION}>
           <p>{data.general.openingMessage}</p>
         </ItemMotion>
         {data.general.quote?.arabic && (
-          <ItemMotion variant="card-lift" delay={0.2}>
+          <ItemMotion variant="card-lift" delay={0.3} duration={PK_ITEM_DURATION}>
             <p lang="ar" dir="rtl" className="pk-arabic">
               {data.general.quote.arabic}
             </p>
           </ItemMotion>
         )}
         {data.general.quote?.translation && (
-          <ItemMotion variant="card-lift" delay={0.24}>
+          <ItemMotion variant="card-lift" delay={0.38} duration={PK_ITEM_DURATION}>
             <blockquote>
               “{data.general.quote.translation}”
               <cite>{data.general.quote.source}</cite>
@@ -396,7 +398,8 @@ function Person({
   return (
     <ItemMotion
       variant={index === 0 ? "slide-left" : "slide-right"}
-      delay={0.1 + index * 0.12}
+      delay={0.14 + index * 0.18}
+      duration={PK_ITEM_DURATION}
       className={`pk-person pk-person-${index}`}
     >
       <motion.div
@@ -416,7 +419,7 @@ function Person({
       <div className="pk-person-copy">
         <span className="pk-person-role">{role}</span>
         <h3 className="pk-couple-name">
-          <KeepsakeCharMotion text={person.name} baseDelay={0.2} />
+          <KeepsakeCharMotion text={person.name} baseDelay={0.3} />
         </h3>
         <p className="pk-full-name">{person.fullName}</p>
         {person.parents && <p className="pk-parents">{person.parents}</p>}
@@ -440,8 +443,8 @@ function Person({
 function KeepsakeCouple() {
   const { couple } = useWeddingData();
   return (
-    <SectionMotion id="couple" className="pk-section pk-couple">
-      <ItemMotion variant="slide-down">
+    <SectionMotion id="couple" className="pk-section pk-couple" duration={PK_SECTION_DURATION}>
+      <ItemMotion variant="slide-down" duration={PK_ITEM_DURATION}>
         <h2>
           Dua nama,
           <br />
@@ -450,14 +453,14 @@ function KeepsakeCouple() {
       </ItemMotion>
       <div className="pk-couple-grid">
         <Person person={couple.groom} role="Mempelai pria" index={0} />
-        <ItemMotion variant="pop" delay={0.2} className="pk-between-wrapper flex items-center justify-center">
+        <ItemMotion variant="pop" delay={0.26} duration={PK_ITEM_DURATION} className="pk-between-wrapper flex items-center justify-center">
           <span className="pk-between" aria-hidden="true">
             &amp;
           </span>
         </ItemMotion>
         <Person person={couple.bride} role="Mempelai wanita" index={1} />
       </div>
-      <ItemMotion variant="fade" delay={0.25} className="pk-couple-botanical-row">
+      <ItemMotion variant="fade" delay={0.36} duration={PK_ITEM_DURATION} className="pk-couple-botanical-row">
         <motion.img
           src={`${ASSETS}real-pressed-wildflower.png`}
           alt=""
@@ -467,7 +470,7 @@ function KeepsakeCouple() {
           height="150"
           loading="lazy"
           animate={{ y: [0, -3, 0], rotate: [0, 1.5, 0] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut" }}
         />
         <Ornament name="leaf-spray" className="pk-couple-leaf" />
       </ItemMotion>
@@ -509,8 +512,8 @@ function KeepsakeEvents() {
           Math.floor(remaining / 1000) % 60,
         ];
   return (
-    <SectionMotion id="event" className="pk-section pk-events">
-      <ItemMotion variant="pop">
+    <SectionMotion id="event" className="pk-section pk-events" duration={PK_SECTION_DURATION}>
+      <ItemMotion variant="pop" duration={PK_ITEM_DURATION}>
         <motion.img
           src={`${ASSETS}wedding-rings-closing-vignette.png`}
           alt=""
@@ -520,10 +523,10 @@ function KeepsakeEvents() {
           height="82"
           loading="lazy"
           animate={{ scale: [1, 1.025, 1] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 7.2, repeat: Infinity, ease: "easeInOut" }}
         />
       </ItemMotion>
-      <ItemMotion variant="slide-down" delay={0.08}>
+      <ItemMotion variant="slide-down" delay={0.12} duration={PK_ITEM_DURATION}>
         <h2>
           Hari yang
           <br />
@@ -535,7 +538,7 @@ function KeepsakeEvents() {
         aria-label="Hitung mundur menuju pernikahan"
       >
         {["Hari", "Jam", "Menit", "Detik"].map((label, index) => (
-          <ItemMotion key={label} variant="pop" delay={0.12 + index * 0.05}>
+          <ItemMotion key={label} variant="pop" delay={0.18 + index * 0.08} duration={PK_ITEM_DURATION}>
             <motion.div
               whileHover={{ y: -3, scale: 1.04 }}
               transition={{ duration: 0.2 }}
@@ -549,7 +552,7 @@ function KeepsakeEvents() {
         ))}
       </div>
       {remaining === 0 && (
-        <ItemMotion variant="fade">
+        <ItemMotion variant="fade" duration={PK_ITEM_DURATION}>
           <p className="pk-countdown-note">Hari yang dinanti telah tiba.</p>
         </ItemMotion>
       )}
@@ -558,7 +561,8 @@ function KeepsakeEvents() {
           <ItemMotion
             key={event.id}
             variant="card-lift"
-            delay={0.15 + index * 0.12}
+            delay={0.2 + index * 0.16}
+            duration={PK_ITEM_DURATION}
             className="pk-agenda-wrapper"
           >
             <motion.article
@@ -611,7 +615,7 @@ function KeepsakeEvents() {
         ))}
       </div>
       {data.dresscode?.description && (
-        <ItemMotion variant="slide-up" delay={0.2} className="pk-dresscode">
+        <ItemMotion variant="slide-up" delay={0.26} duration={PK_ITEM_DURATION} className="pk-dresscode">
           <h3>Pilihan busana</h3>
           <p>{data.dresscode.description}</p>
           <div>
@@ -638,10 +642,10 @@ function KeepsakeStory() {
   const { stories } = useWeddingData();
   if (!stories.length) return null;
   return (
-    <SectionMotion id="story" className="pk-section pk-story">
+    <SectionMotion id="story" className="pk-section pk-story" duration={PK_SECTION_DURATION}>
       <KeepsakeSurrounds variant="story" />
       <Ornament name="postal-mark" className="pk-postmark" />
-      <ItemMotion variant="stamp" delay={0.06}>
+      <ItemMotion variant="stamp" delay={0.1} duration={PK_ITEM_DURATION}>
         <div className="pk-story-specimen">
           <motion.img
             src={`${ASSETS}real-pressed-lavender-card.png`}
@@ -656,7 +660,7 @@ function KeepsakeStory() {
           />
         </div>
       </ItemMotion>
-      <ItemMotion variant="slide-down" delay={0.1}>
+      <ItemMotion variant="slide-down" delay={0.16} duration={PK_ITEM_DURATION}>
         <h2>
           Halaman
           <br />
@@ -668,7 +672,8 @@ function KeepsakeStory() {
           <ItemMotion
             key={`${story.year}-${index}`}
             variant={index % 2 === 0 ? "slide-left" : "slide-right"}
-            delay={0.12 + index * 0.08}
+            delay={0.22 + index * 0.12}
+            duration={PK_ITEM_DURATION}
           >
             <motion.li
               whileHover={{ x: index % 2 === 0 ? 4 : -4 }}
@@ -725,8 +730,8 @@ function KeepsakeGallery() {
     setActive((index) => (index + direction + photos.length) % photos.length);
   if (!photos.length) return null;
   return (
-    <SectionMotion id="gallery" className="pk-section pk-gallery">
-      <ItemMotion variant="slide-down">
+    <SectionMotion id="gallery" className="pk-section pk-gallery" duration={PK_SECTION_DURATION}>
+      <ItemMotion variant="slide-down" duration={PK_ITEM_DURATION}>
         <h2>
           Yang ingin
           <br />
@@ -739,7 +744,8 @@ function KeepsakeGallery() {
           <ItemMotion
             key={item.id}
             variant="card-lift"
-            delay={0.08 + (index % 4) * 0.08}
+            delay={0.12 + (index % 4) * 0.1}
+            duration={PK_ITEM_DURATION}
           >
             <motion.figure
               className="pk-gallery-frame"
@@ -765,7 +771,7 @@ function KeepsakeGallery() {
           </ItemMotion>
         ))}
       </div>
-      <ItemMotion variant="pop" delay={0.2}>
+      <ItemMotion variant="pop" delay={0.28} duration={PK_ITEM_DURATION}>
         <Ornament name="botanical-divider" className="pk-divider" />
       </ItemMotion>
       <dialog
@@ -970,7 +976,7 @@ function KeepsakeContent({
             ?.focus({ preventScroll: true }),
         );
       },
-      reduced ? 0 : 500,
+      reduced ? 0 : 950,
     );
   };
   return (
@@ -1022,7 +1028,7 @@ function KeepsakeContent({
         <KeepsakeCelebrationShower
           active={celebrationActive}
           reduced={Boolean(reduced)}
-          durationMs={6000}
+          durationMs={9500}
         />
         <AnimatePresence mode="wait">
           {!opened ? (
@@ -1033,7 +1039,7 @@ function KeepsakeContent({
                 opacity: 0,
                 scale: 0.98,
                 y: -16,
-                transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
               }}
               className="pk-cover-wrapper contents"
             >
@@ -1044,7 +1050,7 @@ function KeepsakeContent({
               key="pages"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 1.15, ease: [0.22, 1, 0.36, 1] }}
               className="pk-pages"
             >
               <KeepsakeHero />
@@ -1062,9 +1068,10 @@ function KeepsakeContent({
               <SectionMotion
                 id="closing"
                 className="pk-section pk-closing"
+                duration={PK_SECTION_DURATION}
               >
                 <KeepsakeSurrounds variant="closing" />
-                <ItemMotion variant="stamp" delay={0.1}>
+                <ItemMotion variant="stamp" delay={0.12} duration={PK_ITEM_DURATION}>
                   <motion.img
                     src={`${ASSETS}real-gold-wax-seal.png`}
                     alt=""
@@ -1076,17 +1083,17 @@ function KeepsakeContent({
                     transition={{ duration: 0.35 }}
                   />
                 </ItemMotion>
-                <ItemMotion variant="fade" delay={0.16}>
+                <ItemMotion variant="fade" delay={0.2} duration={PK_ITEM_DURATION}>
                   <p>{data.general.closingMessage}</p>
                 </ItemMotion>
-                <ItemMotion variant="slide-up" delay={0.22}>
+                <ItemMotion variant="slide-up" delay={0.3} duration={PK_ITEM_DURATION}>
                   <h2 className="pk-couple-name">
-                    <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.2} />
+                    <KeepsakeCharMotion text={data.couple.groom.name} baseDelay={0.35} />
                     <em>&amp;</em>
-                    <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.5} />
+                    <KeepsakeCharMotion text={data.couple.bride.name} baseDelay={0.7} />
                   </h2>
                 </ItemMotion>
-                <ItemMotion variant="pop" delay={0.28}>
+                <ItemMotion variant="pop" delay={0.38} duration={PK_ITEM_DURATION}>
                   <span>{data.general.hashtag}</span>
                 </ItemMotion>
                 <Ornament name="botanical-corner" className="pk-closing-flower" />

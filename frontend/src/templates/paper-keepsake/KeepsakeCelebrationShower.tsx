@@ -43,7 +43,7 @@ const STATIC_PARTICLES: Particle[] = Array.from({ length: 22 }, (_, i) => {
     id: i,
     left: 4 + (i * 92) / 21 + ((i * 17) % 7) - 3,
     delay: (i % 6) * 0.22 + (i > 11 ? 0.9 : 0),
-    duration: 3.8 + (i % 4) * 0.7,
+    duration: 6.8 + (i % 4) * 1.5,
     driftX: ((i * 31) % 60) - 30,
     rotation: ((i * 47) % 360) - 180,
     size: 9 + (i % 5) * 3,
@@ -54,7 +54,7 @@ const STATIC_PARTICLES: Particle[] = Array.from({ length: 22 }, (_, i) => {
 
 export function KeepsakeCelebrationShower({
   active,
-  durationMs = 6500,
+  durationMs = 9500,
   reduced = false,
 }: CelebrationShowerProps) {
   const [visible, setVisible] = useState(active);
