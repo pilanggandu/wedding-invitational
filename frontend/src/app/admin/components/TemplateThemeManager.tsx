@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Check, Music, Eye, Type, Sparkles, SlidersHorizontal } from "lucide-react";
+import { Check, Music, Eye, Type, Sparkles, SlidersHorizontal, Palette } from "lucide-react";
 import { WeddingInvitationData } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { saveInvitationData } from "@/lib/invitationStore";
@@ -12,6 +12,7 @@ import {
   TypographyCategory,
   getTypographyById,
 } from "@/lib/typography";
+import { COLOR_PALETTE_PRESETS, ColorPalettePreset } from "@/lib/colorPalettes";
 
 interface TemplateThemeManagerProps {
   data: WeddingInvitationData;
@@ -277,6 +278,15 @@ export function TemplateThemeManager({
   const [fontStyle, setFontStyle] = useState<string>(
     data.themePalette?.fontStyle || "caveat"
   );
+  const [paperColor, setPaperColor] = useState<string>(
+    data.themePalette?.paperColor || "#D3B49F"
+  );
+  const [primaryColor, setPrimaryColor] = useState<string>(
+    data.themePalette?.primaryColor || "#48181D"
+  );
+  const [colorSchemeId, setColorSchemeId] = useState<string>(
+    data.themePalette?.colorSchemeId || "krem-mahogany"
+  );
   const [selectedCategory, setSelectedCategory] =
     useState<TypographyCategory>("all");
   const [particlesEnabled, setParticlesEnabled] = useState<boolean>(
@@ -367,7 +377,58 @@ export function TemplateThemeManager({
       activeTemplateId: data.activeTemplateId,
       themePalette: {
         ...data.themePalette,
+        paperColor,
+        primaryColor,
+        colorSchemeId: colorSchemeId || undefined,
         fontStyle: newFontId,
+        particlesEnabled,
+        musicAutoplay,
+      },
+    };
+    saveInvitationData(updated);
+    onUpdate(updated);
+    showNotice();
+  };
+
+  const handleSelectPalette = (preset: ColorPalettePreset) => {
+    setPaperColor(preset.paperColor);
+    setPrimaryColor(preset.primaryColor);
+    setColorSchemeId(preset.id);
+    const updated: WeddingInvitationData = {
+      ...data,
+      activeTemplateId: data.activeTemplateId,
+      themePalette: {
+        ...data.themePalette,
+        colorSchemeId: preset.id,
+        paperColor: preset.paperColor,
+        primaryColor: preset.primaryColor,
+        secondaryColor: preset.secondaryColor,
+        accentColor: preset.accentColor,
+        fontStyle,
+        particlesEnabled,
+        musicAutoplay,
+      },
+    };
+    saveInvitationData(updated);
+    onUpdate(updated);
+    showNotice();
+  };
+
+  const handleCustomColorChange = (type: "paper" | "primary", val: string) => {
+    const nextPaper = type === "paper" ? val : paperColor;
+    const nextPrimary = type === "primary" ? val : primaryColor;
+    if (type === "paper") setPaperColor(val);
+    if (type === "primary") setPrimaryColor(val);
+    setColorSchemeId("");
+    const updated: WeddingInvitationData = {
+      ...data,
+      activeTemplateId: data.activeTemplateId,
+      themePalette: {
+        ...data.themePalette,
+        colorSchemeId: undefined,
+        paperColor: nextPaper,
+        primaryColor: nextPrimary,
+        fontStyle,
         particlesEnabled,
         musicAutoplay,
       },
@@ -392,6 +453,9 @@ export function TemplateThemeManager({
       },
       themePalette: {
         ...data.themePalette,
+        paperColor,
+        primaryColor,
+        colorSchemeId: colorSchemeId || undefined,
         fontStyle,
         particlesEnabled,
         musicAutoplay,
@@ -701,6 +765,154 @@ export function TemplateThemeManager({
             );
           })}
         </div>
+        {/* PALET WARNA TEMA & KARTU */}
+        <section aria-label="Pilihan Palet Warna" className="pt-5 border-t border-[#F0F0EA] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-serif font-bold text-base text-[#14161C] flex items-center gap-2">
+                <Palette className="w-4 h-4 text-[#717686]" />
+                <span>Pilihan Palet Warna Desain</span>
+              </h3>
+              <p className="text-xs text-[#717686] mt-0.5">
+                Pilih kombinasi warna terkurasi atau tentukan kode warna kartu dan latar secara presisi.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-[#2C303B] bg-[#F5F5F0] border border-[#E2E2DC] px-3 py-1 rounded-lg">
+                Warna Aktif: <strong className="text-[#14161C] font-semibold">{paperColor}</strong>
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {COLOR_PALETTE_PRESETS.map((preset) => {
+              const isSelected =
+                colorSchemeId === preset.id ||
+                (!colorSchemeId && paperColor.toLowerCase() === preset.paperColor.toLowerCase());
+
+              return (
+                <div
+                  key={preset.id}
+                  onClick={() => handleSelectPalette(preset)}
+                  className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all flex flex-col justify-between ${
+                    isSelected
+                      ? "border-[#14161C] ring-2 ring-[#14161C]/10 bg-[#FAF9F6] shadow-xs"
+                      : "border-[#E7E7E1] hover:border-[#D6D6CF] bg-white hover:bg-[#FCFCFB]"
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div
+                          className="w-6 h-6 rounded-full border border-black/10 flex items-center justify-center shadow-xs shrink-0"
+                          style={{ backgroundColor: preset.primaryColor }}
+                        >
+                          <div
+                            className="w-3 h-3 rounded-full border border-black/20"
+                            style={{ backgroundColor: preset.paperColor }}
+                          />
+                        </div>
+                        <span className="font-serif font-bold text-xs text-[#14161C] truncate">
+                          {preset.name}
+                        </span>
+                      </div>
+                      <div
+                        className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                          isSelected
+                            ? "border-[#14161C] bg-[#14161C] text-[#DFD2BD]"
+                            : "border-[#D6D6CF]"
+                        }`}
+                      >
+                        {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-[#717686] leading-relaxed line-clamp-2">
+                      {preset.description}
+                    </p>
+                  </div>
+                  <div className="mt-2.5 pt-2 border-t border-[#F0F0EA] flex items-center justify-between text-[10px] font-mono text-[#888D9C]">
+                    <span>Kartu: {preset.paperColor}</span>
+                    <span>Latar: {preset.primaryColor}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Kustom Hex Manual */}
+          <div className="p-4 rounded-2xl border border-[#E7E7E1] bg-[#FCFCFB] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="font-semibold text-xs text-[#14161C] block">
+                Sesuaikan Warna Manual (Custom Hex)
+              </span>
+              <p className="text-[11px] text-[#717686] mt-0.5">
+                Ketik kode warna HEX atau gunakan color picker untuk menentukan warna kertas/kartu dan latar belakang.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5 bg-white border border-[#DCDCD5] rounded-xl px-2.5 py-1.5 shadow-2xs">
+                <label className="text-[10px] font-mono text-[#717686] font-medium uppercase">
+                  Kartu:
+                </label>
+                <input
+                  type="color"
+                  value={paperColor}
+                  onChange={(e) => handleCustomColorChange("paper", e.target.value.toUpperCase())}
+                  className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent p-0"
+                />
+                <input
+                  type="text"
+                  value={paperColor}
+                  onChange={(e) => handleCustomColorChange("paper", e.target.value)}
+                  className="w-20 text-xs font-mono font-medium text-[#14161C] focus:outline-none uppercase"
+                  placeholder="#D3B49F"
+                />
+              </div>
+
+              <div className="flex items-center gap-1.5 bg-white border border-[#DCDCD5] rounded-xl px-2.5 py-1.5 shadow-2xs">
+                <label className="text-[10px] font-mono text-[#717686] font-medium uppercase">
+                  Latar:
+                </label>
+                <input
+                  type="color"
+                  value={primaryColor}
+                  onChange={(e) => handleCustomColorChange("primary", e.target.value.toUpperCase())}
+                  className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent p-0"
+                />
+                <input
+                  type="text"
+                  value={primaryColor}
+                  onChange={(e) => handleCustomColorChange("primary", e.target.value)}
+                  className="w-20 text-xs font-mono font-medium text-[#14161C] focus:outline-none uppercase"
+                  placeholder="#48181D"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleSelectPalette(
+                    COLOR_PALETTE_PRESETS[0] || {
+                      id: "krem-mahogany",
+                      name: "Krem Mahogany",
+                      description: "",
+                      paperColor: "#D3B49F",
+                      primaryColor: "#48181D",
+                      secondaryColor: "#331115",
+                      accentColor: "#F2DFBA",
+                      textColor: "#3A1116",
+                      borderColor: "#541E24",
+                    }
+                  )
+                }
+                className="px-3 py-1.5 rounded-xl border border-[#DCDCD5] hover:bg-[#F5F5F0] text-[11px] font-mono text-[#555966] transition-colors cursor-pointer"
+              >
+                Reset Default
+              </button>
+            </div>
+          </div>
+        </section>
+
         <section aria-label="Pengaturan lagu undangan" className="pt-5 border-t border-[#F0F0EA] space-y-4">
           <h3 className="text-lg font-semibold text-[#14161C]">Lagu undangan</h3>
           <InvitationMusicSettings value={musicDraft} onChange={setMusicDraft} />

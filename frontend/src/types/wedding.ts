@@ -126,6 +126,8 @@ export interface ThemePaletteConfig {
   musicAutoplay: boolean;
   ambientColorMode?: "auto" | "custom";
   customAmbientColor?: string;
+  paperColor?: string;
+  colorSchemeId?: string;
 }
 
 export interface WeddingInvitationData {

@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Calendar, Sparkles, Smartphone, Music, MapPin, Mail } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { getFontFamilyCss } from "@/lib/typography";
+import { resolveThemeColors } from "@/lib/colorPalettes";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
 import {
   KidsDrawingCouple,
@@ -22,6 +23,7 @@ interface DesktopLeftShowcaseProps {
 
 export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcaseProps) {
   const data = useWeddingData();
+  const { paperColor, primaryColor, textColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
   const akadEvent = data.events[0] || {
     time: "",
@@ -64,7 +66,8 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
 
   return (
     <div
-      className="hidden lg:flex lg:w-[48%] xl:w-[50%] lg:h-screen lg:sticky lg:top-0 p-8 xl:p-12 flex-col justify-between overflow-y-auto bg-[#48181D] text-white border-r-[4px] border-[#2C0A0E] shadow-2xl relative select-none"
+      style={{ backgroundColor: primaryColor }}
+      className="hidden lg:flex lg:w-[48%] xl:w-[50%] lg:h-screen lg:sticky lg:top-0 p-8 xl:p-12 flex-col justify-between overflow-y-auto text-white border-r-[4px] border-[#2C0A0E] shadow-2xl relative select-none"
     >
       <BotanicalLeaves className="absolute -top-10 -left-10 w-44 h-64 opacity-20 rotate-45 pointer-events-none" />
       <BotanicalLeaves className="absolute -bottom-10 -right-10 w-48 h-68 opacity-20 -rotate-135 pointer-events-none" />
@@ -120,7 +123,10 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
       </div>
 
       <div className="my-5 relative z-10">
-        <div className="bg-[#D3B49F] text-[#3A1116] rounded-3xl p-6 border-[3px] border-[#2C0A0E] shadow-[6px_7px_0px_#2C0A0E] relative">
+        <div
+          style={{ backgroundColor: paperColor, color: textColor }}
+          className="rounded-3xl p-6 border-[3px] border-[#2C0A0E] shadow-[6px_7px_0px_#2C0A0E] relative"
+        >
           <CrayonWashiTape
             text="♥ LOVEBIRDS CUTE ♥"
             color="gold"

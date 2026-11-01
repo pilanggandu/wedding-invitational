@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { WeddingInvitationData, BankAccount } from "@/types/wedding";
 import { TYPOGRAPHY_OPTIONS } from "@/lib/typography";
+import { COLOR_PALETTE_PRESETS, resolveThemeColors } from "@/lib/colorPalettes";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { TemplateRenderer } from "@/templates/TemplateRenderer";
 import { normalizeWeddingData } from "@/context/WeddingDataContext";
@@ -69,6 +70,7 @@ export function TemplateEditorWorkspace({
   const [saveSuccessNotice, setSaveSuccessNotice] = useState<boolean>(false);
   const [canvasKey, setCanvasKey] = useState<number>(0);
   const [replayCover, setReplayCover] = useState(false);
+  const activeThemeColors = resolveThemeColors(draftData.themePalette);
   const canvasScrollContainerRef = useRef<HTMLDivElement>(null);
   const previewContentRef = useRef<HTMLDivElement>(null);
 
@@ -1398,7 +1400,193 @@ export function TemplateEditorWorkspace({
             {/* 7. THEME & TYPOGRAPHY INSPECTOR */}
             {activeSection === "theme" && (
               <div className="space-y-4">
+                {/* 7A. COLOR PALETTES */}
                 <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-mono font-medium text-[#A6ABB9]">
+                      Pilihan Palet Warna
+                    </label>
+                    <span className="text-[10px] font-mono text-[#DFD2BD]">
+                      {activeThemeColors.matchedPresetId
+                        ? COLOR_PALETTE_PRESETS.find((p) => p.id === activeThemeColors.matchedPresetId)?.name
+                        : "Kustom"}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
+                    {COLOR_PALETTE_PRESETS.map((preset) => {
+                      const isSelected =
+                        draftData.themePalette?.colorSchemeId === preset.id ||
+                        (!draftData.themePalette?.colorSchemeId &&
+                          draftData.themePalette?.paperColor?.toLowerCase() === preset.paperColor.toLowerCase());
+
+                      return (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          onClick={() =>
+                            updateDraft((prev) => ({
+                              ...prev,
+                              themePalette: {
+                                ...prev.themePalette,
+                                colorSchemeId: preset.id,
+                                paperColor: preset.paperColor,
+                                primaryColor: preset.primaryColor,
+                                secondaryColor: preset.secondaryColor,
+                                accentColor: preset.accentColor,
+                              },
+                            }))
+                          }
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                            isSelected
+                              ? "bg-[#252A38] border-[#DFD2BD] ring-1 ring-[#DFD2BD]/30"
+                              : "bg-[#181B23] border-[#252834] hover:bg-[#1E222C]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div
+                                className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center shadow-xs shrink-0"
+                                style={{ backgroundColor: preset.primaryColor }}
+                                title={`Latar: ${preset.primaryColor}`}
+                              >
+                                <div
+                                  className="w-2.5 h-2.5 rounded-full border border-black/20"
+                                  style={{ backgroundColor: preset.paperColor }}
+                                  title={`Kartu: ${preset.paperColor}`}
+                                />
+                              </div>
+                              <span className="text-[11px] font-bold text-white truncate">
+                                {preset.name}
+                              </span>
+                            </div>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#DFD2BD] shrink-0" />}
+                          </div>
+                          <p className="text-[9px] text-[#787D8E] line-clamp-1">
+                            {preset.paperColor} • {preset.description}
+                          </p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 7B. CUSTOM COLOR ADJUSTMENT */}
+                <div className="p-3 rounded-xl bg-[#181B23] border border-[#252834] space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#A6ABB9] font-medium">
+                      Kustom Warna Hex
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateDraft((prev) => ({
+                          ...prev,
+                          themePalette: {
+                            ...prev.themePalette,
+                            colorSchemeId: "krem-mahogany",
+                            paperColor: "#D3B49F",
+                            primaryColor: "#48181D",
+                            secondaryColor: "#331115",
+                            accentColor: "#F2DFBA",
+                          },
+                        }))
+                      }
+                      className="text-[10px] font-mono text-[#DFD2BD] hover:underline cursor-pointer"
+                    >
+                      Reset #D3B49F
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-mono text-[#787D8E] block mb-1">
+                        Warna Kartu/Kertas
+                      </label>
+                      <div className="flex items-center gap-1.5 bg-[#14161C] border border-[#2A2E3D] rounded-lg p-1">
+                        <input
+                          type="color"
+                          value={activeThemeColors.paperColor}
+                          onChange={(e) => {
+                            const val = e.target.value.toUpperCase();
+                            updateDraft((prev) => ({
+                              ...prev,
+                              themePalette: {
+                                ...prev.themePalette,
+                                colorSchemeId: undefined,
+                                paperColor: val,
+                              },
+                            }));
+                          }}
+                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0"
+                          title="Pilih warna kartu"
+                        />
+                        <input
+                          type="text"
+                          value={draftData.themePalette?.paperColor || "#D3B49F"}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => ({
+                              ...prev,
+                              themePalette: {
+                                ...prev.themePalette,
+                                colorSchemeId: undefined,
+                                paperColor: val,
+                              },
+                            }));
+                          }}
+                          className="w-full bg-transparent text-[11px] font-mono text-white focus:outline-none uppercase"
+                          placeholder="#D3B49F"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-mono text-[#787D8E] block mb-1">
+                        Warna Latar Belakang
+                      </label>
+                      <div className="flex items-center gap-1.5 bg-[#14161C] border border-[#2A2E3D] rounded-lg p-1">
+                        <input
+                          type="color"
+                          value={activeThemeColors.primaryColor}
+                          onChange={(e) => {
+                            const val = e.target.value.toUpperCase();
+                            updateDraft((prev) => ({
+                              ...prev,
+                              themePalette: {
+                                ...prev.themePalette,
+                                colorSchemeId: undefined,
+                                primaryColor: val,
+                              },
+                            }));
+                          }}
+                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0"
+                          title="Pilih warna latar belakang"
+                        />
+                        <input
+                          type="text"
+                          value={draftData.themePalette?.primaryColor || "#48181D"}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => ({
+                              ...prev,
+                              themePalette: {
+                                ...prev.themePalette,
+                                colorSchemeId: undefined,
+                                primaryColor: val,
+                              },
+                            }));
+                          }}
+                          className="w-full bg-transparent text-[11px] font-mono text-white focus:outline-none uppercase"
+                          placeholder="#48181D"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 7C. TYPOGRAPHY */}
+                <div className="pt-2 border-t border-[#232734]">
                   <label className="text-xs font-mono font-medium text-[#A6ABB9] block mb-1.5">
                     Pilihan Gaya Tipografi Pasangan
                   </label>

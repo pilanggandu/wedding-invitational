@@ -22,6 +22,7 @@ function load(relative, mocks = {}, globals = {}) {
     if (name === "@/lib/api") return {};
     if (name === "./guestData") return load("guestData.ts");
     if (name === "@/lib/invitationStore") return load("invitationStore.ts");
+    if (name === "@/lib/colorPalettes") return load("colorPalettes.ts");
     if (name === "@/lib/typography") return { getFontFamilyCss: () => "serif" };
     return require(name);
   } });

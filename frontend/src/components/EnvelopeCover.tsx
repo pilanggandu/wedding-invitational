@@ -6,6 +6,7 @@ import confetti from "canvas-confetti";
 import { Mail, Heart, Sparkles } from "lucide-react";
 import { BotanicalLeaves } from "./PaperArtDecorations";
 import { useWeddingData } from "@/context/WeddingDataContext";
+import { resolveThemeColors } from "@/lib/colorPalettes";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
 import { MOTION_TRANSITIONS } from "@/lib/motion";
 
@@ -17,6 +18,7 @@ interface EnvelopeCoverProps {
 
 export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCoverProps) {
   const data = useWeddingData();
+  const { paperColor, textColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
   const [paramGuestName] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -90,7 +92,10 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
             className="relative w-full max-w-sm sm:max-w-md my-auto py-5 px-1 sm:px-2 overflow-visible"
           >
             {/* Authentic Ivory Sketchbook Card (No overflow-hidden to preserve flourished script glyphs and pins) */}
-            <div className="relative bg-[#D3B49F] rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#541E24]/35 shadow-[0_12px_36px_rgba(84,30,36,0.12),3px_5px_0px_#2C0A0E] overflow-visible">
+            <div
+              style={{ backgroundColor: paperColor, color: textColor }}
+              className="relative rounded-2xl sm:rounded-3xl p-5 sm:p-7 text-center border-2 border-dashed border-[#541E24]/35 shadow-[0_12px_36px_rgba(84,30,36,0.12),3px_5px_0px_#2C0A0E] overflow-visible"
+            >
 
               {/* Brass Paperclip Washi Accent (Pins naturally over the card edge) */}
               <img
