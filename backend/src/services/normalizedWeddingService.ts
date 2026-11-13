@@ -647,14 +647,42 @@ export class NormalizedWeddingService {
   // =========================================================================
 
   async submitRsvp(params: {
-    guestId: string | number;
+    guestId?: string | number;
+    name?: string;
     status: number; // 1 = attending, 2 = not_attending
     attendeeCount: number;
     message?: string;
   }): Promise<any> {
+    let guestId = params.guestId;
+    let quota = 2;
+
+    if (!guestId && params.name) {
+      const searchRes = await this.pool.query(
+        "SELECT id, quota FROM guests WHERE LOWER(TRIM(name)) = LOWER(TRIM($1)) AND deleted_at IS NULL LIMIT 1",
+        [params.name.trim()]
+      );
+      if (searchRes.rows.length > 0) {
+        guestId = searchRes.rows[0].id;
+        quota = searchRes.rows[0].quota || 2;
+      } else {
+        const newGuest = await this.createGuest({
+          name: params.name.trim(),
+          quota: Math.max(1, params.attendeeCount || 1),
+          category: "Tamu Undangan",
+          notes: "RSVP Mandiri",
+        });
+        guestId = newGuest.id;
+        quota = newGuest.quota || 2;
+      }
+    }
+
+    if (!guestId) {
+      throw new Error("Data tamu undangan tidak ditemukan");
+    }
+
     const guestRes = await this.pool.query(
       "SELECT id, quota FROM guests WHERE id = $1 AND deleted_at IS NULL",
-      [params.guestId]
+      [guestId]
     );
 
     if (guestRes.rows.length === 0) {
@@ -662,13 +690,13 @@ export class NormalizedWeddingService {
     }
 
     const guest = guestRes.rows[0];
-    const quota = guest.quota || 1;
+    quota = Math.max(guest.quota || 1, quota);
 
     // Validasi kuota jika hadir
     let count = params.attendeeCount;
     if (params.status === 1) {
       if (count < 1) count = 1;
-      if (count > quota) {
+      if (count > Math.max(quota, 10)) {
         throw new Error(`Jumlah kehadiran (${count}) melebihi kuota reservasi (${quota} orang)`);
       }
     } else {
@@ -685,7 +713,7 @@ export class NormalizedWeddingService {
          submitted_at = NOW(),
          updated_at = NOW()
        RETURNING *`,
-      [params.guestId, params.status, count, params.message || ""]
+      [guestId, params.status, count, params.message || ""]
     );
 
     return res.rows[0];

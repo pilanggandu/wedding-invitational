@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getNormalizedWeddingService, isPostgresConnected } from "../postgres";
+import { sqliteService } from "../sqlite";
 
 const router = Router();
 
@@ -13,17 +14,9 @@ router.get("/", async (_req: Request, res: Response) => {
       return res.json({ success: true, summary, rsvps, source: "postgresql_12_tables" });
     }
 
-    res.json({
-      success: true,
-      summary: {
-        totalGuests: 0,
-        attending: 0,
-        notAttending: 0,
-        estimatedHeads: 0,
-      },
-      rsvps: [],
-      source: "fallback",
-    });
+    const summary = sqliteService.getRsvpSummary();
+    const rsvps = sqliteService.getRsvpList();
+    return res.json({ success: true, summary, rsvps, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in GET /api/rsvps:", err);
     res.status(500).json({ error: err.message || "Gagal mengambil data RSVP" });
@@ -33,10 +26,10 @@ router.get("/", async (_req: Request, res: Response) => {
 // POST /api/rsvps - Submit konfirmasi kehadiran (1:1 per guest, validasi kuota)
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { guestId, status, attendeeCount, message } = req.body;
+    const { guestId, name, status, attendeeCount, message } = req.body;
 
-    if (!guestId) {
-      return res.status(400).json({ error: "guestId wajib disertakan" });
+    if (!guestId && (!name || !name.trim())) {
+      return res.status(400).json({ error: "guestId atau nama tamu wajib disertakan" });
     }
     if (status !== 1 && status !== 2) {
       return res.status(400).json({ error: "Status kehadiran tidak valid (1 = Hadir, 2 = Tidak Hadir)" });
@@ -46,14 +39,22 @@ router.post("/", async (req: Request, res: Response) => {
     if (isPostgresConnected() && service) {
       const rsvp = await service.submitRsvp({
         guestId,
+        name: name ? name.trim() : undefined,
         status: Number(status),
-        attendeeCount: Number(attendeeCount || 0),
+        attendeeCount: Number(attendeeCount || (status === 1 ? 1 : 0)),
         message: message || "",
       });
       return res.json({ success: true, data: rsvp, message: "Konfirmasi kehadiran berhasil disimpan" });
     }
 
-    res.status(503).json({ error: "Layanan database belum siap" });
+    const rsvp = sqliteService.submitRsvp({
+      guestId,
+      name: name ? name.trim() : undefined,
+      status: Number(status),
+      attendeeCount: Number(attendeeCount || (status === 1 ? 1 : 0)),
+      message: message || "",
+    });
+    return res.json({ success: true, data: rsvp, message: "Konfirmasi kehadiran berhasil disimpan" });
   } catch (err: any) {
     console.error("Error in POST /api/rsvps:", err);
     res.status(400).json({ error: err.message || "Gagal menyimpan konfirmasi kehadiran" });

@@ -104,11 +104,23 @@ test("invalid quota and unsupported attendance do not reach the API", async () =
   }
 });
 
-test("public wishes do not claim an RSVP was recorded without a personal guest link", async () => {
-  const { saveGuestResponse } = load("guestResponse.ts", { "./api": {}, "./invitationStore": { submitWishConfirmed: async () => ({ id: "saved" }) } });
+test("public RSVP confirms attendance and records submission by name without requiring a personal guest link", async () => {
+  let rsvpPayload;
+  const { saveGuestResponse } = load("guestResponse.ts", {
+    "./api": {
+      submitRsvpApi: async (params) => {
+        rsvpPayload = params;
+        return { success: true, data: { id: "rsvp_1", ...params } };
+      },
+    },
+    "./invitationStore": { submitWishConfirmed: async () => ({ id: "saved" }) },
+  });
   const result = await saveGuestResponse({ name: "Tamu", attendance: "hadir", attendeeCount: 1, quota: 2, message: "Doa" });
   assert.equal(result.tone, "success");
-  assert.match(result.message, /Kehadiran belum tercatat/);
+  assert.equal(rsvpPayload.name, "Tamu");
+  assert.equal(rsvpPayload.status, 1);
+  assert.equal(rsvpPayload.attendeeCount, 1);
+  assert.match(result.message, /tersimpan/);
   assert.equal(result.clearMessage, true);
 });
 

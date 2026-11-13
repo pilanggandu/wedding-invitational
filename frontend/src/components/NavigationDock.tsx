@@ -87,7 +87,7 @@ export function NavigationDock({
         { id: "events", label: "Acara", icon: Calendar },
         { id: "gallery", label: "Galeri", icon: ImageIcon },
         { id: "gifts", label: "Hadiah", icon: Gift },
-        { id: "rsvp", label: "Doa", icon: MessageSquareHeart },
+        { id: "rsvp", label: "RSVP", icon: MessageSquareHeart },
       ];
     }
 
@@ -111,7 +111,7 @@ export function NavigationDock({
         { id: "story", label: "Jejak", icon: BookOpen },
         { id: "gallery", label: "Kanvas", icon: ImageIcon },
         { id: "gift", label: "Kado", icon: Gift },
-        { id: "rsvp", label: "Doa", icon: MessageSquareHeart },
+        { id: "rsvp", label: "RSVP", icon: MessageSquareHeart },
       ];
     }
 
@@ -132,7 +132,7 @@ export function NavigationDock({
       { id: "event", label: "Acara", icon: Calendar },
       { id: "gallery", label: "Galeri", icon: ImageIcon },
       { id: "gift", label: "Kado", icon: Gift },
-      { id: "rsvp", label: "Doa", icon: MessageSquareHeart },
+      { id: "rsvp", label: "RSVP", icon: MessageSquareHeart },
     ];
   }, [theme, customItems]);
 

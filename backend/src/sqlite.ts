@@ -55,6 +55,17 @@ db.exec(`
     created_at TEXT
   );
 
+  CREATE TABLE IF NOT EXISTS rsvps (
+    id TEXT PRIMARY KEY,
+    guest_id TEXT UNIQUE NOT NULL,
+    status INTEGER NOT NULL,
+    attendee_count INTEGER DEFAULT 0,
+    message TEXT,
+    submitted_at TEXT,
+    created_at TEXT,
+    updated_at TEXT
+  );
+
   CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
@@ -537,6 +548,114 @@ export const sqliteService = {
     const stmt = db.prepare("DELETE FROM wishes WHERE id = ?");
     stmt.run(id);
     return true;
+  },
+
+  // RSVP (KONFIRMASI KEHADIRAN)
+  findGuestByName(name: string) {
+    const stmt = db.prepare(
+      "SELECT * FROM guests WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) LIMIT 1"
+    );
+    return stmt.get(name) as any;
+  },
+
+  submitRsvp(params: {
+    guestId?: string;
+    name?: string;
+    status: number;
+    attendeeCount: number;
+    message?: string;
+  }) {
+    let guestId = params.guestId;
+    if (!guestId && params.name) {
+      const existing = this.findGuestByName(params.name);
+      if (existing) {
+        guestId = existing.id;
+      } else {
+        const newId = "g_" + Date.now();
+        this.createGuest({
+          id: newId,
+          name: params.name.trim(),
+          slug: encodeURIComponent(params.name.trim()).replace(/%20/g, "+"),
+          category: "Tamu Undangan",
+          notes: "RSVP Mandiri",
+        });
+        guestId = newId;
+      }
+    }
+
+    if (!guestId) {
+      throw new Error("guestId atau nama tamu wajib disertakan");
+    }
+
+    const now = new Date().toISOString();
+    const count = params.status === 1 ? Math.max(1, params.attendeeCount || 1) : 0;
+    const rsvpId = "rsvp_" + Date.now();
+
+    const stmt = db.prepare(`
+      INSERT INTO rsvps (id, guest_id, status, attendee_count, message, submitted_at, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(guest_id) DO UPDATE SET
+        status = excluded.status,
+        attendee_count = excluded.attendee_count,
+        message = excluded.message,
+        submitted_at = excluded.submitted_at,
+        updated_at = excluded.updated_at
+    `);
+
+    stmt.run(rsvpId, guestId, params.status, count, params.message || "", now, now, now);
+
+    const getStmt = db.prepare("SELECT * FROM rsvps WHERE guest_id = ?");
+    return getStmt.get(guestId);
+  },
+
+  getRsvpSummary() {
+    const totalGuests =
+      (db.prepare("SELECT COUNT(*) as count FROM guests").get() as any)?.count || 0;
+    const attendingRes = db
+      .prepare(
+        "SELECT COUNT(*) as count, COALESCE(SUM(attendee_count), 0) as heads FROM rsvps WHERE status = 1"
+      )
+      .get() as any;
+    const notAttendingRes = db
+      .prepare("SELECT COUNT(*) as count FROM rsvps WHERE status = 2")
+      .get() as any;
+
+    return {
+      totalGuests: Number(totalGuests),
+      attending: Number(attendingRes?.count || 0),
+      notAttending: Number(notAttendingRes?.count || 0),
+      estimatedHeads: Number(attendingRes?.heads || 0),
+    };
+  },
+
+  getRsvpList() {
+    const stmt = db.prepare(`
+      SELECT 
+        r.id,
+        r.guest_id,
+        r.status,
+        r.attendee_count,
+        r.message,
+        r.submitted_at,
+        g.name AS guest_name,
+        g.phone AS guest_phone,
+        g.category AS group_name
+      FROM rsvps r
+      LEFT JOIN guests g ON r.guest_id = g.id
+      ORDER BY r.submitted_at DESC
+    `);
+    const rows = stmt.all() as any[];
+    return rows.map((r) => ({
+      id: r.id,
+      guestId: r.guest_id,
+      status: r.status,
+      attendeeCount: r.attendee_count,
+      message: r.message,
+      submittedAt: r.submitted_at,
+      guestName: r.guest_name || "Tamu",
+      guestPhone: r.guest_phone || "",
+      groupName: r.group_name || "Tamu Undangan",
+    }));
   },
 
   // USERS & AUTH

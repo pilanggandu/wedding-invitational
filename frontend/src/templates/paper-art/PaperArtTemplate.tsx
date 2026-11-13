@@ -14,6 +14,7 @@ import {
   ZoomIn,
   X,
   MessageSquare,
+  MessageSquareHeart,
   Home,
   Users,
   Gift,
@@ -1107,7 +1108,10 @@ function SketchbookRsvp({
   const wishes = useSyncExternalStore(preview ? subscribePreview : subscribeWishes, preview ? () => data.initialWishes || emptyWishes : readWishesSnapshot, () => data.initialWishes || emptyWishes);
   const submittingRef = useRef(false);
   const formId = useId();
-  const maxQuota = guestItem && Number.isFinite(guestItem.quota) ? Math.max(1, Math.floor(guestItem.quota)) : 2;
+  const maxQuota =
+    guestItem && Number.isFinite(guestItem.quota)
+      ? Math.max(1, Math.floor(guestItem.quota))
+      : 5;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1206,7 +1210,7 @@ function SketchbookRsvp({
               </div>
             </div>
 
-            {attendance === "hadir" && guestItem && maxQuota > 1 && (
+            {attendance === "hadir" && (
               <div>
                 <label htmlFor={`${formId}-count`} className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1">
                   Jumlah Hadir (Maks: {maxQuota} Orang)
@@ -1229,7 +1233,7 @@ function SketchbookRsvp({
 
             <div>
               <label htmlFor={`${formId}-message`} className="text-xs font-mono uppercase tracking-wider text-[#541E24] font-bold block mb-1">
-                Ucapan &amp; Doa {guestItem && "(opsional)"}
+                Ucapan &amp; Doa Restu (opsional)
               </label>
               <textarea
                 id={`${formId}-message`}
@@ -1239,7 +1243,6 @@ function SketchbookRsvp({
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={`Tuliskan ucapan dan doa untuk ${data.couple.groom.name} & ${data.couple.bride.name}...`}
-                required={!guestItem}
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#541E24]/30 bg-[#F8EFEA] text-base sm:text-sm font-sans text-[#2C1810] focus:outline-none focus:ring-2 focus:ring-[#541E24]/40"
               />
             </div>
@@ -1252,7 +1255,17 @@ function SketchbookRsvp({
               className="w-full py-3.5 rounded-xl bg-[#541E24] hover:bg-[#3A1116] text-white font-mono font-bold text-xs tracking-wider uppercase shadow-md flex items-center justify-center gap-2 cursor-pointer transition-colors min-h-[48px]"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{isSubmitting ? "Mengirim..." : guestItem ? "Kirim Kehadiran & Ucapan" : "Kirim Ucapan"}</span>
+              <span>
+                {isSubmitting
+                  ? "Menyimpan Konfirmasi..."
+                  : attendance === "hadir"
+                  ? message.trim()
+                    ? "Kirim Kehadiran & Ucapan"
+                    : "Konfirmasi Kehadiran"
+                  : message.trim()
+                  ? "Kirim Konfirmasi & Ucapan"
+                  : "Konfirmasi Tidak Hadir"}
+              </span>
             </motion.button>
 
             <div aria-live="polite" aria-atomic="true">
@@ -1507,7 +1520,7 @@ export function PaperArtTemplate({
                   <FallingPaperPetals />
                 )}
 
-                {!isEditor && <NavigationDock theme="maroon" customItems={[{ id: "hero", label: "Beranda", icon: Home }, { id: "couple", label: "Mempelai", icon: Users }, { id: "event", label: "Acara", icon: Calendar }, { id: "gallery", label: "Galeri", icon: ImageIcon }, ...((data.gifts?.accounts?.length || data.gifts?.physicalGiftAddress?.address?.trim()) ? [{ id: "gift", label: "Kado", icon: Gift }] : []), { id: "rsvp", label: "Doa", icon: MessageSquare }]} />}
+                {!isEditor && <NavigationDock theme="maroon" customItems={[{ id: "hero", label: "Beranda", icon: Home }, { id: "couple", label: "Mempelai", icon: Users }, { id: "event", label: "Acara", icon: Calendar }, { id: "gallery", label: "Galeri", icon: ImageIcon }, ...((data.gifts?.accounts?.length || data.gifts?.physicalGiftAddress?.address?.trim()) ? [{ id: "gift", label: "Kado", icon: Gift }] : []), { id: "rsvp", label: "RSVP", icon: MessageSquareHeart }]} />}
                 {!isEditor && <AudioPlayer autoPlayTrigger={isOpened} theme="maroon" />}
               </motion.div>
             )}

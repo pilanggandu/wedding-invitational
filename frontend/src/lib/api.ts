@@ -217,7 +217,8 @@ export async function fetchRsvpsApi(): Promise<{
 }
 
 export async function submitRsvpApi(params: {
-  guestId: string | number;
+  guestId?: string | number;
+  name?: string;
   status: number; // 1 = attending, 2 = not_attending
   attendeeCount: number;
   message?: string;
