@@ -30,18 +30,22 @@ interface A3PosterModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultUrl?: string;
+  defaultPasscode?: string;
 }
 
 export function A3PosterModal({
   isOpen,
   onClose,
   defaultUrl,
+  defaultPasscode,
 }: A3PosterModalProps) {
   const [theme, setTheme] = useState<A3PosterTheme>("royal-maroon");
   const [targetUrl, setTargetUrl] = useState<string>(
     defaultUrl || "https://cut-fishing-postal-violations.trycloudflare.com/photobox"
   );
-  const [posterPasscode, setPosterPasscode] = useState<string>("2026");
+  const [posterPasscode, setPosterPasscode] = useState<string>(
+    defaultPasscode || "2026"
+  );
   const [includeWifi, setIncludeWifi] = useState<boolean>(false);
   const [wifiSsid, setWifiSsid] = useState<string>("WiFi-Wedding-Venue");
   const [wifiPassword, setWifiPassword] = useState<string>("gilangsalsa2026");
@@ -61,6 +65,12 @@ export function A3PosterModal({
       }
     }
   }, [defaultUrl]);
+
+  useEffect(() => {
+    if (defaultPasscode) {
+      setPosterPasscode(defaultPasscode);
+    }
+  }, [defaultPasscode]);
 
   // Regenerate preview whenever theme, URL, or WiFi changes
   useEffect(() => {

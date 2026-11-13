@@ -23,9 +23,13 @@ import {
 
 interface PhotoboxPasscodeGateProps {
   onUnlock: () => void;
+  configuredPasscode?: string;
 }
 
-export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
+export function PhotoboxPasscodeGate({
+  onUnlock,
+  configuredPasscode,
+}: PhotoboxPasscodeGateProps) {
   const [pin, setPin] = useState<string>("");
   const [errorShake, setErrorShake] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -35,7 +39,7 @@ export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
   // Trigger verifikasi PIN saat panjang digit mencapai 4
   const handleVerify = useCallback(
     (codeToVerify: string) => {
-      if (verifyPhotoboxPasscode(codeToVerify)) {
+      if (verifyPhotoboxPasscode(codeToVerify, configuredPasscode)) {
         setIsSuccess(true);
         setErrorMessage("");
         setPhotoboxUnlockedSession(true);
@@ -70,7 +74,7 @@ export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
         }, 700);
       }
     },
-    [onUnlock]
+    [onUnlock, configuredPasscode]
   );
 
   // Tambah digit ke input PIN
@@ -126,7 +130,7 @@ export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
     try {
       const params = new URLSearchParams(window.location.search);
       const urlCode = params.get("pin") || params.get("code") || params.get("passcode");
-      if (urlCode && verifyPhotoboxPasscode(urlCode)) {
+      if (urlCode && verifyPhotoboxPasscode(urlCode, configuredPasscode)) {
         setIsSuccess(true);
         setPhotoboxUnlockedSession(true);
         onUnlock();
@@ -134,7 +138,7 @@ export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
     } catch {
       // Abaikan error pembacaan URL
     }
-  }, [onUnlock]);
+  }, [onUnlock, configuredPasscode]);
 
   const keypadButtons = [
     { label: "1", value: "1", type: "digit" as const },
@@ -362,7 +366,15 @@ export function PhotoboxPasscodeGate({ onUnlock }: PhotoboxPasscodeGateProps) {
                     <span>Petunjuk Passcode:</span>
                   </p>
                   <p>
-                    Gunakan tahun pernikahan mempelai (<strong>2026</strong>) atau tanggal resepsi (<strong>2111</strong>).
+                    {configuredPasscode ? (
+                      <>
+                        Gunakan passcode yang ditentukan oleh pengelola (<strong>{configuredPasscode}</strong>) atau tahun pernikahan (<strong>2026</strong>).
+                      </>
+                    ) : (
+                      <>
+                        Gunakan tahun pernikahan mempelai (<strong>2026</strong>) atau tanggal resepsi (<strong>2111</strong>).
+                      </>
+                    )}
                   </p>
                 </div>
               </motion.div>

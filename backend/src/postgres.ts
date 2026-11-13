@@ -399,6 +399,7 @@ export const postgresService = {
             "heroPhotoUrl",
             "closingPhotoUrl",
             "preweddingPhotos",
+            "photoboxPasscode",
           ] as const) {
             if (general[key] !== undefined) {
               musicSettings[key] = general[key];

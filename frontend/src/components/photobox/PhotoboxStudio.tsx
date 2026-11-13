@@ -21,10 +21,12 @@ import {
   isPhotoboxUnlockedSession,
   setPhotoboxUnlockedSession,
 } from "./passcode";
+import { getInvitationData } from "@/lib/invitationStore";
 
 export function PhotoboxStudio() {
   const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
+  const [configuredPasscode, setConfiguredPasscode] = useState<string>("2026");
   const [currentStep, setCurrentStep] = useState<"camera" | "frames">("camera");
   const [layout, setLayout] = useState<PhotoboxLayout>("4-strip");
   const [photos, setPhotos] = useState<string[]>(["", "", "", ""]);
@@ -32,6 +34,12 @@ export function PhotoboxStudio() {
 
   useEffect(() => {
     setHasMounted(true);
+    try {
+      const inv = getInvitationData();
+      const pin = inv?.general?.photoboxPasscode?.toString()?.trim();
+      if (pin) setConfiguredPasscode(pin);
+    } catch {}
+
     if (isPhotoboxUnlockedSession()) {
       setIsUnlocked(true);
     }
@@ -60,7 +68,12 @@ export function PhotoboxStudio() {
   }
 
   if (!isUnlocked) {
-    return <PhotoboxPasscodeGate onUnlock={() => setIsUnlocked(true)} />;
+    return (
+      <PhotoboxPasscodeGate
+        onUnlock={() => setIsUnlocked(true)}
+        configuredPasscode={configuredPasscode}
+      />
+    );
   }
 
   return (
@@ -201,6 +214,7 @@ export function PhotoboxStudio() {
       <A3PosterModal
         isOpen={isA3ModalOpen}
         onClose={() => setIsA3ModalOpen(false)}
+        defaultPasscode={configuredPasscode}
       />
     </div>
   );

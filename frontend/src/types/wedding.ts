@@ -101,6 +101,7 @@ export interface GeneralWeddingInfo {
   musicArtist: string;
   musicUrl?: string;
   musicVolume?: number;
+  photoboxPasscode?: string;
   quote: {
     arabic: string;
     translation: string;

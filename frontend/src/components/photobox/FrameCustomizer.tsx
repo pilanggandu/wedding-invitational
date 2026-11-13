@@ -23,6 +23,16 @@ import {
   ChevronRight,
   Film,
   QrCode,
+  Upload,
+  Image as ImageIcon,
+  RotateCw,
+  FlipHorizontal,
+  Layers,
+  Move,
+  Plus,
+  Minus,
+  Link as LinkIcon,
+  X,
 } from "lucide-react";
 import {
   PhotoboxLayout,
@@ -73,6 +83,17 @@ export function FrameCustomizer({
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
   const [isA3ModalOpen, setIsA3ModalOpen] = useState<boolean>(false);
 
+  // Advanced sticker editing states
+  const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
+  const [isDraggingSticker, setIsDraggingSticker] = useState<boolean>(false);
+  const [customImages, setCustomImages] = useState<
+    Array<{ id: string; title: string; imageUrl: string; hasFrame: boolean }>
+  >([]);
+  const [imageUrlInput, setImageUrlInput] = useState<string>("");
+  const [imageHasFrameOption, setImageHasFrameOption] = useState<boolean>(false);
+  const [isUrlInputOpen, setIsUrlInputOpen] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Dedicated mobile view switcher: "editor" (pick frames) or "preview" (inspect result)
   const [mobileView, setMobileView] = useState<"editor" | "preview">("editor");
 
@@ -93,6 +114,28 @@ export function FrameCustomizer({
     }
   }, []);
 
+  // Keyboard shortcut listener for sticker delete / deselect
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedStickerId) return;
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
+
+      if (e.key === "Delete" || e.key === "Backspace") {
+        e.preventDefault();
+        handleRemoveSticker(selectedStickerId);
+      } else if (e.key === "Escape") {
+        setSelectedStickerId(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedStickerId]);
+
   // Active Template Object
   const currentTemplate =
     PHOTOBOX_TEMPLATES.find((t) => t.id === selectedTemplateId) || PHOTOBOX_TEMPLATES[0];
@@ -104,25 +147,166 @@ export function FrameCustomizer({
       : PHOTOBOX_TEMPLATES.filter((t) => t.category === selectedCategory);
 
   // Sticker actions
-  const handleAddSticker = (emoji: string, imageUrl?: string) => {
+  const handleAddSticker = (
+    emoji: string,
+    imageUrl?: string,
+    hasFrame?: boolean,
+    customCoords?: { x: number; y: number }
+  ) => {
     const newSticker: StickerItem = {
       id: "stk_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
       emoji: imageUrl ? "🖼️" : emoji,
       imageUrl,
-      x: 35 + Math.random() * 30, // randomized near center
-      y: 20 + Math.random() * 60,
+      hasFrame: hasFrame !== undefined ? hasFrame : !!imageUrl,
+      x: customCoords ? customCoords.x : 35 + Math.random() * 30,
+      y: customCoords ? customCoords.y : 25 + Math.random() * 45,
       scale: imageUrl ? 1.15 : 1,
-      rotation: Math.floor(Math.random() * 24) - 12,
+      rotation: Math.floor(Math.random() * 20) - 10,
+      opacity: 1,
+      isFlipped: false,
+      zIndex: stickers.length + 1,
     };
     setStickers((prev) => [...prev, newSticker]);
+    setSelectedStickerId(newSticker.id);
+  };
+
+  const handleUpdateSticker = (id: string, updates: Partial<StickerItem>) => {
+    setStickers((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+    );
+  };
+
+  const handleDuplicateSticker = (id: string) => {
+    const target = stickers.find((s) => s.id === id);
+    if (!target) return;
+    const duplicated: StickerItem = {
+      ...target,
+      id: "stk_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      x: Math.min(92, target.x + 5),
+      y: Math.min(92, target.y + 5),
+      zIndex: stickers.length + 1,
+    };
+    setStickers((prev) => [...prev, duplicated]);
+    setSelectedStickerId(duplicated.id);
+  };
+
+  const handleBringToFront = (id: string) => {
+    const maxZ = Math.max(...stickers.map((s) => s.zIndex || 0), 0);
+    handleUpdateSticker(id, { zIndex: maxZ + 1 });
+  };
+
+  const handleSendToBack = (id: string) => {
+    const minZ = Math.min(...stickers.map((s) => s.zIndex || 0), 0);
+    handleUpdateSticker(id, { zIndex: Math.max(1, minZ - 1) });
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Mohon pilih file gambar yang valid (PNG, JPG, WebP, SVG).");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (!dataUrl) return;
+
+      const newCustom = {
+        id: "cust_" + Date.now(),
+        title: file.name.replace(/\.[^/.]+$/, "").slice(0, 15),
+        imageUrl: dataUrl,
+        hasFrame: imageHasFrameOption,
+      };
+
+      setCustomImages((prev) => [newCustom, ...prev]);
+      handleAddSticker("", dataUrl, imageHasFrameOption);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleAddImageUrl = () => {
+    if (!imageUrlInput.trim()) return;
+    const url = imageUrlInput.trim();
+
+    const newCustom = {
+      id: "cust_url_" + Date.now(),
+      title: "Gambar URL",
+      imageUrl: url,
+      hasFrame: imageHasFrameOption,
+    };
+
+    setCustomImages((prev) => [newCustom, ...prev]);
+    handleAddSticker("", url, imageHasFrameOption);
+    setImageUrlInput("");
+    setIsUrlInputOpen(false);
+  };
+
+  const handleStickerPointerDown = (
+    e: React.PointerEvent,
+    sticker: StickerItem
+  ) => {
+    e.stopPropagation();
+    setSelectedStickerId(sticker.id);
+
+    const container = previewContainerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const origX = sticker.x;
+    const origY = sticker.y;
+
+    let hasDragged = false;
+
+    const onPointerMove = (moveEvt: PointerEvent) => {
+      const deltaX = moveEvt.clientX - startX;
+      const deltaY = moveEvt.clientY - startY;
+
+      if (!hasDragged && Math.hypot(deltaX, deltaY) > 4) {
+        hasDragged = true;
+        setIsDraggingSticker(true);
+      }
+
+      if (hasDragged) {
+        const deltaPercentX = (deltaX / rect.width) * 100;
+        const deltaPercentY = (deltaY / rect.height) * 100;
+
+        const newX = Math.max(3, Math.min(97, Math.round((origX + deltaPercentX) * 10) / 10));
+        const newY = Math.max(2, Math.min(98, Math.round((origY + deltaPercentY) * 10) / 10));
+
+        setStickers((prev) =>
+          prev.map((s) => (s.id === sticker.id ? { ...s, x: newX, y: newY } : s))
+        );
+      }
+    };
+
+    const onPointerUp = () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+      setTimeout(() => setIsDraggingSticker(false), 50);
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
   };
 
   const handleRemoveSticker = (id: string) => {
     setStickers((prev) => prev.filter((s) => s.id !== id));
+    if (selectedStickerId === id) {
+      setSelectedStickerId(null);
+    }
   };
 
   const handleClearStickers = () => {
     setStickers([]);
+    setSelectedStickerId(null);
   };
 
   // High-Res Export Download
@@ -271,6 +455,36 @@ export function FrameCustomizer({
           borderColor: currentTemplate.borderColor || "#E5E5E5",
           borderWidth: currentTemplate.borderWidth ? `${currentTemplate.borderWidth}px` : "1px",
           borderRadius: `${currentTemplate.borderRadius || 8}px`,
+        }}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setSelectedStickerId(null);
+          }
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "copy";
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          try {
+            const raw = e.dataTransfer.getData("application/json");
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            const container = previewContainerRef.current;
+            if (!container) return;
+            const rect = container.getBoundingClientRect();
+            const dropX = ((e.clientX - rect.left) / rect.width) * 100;
+            const dropY = ((e.clientY - rect.top) / rect.height) * 100;
+            const clampedX = Math.max(5, Math.min(95, Math.round(dropX)));
+            const clampedY = Math.max(5, Math.min(95, Math.round(dropY)));
+            handleAddSticker(data.emoji || "", data.imageUrl, data.hasFrame, {
+              x: clampedX,
+              y: clampedY,
+            });
+          } catch {
+            // Ignore invalid drop data
+          }
         }}
         className={`relative shadow-2xl transition-all duration-300 select-none overflow-hidden mx-auto ${
           isGrid
@@ -614,33 +828,109 @@ export function FrameCustomizer({
           )}
         </div>
 
-        {/* Placed Stickers on Preview (Emoji & Couple Photo Stickers) */}
-        {stickers.map((stk) => (
-          <motion.button
-            key={stk.id}
-            onClick={() => handleRemoveSticker(stk.id)}
-            whileHover={{ scale: 1.15 }}
-            style={{
-              left: `${stk.x}%`,
-              top: `${stk.y}%`,
-              transform: `translate(-50%, -50%) rotate(${stk.rotation}deg) scale(${stk.scale})`,
-            }}
-            className="absolute z-20 select-none cursor-pointer filter drop-shadow-md hover:opacity-75 transition-opacity"
-            title="Ketuk untuk menghapus stiker"
-          >
-            {stk.imageUrl ? (
-              <div className="w-12 h-12 xs:w-14 xs:h-14 rounded-lg overflow-hidden border-2 border-white shadow-md bg-white">
-                <img
-                  src={stk.imageUrl}
-                  alt="Stiker Foto Pengantin"
-                  className="w-full h-full object-cover pointer-events-none"
-                />
-              </div>
-            ) : (
-              <span className="text-2xl sm:text-3xl leading-none">{stk.emoji}</span>
-            )}
-          </motion.button>
-        ))}
+        {/* Placed Stickers on Preview (Draggable, Rotatable, Scalable with Quick Actions) */}
+        {stickers.map((stk) => {
+          const isSelected = stk.id === selectedStickerId;
+
+          return (
+            <div
+              key={stk.id}
+              onPointerDown={(e) => handleStickerPointerDown(e, stk)}
+              style={{
+                left: `${stk.x}%`,
+                top: `${stk.y}%`,
+                transform: `translate(-50%, -50%) rotate(${stk.rotation || 0}deg) scale(${stk.scale || 1}) scaleX(${
+                  stk.isFlipped ? -1 : 1
+                })`,
+                opacity: stk.opacity !== undefined ? stk.opacity : 1,
+                zIndex: isSelected ? 50 : stk.zIndex || 20,
+              }}
+              className={`absolute select-none cursor-grab active:cursor-grabbing touch-none group transition-[box-shadow,opacity] ${
+                isSelected
+                  ? "ring-2 ring-[#8C6239] ring-offset-2 ring-offset-transparent rounded-lg"
+                  : "hover:scale-105"
+              }`}
+              title="Geser (drag) untuk memindahkan, ketuk untuk mengedit"
+            >
+              {/* Sticker Content */}
+              {stk.imageUrl ? (
+                stk.hasFrame ? (
+                  <div className="w-12 h-12 xs:w-14 xs:h-14 rounded-lg overflow-hidden border-2 border-white shadow-md bg-white">
+                    <img
+                      src={stk.imageUrl}
+                      alt="Stiker Kustom"
+                      className="w-full h-full object-cover pointer-events-none"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 xs:w-14 xs:h-14 flex items-center justify-center filter drop-shadow-md">
+                    <img
+                      src={stk.imageUrl}
+                      alt="Stiker Kustom Transparan"
+                      className="max-w-full max-h-full object-contain pointer-events-none"
+                    />
+                  </div>
+                )
+              ) : (
+                <span className="text-2xl sm:text-3xl leading-none filter drop-shadow-sm block pointer-events-none">
+                  {stk.emoji}
+                </span>
+              )}
+
+              {/* Floating Quick Action Mini-Toolbar (shows when selected) */}
+              {isSelected && (
+                <div
+                  onPointerDown={(e) => e.stopPropagation()}
+                  className="absolute -top-9 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#3A332C]/95 backdrop-blur-xs text-white px-2 py-1 rounded-full shadow-lg border border-white/20 z-50 text-[10px] whitespace-nowrap animate-in fade-in zoom-in-95 duration-150"
+                  style={{
+                    transform: `translateX(-50%) scaleX(${stk.isFlipped ? -1 : 1})`,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleUpdateSticker(stk.id, {
+                        rotation: ((stk.rotation || 0) + 45) % 360,
+                      })
+                    }
+                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    title="Putar 45°"
+                  >
+                    <RotateCw className="w-3 h-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleUpdateSticker(stk.id, {
+                        isFlipped: !stk.isFlipped,
+                      })
+                    }
+                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    title="Cermin Horizontal"
+                  >
+                    <FlipHorizontal className="w-3 h-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDuplicateSticker(stk.id)}
+                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    title="Gandakan"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSticker(stk.id)}
+                    className="p-1 hover:bg-red-500 rounded-full transition-colors text-red-300 hover:text-white"
+                    title="Hapus"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
 
         {/* Footer Section */}
         <div
@@ -1077,51 +1367,455 @@ export function FrameCustomizer({
         {/* TAB 4: STICKERS & PURIKURA */}
         {activeTab === "stickers" && (
           <div className="space-y-4">
-            {/* SECTION 1: STIKER FOTO PENGANTIN (GILANG & SALSA) */}
-            <div className="space-y-2">
+            {/* ACTIVE SELECTED STICKER EDITOR PANEL */}
+            {(() => {
+              const selectedSticker = stickers.find((s) => s.id === selectedStickerId);
+              if (!selectedSticker) {
+                return (
+                  <div className="p-3 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] text-xs text-[#5C4A3A] flex items-start gap-2.5">
+                    <span className="text-base select-none shrink-0">✨</span>
+                    <div>
+                      <p className="font-bold text-[#3A332C] mb-0.5">Tip Stiker Interaktif:</p>
+                      <p className="text-[11px] leading-relaxed text-[#705A46]">
+                        Kamu bisa langsung <strong>menggeser (drag & drop)</strong> stiker di atas lembar foto. Ketuk stiker mana saja untuk memutar, memperbesar, mencerminkan, atau mengatur transparansinya.
+                      </p>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-[#FFFBF4] to-[#F5ECE0] border-2 border-[#8C6239]/50 shadow-sm space-y-3 animate-in fade-in zoom-in-95 duration-200">
+                  {/* Header of Active Editor */}
+                  <div className="flex items-center justify-between pb-2 border-b border-[#E8DFC8]">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-white border border-[#8C6239]/30 flex items-center justify-center overflow-hidden shadow-2xs">
+                        {selectedSticker.imageUrl ? (
+                          <img
+                            src={selectedSticker.imageUrl}
+                            alt="Stiker Aktif"
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <span className="text-lg leading-none">{selectedSticker.emoji}</span>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-[#3A332C]">Edit Stiker Terpilih</h4>
+                        <span className="text-[10px] text-[#8C6239] font-medium block">
+                          Tarik langsung di foto untuk memindahkan posisi
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStickerId(null)}
+                      className="text-xs text-[#8C6239] hover:text-[#4A121A] flex items-center gap-1 font-bold px-2 py-1 rounded-lg hover:bg-black/5 transition-colors cursor-pointer"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      Selesai
+                    </button>
+                  </div>
+
+                  {/* Scale Slider */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-[#3A332C]">Ukuran / Skala:</span>
+                      <span className="font-mono text-[11px] font-bold text-[#8C6239]">
+                        {(selectedSticker.scale || 1).toFixed(2)}x
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.3"
+                      max="2.5"
+                      step="0.05"
+                      value={selectedSticker.scale || 1}
+                      onChange={(e) =>
+                        handleUpdateSticker(selectedSticker.id, {
+                          scale: parseFloat(e.target.value),
+                        })
+                      }
+                      className="w-full h-1.5 bg-[#E8DFC8] rounded-lg appearance-none cursor-pointer accent-[#8C6239]"
+                    />
+                    <div className="flex gap-1.5">
+                      {[0.7, 1.0, 1.4, 1.8].map((sVal) => (
+                        <button
+                          key={sVal}
+                          type="button"
+                          onClick={() =>
+                            handleUpdateSticker(selectedSticker.id, { scale: sVal })
+                          }
+                          className={`flex-1 py-1 text-[10px] font-semibold rounded-md border transition-all cursor-pointer ${
+                            Math.abs((selectedSticker.scale || 1) - sVal) < 0.05
+                              ? "bg-[#8C6239] text-white border-[#8C6239]"
+                              : "bg-white text-[#5C4A3A] border-[#E8DFC8] hover:bg-[#FAF6EE]"
+                          }`}
+                        >
+                          {sVal}x
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rotation Slider */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-[#3A332C]">Rotasi Putaran:</span>
+                      <span className="font-mono text-[11px] font-bold text-[#8C6239]">
+                        {selectedSticker.rotation || 0}°
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-180"
+                      max="180"
+                      step="5"
+                      value={selectedSticker.rotation || 0}
+                      onChange={(e) =>
+                        handleUpdateSticker(selectedSticker.id, {
+                          rotation: parseInt(e.target.value, 10),
+                        })
+                      }
+                      className="w-full h-1.5 bg-[#E8DFC8] rounded-lg appearance-none cursor-pointer accent-[#8C6239]"
+                    />
+                    <div className="flex gap-1">
+                      {[-90, -45, 0, 45, 90].map((deg) => (
+                        <button
+                          key={deg}
+                          type="button"
+                          onClick={() =>
+                            handleUpdateSticker(selectedSticker.id, { rotation: deg })
+                          }
+                          className={`flex-1 py-1 text-[10px] font-semibold rounded-md border transition-all cursor-pointer ${
+                            (selectedSticker.rotation || 0) === deg
+                              ? "bg-[#8C6239] text-white border-[#8C6239]"
+                              : "bg-white text-[#5C4A3A] border-[#E8DFC8] hover:bg-[#FAF6EE]"
+                          }`}
+                        >
+                          {deg === 0 ? "Tegak" : `${deg}°`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Opacity Slider */}
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="font-semibold text-[#3A332C]">Transparansi:</span>
+                      <span className="font-mono text-[11px] font-bold text-[#8C6239]">
+                        {Math.round((selectedSticker.opacity ?? 1) * 100)}%
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.2"
+                      max="1.0"
+                      step="0.05"
+                      value={selectedSticker.opacity ?? 1}
+                      onChange={(e) =>
+                        handleUpdateSticker(selectedSticker.id, {
+                          opacity: parseFloat(e.target.value),
+                        })
+                      }
+                      className="w-full h-1.5 bg-[#E8DFC8] rounded-lg appearance-none cursor-pointer accent-[#8C6239]"
+                    />
+                  </div>
+
+                  {/* Quick Action Button Grid */}
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#E8DFC8]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleUpdateSticker(selectedSticker.id, {
+                          isFlipped: !selectedSticker.isFlipped,
+                        })
+                      }
+                      className={`px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                        selectedSticker.isFlipped
+                          ? "bg-[#8C6239] text-white border-[#8C6239]"
+                          : "bg-white text-[#3A332C] border-[#E8DFC8] hover:bg-[#FAF6EE]"
+                      }`}
+                    >
+                      <FlipHorizontal className="w-3.5 h-3.5" />
+                      <span>{selectedSticker.isFlipped ? "Cermin: Aktif" : "Cermin (Flip)"}</span>
+                    </button>
+
+                    {selectedSticker.imageUrl ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateSticker(selectedSticker.id, {
+                            hasFrame: !selectedSticker.hasFrame,
+                          })
+                        }
+                        className={`px-2.5 py-1.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                          selectedSticker.hasFrame
+                            ? "bg-[#8C6239] text-white border-[#8C6239]"
+                            : "bg-white text-[#3A332C] border-[#E8DFC8] hover:bg-[#FAF6EE]"
+                        }`}
+                      >
+                        <ImageIcon className="w-3.5 h-3.5" />
+                        <span>{selectedSticker.hasFrame ? "Bingkai Polaroid" : "Transparan"}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleUpdateSticker(selectedSticker.id, {
+                            rotation: ((selectedSticker.rotation || 0) + 45) % 360,
+                          })
+                        }
+                        className="px-2.5 py-1.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] text-xs font-semibold text-[#3A332C] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      >
+                        <RotateCw className="w-3.5 h-3.5 text-[#8C6239]" />
+                        <span>Putar +45°</span>
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => handleBringToFront(selectedSticker.id)}
+                      className="px-2.5 py-1.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] text-xs font-semibold text-[#3A332C] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Layers className="w-3.5 h-3.5 text-[#8C6239]" />
+                      <span>Paling Depan</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDuplicateSticker(selectedSticker.id)}
+                      className="px-2.5 py-1.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] text-xs font-semibold text-[#3A332C] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-[#8C6239]" />
+                      <span>Gandakan</span>
+                    </button>
+                  </div>
+
+                  {/* Centering and Delete */}
+                  <div className="flex gap-2 pt-1 border-t border-[#E8DFC8]">
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateSticker(selectedSticker.id, { x: 50 })}
+                      className="flex-1 py-1.5 text-[11px] font-semibold text-[#5C4A3A] bg-white rounded-lg border border-[#E8DFC8] hover:bg-[#FAF6EE] cursor-pointer"
+                    >
+                      Pusatkan Horisontal
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSticker(selectedSticker.id)}
+                      className="flex-1 py-1.5 text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Hapus Stiker
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* SECTION 1: UNGGAH GAMBAR / STIKER KUSTOM (EXTERNAL IMAGE) */}
+            <div className="space-y-2.5 pt-2 border-t border-[#E8DFC8]">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
+                  <Upload className="w-3.5 h-3.5 text-[#8C6239]" />
+                  <span>Unggah Gambar / Stiker Sendiri:</span>
+                </span>
+                <span className="text-[10px] text-[#8C6239] font-medium">PNG / JPG / WebP</span>
+              </div>
+
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+
+              {/* Action Buttons: File Picker & URL */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-2.5 rounded-xl border border-[#8C6239] bg-white hover:bg-[#FAF6EE] text-[#4A121A] text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-95 cursor-pointer min-h-[44px]"
+                >
+                  <Upload className="w-4 h-4 text-[#8C6239]" />
+                  <span>Pilih dari Galeri</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsUrlInputOpen(!isUrlInputOpen)}
+                  className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition-all active:scale-95 cursor-pointer min-h-[44px] ${
+                    isUrlInputOpen
+                      ? "bg-[#8C6239] text-white border-[#8C6239]"
+                      : "bg-white text-[#4A121A] border-[#E8DFC8] hover:bg-[#FAF6EE]"
+                  }`}
+                >
+                  <LinkIcon className="w-4 h-4 text-[#8C6239]" />
+                  <span>Tempel Link URL</span>
+                </button>
+              </div>
+
+              {/* Image Border Option Toggle */}
+              <div className="flex items-center justify-between px-3 py-2 bg-white rounded-xl border border-[#E8DFC8] text-xs">
+                <span className="text-[#3A332C] font-semibold">Model Stiker Baru:</span>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setImageHasFrameOption(false)}
+                    className={`px-2 py-1 rounded-md text-[10px] font-bold transition-colors cursor-pointer ${
+                      !imageHasFrameOption
+                        ? "bg-[#8C6239] text-white"
+                        : "text-[#705A46] hover:bg-[#FAF6EE]"
+                    }`}
+                  >
+                    Transparan Asli
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImageHasFrameOption(true)}
+                    className={`px-2 py-1 rounded-md text-[10px] font-bold transition-colors cursor-pointer ${
+                      imageHasFrameOption
+                        ? "bg-[#8C6239] text-white"
+                        : "text-[#705A46] hover:bg-[#FAF6EE]"
+                    }`}
+                  >
+                    Bingkai Polaroid
+                  </button>
+                </div>
+              </div>
+
+              {/* Inline URL Input Form */}
+              {isUrlInputOpen && (
+                <div className="p-3 bg-white rounded-xl border border-[#8C6239]/40 space-y-2 shadow-2xs animate-in fade-in duration-150">
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={imageUrlInput}
+                      onChange={(e) => setImageUrlInput(e.target.value)}
+                      placeholder="https://example.com/stiker.png"
+                      className="flex-1 px-3 py-2 text-xs border border-[#E8DFC8] rounded-lg focus:outline-none focus:border-[#8C6239] bg-[#FFFBF4]"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      disabled={!imageUrlInput.trim()}
+                      className="px-3 py-2 bg-[#8C6239] text-white text-xs font-bold rounded-lg hover:bg-[#724e2c] disabled:opacity-50 transition-colors cursor-pointer"
+                    >
+                      Tambah
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-[#8C6239]">
+                    Mendukung link gambar transparan (PNG) atau foto dari web mana pun.
+                  </p>
+                </div>
+              )}
+
+              {/* Uploaded Custom Images Tray */}
+              {customImages.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[11px] font-semibold text-[#5C4A3A] block">
+                    Gambar Kustom Kamu (Ketuk untuk menambah lagi):
+                  </span>
+                  <div className="flex gap-2 overflow-x-auto pb-1.5">
+                    {customImages.map((cImg) => (
+                      <button
+                        key={cImg.id}
+                        type="button"
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData(
+                            "application/json",
+                            JSON.stringify({
+                              emoji: "",
+                              imageUrl: cImg.imageUrl,
+                              hasFrame: cImg.hasFrame,
+                            })
+                          );
+                        }}
+                        onClick={() =>
+                          handleAddSticker("", cImg.imageUrl, cImg.hasFrame)
+                        }
+                        className="w-14 h-14 shrink-0 rounded-xl border-2 border-[#E8DFC8] hover:border-[#8C6239] bg-white p-1 overflow-hidden shadow-2xs hover:scale-105 transition-all cursor-pointer relative group"
+                        title={cImg.title}
+                      >
+                        <img
+                          src={cImg.imageUrl}
+                          alt={cImg.title}
+                          className="w-full h-full object-contain"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* SECTION 2: STIKER FOTO PENGANTIN (GILANG & SALSA) */}
+            <div className="space-y-2 pt-2 border-t border-[#E8DFC8]">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#C99A45]" />
                   <span>Stiker Foto Pengantin (Gilang & Salsa):</span>
                 </span>
-                <span className="text-[10px] text-[#8C6239] font-medium">Ketuk untuk menempel</span>
+                <span className="text-[10px] text-[#8C6239] font-medium">Bisa drag ke foto</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {COUPLE_PHOTO_STICKERS.map((stk) => (
-                  <button
-                    key={stk.id}
-                    onClick={() => handleAddSticker("", stk.imageUrl)}
-                    className="p-2 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] hover:border-[#8C6239] transition-all flex items-center gap-2 text-left cursor-pointer shadow-2xs group active:scale-95 min-h-[48px]"
-                  >
-                    <div className="w-9 h-9 rounded-lg overflow-hidden border border-black/10 shrink-0 bg-black/5 shadow-2xs">
-                      <img
-                        src={stk.imageUrl}
-                        alt={stk.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                      />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-bold text-[#3A332C] truncate leading-tight">
-                        {stk.title}
-                      </p>
-                      <span className="text-[9px] text-[#8C6239] font-medium block truncate">
-                        {stk.type === "couple"
-                          ? "Foto Bersama"
-                          : stk.type === "seal"
-                          ? "Ornamen Emas"
-                          : stk.type === "groom" || stk.type === "bride"
-                          ? "Karakter"
-                          : "Prangko Pos"}
-                      </span>
-                    </div>
-                  </button>
-                ))}
+                {COUPLE_PHOTO_STICKERS.map((stk) => {
+                  const isPhotoCard = stk.type === "couple";
+
+                  return (
+                    <button
+                      key={stk.id}
+                      type="button"
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData(
+                          "application/json",
+                          JSON.stringify({
+                            emoji: "",
+                            imageUrl: stk.imageUrl,
+                            hasFrame: isPhotoCard,
+                          })
+                        );
+                      }}
+                      onClick={() =>
+                        handleAddSticker("", stk.imageUrl, isPhotoCard)
+                      }
+                      className="p-2 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] hover:border-[#8C6239] transition-all flex items-center gap-2 text-left cursor-pointer shadow-2xs group active:scale-95 min-h-[48px]"
+                    >
+                      <div className="w-9 h-9 rounded-lg overflow-hidden border border-black/10 shrink-0 bg-black/5 shadow-2xs">
+                        <img
+                          src={stk.imageUrl}
+                          alt={stk.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-bold text-[#3A332C] truncate leading-tight">
+                          {stk.title}
+                        </p>
+                        <span className="text-[9px] text-[#8C6239] font-medium block truncate">
+                          {stk.type === "couple"
+                            ? "Foto Bersama"
+                            : stk.type === "seal"
+                            ? "Ornamen Emas"
+                            : stk.type === "groom" || stk.type === "bride"
+                            ? "Karakter"
+                            : "Prangko Pos"}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* SECTION 2: EMOJIS & PURIKURA */}
-            <div className="space-y-2 pt-3 border-t border-[#E8DFC8]">
+            {/* SECTION 3: EMOJIS & PURIKURA */}
+            <div className="space-y-2 pt-2 border-t border-[#E8DFC8]">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
                   <Smile className="w-3.5 h-3.5 text-[#8C6239]" />
@@ -1129,6 +1823,7 @@ export function FrameCustomizer({
                 </span>
                 {stickers.length > 0 && (
                   <button
+                    type="button"
                     onClick={handleClearStickers}
                     className="text-xs text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer font-medium"
                   >
@@ -1138,27 +1833,27 @@ export function FrameCustomizer({
                 )}
               </div>
 
-              {/* Sticker Tray Grid */}
+              {/* Sticker Tray Grid with Draggable Support */}
               <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 bg-[#FAF6EE] p-3 rounded-xl border border-[#E8DFC8]">
                 {STICKER_LIST.map((emoji, idx) => (
                   <button
                     key={idx}
+                    type="button"
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData(
+                        "application/json",
+                        JSON.stringify({ emoji, imageUrl: "", hasFrame: false })
+                      );
+                    }}
                     onClick={() => handleAddSticker(emoji)}
                     className="text-2xl p-2 rounded-lg hover:bg-white hover:scale-125 transition-all cursor-pointer flex items-center justify-center shadow-2xs active:scale-95 min-h-[44px] min-w-[44px]"
-                    title="Klik untuk menambahkan stiker"
+                    title="Klik atau geser langsung ke foto"
                   >
                     {emoji}
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Active Stickers Counter & Instructions */}
-            <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-              <p className="font-semibold mb-0.5">✨ Info Stiker:</p>
-              <p className="text-[11px] leading-relaxed">
-                Stiker foto pengantin atau emoji yang kamu pilih akan muncul di atas lembar photobox. Kamu bisa mengetuk langsung stiker di atas foto untuk membuangnya.
-              </p>
             </div>
           </div>
         )}

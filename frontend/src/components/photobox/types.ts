@@ -240,6 +240,10 @@ export interface StickerItem {
   y: number; // percentage 0 - 100
   scale: number;
   rotation: number;
+  opacity?: number; // 0.1 - 1.0 (default 1)
+  isFlipped?: boolean; // mirror flip horizontally
+  hasFrame?: boolean; // whether to show photo frame/card border
+  zIndex?: number;
 }
 
 export interface CouplePhotoSticker {

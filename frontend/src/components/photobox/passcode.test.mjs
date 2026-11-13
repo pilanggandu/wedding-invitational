@@ -23,3 +23,10 @@ test("verifyPhotoboxPasscode rejects invalid or empty codes", () => {
   assert.strictEqual(verifyPhotoboxPasscode("9999"), false);
   assert.strictEqual(verifyPhotoboxPasscode("abcd"), false);
 });
+
+test("verifyPhotoboxPasscode accepts custom passcode from admin panel", () => {
+  assert.strictEqual(verifyPhotoboxPasscode("7788", "7788"), true);
+  assert.strictEqual(verifyPhotoboxPasscode("  8899  ", "8899"), true);
+  // Default passcodes should still work
+  assert.strictEqual(verifyPhotoboxPasscode("2026", "7788"), true);
+});

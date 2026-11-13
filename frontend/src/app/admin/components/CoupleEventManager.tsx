@@ -16,6 +16,9 @@ import {
   Trash2,
   Palette,
   Sparkles,
+  Camera,
+  QrCode,
+  KeyRound,
 } from "lucide-react";
 import { WeddingInvitationData, BankAccount } from "@/types/wedding";
 import { saveInvitationData } from "@/lib/invitationStore";
@@ -25,9 +28,14 @@ import { uploadImageFile } from "@/lib/imageUpload";
 interface CoupleEventManagerProps {
   data: WeddingInvitationData;
   onUpdate: (updated: WeddingInvitationData) => void;
+  onOpenA3Poster?: () => void;
 }
 
-export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) {
+export function CoupleEventManager({
+  data,
+  onUpdate,
+  onOpenA3Poster,
+}: CoupleEventManagerProps) {
   // Groom states
   const [groomName, setGroomName] = useState(data.couple?.groom?.name || "");
   const [groomFullName, setGroomFullName] = useState(data.couple?.groom?.fullName || "");
@@ -120,6 +128,7 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       if (data.general.funTagline !== undefined) setFunTagline(data.general.funTagline);
       if (data.general.hashtag !== undefined) setHashtag(data.general.hashtag);
       if (data.general.closingMessage !== undefined) setClosingMessage(data.general.closingMessage);
+      if (data.general.photoboxPasscode !== undefined) setPhotoboxPasscode(data.general.photoboxPasscode);
     }
 
     const evAkad = data.events?.[0];
@@ -218,6 +227,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
   const [closingMessage, setClosingMessage] = useState(
     data.general?.closingMessage ||
       "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."
+  );
+  const [photoboxPasscode, setPhotoboxPasscode] = useState(
+    data.general?.photoboxPasscode || "2026"
   );
 
   // Bank accounts (Dynamic)
@@ -359,6 +371,7 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
           funTagline: funTagline.trim(),
           hashtag: hashtag.trim(),
           closingMessage: closingMessage.trim(),
+          photoboxPasscode: photoboxPasscode.trim() || "2026",
           coverPhotoUrl: coverPhotoUrl.trim(),
           heroPhotoUrl: coverPhotoUrl.trim(),
           closingPhotoUrl: closingPhotoUrl.trim(),
@@ -430,6 +443,9 @@ export function CoupleEventManager({ data, onUpdate }: CoupleEventManagerProps) 
       };
 
       const serverSaved = await saveInvitationData(updated);
+      try {
+        localStorage.setItem("wedding_photobox_pin", photoboxPasscode.trim() || "2026");
+      } catch {}
       onUpdate(updated);
 
       setIsSaved(true);

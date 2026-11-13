@@ -1,13 +1,19 @@
 /**
  * Helper modul untuk verifikasi passcode akses Bilik Foto (Photobox).
- * Mengamankan akses tamu dengan kode akses pernikahan (default 2026 atau 2111).
+ * Mengamankan akses tamu dengan kode akses pernikahan (default 2026 atau 2111, atau kustom dari admin panel).
  */
 
 export const DEFAULT_PASSCODES = ["2026", "2111"];
 export const PHOTOBOX_STORAGE_KEY = "wedding_photobox_unlocked_v1";
 
-export function getValidPasscodes(): string[] {
+export function getValidPasscodes(customPasscode?: string): string[] {
   const codes = new Set<string>(DEFAULT_PASSCODES);
+
+  // Ambil kode eksplisit jika dipassing langsung dari context/props
+  if (customPasscode && typeof customPasscode === "string") {
+    const clean = customPasscode.trim();
+    if (clean) codes.add(clean);
+  }
 
   // Ambil kode dari environment variable jika disediakan
   if (typeof process !== "undefined" && process.env?.NEXT_PUBLIC_PHOTOBOX_PASSCODE) {
@@ -23,17 +29,28 @@ export function getValidPasscodes(): string[] {
     } catch {
       // Abaikan jika localStorage tidak tersedia di context saat ini
     }
+
+    try {
+      const localStore = window.localStorage.getItem("wedding_invitation_data_v1");
+      if (localStore) {
+        const parsed = JSON.parse(localStore);
+        const storePin = parsed?.general?.photoboxPasscode?.toString()?.trim();
+        if (storePin) codes.add(storePin);
+      }
+    } catch {
+      // Abaikan parsing error
+    }
   }
 
   return Array.from(codes);
 }
 
-export function verifyPhotoboxPasscode(input: string): boolean {
+export function verifyPhotoboxPasscode(input: string, customPasscode?: string): boolean {
   if (!input || typeof input !== "string") return false;
   const clean = input.trim();
   if (!clean) return false;
 
-  const validCodes = getValidPasscodes();
+  const validCodes = getValidPasscodes(customPasscode);
   return validCodes.some((code) => code.toLowerCase() === clean.toLowerCase());
 }
 

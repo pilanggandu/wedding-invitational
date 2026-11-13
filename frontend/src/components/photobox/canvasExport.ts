@@ -608,33 +608,61 @@ export async function generatePhotoboxCanvas(
     }
   }
 
-  // 7. Draw Stickers onto the Canvas (Supports both Emojis and Generated Couple Photos!)
+  // 7. Draw Stickers onto the Canvas (Supports Emojis, Couple Photos, & Custom Uploaded Images!)
   if (stickers && stickers.length > 0) {
-    for (const sticker of stickers) {
+    // Sort by zIndex so higher layers render on top
+    const sortedStickers = [...stickers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+
+    for (const sticker of sortedStickers) {
       ctx.save();
       const stX = (sticker.x / 100) * canvasWidth;
       const stY = (sticker.y / 100) * canvasHeight;
-      const size = 150 * sticker.scale;
+      const scale = sticker.scale || 1;
+      const size = 150 * scale;
 
       ctx.translate(stX, stY);
-      ctx.rotate((sticker.rotation * Math.PI) / 180);
+      ctx.rotate(((sticker.rotation || 0) * Math.PI) / 180);
+
+      if (sticker.isFlipped) {
+        ctx.scale(-1, 1);
+      }
+
+      if (sticker.opacity !== undefined) {
+        ctx.globalAlpha = sticker.opacity;
+      }
 
       if (sticker.imageUrl) {
         try {
           const sImg = await loadImage(sticker.imageUrl);
-          ctx.save();
-          ctx.beginPath();
-          ctx.roundRect(-size / 2, -size / 2, size, size, 16);
-          ctx.clip();
-          ctx.drawImage(sImg, -size / 2, -size / 2, size, size);
-          ctx.restore();
+          const imgAspect = sImg.width && sImg.height ? sImg.width / sImg.height : 1;
 
-          // Border for photo sticker
-          ctx.strokeStyle = "#FFFFFF";
-          ctx.lineWidth = 6;
-          ctx.beginPath();
-          ctx.roundRect(-size / 2, -size / 2, size, size, 16);
-          ctx.stroke();
+          let drawW = size;
+          let drawH = size;
+          if (imgAspect > 1) {
+            drawH = size / imgAspect;
+          } else {
+            drawW = size * imgAspect;
+          }
+
+          if (sticker.hasFrame) {
+            // Draw photo card frame with rounded corners & clean white border
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(-size / 2, -size / 2, size, size, 16);
+            ctx.clip();
+            ctx.drawImage(sImg, -size / 2, -size / 2, size, size);
+            ctx.restore();
+
+            // Border for photo sticker
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.roundRect(-size / 2, -size / 2, size, size, 16);
+            ctx.stroke();
+          } else {
+            // Transparent PNG sticker / natural image without forced border
+            ctx.drawImage(sImg, -drawW / 2, -drawH / 2, drawW, drawH);
+          }
         } catch {
           // fallback
         }

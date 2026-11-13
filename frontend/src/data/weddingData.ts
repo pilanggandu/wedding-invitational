@@ -108,6 +108,7 @@ export const WEDDING_DATA = {
   general: {
     hashtag: "#GilangSalsa2026",
     funTagline: "Perayaan pernikahan yang dipenuhi tawa, doa, dan rasa syukur.",
+    photoboxPasscode: "2026",
     musicTitle: "Acoustic Serenade of Joy",
     musicArtist: "Melodi Cinta Gilang & Salsa",
     quote: {
