@@ -206,6 +206,7 @@ test("AccessDeniedInvitation component renders respectful message without em das
   assert.ok(html.includes("Budi Santoso"));
   assert.ok(html.includes("Gilang &amp; Salsa") || html.includes("Gilang & Salsa"));
   assert.ok(!html.includes("—"), "Must not contain em dashes");
+  assert.ok(!html.includes("Kembali ke Beranda"), "Must not have back to home button");
 
   const invalidHtml = renderToStaticMarkup(
     React.createElement(AccessDeniedInvitation, {
@@ -217,4 +218,5 @@ test("AccessDeniedInvitation component renders respectful message without em das
   assert.ok(invalidHtml.includes("Tautan Undangan Tidak Ditemukan"));
   assert.ok(invalidHtml.includes("Tautan Tidak Valid"));
   assert.ok(!invalidHtml.includes("—"), "Must not contain em dashes");
+  assert.ok(!invalidHtml.includes("Kembali ke Beranda"), "Must not have back to home button");
 });

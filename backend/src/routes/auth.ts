@@ -14,16 +14,169 @@ import {
 const router = Router();
 const googleAuthClient = new OAuth2Client();
 
+// GET /api/auth/sso/config - Status konfigurasi Google SSO
+router.get("/sso/config", (_req: Request, res: Response) => {
+  const googleClientId =
+    process.env.GOOGLE_CLIENT_ID?.trim() ||
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim() ||
+    "";
+  res.json({
+    googleConfigured: Boolean(googleClientId),
+    googleClientId: googleClientId || null,
+  });
+});
+
+// GET /api/auth/sso/google - Inisiasi alur redirect Google OAuth2 SSO
+router.get("/sso/google", (req: Request, res: Response) => {
+  const googleClientId =
+    process.env.GOOGLE_CLIENT_ID?.trim() ||
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
+  if (!googleClientId) {
+    return res.status(503).json({ error: "Google SSO belum dikonfigurasi di server." });
+  }
+
+  const host = req.get("x-forwarded-host") || req.get("host") || "localhost:5022";
+  const protocol = req.protocol === "https" || req.get("x-forwarded-proto") === "https" ? "https" : "http";
+  const redirectUri = `${protocol}://${host}/api/auth/sso/google/callback`;
+
+  const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+  const options = {
+    redirect_uri: redirectUri,
+    client_id: googleClientId,
+    access_type: "offline",
+    response_type: "code",
+    prompt: "select_account",
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ].join(" "),
+  };
+
+  const qs = new URLSearchParams(options);
+  return res.redirect(`${rootUrl}?${qs.toString()}`);
+});
+
+// GET /api/auth/sso/google/callback - Callback penyelesaian Google OAuth2 SSO
+router.get("/sso/google/callback", async (req: Request, res: Response) => {
+  try {
+    const code = typeof req.query.code === "string" ? req.query.code : null;
+    if (!code) {
+      return res.redirect("/admin/login?error=Otentikasi+Google+dibatalkan");
+    }
+
+    const googleClientId =
+      process.env.GOOGLE_CLIENT_ID?.trim() ||
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
+    const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+    if (!googleClientId || !googleClientSecret) {
+      return res.redirect("/admin/login?error=Konfigurasi+Google+SSO+belum+lengkap+di+server");
+    }
+
+    const host = req.get("x-forwarded-host") || req.get("host") || "localhost:5022";
+    const protocol = req.protocol === "https" || req.get("x-forwarded-proto") === "https" ? "https" : "http";
+    const redirectUri = `${protocol}://${host}/api/auth/sso/google/callback`;
+
+    const client = new OAuth2Client(googleClientId, googleClientSecret, redirectUri);
+    const { tokens } = await client.getToken(code);
+
+    if (!tokens.id_token) {
+      return res.redirect("/admin/login?error=Token+identitas+Google+tidak+ditemukan");
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: googleClientId,
+    });
+    const payload = ticket.getPayload();
+    const email = payload?.email?.trim().toLowerCase();
+    if (!payload?.sub || !email || payload.email_verified !== true) {
+      return res.redirect("/admin/login?error=Email+Google+belum+terverifikasi");
+    }
+
+    const allowedEmails = (process.env.GOOGLE_SSO_ALLOWED_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+
+    const usePostgres = isPostgresConnected();
+    const getUserByGoogleSub = (sub: string) =>
+      usePostgres ? postgresService.getUserByGoogleSub(sub) : sqliteService.getUserByGoogleSub(sub);
+    const getUserByEmail = (em: string) =>
+      usePostgres ? postgresService.getUserByEmail(em) : sqliteService.getUserByEmail(em);
+    const linkGoogleSub = (id: string, sub: string) =>
+      usePostgres ? postgresService.linkGoogleSub(id, sub) : sqliteService.linkGoogleSub(id, sub);
+
+    let user = await getUserByGoogleSub(payload.sub);
+
+    if (!user) {
+      const existingUser = await getUserByEmail(email);
+      if (existingUser && existingUser.role === "admin") {
+        await linkGoogleSub(existingUser.id, payload.sub);
+        user = existingUser;
+      }
+    }
+
+    if (!user) {
+      if (allowedEmails.length > 0 && !allowedEmails.includes(email)) {
+        return res.redirect("/admin/login?error=Email+Google+ini+belum+diizinkan+sebagai+pengelola");
+      }
+
+      if (allowedEmails.length > 0 && allowedEmails.includes(email)) {
+        const googleSubjectKey = createHash("sha256").update(payload.sub).digest("hex");
+        const { hash, salt } = hashPassword(randomBytes(32).toString("hex"));
+        const newUser = {
+          id: `usr_${googleSubjectKey}`,
+          username: `google_${googleSubjectKey}`,
+          email,
+          googleSub: payload.sub,
+          fullName: payload.name?.trim() || email.split("@")[0],
+          passwordHash: hash,
+          salt,
+          role: "admin",
+          createdAt: new Date().toISOString(),
+        };
+        user = usePostgres ? await postgresService.createUser(newUser) : sqliteService.createUser(newUser);
+      }
+    }
+
+    if (!user || user.role !== "admin") {
+      return res.redirect("/admin/login?error=Akun+ini+belum+terdaftar+sebagai+administrator");
+    }
+
+    const fullName = user.full_name || user.fullName || email;
+    const token = generateToken({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      fullName,
+    });
+
+    res.setHeader(
+      "Set-Cookie",
+      `wedding_auth_token_v1=${encodeURIComponent(token)}; Path=/; Max-Age=604800; SameSite=Lax${
+        protocol === "https" ? "; Secure" : ""
+      }`
+    );
+
+    return res.redirect(`/admin?token=${encodeURIComponent(token)}`);
+  } catch (err: any) {
+    console.error("SSO Callback Error:", err);
+    return res.redirect("/admin/login?error=Gagal+memproses+otentikasi+Google+SSO");
+  }
+});
+
 // POST /api/auth/google - Masuk sebagai admin menggunakan Google Identity Services
 router.post("/google", async (req: Request, res: Response) => {
   try {
-    const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+    const googleClientId =
+      process.env.GOOGLE_CLIENT_ID?.trim() ||
+      process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim();
     const allowedEmails = (process.env.GOOGLE_SSO_ALLOWED_EMAILS || "")
       .split(",")
       .map((email) => email.trim().toLowerCase())
       .filter(Boolean);
 
-    if (!googleClientId || allowedEmails.length === 0) {
+    if (!googleClientId) {
       return res.status(503).json({
         error: "Login Google belum dikonfigurasi di server.",
       });
@@ -52,17 +205,40 @@ router.post("/google", async (req: Request, res: Response) => {
       });
     }
 
-    if (!allowedEmails.includes(email)) {
+    const usePostgres = isPostgresConnected();
+    const getUserByGoogleSub = (googleSub: string) =>
+      usePostgres
+        ? postgresService.getUserByGoogleSub(googleSub)
+        : sqliteService.getUserByGoogleSub(googleSub);
+    const getUserByEmail = (userEmail: string) =>
+      usePostgres
+        ? postgresService.getUserByEmail(userEmail)
+        : sqliteService.getUserByEmail(userEmail);
+    const linkGoogleSub = (userId: string, googleSub: string) =>
+      usePostgres
+        ? postgresService.linkGoogleSub(userId, googleSub)
+        : sqliteService.linkGoogleSub(userId, googleSub);
+
+    const existingUser = await getUserByEmail(email);
+
+    if (allowedEmails.length > 0 && !allowedEmails.includes(email) && (!existingUser || existingUser.role !== "admin")) {
       return res.status(403).json({
         error: "Email Google ini belum diizinkan untuk mengelola undangan.",
       });
     }
 
+    if (allowedEmails.length === 0 && (!existingUser || existingUser.role !== "admin")) {
+      const existingSub = await getUserByGoogleSub(payload.sub);
+      if (!existingSub || existingSub.role !== "admin") {
+        return res.status(403).json({
+          error: "Email Google ini belum terdaftar sebagai administrator.",
+        });
+      }
+    }
+
     const googleSubjectKey = createHash("sha256").update(payload.sub).digest("hex");
     const googleUserId = `usr_${googleSubjectKey}`;
     const googleUsername = `google_${googleSubjectKey}`;
-    const usePostgres = isPostgresConnected();
-    const getUserByGoogleSub = (googleSub: string) =>
       usePostgres
         ? postgresService.getUserByGoogleSub(googleSub)
         : sqliteService.getUserByGoogleSub(googleSub);
@@ -202,9 +378,24 @@ router.post("/google", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/auth/register - Pendaftaran akun baru
+// POST /api/auth/register - Pendaftaran akun baru (Khusus Superadmin terotentikasi)
 router.post("/register", async (req: Request, res: Response) => {
   try {
+    // Kunci registrasi publik: hanya administrator yang sudah login yang boleh membuat akun baru
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(403).json({
+        error: "Registrasi publik dinonaktifkan demi keamanan. Silakan masuk menggunakan akun admin.",
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    const requestingUser = verifyToken(token);
+    if (!requestingUser || requestingUser.role !== "admin") {
+      return res.status(403).json({
+        error: "Hanya akun administrator yang berwenang mendaftarkan akun baru.",
+      });
+    }
+
     const { username, password, fullName, email } = req.body;
 
     if (!username || typeof username !== "string" || username.trim().length < 3) {
@@ -349,6 +540,14 @@ router.post("/login", async (req: Request, res: Response) => {
       fullName: user.full_name,
     });
 
+    const isSecure = req.protocol === "https" || req.get("x-forwarded-proto") === "https";
+    res.setHeader(
+      "Set-Cookie",
+      `wedding_auth_token_v1=${encodeURIComponent(token)}; Path=/; Max-Age=604800; SameSite=Lax${
+        isSecure ? "; Secure" : ""
+      }`
+    );
+
     return res.json({
       success: true,
       message: "Berhasil masuk",
@@ -396,6 +595,7 @@ router.get("/me", requireAuth, async (req: AuthenticatedRequest, res: Response) 
 
 // POST /api/auth/logout - Keluar sesi
 router.post("/logout", (_req: Request, res: Response) => {
+  res.setHeader("Set-Cookie", "wedding_auth_token_v1=; Path=/; Max-Age=0; SameSite=Lax");
   res.json({ success: true, message: "Berhasil keluar" });
 });
 

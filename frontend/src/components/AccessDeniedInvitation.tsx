@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Lock, HeartHandshake, AlertCircle, Home } from "lucide-react";
+import { Lock, HeartHandshake, AlertCircle } from "lucide-react";
 
 interface AccessDeniedInvitationProps {
   reason?: "deleted" | "invalid";
@@ -83,7 +82,7 @@ export function AccessDeniedInvitation({
         </div>
 
         {/* Couple Sign */}
-        <div className="border-t border-[#F2DFBA]/70 pt-4 pb-2 mb-6">
+        <div className="border-t border-[#F2DFBA]/70 pt-4 pb-1">
           <p className="text-xs uppercase tracking-widest text-[#8C6D62] font-medium mb-1">
             Salam Hangat
           </p>
@@ -91,15 +90,6 @@ export function AccessDeniedInvitation({
             {coupleName}
           </p>
         </div>
-
-        {/* Action Link */}
-        <Link
-          href="/"
-          className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-2xl bg-[#7D1128] text-white font-medium hover:bg-[#600C1E] active:scale-[0.98] transition shadow-md shadow-[#7D1128]/20 focus:outline-none focus:ring-2 focus:ring-[#7D1128] focus:ring-offset-2"
-        >
-          <Home className="w-4 h-4" />
-          <span>Kembali ke Beranda</span>
-        </Link>
       </div>
     </main>
   );

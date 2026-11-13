@@ -33,6 +33,7 @@ function routeHarness({ postgres, sqlite = {}, supabase, normalized = false } = 
     "../postgres": { postgresService: postgres || {}, isPostgresConnected: () => Boolean(postgres), getNormalizedWeddingService: () => normalized ? {} : null },
     "../sqlite": { sqliteService: sqlite },
     "../supabase": { getSupabaseClient: () => supabase, isSupabaseConfigured: () => Boolean(supabase) },
+    "../auth": { verifyToken: () => ({ id: "usr_1", role: "admin" }) },
   });
   return async (method, route, body, id = "12") => {
     const response = { statusCode: 200, body: null, status(code) { this.statusCode = code; return this; }, json(value) { this.body = value; return this; } };

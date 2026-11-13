@@ -6,17 +6,39 @@ export const AUTH_TOKEN_KEY = "wedding_auth_token_v1";
 
 export function getStoredAuthToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(AUTH_TOKEN_KEY);
+  const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (localToken) return localToken;
+
+  // Baca dari cookie browser jika localStorage kosong (misal setelah redirect SSO)
+  try {
+    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${AUTH_TOKEN_KEY}=([^;]*)`));
+    if (match && match[1]) {
+      const decoded = decodeURIComponent(match[1]);
+      localStorage.setItem(AUTH_TOKEN_KEY, decoded);
+      return decoded;
+    }
+  } catch {}
+
+  return null;
 }
 
 export function setStoredAuthToken(token: string): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(AUTH_TOKEN_KEY, token);
+  try {
+    const isSecure = window.location.protocol === "https:";
+    document.cookie = `${AUTH_TOKEN_KEY}=${encodeURIComponent(token)}; path=/; max-age=604800; SameSite=Lax${
+      isSecure ? "; Secure" : ""
+    }`;
+  } catch {}
 }
 
 export function removeStoredAuthToken(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
+  try {
+    document.cookie = `${AUTH_TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
+  } catch {}
 }
 
 function getBaseUrl(): string {

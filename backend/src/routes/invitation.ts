@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { getSupabaseClient, isSupabaseConfigured } from "../supabase";
 import { postgresService, isPostgresConnected } from "../postgres";
 import { sqliteService } from "../sqlite";
+import { requireAuth } from "../auth";
 
 const router = Router();
 
@@ -68,8 +69,8 @@ router.get("/", async (_req: Request, res: Response) => {
   }
 });
 
-// PUT /api/invitation - Memperbarui data undangan pernikahan
-router.put("/", async (req: Request, res: Response) => {
+// PUT /api/invitation - Memperbarui data undangan pernikahan (Khusus Admin)
+router.put("/", requireAuth, async (req: Request, res: Response) => {
   try {
     const payload = req.body;
 

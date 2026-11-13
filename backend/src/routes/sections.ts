@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getNormalizedWeddingService, isPostgresConnected } from "../postgres";
+import { requireAuth } from "../auth";
 
 const router = Router();
 
@@ -19,8 +20,8 @@ router.get("/", async (_req: Request, res: Response) => {
   }
 });
 
-// PUT /api/sections/:code - Memperbarui status/urutan section
-router.put("/:code", async (req: Request, res: Response) => {
+// PUT /api/sections/:code - Memperbarui status/urutan section (Khusus Admin)
+router.put("/:code", requireAuth, async (req: Request, res: Response) => {
   try {
     const { code } = req.params;
     const { isEnabled, sortOrder } = req.body;

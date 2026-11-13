@@ -1,11 +1,12 @@
 import { Router, Request, Response } from "express";
 import { getNormalizedWeddingService, isPostgresConnected } from "../postgres";
 import { sqliteService } from "../sqlite";
+import { requireAuth } from "../auth";
 
 const router = Router();
 
-// GET /api/rsvps - Mengambil ringkasan dan daftar RSVP
-router.get("/", async (_req: Request, res: Response) => {
+// GET /api/rsvps - Mengambil ringkasan dan daftar RSVP (Khusus Admin)
+router.get("/", requireAuth, async (_req: Request, res: Response) => {
   try {
     const service = getNormalizedWeddingService();
     if (isPostgresConnected() && service) {

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
@@ -37,7 +38,7 @@ import {
   saveInvitationData,
   syncWithBackend,
 } from "@/lib/invitationStore";
-import { checkBackendHealth } from "@/lib/api";
+import { checkBackendHealth, setStoredAuthToken } from "@/lib/api";
 import { AdminOverview } from "./components/AdminOverview";
 import { TemplateThemeManager } from "./components/TemplateThemeManager";
 import { CoupleEventManager } from "./components/CoupleEventManager";
@@ -60,7 +61,9 @@ interface NavGroup {
   }[];
 }
 
-export default function AdminDashboardPage() {
+function AdminDashboardContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
   const [invitationData, setInvitationData] = useState<WeddingInvitationData>(
@@ -111,6 +114,20 @@ export default function AdminDashboardPage() {
       window.removeEventListener("wedding-wishes-changed", handleWishesChange);
     };
   }, []);
+
+  useEffect(() => {
+    const ssoToken = searchParams.get("token");
+    if (ssoToken) {
+      setStoredAuthToken(ssoToken);
+      window.location.replace("/admin");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/admin/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   const handleResetData = () => {
     if (confirm("Kembalikan seluruh data undangan ke pengaturan bawaan awal?")) {
@@ -201,7 +218,14 @@ export default function AdminDashboardPage() {
   }
 
   if (!isAuthenticated) {
-    return <AdminAuthView />;
+    return (
+      <div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-[#1C2434] border-t-transparent animate-spin" />
+          <p className="text-xs text-slate-500 font-medium">Mengarahkan ke gerbang masuk pengelola...</p>
+        </div>
+      </div>
+    );
   }
 
   const renderNavSection = (onItemClick?: () => void) => (
@@ -616,5 +640,22 @@ export default function AdminDashboardPage() {
         onClose={() => setIsA3PosterOpen(false)}
       />
     </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center font-sans">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-[#1C2434] border-t-transparent animate-spin" />
+            <p className="text-xs text-slate-500 font-medium">Memuat dashboard pengelola...</p>
+          </div>
+        </div>
+      }
+    >
+      <AdminDashboardContent />
+    </React.Suspense>
   );
 }

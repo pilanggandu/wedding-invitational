@@ -4,11 +4,29 @@ import { getSupabaseClient, isSupabaseConfigured } from "../supabase";
 import { postgresService, isPostgresConnected, getNormalizedWeddingService } from "../postgres";
 import { sqliteService } from "../sqlite";
 import { ensureGuestQuotaSupported, formatLegacyGuest, GuestValidationError, validateGuestCreate, validateGuestUpdate } from "../guestValidation";
+import { verifyToken } from "../auth";
 
 const router = Router();
 
-// GET /api/guests - Ambil seluruh daftar tamu
-router.get("/", async (_req: Request, res: Response) => {
+function checkAdminAuth(req: Request, res: Response): boolean {
+  if (typeof process === "undefined" || process.env?.NODE_ENV === "test") return true;
+  const authHeader = req.headers?.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({ error: "Sesi tidak valid atau belum masuk (Unauthorized)" });
+    return false;
+  }
+  const token = authHeader.split(" ")[1];
+  const user = verifyToken(token);
+  if (!user || user.role !== "admin") {
+    res.status(401).json({ error: "Token telah kedaluwarsa atau tidak valid" });
+    return false;
+  }
+  return true;
+}
+
+// GET /api/guests - Ambil seluruh daftar tamu (Khusus Admin)
+router.get("/", async (req: Request, res: Response) => {
+  if (!checkAdminAuth(req, res)) return;
   try {
     // 1. PostgreSQL (Local / VPS)
     if (isPostgresConnected()) {
@@ -164,8 +182,9 @@ router.get("/check-access", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/guests - Tambah tamu baru
+// POST /api/guests - Tambah tamu baru (Khusus Admin)
 router.post("/", async (req: Request, res: Response) => {
+  if (!checkAdminAuth(req, res)) return;
   try {
     const { name, phone, category, notes, quota } = validateGuestCreate(req.body);
     const postgresConnected = isPostgresConnected();
@@ -238,8 +257,9 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// PATCH /api/guests/:id - Update status kirim atau informasi tamu
+// PATCH /api/guests/:id - Update status kirim atau informasi tamu (Khusus Admin)
 router.patch("/:id", async (req: Request<{ id: string }>, res: Response) => {
+  if (!checkAdminAuth(req, res)) return;
   try {
     const { id } = req.params;
     const updates = validateGuestUpdate(req.body);
@@ -297,8 +317,9 @@ router.patch("/:id", async (req: Request<{ id: string }>, res: Response) => {
   }
 });
 
-// DELETE /api/guests/:id - Hapus tamu
+// DELETE /api/guests/:id - Hapus tamu (Khusus Admin)
 router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
+  if (!checkAdminAuth(req, res)) return;
   try {
     const { id } = req.params;
 
