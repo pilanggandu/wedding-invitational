@@ -126,8 +126,24 @@ export async function generatePhotoboxCanvas(
   ctx.fillStyle = effectiveBgColor;
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // Subtle paper texture or pattern if enabled
-  if (template.themeStyle.paperTexture) {
+  // Real paper texture asset (Menggunakan asset tekstur asli bukan generic code)
+  if (template.realAssets?.bgTextureUrl) {
+    try {
+      const texImg = await loadImage(template.realAssets.bgTextureUrl);
+      ctx.save();
+      ctx.globalAlpha = 0.55;
+      const pattern = ctx.createPattern(texImg, "repeat");
+      if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      } else {
+        ctx.drawImage(texImg, 0, 0, canvasWidth, canvasHeight);
+      }
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real bg texture", e);
+    }
+  } else if (template.themeStyle.paperTexture) {
     ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
     for (let x = 0; x < canvasWidth; x += 8) {
       for (let y = 0; y < canvasHeight; y += 8) {
@@ -135,6 +151,18 @@ export async function generatePhotoboxCanvas(
           ctx.fillRect(x, y, 4, 4);
         }
       }
+    }
+  }
+
+  // Real Frame Border Asset (Overlay border asli di sekeliling canvas)
+  if (template.realAssets?.frameBorderUrl) {
+    try {
+      const borderImg = await loadImage(template.realAssets.frameBorderUrl);
+      ctx.save();
+      ctx.drawImage(borderImg, 0, 0, canvasWidth, canvasHeight);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real frame border", e);
     }
   }
 
@@ -329,10 +357,36 @@ export async function generatePhotoboxCanvas(
     }
   }
 
-  // 5. Draw Photos with clipping and filter
+  // 5. Draw Photos with clipping and filter (Beserta real deckle mat jika ada)
+  let deckleMatImg: HTMLImageElement | null = null;
+  if (template.realAssets?.deckleMatUrl) {
+    try {
+      deckleMatImg = await loadImage(template.realAssets.deckleMatUrl);
+    } catch (e) {
+      console.warn("Could not load deckle mat asset", e);
+    }
+  }
+
   for (let i = 0; i < slotRects.length; i++) {
     const rect = slotRects[i];
     const photoSrc = photos[i];
+
+    // Gambar matras kertas deckle asli di belakang slot foto
+    if (deckleMatImg) {
+      ctx.save();
+      const pad = 32;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.12)";
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetY = 8;
+      ctx.drawImage(
+        deckleMatImg,
+        rect.x - pad,
+        rect.y - pad,
+        rect.w + pad * 2,
+        rect.h + pad * 2
+      );
+      ctx.restore();
+    }
 
     ctx.save();
     // Rounded clip for the photo
@@ -390,6 +444,81 @@ export async function generatePhotoboxCanvas(
     ctx.roundRect(rect.x, rect.y, rect.w, rect.h, slotRadius);
     ctx.stroke();
     ctx.restore();
+  }
+
+  // 6. Draw Real Ornaments (Corner Sprigs, Top Bow/Tape, Bottom Wax Seal/Rings)
+  if (template.realAssets?.cornerAssetUrl) {
+    try {
+      const cornerImg = await loadImage(template.realAssets.cornerAssetUrl);
+      const cSize = 220;
+      const margin = 20;
+
+      // Top-Left Corner
+      ctx.drawImage(cornerImg, margin, margin, cSize, cSize);
+
+      // Top-Right Corner (Flipped horizontally)
+      ctx.save();
+      ctx.translate(canvasWidth - margin, margin);
+      ctx.scale(-1, 1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+
+      // Bottom-Left Corner (Flipped vertically)
+      ctx.save();
+      ctx.translate(margin, canvasHeight - margin);
+      ctx.scale(1, -1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+
+      // Bottom-Right Corner (Flipped both)
+      ctx.save();
+      ctx.translate(canvasWidth - margin, canvasHeight - margin);
+      ctx.scale(-1, -1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real corner asset", e);
+    }
+  }
+
+  // Top Ornament (Pita Sutra / Washi Tape / Pita Emas)
+  if (template.realAssets?.topOrnamentUrl) {
+    try {
+      const topImg = await loadImage(template.realAssets.topOrnamentUrl);
+      const topTargetH = 200;
+      const topTargetW = (topImg.width / topImg.height) * topTargetH;
+      const topX = (canvasWidth - topTargetW) / 2;
+      const topY = 16;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0, 0, 0, 0.16)";
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 8;
+      ctx.drawImage(topImg, topX, topY, topTargetW, topTargetH);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real top ornament", e);
+    }
+  }
+
+  // Bottom Ornament (Segel Wax Emas / Cincin Kawin / Ilustrasi Kucing)
+  if (template.realAssets?.bottomOrnamentUrl) {
+    try {
+      const botImg = await loadImage(template.realAssets.bottomOrnamentUrl);
+      const botTargetH = 240;
+      const botTargetW = (botImg.width / botImg.height) * botTargetH;
+      const botX = (canvasWidth - botTargetW) / 2;
+      const botY = canvasHeight - footerHeight + 10;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0, 0, 0, 0.18)";
+      ctx.shadowBlur = 24;
+      ctx.shadowOffsetY = 10;
+      ctx.drawImage(botImg, botX, botY, botTargetW, botTargetH);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real bottom ornament", e);
+    }
   }
 
   // 6. Draw Footer Section

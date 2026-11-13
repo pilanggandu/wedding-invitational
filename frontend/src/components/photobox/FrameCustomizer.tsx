@@ -59,7 +59,7 @@ export function FrameCustomizer({
   onBackToCamera,
 }: FrameCustomizerProps) {
   // State
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("korean-classic-white");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("real-botanical-pressed");
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory>("all");
   const [filter, setFilter] = useState<PhotoboxFilter>("none");
   const [customTitle, setCustomTitle] = useState<string>("");
@@ -278,6 +278,64 @@ export function FrameCustomizer({
             : "w-[230px] xs:w-[250px] sm:w-[270px]"
         }`}
       >
+        {/* Real Texture Background Asset (Menggunakan asset kertas tekstur asli) */}
+        {currentTemplate.realAssets?.bgTextureUrl && (
+          <div
+            className="absolute inset-0 pointer-events-none z-0 bg-repeat opacity-50 mix-blend-multiply"
+            style={{
+              backgroundImage: `url(${currentTemplate.realAssets.bgTextureUrl})`,
+              backgroundSize: "280px auto",
+            }}
+          />
+        )}
+
+        {/* Real Frame Border Overlay (Border asli di sekeliling canvas) */}
+        {currentTemplate.realAssets?.frameBorderUrl && (
+          <div
+            className="absolute inset-0 pointer-events-none z-20 bg-center bg-no-repeat bg-contain"
+            style={{
+              backgroundImage: `url(${currentTemplate.realAssets.frameBorderUrl})`,
+            }}
+          />
+        )}
+
+        {/* Real Corner Sprigs/Flourishes Assets (4 sudut berornamen asli) */}
+        {currentTemplate.realAssets?.cornerAssetUrl && (
+          <>
+            <img
+              src={currentTemplate.realAssets.cornerAssetUrl}
+              alt="Corner decoration"
+              className="absolute top-1.5 left-1.5 w-8 h-8 pointer-events-none z-20 object-contain drop-shadow-xs"
+            />
+            <img
+              src={currentTemplate.realAssets.cornerAssetUrl}
+              alt="Corner decoration"
+              className="absolute top-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-x-[-1] drop-shadow-xs"
+            />
+            <img
+              src={currentTemplate.realAssets.cornerAssetUrl}
+              alt="Corner decoration"
+              className="absolute bottom-1.5 left-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-y-[-1] drop-shadow-xs"
+            />
+            <img
+              src={currentTemplate.realAssets.cornerAssetUrl}
+              alt="Corner decoration"
+              className="absolute bottom-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-x-[-1] scale-y-[-1] drop-shadow-xs"
+            />
+          </>
+        )}
+
+        {/* Real Top Ornament (Pita Sutra / Washi Tape / Golden Scroll) */}
+        {currentTemplate.realAssets?.topOrnamentUrl && (
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1.5 z-30 pointer-events-none">
+            <img
+              src={currentTemplate.realAssets.topOrnamentUrl}
+              alt="Top ornament"
+              className="h-10 sm:h-12 w-auto object-contain drop-shadow-md"
+            />
+          </div>
+        )}
+
         {/* Film Sprockets Simulation */}
         {currentTemplate.themeStyle.filmSprockets && (
           <>
@@ -590,6 +648,17 @@ export function FrameCustomizer({
             currentTemplate.themeStyle.filmSprockets ? "px-6" : ""
           }`}
         >
+          {/* Real Bottom Ornament (Gold Wax Seal / Wedding Rings / Cats Couple) */}
+          {currentTemplate.realAssets?.bottomOrnamentUrl && (
+            <div className="flex justify-center -mt-0.5 mb-2.5 z-20 relative pointer-events-none">
+              <img
+                src={currentTemplate.realAssets.bottomOrnamentUrl}
+                alt="Bottom ornament"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-md"
+              />
+            </div>
+          )}
+
           {/* Couple Badge (Footer Position) */}
           {currentTemplate.coupleBadge &&
             (!currentTemplate.coupleBadge.position ||
@@ -746,13 +815,24 @@ export function FrameCustomizer({
                       }}
                       className="w-full h-16 sm:h-20 rounded-lg p-1.5 flex flex-col justify-between mb-2 shadow-2xs overflow-hidden relative"
                     >
+                      {/* Real texture preview if present */}
+                      {tmpl.realAssets?.bgTextureUrl && (
+                        <div
+                          className="absolute inset-0 pointer-events-none bg-repeat opacity-40 mix-blend-multiply z-0"
+                          style={{
+                            backgroundImage: `url(${tmpl.realAssets.bgTextureUrl})`,
+                            backgroundSize: "60px auto",
+                          }}
+                        />
+                      )}
+
                       {tmpl.badge && (
-                        <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-mono font-bold bg-[#4A121A] text-[#DFD2BD]">
+                        <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-mono font-bold bg-[#4A121A] text-[#DFD2BD] z-10 shadow-xs">
                           {tmpl.badge}
                         </span>
                       )}
 
-                      <div className="w-full text-center">
+                      <div className="w-full text-center relative z-10">
                         <span
                           style={{ color: tmpl.textColor }}
                           className="text-[8px] sm:text-[9px] font-bold block truncate"
@@ -761,9 +841,17 @@ export function FrameCustomizer({
                         </span>
                       </div>
 
-                      {/* Miniature dummy photos preview with couple photo badge if present */}
-                      <div className="flex gap-1 justify-center items-center my-0.5">
-                        {tmpl.coupleBadge && (
+                      {/* Miniature dummy photos preview with couple photo or real ornament if present */}
+                      <div className="flex gap-1 justify-center items-center my-0.5 relative z-10">
+                        {tmpl.realAssets?.bottomOrnamentUrl ? (
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 flex items-center justify-center">
+                            <img
+                              src={tmpl.realAssets.bottomOrnamentUrl}
+                              alt="Ornamen Asli"
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        ) : tmpl.coupleBadge ? (
                           <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full overflow-hidden border border-white shrink-0 shadow-2xs">
                             <img
                               src={tmpl.coupleBadge.imageUrl}
@@ -771,13 +859,13 @@ export function FrameCustomizer({
                               className="w-full h-full object-cover"
                             />
                           </div>
-                        )}
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15" />
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15" />
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15" />
+                        ) : null}
+                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
+                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
+                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
                       </div>
 
-                      <div className="w-full text-center">
+                      <div className="w-full text-center relative z-10">
                         <span
                           style={{ color: tmpl.subtextColor }}
                           className="text-[7px] font-mono block truncate"

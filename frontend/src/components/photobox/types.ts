@@ -216,11 +216,21 @@ export type PhotoboxFilter =
 
 export type TemplateCategory =
   | "all"
-  | "korean"
+  | "real-art"
   | "wedding"
+  | "korean"
   | "retro"
   | "cute"
   | "editorial";
+
+export interface RealFrameAssets {
+  bgTextureUrl?: string; // Real textured paper (e.g. /images/paper-art/paper-texture-ivory.png)
+  cornerAssetUrl?: string; // Real corner flourish/sprig (e.g. /images/paper-keepsake/real-pressed-corner-cute.png)
+  topOrnamentUrl?: string; // Real top ornament (e.g. /images/paper-keepsake/real-cute-silk-bow.png or washi tape)
+  bottomOrnamentUrl?: string; // Real bottom seal/rings (e.g. /images/paper-keepsake/real-gold-wax-seal.png)
+  deckleMatUrl?: string; // Real deckled cotton mat behind photos (e.g. /images/paper-keepsake/deckle-photo-mat.png)
+  frameBorderUrl?: string; // Real frame border overlay (e.g. /images/paper-keepsake/real-eucalyptus-border.png)
+}
 
 export interface StickerItem {
   id: string;
@@ -305,9 +315,11 @@ export const COUPLE_PHOTO_STICKERS: CouplePhotoSticker[] = [
 export interface PhotoboxTemplate {
   id: string;
   name: string;
-  category: "korean" | "wedding" | "retro" | "cute" | "editorial";
+  category: TemplateCategory;
   description: string;
   badge?: string;
+  // Real Frame Assets (Bukan generic code: menggunakan asset PNG/SVG asli)
+  realAssets?: RealFrameAssets;
   // Generated photo of the bride & groom decoration on the frame
   coupleBadge?: {
     imageUrl: string;
