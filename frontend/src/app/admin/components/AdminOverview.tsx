@@ -23,6 +23,8 @@ import {
   Clock,
   ChevronRight,
   TrendingUp,
+  Camera,
+  QrCode,
 } from "lucide-react";
 import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
@@ -36,6 +38,7 @@ interface AdminOverviewProps {
   onNavigateTab: (tab: "templates" | "wedding-data" | "guests" | "wishes") => void;
   onOpenPreview: () => void;
   onOpenCoupleModal?: () => void;
+  onOpenA3Poster?: () => void;
 }
 
 export function AdminOverview({
@@ -45,6 +48,7 @@ export function AdminOverview({
   onNavigateTab,
   onOpenPreview,
   onOpenCoupleModal,
+  onOpenA3Poster,
 }: AdminOverviewProps) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedGuestId, setCopiedGuestId] = useState<string | null>(null);
@@ -860,6 +864,48 @@ export function AdminOverview({
               <span>Kirim Undangan WA</span>
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* 6. Bilik Foto (Photobox) & Poster Standee Venue */}
+      <div className="bg-gradient-to-r from-[#FAF6EE] to-[#FFFDF9] rounded-2xl border border-[#E8DFC8] p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-[#4A121A] text-[#DFD2BD] flex items-center justify-center shrink-0 shadow-xs">
+            <Camera className="w-6 h-6 text-[#DFD2BD]" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <h3 className="font-serif font-bold text-base text-[#4A121A] tracking-tight">
+                Bilik Foto Tamu (Photobox Studio)
+              </h3>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
+                Passcode: {data.general?.photoboxPasscode || "2026"}
+              </span>
+            </div>
+            <p className="text-xs text-[#786551] max-w-xl leading-relaxed">
+              Tamu dapat mengambil foto seru ala photobox Korea di venue. Passcode diatur dari panel pengelola dan otomatis dicetak pada poster standee A3.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={() => onNavigateTab("wedding-data")}
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-[#FAF6EE] border border-[#E8DFC8] text-xs font-semibold text-[#786551] hover:text-[#4A121A] transition-all cursor-pointer shadow-xs active:scale-95"
+          >
+            Ubah Passcode
+          </button>
+          {onOpenA3Poster && (
+            <button
+              type="button"
+              onClick={onOpenA3Poster}
+              className="px-4 py-2 rounded-xl bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
+            >
+              <QrCode className="w-3.5 h-3.5 text-[#DFD2BD]" />
+              <span>Cetak Poster Standee (A3)</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

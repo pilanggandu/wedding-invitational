@@ -552,6 +552,7 @@ function AdminDashboardContent() {
                   onNavigateTab={(tab) => setActiveTab(tab)}
                   onOpenPreview={() => setIsPreviewOpen(true)}
                   onOpenCoupleModal={() => setIsCoupleModalOpen(true)}
+                  onOpenA3Poster={() => setIsA3PosterOpen(true)}
                 />
               )}
 
@@ -575,6 +576,7 @@ function AdminDashboardContent() {
                 <CoupleEventManager
                   data={invitationData}
                   onUpdate={(updated) => setInvitationData(updated)}
+                  onOpenA3Poster={() => setIsA3PosterOpen(true)}
                 />
               )}
 
@@ -641,6 +643,7 @@ function AdminDashboardContent() {
       <A3PosterModal
         isOpen={isA3PosterOpen}
         onClose={() => setIsA3PosterOpen(false)}
+        defaultPasscode={invitationData.general?.photoboxPasscode || "2026"}
       />
     </div>
   );

@@ -1615,6 +1615,75 @@ export function CoupleEventManager({
         </div>
       </div>
 
+      {/* Akses Bilik Foto & Cetak Poster Standee */}
+      <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-5">
+        <div className="pb-4 border-b border-[#F0F0EA] flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#4A121A] text-[#DFD2BD] flex items-center justify-center shadow-xs shrink-0">
+              <Camera className="w-4 h-4 text-[#DFD2BD]" />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
+                Akses Bilik Foto (Photobox) &amp; Poster Standee
+              </h3>
+              <p className="text-[11px] text-[#717686]">
+                Kelola passcode keamanan tamu saat membuka photobox dan cetak poster standee acara
+              </p>
+            </div>
+          </div>
+          {onOpenA3Poster && (
+            <button
+              type="button"
+              onClick={onOpenA3Poster}
+              className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F3ECE0] border border-[#E8DFC8] text-xs font-bold text-[#4A121A] flex items-center gap-2 cursor-pointer transition-colors shadow-2xs active:scale-95"
+            >
+              <QrCode className="w-3.5 h-3.5 text-[#8C6239]" />
+              <span>Cetak Poster QR Standee (A3)</span>
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1.5 font-medium">
+              Passcode Bilik Foto (4 Digit)
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                maxLength={8}
+                value={photoboxPasscode}
+                onChange={(e) => setPhotoboxPasscode(e.target.value)}
+                placeholder="2026"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] font-mono text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
+              />
+              <KeyRound className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
+            </div>
+            <p className="text-[11px] text-[#717686] mt-1.5 leading-relaxed">
+              Passcode ini wajib dimasukkan tamu saat membuka photobox dan otomatis tertera pada poster cetak A3.
+            </p>
+          </div>
+
+          <div className="bg-[#FAF6EE]/70 rounded-xl p-3.5 border border-[#E8DFC8] flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 mb-1">
+                <Sparkles className="w-3.5 h-3.5 text-[#8C6239]" />
+                <span>Format Passcode yang Didukung:</span>
+              </span>
+              <p className="text-[11px] text-[#786551] leading-relaxed">
+                Tamu dapat memasukkan passcode kustom ini (saat ini: <strong className="font-mono text-[#4A121A]">{photoboxPasscode || "2026"}</strong>), atau tahun pernikahan bawaan (<strong>2026</strong>).
+              </p>
+            </div>
+            <div className="pt-2 mt-2 border-t border-[#E8DFC8]/60 flex items-center justify-between text-[11px]">
+              <span className="text-[#8C6239] font-medium">Proteksi Bilik Foto:</span>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-semibold font-mono text-[10px]">
+                Aktif Terproteksi
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Save CTA */}
       <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 pb-8">
         {saveError && (
