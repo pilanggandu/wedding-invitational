@@ -518,13 +518,21 @@ export class NormalizedWeddingService {
    */
   async verifyGuestToken(token: string): Promise<any | null> {
     const res = await this.pool.query(
-      "SELECT * FROM guests WHERE token = $1 AND deleted_at IS NULL",
+      "SELECT * FROM guests WHERE token = $1",
       [token]
     );
 
     if (res.rows.length === 0) return null;
 
     const guest = res.rows[0];
+    if (guest.deleted_at) {
+      return {
+        id: guest.id.toString(),
+        name: guest.name,
+        isDeleted: true,
+      };
+    }
+
     const now = new Date().toISOString();
 
     // Catat open tracking: opened_at hanya di-set saat pertama kali buka
@@ -547,6 +555,48 @@ export class NormalizedWeddingService {
       quota: guest.quota,
       openCount: (guest.open_count || 0) + 1,
       openedAt: guest.opened_at || now,
+      isDeleted: false,
+    };
+  }
+
+  /**
+   * Cek akses tamu berdasarkan nama atau slug undangan
+   */
+  async checkGuestAccessByName(nameOrSlug: string): Promise<any | null> {
+    if (!nameOrSlug || !nameOrSlug.trim()) return null;
+    const clean = nameOrSlug.trim();
+    let decoded = clean;
+    try {
+      decoded = decodeURIComponent(clean.replace(/\+/g, " "));
+    } catch {}
+
+    const res = await this.pool.query(
+      `SELECT * FROM guests 
+       WHERE LOWER(TRIM(name)) = LOWER(TRIM($1))
+          OR LOWER(TRIM(name)) = LOWER(TRIM($2))
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [clean, decoded]
+    );
+
+    if (res.rows.length === 0) return null;
+
+    const guest = res.rows[0];
+    if (guest.deleted_at) {
+      return {
+        id: guest.id.toString(),
+        name: guest.name,
+        isDeleted: true,
+      };
+    }
+
+    return {
+      id: guest.id.toString(),
+      name: guest.name,
+      phone: guest.phone,
+      token: guest.token,
+      quota: guest.quota,
+      isDeleted: false,
     };
   }
 
@@ -656,12 +706,22 @@ export class NormalizedWeddingService {
     let guestId = params.guestId;
     let quota = 2;
 
+    if (guestId) {
+      const chk = await this.pool.query("SELECT id, name, deleted_at, quota FROM guests WHERE id = $1", [guestId]);
+      if (chk.rows.length > 0 && chk.rows[0].deleted_at) {
+        throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
+      }
+    }
+
     if (!guestId && params.name) {
       const searchRes = await this.pool.query(
-        "SELECT id, quota FROM guests WHERE LOWER(TRIM(name)) = LOWER(TRIM($1)) AND deleted_at IS NULL LIMIT 1",
+        "SELECT id, quota, deleted_at FROM guests WHERE LOWER(TRIM(name)) = LOWER(TRIM($1)) LIMIT 1",
         [params.name.trim()]
       );
       if (searchRes.rows.length > 0) {
+        if (searchRes.rows[0].deleted_at) {
+          throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
+        }
         guestId = searchRes.rows[0].id;
         quota = searchRes.rows[0].quota || 2;
       } else {
@@ -681,7 +741,7 @@ export class NormalizedWeddingService {
     }
 
     const guestRes = await this.pool.query(
-      "SELECT id, quota FROM guests WHERE id = $1 AND deleted_at IS NULL",
+      "SELECT id, quota, deleted_at FROM guests WHERE id = $1",
       [guestId]
     );
 
@@ -690,6 +750,9 @@ export class NormalizedWeddingService {
     }
 
     const guest = guestRes.rows[0];
+    if (guest.deleted_at) {
+      throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
+    }
     quota = Math.max(guest.quota || 1, quota);
 
     // Validasi kuota jika hadir
@@ -722,10 +785,12 @@ export class NormalizedWeddingService {
   async getRsvpSummary(): Promise<any> {
     const totalRes = await this.pool.query(`
       SELECT
-        COUNT(*) FILTER (WHERE status = 1) AS attending_count,
-        COUNT(*) FILTER (WHERE status = 2) AS not_attending_count,
-        COALESCE(SUM(attendee_count) FILTER (WHERE status = 1), 0) AS estimated_heads
-      FROM rsvps
+        COUNT(*) FILTER (WHERE r.status = 1) AS attending_count,
+        COUNT(*) FILTER (WHERE r.status = 2) AS not_attending_count,
+        COALESCE(SUM(r.attendee_count) FILTER (WHERE r.status = 1), 0) AS estimated_heads
+      FROM rsvps r
+      JOIN guests g ON r.guest_id = g.id
+      WHERE g.deleted_at IS NULL
     `);
     const guestCountRes = await this.pool.query(
       "SELECT COUNT(*) AS total_guests FROM guests WHERE deleted_at IS NULL"

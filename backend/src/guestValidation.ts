@@ -92,7 +92,8 @@ export function formatLegacyGuest(row: Record<string, any>) {
     phone: row.phone || "",
     category: row.category || "Sahabat",
     isSent: Boolean(row.isSent ?? row.is_sent),
-    quota: 1,
+    quota: row.quota ? Number(row.quota) : 1,
+    token: row.token || undefined,
     notes: row.notes || "",
     createdAt: row.createdAt ?? row.created_at,
   };

@@ -18,6 +18,91 @@ import { getGuestInputError, normalizeGuestPhone, type GuestDraft } from "./gues
 const INVITATION_STORAGE_KEY = "wedding_invitation_data_v1";
 const GUESTS_STORAGE_KEY = "wedding_guests_data_v1";
 const WISHES_STORAGE_KEY = "wedding_wishes_gilang_salsa_maroon";
+export const DELETED_GUESTS_STORAGE_KEY = "wedding_deleted_guests_v1";
+
+export interface DeletedGuestRecord {
+  id: string;
+  name: string;
+  slug?: string;
+  token?: string;
+  deletedAt: string;
+}
+
+export function getDeletedGuests(): DeletedGuestRecord[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(DELETED_GUESTS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (err) {
+    console.error("Gagal membaca daftar tamu terhapus:", err);
+  }
+  return [];
+}
+
+export function recordDeletedGuest(guest: {
+  id: string;
+  name?: string;
+  slug?: string;
+  token?: string;
+}): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = getDeletedGuests();
+    const existingIndex = list.findIndex((item) => item.id === guest.id);
+    const newRecord: DeletedGuestRecord = {
+      id: guest.id,
+      name: (guest.name || "").trim(),
+      slug: guest.slug,
+      token: guest.token,
+      deletedAt: new Date().toISOString(),
+    };
+    let updated: DeletedGuestRecord[];
+    if (existingIndex >= 0) {
+      updated = [...list];
+      updated[existingIndex] = newRecord;
+    } else {
+      updated = [newRecord, ...list];
+    }
+    localStorage.setItem(DELETED_GUESTS_STORAGE_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent("wedding-deleted-guests-changed", { detail: updated }));
+  } catch (err) {
+    console.error("Gagal mencatat tamu terhapus ke localStorage:", err);
+  }
+}
+
+export function isGuestDeletedLocally(params: {
+  id?: string;
+  token?: string;
+  name?: string;
+}): boolean {
+  if (typeof window === "undefined") return false;
+  const list = getDeletedGuests();
+  if (!list.length) return false;
+
+  const targetId = params.id?.trim().toLowerCase();
+  const targetToken = params.token?.trim().toLowerCase();
+  const targetName = params.name?.trim().toLowerCase();
+  let decodedName = targetName;
+  if (targetName) {
+    try {
+      decodedName = decodeURIComponent(targetName.replace(/\+/g, " "));
+    } catch {}
+  }
+
+  return list.some((record) => {
+    if (targetId && record.id.toLowerCase() === targetId) return true;
+    if (targetToken && record.token && record.token.toLowerCase() === targetToken) return true;
+    if (targetName) {
+      const recName = record.name.trim().toLowerCase();
+      if (recName === targetName || (decodedName && recName === decodedName)) return true;
+      if (record.slug && (record.slug.toLowerCase() === targetName || record.slug.toLowerCase() === targetToken)) return true;
+    }
+    return false;
+  });
+}
 
 export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
   id: "inv_gilang_salsa",
@@ -432,6 +517,12 @@ export async function setGuestSentStatus(id: string, isSent: boolean): Promise<G
 }
 
 export async function deleteGuestMaster(id: string): Promise<void> {
+  const existing = getGuests().find((g) => g.id === id);
+  if (existing) {
+    recordDeletedGuest(existing);
+  } else {
+    recordDeletedGuest({ id });
+  }
   await deleteGuestMasterFromBackend(id);
   saveGuestsLocalOnly(getGuests().filter((guest) => guest.id !== id));
 }
@@ -484,6 +575,12 @@ export function addGuest(
 }
 
 export function deleteGuest(id: string): void {
+  const existing = getGuests().find((g) => g.id === id);
+  if (existing) {
+    recordDeletedGuest(existing);
+  } else {
+    recordDeletedGuest({ id });
+  }
   const list = getGuests().filter((g) => g.id !== id);
   saveGuestsLocalOnly(list);
   deleteGuestFromBackend(id).catch((err) => {

@@ -67,6 +67,20 @@ router.post("/", async (req: Request, res: Response) => {
     const cleanName = name.trim();
     const cleanMessage = message.trim();
 
+    // Pastikan pengirim bukan tamu yang telah dihapus
+    const service = getNormalizedWeddingService();
+    if (isPostgresConnected() && service) {
+      const access = await service.checkGuestAccessByName(cleanName);
+      if (access && access.isDeleted) {
+        return res.status(403).json({ error: "Akses undangan dinonaktifkan untuk nama tamu ini." });
+      }
+    } else {
+      const access = sqliteService.checkGuestAccessByName(cleanName);
+      if (access && access.isDeleted) {
+        return res.status(403).json({ error: "Akses undangan dinonaktifkan untuk nama tamu ini." });
+      }
+    }
+
     // 1. PostgreSQL (Local / VPS)
     if (isPostgresConnected()) {
       const created = await postgresService.createWish({

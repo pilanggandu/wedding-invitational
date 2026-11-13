@@ -69,7 +69,7 @@ async function apiRequest<T>(
 
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}));
-      return { data: null, error: errBody.error || `HTTP ${res.status}`, status: res.status };
+      return { data: (errBody as T) || null, error: errBody.error || `HTTP ${res.status}`, status: res.status };
     }
 
     const json = await res.json();
@@ -176,14 +176,75 @@ export async function deleteGuestMasterFromBackend(id: string): Promise<void> {
 
 export async function verifyGuestTokenApi(
   token: string
-): Promise<{ success: boolean; guest?: any; error?: string }> {
-  const { data, error } = await apiRequest<{ success: boolean; guest: any }>(
+): Promise<{ success: boolean; guest?: any; error?: string; isDeleted?: boolean }> {
+  const { data, error, status } = await apiRequest<{ success: boolean; guest: any; isDeleted?: boolean }>(
     `/guests/verify/${encodeURIComponent(token)}`
   );
+  if (status === 410 || (data && (data as any).isDeleted)) {
+    return {
+      success: false,
+      isDeleted: true,
+      error: error || "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+      guest: data?.guest,
+    };
+  }
   if (error || !data || !data.guest) {
     return { success: false, error: error || "Token tidak valid" };
   }
-  return { success: true, guest: data.guest };
+  return { success: true, guest: data.guest, isDeleted: false };
+}
+
+export async function checkGuestAccessApi(params: {
+  token?: string;
+  name?: string;
+}): Promise<{
+  allowed: boolean;
+  isDeleted: boolean;
+  guest?: any;
+  error?: string;
+}> {
+  const query = new URLSearchParams();
+  if (params.token) query.set("token", params.token);
+  if (params.name) query.set("to", params.name);
+
+  const { data, error, status } = await apiRequest<{
+    success: boolean;
+    guest?: any;
+    isDeleted?: boolean;
+    error?: string;
+  }>(`/guests/check-access?${query.toString()}`);
+
+  if (status === 410 || (data && (data as any).isDeleted)) {
+    return {
+      allowed: false,
+      isDeleted: true,
+      guest: data?.guest,
+      error: error || "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+    };
+  }
+
+  if (status === 404) {
+    // Tamu tidak terdaftar / link umum
+    return {
+      allowed: true,
+      isDeleted: false,
+      guest: undefined,
+    };
+  }
+
+  if (data && data.success) {
+    return {
+      allowed: true,
+      isDeleted: false,
+      guest: data.guest,
+    };
+  }
+
+  return {
+    allowed: true,
+    isDeleted: false,
+    error: error || undefined,
+  };
 }
 
 // ----------------------------------------------------

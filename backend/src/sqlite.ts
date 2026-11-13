@@ -1,6 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import fs from "node:fs";
+import { randomUUID } from "node:crypto";
 import { hashPassword } from "./auth";
 
 // Pastikan direktori backend/data ada
@@ -86,6 +87,31 @@ if (!userColumns.some((column) => column.name === "google_sub")) {
 db.exec(
   "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique_idx ON users (google_sub);"
 );
+
+const guestColumns = db.prepare("PRAGMA table_info(guests)").all() as Array<{ name: string }>;
+if (!guestColumns.some((column) => column.name === "deleted_at")) {
+  db.exec("ALTER TABLE guests ADD COLUMN deleted_at TEXT;");
+}
+if (!guestColumns.some((column) => column.name === "token")) {
+  db.exec("ALTER TABLE guests ADD COLUMN token TEXT;");
+}
+if (!guestColumns.some((column) => column.name === "quota")) {
+  db.exec("ALTER TABLE guests ADD COLUMN quota INTEGER DEFAULT 1;");
+}
+if (!guestColumns.some((column) => column.name === "invitation_status")) {
+  db.exec("ALTER TABLE guests ADD COLUMN invitation_status INTEGER DEFAULT 0;");
+}
+if (!guestColumns.some((column) => column.name === "opened_at")) {
+  db.exec("ALTER TABLE guests ADD COLUMN opened_at TEXT;");
+}
+if (!guestColumns.some((column) => column.name === "last_opened_at")) {
+  db.exec("ALTER TABLE guests ADD COLUMN last_opened_at TEXT;");
+}
+if (!guestColumns.some((column) => column.name === "open_count")) {
+  db.exec("ALTER TABLE guests ADD COLUMN open_count INTEGER DEFAULT 0;");
+}
+db.exec("CREATE INDEX IF NOT EXISTS idx_guests_token ON guests(token);");
+db.exec("CREATE INDEX IF NOT EXISTS idx_guests_deleted_at ON guests(deleted_at);");
 
 // ----------------------------------------------------
 // SEED INITIAL DATA (Jika kosong)
@@ -389,7 +415,7 @@ export const sqliteService = {
 
   // GUESTS
   getGuests() {
-    const stmt = db.prepare("SELECT * FROM guests ORDER BY created_at DESC");
+    const stmt = db.prepare("SELECT * FROM guests WHERE deleted_at IS NULL ORDER BY created_at DESC");
     const rows = stmt.all() as any[];
 
     return rows.map((r) => ({
@@ -399,6 +425,8 @@ export const sqliteService = {
       phone: r.phone || "",
       category: r.category,
       isSent: Boolean(r.is_sent),
+      quota: r.quota || 1,
+      token: r.token,
       notes: r.notes || "",
       createdAt: r.created_at,
     }));
@@ -411,11 +439,15 @@ export const sqliteService = {
     phone?: string;
     category?: string;
     notes?: string;
+    quota?: number;
+    token?: string;
     createdAt?: string;
   }) {
+    const token = guest.token || randomUUID();
+    const quota = Math.max(1, guest.quota || 1);
     const stmt = db.prepare(`
-      INSERT INTO guests (id, name, slug, phone, category, is_sent, notes, created_at)
-      VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+      INSERT INTO guests (id, name, slug, phone, category, is_sent, notes, token, quota, created_at)
+      VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?)
     `);
 
     stmt.run(
@@ -425,6 +457,8 @@ export const sqliteService = {
       guest.phone || "",
       guest.category || "Sahabat",
       guest.notes || "",
+      token,
+      quota,
       guest.createdAt || new Date().toISOString()
     );
 
@@ -438,11 +472,13 @@ export const sqliteService = {
       category: r.category,
       isSent: Boolean(r.is_sent),
       notes: r.notes || "",
+      token: r.token,
+      quota: r.quota || 1,
       createdAt: r.created_at,
     };
   },
 
-  updateGuest(id: string, updates: Partial<{ name: string; phone: string; category: string; notes: string; isSent: boolean }>) {
+  updateGuest(id: string, updates: Partial<{ name: string; phone: string; category: string; notes: string; isSent: boolean; quota?: number }>) {
     const existingStmt = db.prepare("SELECT * FROM guests WHERE id = ?");
     const existing = existingStmt.get(id) as any;
     if (!existing) return null;
@@ -453,6 +489,7 @@ export const sqliteService = {
     const category = updates.category !== undefined ? updates.category : existing.category;
     const notes = updates.notes !== undefined ? updates.notes : existing.notes;
     const isSent = updates.isSent !== undefined ? (updates.isSent ? 1 : 0) : existing.is_sent;
+    const quota = updates.quota !== undefined ? Math.max(1, updates.quota) : existing.quota || 1;
 
     const updateStmt = db.prepare(`
       UPDATE guests SET
@@ -461,11 +498,12 @@ export const sqliteService = {
         phone = ?,
         category = ?,
         notes = ?,
-        is_sent = ?
+        is_sent = ?,
+        quota = ?
       WHERE id = ?
     `);
 
-    updateStmt.run(name, slug, phone, category, notes, isSent, id);
+    updateStmt.run(name, slug, phone, category, notes, isSent, quota, id);
 
     return {
       id,
@@ -475,14 +513,91 @@ export const sqliteService = {
       category,
       isSent: Boolean(isSent),
       notes,
+      token: existing.token,
+      quota,
       createdAt: existing.created_at,
     };
   },
 
   deleteGuest(id: string) {
-    const stmt = db.prepare("DELETE FROM guests WHERE id = ?");
-    stmt.run(id);
-    return true;
+    const now = new Date().toISOString();
+    const stmt = db.prepare("UPDATE guests SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL");
+    const res = stmt.run(now, id);
+    return res.changes > 0;
+  },
+
+  verifyGuestToken(token: string) {
+    if (!token) return null;
+    const stmt = db.prepare("SELECT * FROM guests WHERE token = ? LIMIT 1");
+    const guest = stmt.get(token) as any;
+    if (!guest) return null;
+
+    if (guest.deleted_at) {
+      return {
+        id: guest.id,
+        name: guest.name,
+        isDeleted: true,
+      };
+    }
+
+    const now = new Date().toISOString();
+    const updateStmt = db.prepare(`
+      UPDATE guests SET
+        opened_at = COALESCE(opened_at, ?),
+        last_opened_at = ?,
+        open_count = COALESCE(open_count, 0) + 1,
+        invitation_status = 2
+      WHERE id = ?
+    `);
+    updateStmt.run(now, now, guest.id);
+
+    return {
+      id: guest.id,
+      name: guest.name,
+      phone: guest.phone || "",
+      token: guest.token,
+      quota: guest.quota || 1,
+      openCount: (guest.open_count || 0) + 1,
+      openedAt: guest.opened_at || now,
+      isDeleted: false,
+    };
+  },
+
+  checkGuestAccessByName(nameOrSlug: string) {
+    if (!nameOrSlug || !nameOrSlug.trim()) return null;
+    const clean = nameOrSlug.trim();
+    let decoded = clean;
+    try {
+      decoded = decodeURIComponent(clean.replace(/\+/g, " "));
+    } catch {}
+
+    const stmt = db.prepare(`
+      SELECT * FROM guests 
+      WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) 
+         OR LOWER(TRIM(name)) = LOWER(TRIM(?)) 
+         OR slug = ?
+      ORDER BY created_at DESC
+      LIMIT 1
+    `);
+    const guest = stmt.get(clean, decoded, clean) as any;
+    if (!guest) return null;
+
+    if (guest.deleted_at) {
+      return {
+        id: guest.id,
+        name: guest.name,
+        isDeleted: true,
+      };
+    }
+
+    return {
+      id: guest.id,
+      name: guest.name,
+      phone: guest.phone || "",
+      token: guest.token,
+      quota: guest.quota || 1,
+      isDeleted: false,
+    };
   },
 
   // WISHES (RSVP & DO'A)
@@ -566,9 +681,21 @@ export const sqliteService = {
     message?: string;
   }) {
     let guestId = params.guestId;
+
+    if (guestId) {
+      const gStmt = db.prepare("SELECT id, name, deleted_at, quota FROM guests WHERE id = ?");
+      const guest = gStmt.get(guestId) as any;
+      if (guest && guest.deleted_at) {
+        throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
+      }
+    }
+
     if (!guestId && params.name) {
       const existing = this.findGuestByName(params.name);
       if (existing) {
+        if (existing.deleted_at) {
+          throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
+        }
         guestId = existing.id;
       } else {
         const newId = "g_" + Date.now();
@@ -585,6 +712,12 @@ export const sqliteService = {
 
     if (!guestId) {
       throw new Error("guestId atau nama tamu wajib disertakan");
+    }
+
+    const checkStmt = db.prepare("SELECT id, name, deleted_at, quota FROM guests WHERE id = ?");
+    const targetGuest = checkStmt.get(guestId) as any;
+    if (targetGuest && targetGuest.deleted_at) {
+      throw new Error("Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai.");
     }
 
     const now = new Date().toISOString();
@@ -610,14 +743,22 @@ export const sqliteService = {
 
   getRsvpSummary() {
     const totalGuests =
-      (db.prepare("SELECT COUNT(*) as count FROM guests").get() as any)?.count || 0;
+      (db.prepare("SELECT COUNT(*) as count FROM guests WHERE deleted_at IS NULL").get() as any)?.count || 0;
     const attendingRes = db
-      .prepare(
-        "SELECT COUNT(*) as count, COALESCE(SUM(attendee_count), 0) as heads FROM rsvps WHERE status = 1"
-      )
+      .prepare(`
+        SELECT COUNT(*) as count, COALESCE(SUM(r.attendee_count), 0) as heads 
+        FROM rsvps r
+        JOIN guests g ON r.guest_id = g.id
+        WHERE r.status = 1 AND g.deleted_at IS NULL
+      `)
       .get() as any;
     const notAttendingRes = db
-      .prepare("SELECT COUNT(*) as count FROM rsvps WHERE status = 2")
+      .prepare(`
+        SELECT COUNT(*) as count 
+        FROM rsvps r
+        JOIN guests g ON r.guest_id = g.id
+        WHERE r.status = 2 AND g.deleted_at IS NULL
+      `)
       .get() as any;
 
     return {
@@ -641,7 +782,8 @@ export const sqliteService = {
         g.phone AS guest_phone,
         g.category AS group_name
       FROM rsvps r
-      LEFT JOIN guests g ON r.guest_id = g.id
+      JOIN guests g ON r.guest_id = g.id
+      WHERE g.deleted_at IS NULL
       ORDER BY r.submitted_at DESC
     `);
     const rows = stmt.all() as any[];

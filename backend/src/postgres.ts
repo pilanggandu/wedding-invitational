@@ -193,6 +193,9 @@ export async function initPostgres(): Promise<boolean> {
       await pool.query(
         "CREATE UNIQUE INDEX IF NOT EXISTS users_google_sub_unique_idx ON users (google_sub)"
       );
+      await pool.query("ALTER TABLE guests ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP WITH TIME ZONE;");
+      await pool.query("ALTER TABLE guests ADD COLUMN IF NOT EXISTS token VARCHAR(255);");
+      await pool.query("CREATE INDEX IF NOT EXISTS idx_wide_guests_deleted_at ON guests(deleted_at);");
 
       // Pastikan kolom foto di tabel-tabel dapat menyimpan path atau base64 tanpa batasan 500 char
       await pool.query("ALTER TABLE couples ALTER COLUMN photo TYPE TEXT").catch(() => {});
@@ -591,7 +594,7 @@ export const postgresService = {
       return await normalizedWeddingService.getGuests();
     }
     if (!pool) return [];
-    const res = await pool.query("SELECT * FROM guests ORDER BY created_at DESC");
+    const res = await pool.query("SELECT * FROM guests WHERE deleted_at IS NULL ORDER BY created_at DESC");
     return res.rows.map((r) => ({
       id: r.id,
       name: r.name,
@@ -701,7 +704,7 @@ export const postgresService = {
       return await normalizedWeddingService.softDeleteGuest(id);
     }
     if (!pool) return false;
-    await pool.query("DELETE FROM guests WHERE id = $1", [id]);
+    await pool.query("UPDATE guests SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL", [id]);
     return true;
   },
 

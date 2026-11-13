@@ -2,10 +2,16 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { DEFAULT_INVITATION_DATA, getInvitationData, syncWithBackend } from "@/lib/invitationStore";
-import { verifyGuestTokenApi } from "@/lib/api";
+import {
+  DEFAULT_INVITATION_DATA,
+  getInvitationData,
+  syncWithBackend,
+  isGuestDeletedLocally,
+} from "@/lib/invitationStore";
+import { verifyGuestTokenApi, checkGuestAccessApi } from "@/lib/api";
 import { WeddingInvitationData } from "@/types/wedding";
 import { TemplateRenderer } from "@/templates/TemplateRenderer";
+import { AccessDeniedInvitation } from "@/components/AccessDeniedInvitation";
 
 function InvitationContent() {
   const searchParams = useSearchParams();
@@ -24,6 +30,9 @@ function InvitationContent() {
   const [resolvedName, setResolvedName] = useState<string | undefined>(
     rawTo ? rawTo.trim() : undefined
   );
+  const [isAccessDenied, setIsAccessDenied] = useState<boolean>(() => {
+    return isGuestDeletedLocally({ token: tokenParam, name: rawTo });
+  });
 
   useEffect(() => {
     // Initial fetch on mount and sync with SQLite/Supabase/PostgreSQL backend
@@ -40,10 +49,30 @@ function InvitationContent() {
     };
   }, []);
 
-  // Resolusi token tamu secara otomatis & pencatatan open tracking
+  // Cek apakah tamu terhapus di penyimpanan lokal
   useEffect(() => {
+    if (isGuestDeletedLocally({ token: tokenParam, name: rawTo })) {
+      setIsAccessDenied(true);
+      try {
+        sessionStorage.removeItem("verified_wedding_guest");
+      } catch {}
+    }
+  }, [tokenParam, rawTo]);
+
+  // Resolusi token tamu & validasi akses dari backend
+  useEffect(() => {
+    let isCancelled = false;
+
     if (tokenParam) {
       verifyGuestTokenApi(tokenParam).then((res) => {
+        if (isCancelled) return;
+        if (res.isDeleted) {
+          setIsAccessDenied(true);
+          try {
+            sessionStorage.removeItem("verified_wedding_guest");
+          } catch {}
+          return;
+        }
         if (res.success && res.guest) {
           setVerifiedGuest(res.guest);
           setResolvedName(res.guest.name);
@@ -53,7 +82,37 @@ function InvitationContent() {
         }
       });
     }
-  }, [tokenParam]);
+
+    if (rawTo || tokenParam) {
+      checkGuestAccessApi({ token: tokenParam, name: rawTo }).then((access) => {
+        if (isCancelled) return;
+        if (access.isDeleted) {
+          setIsAccessDenied(true);
+          try {
+            sessionStorage.removeItem("verified_wedding_guest");
+          } catch {}
+        }
+      });
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [tokenParam, rawTo]);
+
+  if (isAccessDenied) {
+    const coupleTitle =
+      weddingData.couple?.groom?.name && weddingData.couple?.bride?.name
+        ? `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}`
+        : "Gilang & Salsadila";
+
+    return (
+      <AccessDeniedInvitation
+        guestName={resolvedName || rawTo || undefined}
+        coupleName={coupleTitle}
+      />
+    );
+  }
 
   const effectiveData = templateParam
     ? { ...weddingData, activeTemplateId: templateParam }
@@ -66,7 +125,6 @@ function InvitationContent() {
         guestName={resolvedName}
         guestItem={verifiedGuest}
       />
-
     </div>
   );
 }

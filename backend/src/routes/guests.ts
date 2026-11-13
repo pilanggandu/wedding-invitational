@@ -53,13 +53,114 @@ router.get("/verify/:token", async (req: Request<{ token: string }>, res: Respon
       if (!guest) {
         return res.status(404).json({ error: "Undangan tidak ditemukan atau token tidak valid" });
       }
+      if (guest.isDeleted) {
+        return res.status(410).json({
+          error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+          isDeleted: true,
+          name: guest.name,
+        });
+      }
       return res.json({ success: true, guest, source: "postgresql_12_tables" });
     }
 
-    res.status(404).json({ error: "Token tidak ditemukan" });
+    const guest = sqliteService.verifyGuestToken(token);
+    if (!guest) {
+      return res.status(404).json({ error: "Undangan tidak ditemukan atau token tidak valid" });
+    }
+    if (guest.isDeleted) {
+      return res.status(410).json({
+        error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+        isDeleted: true,
+        name: guest.name,
+      });
+    }
+    return res.json({ success: true, guest, source: "sqlite" });
   } catch (err: any) {
     console.error("Error in GET /api/guests/verify/:token:", err);
     res.status(500).json({ error: err.message || "Gagal memverifikasi token tamu" });
+  }
+});
+
+// GET /api/guests/check-access - Cek status akses tamu berdasarkan token atau nama/to
+router.get("/check-access", async (req: Request, res: Response) => {
+  try {
+    const token = typeof req.query.token === "string" ? req.query.token.trim() : "";
+    const name = typeof req.query.to === "string" 
+      ? req.query.to.trim() 
+      : typeof req.query.name === "string" 
+      ? req.query.name.trim() 
+      : "";
+
+    if (!token && !name) {
+      return res.status(400).json({ error: "Parameter token atau to/name wajib disertakan" });
+    }
+
+    const service = getNormalizedWeddingService();
+    if (isPostgresConnected() && service) {
+      if (token) {
+        const guest = await service.verifyGuestToken(token);
+        if (guest) {
+          if (guest.isDeleted) {
+            return res.status(410).json({
+              error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+              isDeleted: true,
+              name: guest.name,
+            });
+          }
+          return res.json({ success: true, guest, isDeleted: false, source: "postgresql_12_tables" });
+        }
+      }
+
+      if (name) {
+        const guest = await service.checkGuestAccessByName(name);
+        if (guest) {
+          if (guest.isDeleted) {
+            return res.status(410).json({
+              error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+              isDeleted: true,
+              name: guest.name,
+            });
+          }
+          return res.json({ success: true, guest, isDeleted: false, source: "postgresql_12_tables" });
+        }
+      }
+
+      return res.status(404).json({ error: "Tamu tidak ditemukan dalam daftar undangan", notFound: true });
+    }
+
+    // SQLite Local Fallback
+    if (token) {
+      const guest = sqliteService.verifyGuestToken(token);
+      if (guest) {
+        if (guest.isDeleted) {
+          return res.status(410).json({
+            error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+            isDeleted: true,
+            name: guest.name,
+          });
+        }
+        return res.json({ success: true, guest, isDeleted: false, source: "sqlite" });
+      }
+    }
+
+    if (name) {
+      const guest = sqliteService.checkGuestAccessByName(name);
+      if (guest) {
+        if (guest.isDeleted) {
+          return res.status(410).json({
+            error: "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
+            isDeleted: true,
+            name: guest.name,
+          });
+        }
+        return res.json({ success: true, guest, isDeleted: false, source: "sqlite" });
+      }
+    }
+
+    res.status(404).json({ error: "Tamu tidak ditemukan dalam daftar undangan", notFound: true });
+  } catch (err: any) {
+    console.error("Error in GET /api/guests/check-access:", err);
+    res.status(500).json({ error: err.message || "Gagal memeriksa akses tamu" });
   }
 });
 

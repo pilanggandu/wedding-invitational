@@ -199,3 +199,80 @@ test("normalized PostgreSQL errors do not execute incompatible legacy guest SQL"
   await assert.rejects(service.updateGuest("12", { isSent: true }), (error) => error === failure);
   await assert.rejects(service.deleteGuest("12"), (error) => error === failure);
 });
+
+test("normalized verifyGuestToken marks soft-deleted guest as deleted", async () => {
+  const { exports: { NormalizedWeddingService } } = loadModule("../src/services/normalizedWeddingService.ts", {
+    pg: {}, "../database/migration_service": {},
+  });
+  const pool = {
+    async query(sql, values) {
+      if (/SELECT \* FROM guests WHERE token = \$1/.test(sql)) {
+        return {
+          rows: [
+            {
+              id: 99,
+              name: "Tamu Dihapus",
+              token: "deleted-token",
+              deleted_at: "2026-11-13T10:00:00Z",
+            },
+          ],
+        };
+      }
+      throw new Error(`Unexpected query ${sql}`);
+    },
+  };
+  const service = new NormalizedWeddingService(pool);
+  const result = await service.verifyGuestToken("deleted-token");
+  assert.equal(result.isDeleted, true);
+  assert.equal(result.name, "Tamu Dihapus");
+});
+
+test("normalized checkGuestAccessByName detects deleted guest", async () => {
+  const { exports: { NormalizedWeddingService } } = loadModule("../src/services/normalizedWeddingService.ts", {
+    pg: {}, "../database/migration_service": {},
+  });
+  const pool = {
+    async query(sql, values) {
+      if (/SELECT \* FROM guests\s+WHERE LOWER\(TRIM\(name\)\)/.test(sql)) {
+        return {
+          rows: [
+            {
+              id: 99,
+              name: "Tamu Dihapus",
+              token: "tok-123",
+              deleted_at: "2026-11-13T10:00:00Z",
+            },
+          ],
+        };
+      }
+      throw new Error(`Unexpected query ${sql}`);
+    },
+  };
+  const service = new NormalizedWeddingService(pool);
+  const result = await service.checkGuestAccessByName("Tamu Dihapus");
+  assert.equal(result.isDeleted, true);
+  assert.equal(result.name, "Tamu Dihapus");
+});
+
+test("normalized submitRsvp rejects deleted guest", async () => {
+  const { exports: { NormalizedWeddingService } } = loadModule("../src/services/normalizedWeddingService.ts", {
+    pg: {}, "../database/migration_service": {},
+  });
+  const pool = {
+    async query(sql, values) {
+      if (/SELECT id, name, deleted_at, quota FROM guests WHERE id = \$1/.test(sql)) {
+        return {
+          rows: [
+            { id: 99, name: "Tamu Dihapus", deleted_at: "2026-11-13T10:00:00Z", quota: 1 },
+          ],
+        };
+      }
+      throw new Error(`Unexpected query ${sql}`);
+    },
+  };
+  const service = new NormalizedWeddingService(pool);
+  await assert.rejects(
+    service.submitRsvp({ guestId: 99, status: 1, attendeeCount: 1 }),
+    /Akses undangan untuk tamu ini telah dinonaktifkan oleh mempelai/
+  );
+});

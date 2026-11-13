@@ -16,10 +16,20 @@ const { renderToStaticMarkup } = require("react-dom/server");
 function load(relative, mocks = {}, globals = {}) {
   const filename = path.resolve(directory, relative);
   const source = ts.transpileModule(fs.readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
-  const context = vm.createContext({ exports: {}, console, URLSearchParams, TextEncoder, ...globals, require: (name) => {
+  const context = vm.createContext({ exports: {}, console, setTimeout, clearTimeout, URLSearchParams, TextEncoder, CustomEvent: typeof CustomEvent !== "undefined" ? CustomEvent : class CustomEvent { constructor(type, init) { this.type = type; this.detail = init?.detail; } }, ...globals, require: (name) => {
     if (Object.hasOwn(mocks, name)) return mocks[name];
     if (name === "@/data/weddingData") return load("../data/weddingData.ts");
-    if (name === "@/lib/api") return {};
+    if (name === "@/lib/api") return {
+      fetchInvitationFromBackend: async () => null,
+      fetchGuestsFromBackend: async () => null,
+      fetchWishesFromBackend: async () => null,
+      deleteGuestFromBackend: async () => true,
+      deleteGuestMasterFromBackend: async () => {},
+      addGuestToBackend: async () => null,
+      updateGuestInBackend: async () => true,
+      verifyGuestTokenApi: async () => ({ success: false }),
+      checkGuestAccessApi: async () => ({ allowed: true, isDeleted: false }),
+    };
     if (name === "./guestData") return load("guestData.ts");
     if (name === "@/lib/invitationStore") return load("invitationStore.ts");
     if (name === "@/lib/colorPalettes") return load("colorPalettes.ts");
@@ -134,4 +144,65 @@ test("empty event lists do not manufacture a date or ceremony time on the cover 
     assert.ok(!html.includes("28 November 2026"), file);
     assert.ok(!html.includes("08:00 - 10:00 WIB"), file);
   }
+});
+
+test("isGuestDeletedLocally correctly flags deleted guests by token, slug, and name", () => {
+  const store = {};
+  const mockLocalStorage = {
+    getItem: (key) => store[key] || null,
+    setItem: (key, val) => { store[key] = val; },
+    removeItem: (key) => { delete store[key]; },
+  };
+  const mockWindow = {
+    dispatchEvent: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  };
+
+  const invitationStore = load("invitationStore.ts", {}, {
+    localStorage: mockLocalStorage,
+    window: mockWindow,
+  });
+
+  invitationStore.recordDeletedGuest({
+    id: "g_123",
+    name: "Budi Santoso",
+    slug: "Budi+Santoso",
+    token: "token-budi-123",
+  });
+
+  // Check by token
+  assert.equal(invitationStore.isGuestDeletedLocally({ token: "token-budi-123" }), true);
+  // Check by name
+  assert.equal(invitationStore.isGuestDeletedLocally({ name: "Budi Santoso" }), true);
+  // Check by encoded / plus name
+  assert.equal(invitationStore.isGuestDeletedLocally({ name: "Budi+Santoso" }), true);
+  // Check by ID
+  assert.equal(invitationStore.isGuestDeletedLocally({ id: "g_123" }), true);
+
+  // Unrelated active guest should not be flagged
+  assert.equal(invitationStore.isGuestDeletedLocally({ token: "active-guest-token", name: "Siti Rahma" }), false);
+});
+
+test("AccessDeniedInvitation component renders respectful message without em dashes", () => {
+  const { AccessDeniedInvitation } = load("../components/AccessDeniedInvitation.tsx", {
+    "next/link": ({ children, href, className }) => React.createElement("a", { href, className }, children),
+    "lucide-react": {
+      Lock: () => React.createElement("span", null, "LockIcon"),
+      HeartHandshake: () => React.createElement("span", null, "HeartIcon"),
+      Home: () => React.createElement("span", null, "HomeIcon"),
+    },
+  });
+
+  const html = renderToStaticMarkup(
+    React.createElement(AccessDeniedInvitation, {
+      guestName: "Budi Santoso",
+      coupleName: "Gilang & Salsa",
+    })
+  );
+
+  assert.ok(html.includes("Akses Undangan Dinonaktifkan"));
+  assert.ok(html.includes("Budi Santoso"));
+  assert.ok(html.includes("Gilang &amp; Salsa") || html.includes("Gilang & Salsa"));
+  assert.ok(!html.includes("—"), "Must not contain em dashes");
 });
