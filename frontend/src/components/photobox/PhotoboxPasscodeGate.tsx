@@ -341,7 +341,7 @@ export function PhotoboxPasscodeGate({
           })}
         </div>
 
-        {/* Hint Accordion Toggle */}
+        {/* Help / Guidance Info (Tanpa membocorkan angka passcode) */}
         <div className="mt-5 w-full flex flex-col items-center">
           <button
             type="button"
@@ -349,7 +349,7 @@ export function PhotoboxPasscodeGate({
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8C6239] hover:text-[#4A121A] transition-colors cursor-pointer py-1 px-2.5 rounded-lg hover:bg-[#FAF6EE]"
           >
             <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showHint ? "Tutup petunjuk" : "Butuh petunjuk passcode?"}</span>
+            <span>{showHint ? "Tutup bantuan" : "Belum tahu passcodenya?"}</span>
           </button>
 
           <AnimatePresence>
@@ -363,18 +363,10 @@ export function PhotoboxPasscodeGate({
                 <div className="p-3 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] text-xs text-[#5C4A3A] text-left leading-relaxed max-w-xs shadow-xs">
                   <p className="font-semibold text-[#4A121A] mb-1 flex items-center gap-1.5">
                     <KeyRound className="w-3.5 h-3.5 text-[#8C6239]" />
-                    <span>Petunjuk Passcode:</span>
+                    <span>Informasi Passcode:</span>
                   </p>
-                  <p>
-                    {configuredPasscode ? (
-                      <>
-                        Gunakan passcode yang ditentukan oleh pengelola (<strong>{configuredPasscode}</strong>) atau tahun pernikahan (<strong>2026</strong>).
-                      </>
-                    ) : (
-                      <>
-                        Gunakan tahun pernikahan mempelai (<strong>2026</strong>) atau tanggal resepsi (<strong>2111</strong>).
-                      </>
-                    )}
+                  <p className="text-[11px] text-[#705A46] leading-relaxed">
+                    Kode akses 4 digit tertera pada standing banner / poster photobox di lokasi acara pernikahan, atau silakan tanyakan kepada panitia penerima tamu.
                   </p>
                 </div>
               </motion.div>

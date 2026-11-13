@@ -94,26 +94,48 @@ export function TemplateEditorWorkspace({
     };
 
     const selectors = selectorMap[activeSection] || [];
-    let targetEl: HTMLElement | null = null;
-    for (const sel of selectors) {
-      const found = previewContentRef.current.querySelector<HTMLElement>(sel);
-      if (found) {
-        targetEl = found;
-        break;
-      }
-    }
 
-    if (targetEl) {
-      const containerRect = canvasScrollContainerRef.current.getBoundingClientRect();
-      const targetRect = targetEl.getBoundingClientRect();
-      const currentScroll = canvasScrollContainerRef.current.scrollTop;
-      const targetTop = targetRect.top - containerRect.top + currentScroll - 24;
-      canvasScrollContainerRef.current.scrollTo({
-        top: Math.max(0, targetTop),
-        behavior: "smooth",
-      });
+    const performScroll = () => {
+      if (!canvasScrollContainerRef.current || !previewContentRef.current) return false;
+
+      let targetEl: HTMLElement | null = null;
+      for (const sel of selectors) {
+        const found = previewContentRef.current.querySelector<HTMLElement>(sel);
+        if (found) {
+          targetEl = found;
+          break;
+        }
+      }
+
+      if (targetEl) {
+        const containerRect = canvasScrollContainerRef.current.getBoundingClientRect();
+        const targetRect = targetEl.getBoundingClientRect();
+        const currentScroll = canvasScrollContainerRef.current.scrollTop;
+        const targetTop = targetRect.top - containerRect.top + currentScroll - 24;
+        canvasScrollContainerRef.current.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: "smooth",
+        });
+
+        try {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch {
+          // ignore
+        }
+        return true;
+      }
+      return false;
+    };
+
+    if (!performScroll()) {
+      const timer1 = setTimeout(performScroll, 75);
+      const timer2 = setTimeout(performScroll, 200);
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
     }
-  }, [activeSection, canvasKey]);
+  }, [activeSection, canvasKey, replayCover]);
 
   const templateMeta = AVAILABLE_TEMPLATES.find((t) => t.id === templateId) || {
     id: templateId,
@@ -318,7 +340,12 @@ export function TemplateEditorWorkspace({
                 <button
                   key={sec.id}
                   type="button"
-                  onClick={() => setActiveSection(sec.id)}
+                  onClick={() => {
+                    setActiveSection(sec.id);
+                    if (sec.id !== "cover" && replayCover) {
+                      setReplayCover(false);
+                    }
+                  }}
                   className={`w-full flex items-center justify-center sm:justify-start gap-2.5 px-2.5 sm:px-3 py-2.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                     isActive
                       ? "bg-[#1F232E] text-white font-semibold border border-[#2E3343] shadow-xs text-amber-200"
@@ -336,7 +363,11 @@ export function TemplateEditorWorkspace({
           <div className="pt-2 border-t border-[#1E222D]">
             <button
               type="button"
-              onClick={() => { setReplayCover(true); setCanvasKey((k) => k + 1); }}
+              onClick={() => {
+                setActiveSection("cover");
+                setReplayCover(true);
+                setCanvasKey((k) => k + 1);
+              }}
               className="w-full flex items-center justify-center sm:justify-start gap-2 px-2.5 py-2 rounded-xl bg-[#181A22] hover:bg-[#20232E] text-[#8E93A2] hover:text-white text-xs font-mono transition-colors cursor-pointer"
               title="Buka Ulang Amplop / Cover"
             >
@@ -386,6 +417,7 @@ export function TemplateEditorWorkspace({
                 data={safePreviewData}
                 isPreview={true}
                 isEditor={!replayCover}
+                activeSection={activeSection}
                 onOpenChange={() => setReplayCover(false)}
                 guestName="Tamu Undangan Terhormat"
               />

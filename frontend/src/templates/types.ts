@@ -12,5 +12,6 @@ export interface TemplateProps {
   } | null;
   isPreview?: boolean;
   isEditor?: boolean;
+  activeSection?: string;
   onOpenChange?: (open: boolean) => void;
 }

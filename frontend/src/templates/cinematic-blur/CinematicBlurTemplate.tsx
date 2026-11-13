@@ -27,6 +27,7 @@ export function CinematicBlurTemplate({
   guestItem,
   isPreview = false,
   isEditor = false,
+  activeSection,
   onOpenChange,
 }: TemplateProps) {
   const [isOpened, setIsOpened] = useState<boolean>(isEditor);
@@ -37,6 +38,13 @@ export function CinematicBlurTemplate({
       setIsOpened(true);
     }
   }, [isEditor]);
+
+  useEffect(() => {
+    if (activeSection && activeSection !== "cover" && !isOpened) {
+      setIsOpened(true);
+      onOpenChange?.(true);
+    }
+  }, [activeSection, isOpened, onOpenChange]);
 
   const handleOpen = () => {
     setIsOpened(true);

@@ -42,6 +42,7 @@ function CraftBookInner({
   guestItem,
   isPreview = false,
   isEditor = false,
+  activeSection,
   onOpenChange,
 }: Omit<TemplateProps, "data">) {
   const data = useWeddingData();
@@ -52,6 +53,35 @@ function CraftBookInner({
   const [showCelebration, setShowCelebration] = useState(false);
 
   const albumRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isEditor) {
+      setOpened(true);
+    }
+  }, [isEditor]);
+
+  useEffect(() => {
+    if (!activeSection) return;
+    const pageMap: Record<string, number> = {
+      cover: 1,
+      theme: 1,
+      music: 1,
+      couple: 2,
+      events: 3,
+      story: 4,
+      gallery: 5,
+      gifts: 6,
+      rsvp: 7,
+    };
+    const targetPage = pageMap[activeSection];
+    if (targetPage !== undefined) {
+      setCurrentPage(targetPage);
+      if (targetPage > 1 && !opened) {
+        setOpened(true);
+        onOpenChange?.(true);
+      }
+    }
+  }, [activeSection, opened, onOpenChange]);
 
   // Handle open invitation
   const handleOpen = () => {
@@ -265,7 +295,7 @@ function CraftBookInner({
             </div>
 
             {/* ================= PAGE 1: SAMPUL DEPAN ================= */}
-            <section className={`cb-page ${currentPage === 1 ? "active" : ""}`}>
+            <section id="hero" className={`cb-page ${currentPage === 1 ? "active" : ""}`}>
               <div className="cb-cover-hero">
                 <div className="cb-airmail-badge">
                   <span>CHAPTER OF LOVE • THE WEDDING ALBUM</span>
@@ -333,7 +363,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 2: KEDUA MEMPELAI ================= */}
-            <section className={`cb-page ${currentPage === 2 ? "active" : ""}`}>
+            <section id="couple" className={`cb-page ${currentPage === 2 ? "active" : ""}`}>
               <div className="cb-page-header">
                 <div className="cb-washi-strip tape-olive">PROFIL MEMPELAI</div>
                 <h2 className="cb-page-title">Mempelai Pria &amp; Wanita</h2>
@@ -428,7 +458,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 3: ACARA & AGENDA (BOARDING PASS) ================= */}
-            <section className={`cb-page ${currentPage === 3 ? "active" : ""}`}>
+            <section id="event" className={`cb-page ${currentPage === 3 ? "active" : ""}`}>
               <div className="cb-page-header">
                 <div className="cb-washi-strip tape-mustard">RANGKAIAN HARI BAHAGIA</div>
                 <h2 className="cb-page-title">Agenda &amp; Lokasi Acara</h2>
@@ -503,7 +533,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 4: LOVE STORY (STICKY NOTES) ================= */}
-            <section className={`cb-page ${currentPage === 4 ? "active" : ""}`}>
+            <section id="story" className={`cb-page ${currentPage === 4 ? "active" : ""}`}>
               <div className="cb-page-header">
                 <div className="cb-washi-strip tape-gingham">JEJAK PERJALANAN KAMI</div>
                 <h2 className="cb-page-title">Kisah Cinta &amp; Momen Manis</h2>
@@ -597,7 +627,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 5: GALERI FOTO POLAROID ================= */}
-            <section className={`cb-page ${currentPage === 5 ? "active" : ""}`}>
+            <section id="gallery" className={`cb-page ${currentPage === 5 ? "active" : ""}`}>
               <div className="cb-page-header relative">
                 <div className="absolute -top-4 -right-1 w-14 sm:w-16 h-auto pointer-events-none select-none opacity-85 z-20">
                   <img
@@ -655,7 +685,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 6: AMPLOP KADO (DIGITAL ENVELOPE) ================= */}
-            <section className={`cb-page ${currentPage === 6 ? "active" : ""}`}>
+            <section id="gift" className={`cb-page ${currentPage === 6 ? "active" : ""}`}>
               <div className="cb-page-header">
                 <div className="cb-washi-strip tape-olive">KOTAK SURAT &amp; TANDA KASIH</div>
                 <h2 className="cb-page-title">Amplop Kraft Hadiah Digital</h2>
@@ -668,7 +698,7 @@ function CraftBookInner({
             </section>
 
             {/* ================= PAGE 7: PAPAN DOA & RSVP ================= */}
-            <section className={`cb-page ${currentPage === 7 ? "active" : ""}`}>
+            <section id="rsvp" className={`cb-page ${currentPage === 7 ? "active" : ""}`}>
               <CraftBookGuestbook
                 guestName={guestName}
                 guestItem={guestItem}

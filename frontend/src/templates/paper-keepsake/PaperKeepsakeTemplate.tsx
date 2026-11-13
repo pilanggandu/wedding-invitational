@@ -980,6 +980,7 @@ function KeepsakeContent({
   guestItem,
   isPreview = false,
   isEditor = false,
+  activeSection,
   onOpenChange,
 }: Omit<TemplateProps, "data">) {
   const data = useWeddingData();
@@ -991,6 +992,13 @@ function KeepsakeContent({
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduced = useReducedMotion();
   const opened = isEditor || hasOpened;
+
+  useEffect(() => {
+    if (activeSection && activeSection !== "cover" && !hasOpened) {
+      setHasOpened(true);
+      onOpenChange?.(true);
+    }
+  }, [activeSection, hasOpened, onOpenChange]);
   const motionDisabled =
     Boolean(reduced) ||
     motionPaused ||

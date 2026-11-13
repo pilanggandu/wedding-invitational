@@ -29,6 +29,7 @@ export function AmbientBlurTemplate({
   guestItem,
   isPreview = false,
   isEditor = false,
+  activeSection,
   onOpenChange,
 }: TemplateProps) {
   const [isOpened, setIsOpened] = useState<boolean>(isEditor);
@@ -48,6 +49,13 @@ export function AmbientBlurTemplate({
       setIsOpened(true);
     }
   }, [isEditor]);
+
+  useEffect(() => {
+    if (activeSection && activeSection !== "cover" && !isOpened) {
+      setIsOpened(true);
+      onOpenChange?.(true);
+    }
+  }, [activeSection, isOpened, onOpenChange]);
 
   const handleOpen = () => {
     if (isOpened) return;

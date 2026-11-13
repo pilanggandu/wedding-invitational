@@ -1421,6 +1421,7 @@ export function PaperArtTemplate({
   guestItem,
   isPreview = false,
   isEditor = false,
+  activeSection,
   onOpenChange,
 }: TemplateProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -1428,6 +1429,21 @@ export function PaperArtTemplate({
   const [isPreloading, setIsPreloading] = useState<boolean>(!isEditor);
   const fontFamilyCss = getFontFamilyCss(data.themePalette?.fontStyle);
   const { primaryColor, secondaryColor } = resolveThemeColors(data.themePalette);
+
+  useEffect(() => {
+    if (isEditor) {
+      setIsOpened(true);
+      setIsPreloading(false);
+    }
+  }, [isEditor]);
+
+  useEffect(() => {
+    if (activeSection && activeSection !== "cover" && !isOpened) {
+      setIsOpened(true);
+      setIsPreloading(false);
+      onOpenChange?.(true);
+    }
+  }, [activeSection, isOpened, onOpenChange]);
 
   const handleOpen = () => {
     setIsOpened(true);
