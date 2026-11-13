@@ -7,6 +7,7 @@ import {
   hashPassword,
   verifyPassword,
   generateToken,
+  verifyToken,
   requireAuth,
   AuthenticatedRequest,
 } from "../auth";
@@ -239,17 +240,6 @@ router.post("/google", async (req: Request, res: Response) => {
     const googleSubjectKey = createHash("sha256").update(payload.sub).digest("hex");
     const googleUserId = `usr_${googleSubjectKey}`;
     const googleUsername = `google_${googleSubjectKey}`;
-      usePostgres
-        ? postgresService.getUserByGoogleSub(googleSub)
-        : sqliteService.getUserByGoogleSub(googleSub);
-    const getUserByEmail = (userEmail: string) =>
-      usePostgres
-        ? postgresService.getUserByEmail(userEmail)
-        : sqliteService.getUserByEmail(userEmail);
-    const linkGoogleSub = (userId: string, googleSub: string) =>
-      usePostgres
-        ? postgresService.linkGoogleSub(userId, googleSub)
-        : sqliteService.linkGoogleSub(userId, googleSub);
 
     const linkExistingAdmin = async (existingUser: any) => {
       if (existingUser.role !== "admin") {
@@ -388,8 +378,8 @@ router.post("/register", async (req: Request, res: Response) => {
         error: "Registrasi publik dinonaktifkan demi keamanan. Silakan masuk menggunakan akun admin.",
       });
     }
-    const token = authHeader.split(" ")[1];
-    const requestingUser = verifyToken(token);
+    const callerToken = authHeader.split(" ")[1];
+    const requestingUser = verifyToken(callerToken);
     if (!requestingUser || requestingUser.role !== "admin") {
       return res.status(403).json({
         error: "Hanya akun administrator yang berwenang mendaftarkan akun baru.",
