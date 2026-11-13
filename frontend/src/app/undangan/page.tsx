@@ -30,9 +30,15 @@ function InvitationContent() {
   const [resolvedName, setResolvedName] = useState<string | undefined>(
     rawTo ? rawTo.trim() : undefined
   );
+
+  // Jika ada tokenParam di URL, wajib validasi sebelum mengizinkan rendering
+  const [isValidating, setIsValidating] = useState<boolean>(() => Boolean(tokenParam));
   const [isAccessDenied, setIsAccessDenied] = useState<boolean>(() => {
     return isGuestDeletedLocally({ token: tokenParam, name: rawTo });
   });
+  const [denialReason, setDenialReason] = useState<"deleted" | "invalid">(
+    isGuestDeletedLocally({ token: tokenParam, name: rawTo }) ? "deleted" : "invalid"
+  );
 
   useEffect(() => {
     // Initial fetch on mount and sync with SQLite/Supabase/PostgreSQL backend
@@ -53,6 +59,8 @@ function InvitationContent() {
   useEffect(() => {
     if (isGuestDeletedLocally({ token: tokenParam, name: rawTo })) {
       setIsAccessDenied(true);
+      setDenialReason("deleted");
+      setIsValidating(false);
       try {
         sessionStorage.removeItem("verified_wedding_guest");
       } catch {}
@@ -64,30 +72,50 @@ function InvitationContent() {
     let isCancelled = false;
 
     if (tokenParam) {
+      setIsValidating(true);
       verifyGuestTokenApi(tokenParam).then((res) => {
         if (isCancelled) return;
+        setIsValidating(false);
+
         if (res.isDeleted) {
           setIsAccessDenied(true);
+          setDenialReason("deleted");
           try {
             sessionStorage.removeItem("verified_wedding_guest");
           } catch {}
           return;
         }
+
         if (res.success && res.guest) {
+          setIsAccessDenied(false);
           setVerifiedGuest(res.guest);
           setResolvedName(res.guest.name);
           try {
             sessionStorage.setItem("verified_wedding_guest", JSON.stringify(res.guest));
           } catch {}
+          return;
         }
+
+        // Token diubah random / tidak ditemukan / tidak valid
+        setIsAccessDenied(true);
+        setDenialReason("invalid");
+        try {
+          sessionStorage.removeItem("verified_wedding_guest");
+        } catch {}
       });
+
+      return () => {
+        isCancelled = true;
+      };
     }
 
-    if (rawTo || tokenParam) {
-      checkGuestAccessApi({ token: tokenParam, name: rawTo }).then((access) => {
+    // Jika tidak ada tokenParam, tetapi ada nama (rawTo):
+    if (rawTo) {
+      checkGuestAccessApi({ name: rawTo }).then((access) => {
         if (isCancelled) return;
         if (access.isDeleted) {
           setIsAccessDenied(true);
+          setDenialReason("deleted");
           try {
             sessionStorage.removeItem("verified_wedding_guest");
           } catch {}
@@ -100,6 +128,17 @@ function InvitationContent() {
     };
   }, [tokenParam, rawTo]);
 
+  if (isValidating) {
+    return (
+      <div className="min-h-screen bg-[#FFF5F6] flex flex-col items-center justify-center p-4 text-[#7D1128]">
+        <div className="w-10 h-10 rounded-full border-4 border-[#7D1128]/20 border-t-[#7D1128] animate-spin mb-4" />
+        <p className="font-serif text-lg font-medium text-[#49271B]">
+          Memverifikasi tautan undangan...
+        </p>
+      </div>
+    );
+  }
+
   if (isAccessDenied) {
     const coupleTitle =
       weddingData.couple?.groom?.name && weddingData.couple?.bride?.name
@@ -108,6 +147,7 @@ function InvitationContent() {
 
     return (
       <AccessDeniedInvitation
+        reason={denialReason}
         guestName={resolvedName || rawTo || undefined}
         coupleName={coupleTitle}
       />

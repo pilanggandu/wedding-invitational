@@ -176,22 +176,40 @@ export async function deleteGuestMasterFromBackend(id: string): Promise<void> {
 
 export async function verifyGuestTokenApi(
   token: string
-): Promise<{ success: boolean; guest?: any; error?: string; isDeleted?: boolean }> {
-  const { data, error, status } = await apiRequest<{ success: boolean; guest: any; isDeleted?: boolean }>(
-    `/guests/verify/${encodeURIComponent(token)}`
-  );
+): Promise<{
+  success: boolean;
+  guest?: any;
+  error?: string;
+  isDeleted?: boolean;
+  notFound?: boolean;
+}> {
+  const { data, error, status } = await apiRequest<{
+    success: boolean;
+    guest: any;
+    isDeleted?: boolean;
+    error?: string;
+  }>(`/guests/verify/${encodeURIComponent(token)}`);
+
   if (status === 410 || (data && (data as any).isDeleted)) {
     return {
       success: false,
       isDeleted: true,
+      notFound: false,
       error: error || "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
       guest: data?.guest,
     };
   }
-  if (error || !data || !data.guest) {
-    return { success: false, error: error || "Token tidak valid" };
+
+  if (status === 404 || error || !data || !data.guest) {
+    return {
+      success: false,
+      isDeleted: false,
+      notFound: true,
+      error: error || "Tautan undangan tidak valid atau tidak ditemukan",
+    };
   }
-  return { success: true, guest: data.guest, isDeleted: false };
+
+  return { success: true, guest: data.guest, isDeleted: false, notFound: false };
 }
 
 export async function checkGuestAccessApi(params: {
@@ -200,6 +218,7 @@ export async function checkGuestAccessApi(params: {
 }): Promise<{
   allowed: boolean;
   isDeleted: boolean;
+  notFound: boolean;
   guest?: any;
   error?: string;
 }> {
@@ -218,31 +237,54 @@ export async function checkGuestAccessApi(params: {
     return {
       allowed: false,
       isDeleted: true,
+      notFound: false,
       guest: data?.guest,
       error: error || "Undangan ini sudah tidak aktif atau telah dinonaktifkan oleh mempelai",
     };
   }
 
   if (status === 404) {
-    // Tamu tidak terdaftar / link umum
+    // Jika mencari via token spesifik dan hasilnya 404, maka token TIDAK valid (tolak akses)
+    if (params.token) {
+      return {
+        allowed: false,
+        isDeleted: false,
+        notFound: true,
+        guest: undefined,
+        error: "Token undangan tidak ditemukan atau tidak valid",
+      };
+    }
+    // Jika hanya nama umum, izinkan
     return {
       allowed: true,
       isDeleted: false,
+      notFound: true,
       guest: undefined,
     };
   }
 
-  if (data && data.success) {
+  if (data && data.success && data.guest) {
     return {
       allowed: true,
       isDeleted: false,
+      notFound: false,
       guest: data.guest,
+    };
+  }
+
+  if (params.token) {
+    return {
+      allowed: false,
+      isDeleted: false,
+      notFound: true,
+      error: error || "Token undangan tidak valid",
     };
   }
 
   return {
     allowed: true,
     isDeleted: false,
+    notFound: false,
     error: error || undefined,
   };
 }

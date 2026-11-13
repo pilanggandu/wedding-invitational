@@ -190,6 +190,7 @@ test("AccessDeniedInvitation component renders respectful message without em das
     "lucide-react": {
       Lock: () => React.createElement("span", null, "LockIcon"),
       HeartHandshake: () => React.createElement("span", null, "HeartIcon"),
+      AlertCircle: () => React.createElement("span", null, "AlertIcon"),
       Home: () => React.createElement("span", null, "HomeIcon"),
     },
   });
@@ -205,4 +206,15 @@ test("AccessDeniedInvitation component renders respectful message without em das
   assert.ok(html.includes("Budi Santoso"));
   assert.ok(html.includes("Gilang &amp; Salsa") || html.includes("Gilang & Salsa"));
   assert.ok(!html.includes("—"), "Must not contain em dashes");
+
+  const invalidHtml = renderToStaticMarkup(
+    React.createElement(AccessDeniedInvitation, {
+      reason: "invalid",
+      coupleName: "Gilang & Salsa",
+    })
+  );
+
+  assert.ok(invalidHtml.includes("Tautan Undangan Tidak Ditemukan"));
+  assert.ok(invalidHtml.includes("Tautan Tidak Valid"));
+  assert.ok(!invalidHtml.includes("—"), "Must not contain em dashes");
 });

@@ -2,17 +2,35 @@
 
 import React from "react";
 import Link from "next/link";
-import { Lock, HeartHandshake, Home } from "lucide-react";
+import { Lock, HeartHandshake, AlertCircle, Home } from "lucide-react";
 
 interface AccessDeniedInvitationProps {
+  reason?: "deleted" | "invalid";
   guestName?: string;
   coupleName?: string;
 }
 
 export function AccessDeniedInvitation({
+  reason = "deleted",
   guestName,
   coupleName = "Gilang & Salsadila",
 }: AccessDeniedInvitationProps) {
+  const isInvalid = reason === "invalid";
+
+  const title = isInvalid
+    ? "Tautan Undangan Tidak Ditemukan"
+    : "Akses Undangan Dinonaktifkan";
+
+  const badgeText = isInvalid ? "Tautan Tidak Valid" : "Informasi Undangan";
+
+  const primaryMessage = isInvalid
+    ? "Mohon maaf, tautan undangan dengan kode ini tidak valid atau tidak terdaftar dalam daftar undangan resmi kami."
+    : "Mohon maaf, tautan undangan pernikahan ini sudah tidak aktif atau telah dinonaktifkan oleh pihak mempelai.";
+
+  const secondaryMessage = isInvalid
+    ? "Pastikan Anda membuka tautan resmi yang dikirimkan langsung oleh kedua mempelai, atau hubungi mempelai apabila Anda membutuhkan bantuan."
+    : "Apabila Anda merasa hal ini merupakan kekeliruan atau membutuhkan konfirmasi lebih lanjut, silakan menghubungi kedua mempelai secara langsung.";
+
   return (
     <main
       role="region"
@@ -32,32 +50,36 @@ export function AccessDeniedInvitation({
 
         {/* Icon Header */}
         <div className="mx-auto mb-5 w-16 h-16 rounded-2xl bg-[#7D1128]/10 text-[#7D1128] flex items-center justify-center border border-[#7D1128]/20 shadow-inner">
-          <Lock className="w-8 h-8" aria-hidden="true" />
+          {isInvalid ? (
+            <AlertCircle className="w-8 h-8" aria-hidden="true" />
+          ) : (
+            <Lock className="w-8 h-8" aria-hidden="true" />
+          )}
         </div>
 
         {/* Badge status */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#F5A8B8]/20 text-[#7D1128] border border-[#F5A8B8]/40 mb-3">
-          <HeartHandshake className="w-3.5 h-3.5" />
-          <span>Informasi Undangan</span>
+          {isInvalid ? (
+            <AlertCircle className="w-3.5 h-3.5" />
+          ) : (
+            <HeartHandshake className="w-3.5 h-3.5" />
+          )}
+          <span>{badgeText}</span>
         </div>
 
         <h1 className="text-xl sm:text-2xl font-serif font-bold text-[#7D1128] mb-2 leading-tight">
-          Akses Undangan Dinonaktifkan
+          {title}
         </h1>
 
-        {guestName && (
+        {guestName && !isInvalid && (
           <p className="text-sm font-medium text-[#49271B] mb-3">
             Kepada Yth. <span className="font-semibold underline decoration-[#E5B869] decoration-2">{guestName}</span>
           </p>
         )}
 
         <div className="bg-[#FFF5F6] border border-[#F5A8B8]/30 rounded-2xl p-4 mb-6 text-sm text-[#4A3B32] leading-relaxed">
-          <p className="mb-2">
-            Mohon maaf, tautan undangan pernikahan ini sudah tidak aktif atau telah dinonaktifkan oleh pihak mempelai.
-          </p>
-          <p className="text-xs text-[#6B5A50]">
-            Apabila Anda merasa hal ini merupakan kekeliruan atau membutuhkan konfirmasi lebih lanjut, silakan menghubungi kedua mempelai secara langsung.
-          </p>
+          <p className="mb-2">{primaryMessage}</p>
+          <p className="text-xs text-[#6B5A50]">{secondaryMessage}</p>
         </div>
 
         {/* Couple Sign */}
