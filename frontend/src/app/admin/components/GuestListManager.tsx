@@ -431,36 +431,39 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
       {/* 2. STATS OVERVIEW CARDS */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         {/* Card 1: Total Tamu */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] uppercase font-bold tracking-wider text-slate-600">
-              Total Tamu
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-slate-500 font-mono">
+                Total Tamu
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4" />
+              </div>
+            </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono tracking-tight">
               {guests.length}
             </div>
-            <div className="text-[11px] text-slate-600 font-medium mt-1">
+            <div className="text-[11px] text-slate-500 font-medium mt-1">
               Est. {totalQuota} Kuota Undangan
             </div>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-slate-100 text-[10px] text-slate-400 font-mono">
+            Basis data master
           </div>
         </div>
 
         {/* Card 2: Sudah Terkirim */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-700">
-              Sudah Terkirim
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-700 font-mono">
+                Sudah Terkirim
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+            </div>
             <div className="text-2xl sm:text-3xl font-bold text-emerald-800 font-mono tracking-tight">
               {sentCount}
             </div>
@@ -468,19 +471,24 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
               <span>{sentPercent}% terkirim via WhatsApp</span>
             </div>
           </div>
+          <div className="mt-3 pt-2.5 border-t border-slate-100">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div style={{ width: `${sentPercent}%` }} className="h-full bg-emerald-600 rounded-full transition-all" />
+            </div>
+          </div>
         </div>
 
         {/* Card 3: Belum Terkirim */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] uppercase font-bold tracking-wider text-amber-700">
-              Belum Terkirim
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-amber-700 font-mono">
+                Belum Terkirim
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                <Clock className="w-4 h-4" />
+              </div>
+            </div>
             <div className="text-2xl sm:text-3xl font-bold text-amber-800 font-mono tracking-tight">
               {unsentCount}
             </div>
@@ -488,24 +496,34 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
               Menunggu jadwal kirim
             </div>
           </div>
+          <div className="mt-3 pt-2.5 border-t border-slate-100">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div style={{ width: `${guests.length > 0 ? (unsentCount / guests.length) * 100 : 0}%` }} className="h-full bg-amber-500 rounded-full transition-all" />
+            </div>
+          </div>
         </div>
 
         {/* Card 4: Pasti Hadir */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-2xs flex flex-col justify-between">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] uppercase font-bold tracking-wider text-teal-700">
-              Pasti Hadir (RSVP)
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
-              <CalendarCheck className="w-4 h-4" />
-            </div>
-          </div>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:border-slate-300 transition-all">
           <div>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-[11px] uppercase font-bold tracking-wider text-teal-700 font-mono">
+                Pasti Hadir (RSVP)
+              </span>
+              <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+                <CalendarCheck className="w-4 h-4" />
+              </div>
+            </div>
             <div className="text-2xl sm:text-3xl font-bold text-teal-800 font-mono tracking-tight">
               {attendingCount}
             </div>
             <div className="text-[11px] text-teal-700 font-medium mt-1">
               Est. {totalAttendingHeads} Porsi Katering
+            </div>
+          </div>
+          <div className="mt-3 pt-2.5 border-t border-slate-100">
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div style={{ width: `${guests.length > 0 ? (attendingCount / guests.length) * 100 : 0}%` }} className="h-full bg-teal-600 rounded-full transition-all" />
             </div>
           </div>
         </div>

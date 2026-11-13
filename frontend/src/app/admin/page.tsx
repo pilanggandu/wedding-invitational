@@ -246,16 +246,16 @@ function AdminDashboardContent() {
                     setActiveTab(item.id);
                     onItemClick?.();
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs transition-all cursor-pointer ${
                     isActive
-                      ? "bg-[#333A48] text-white shadow-xs font-semibold"
-                      : "text-slate-300 hover:text-white hover:bg-[#24303F]"
+                      ? "bg-slate-900 text-white font-semibold shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 font-medium"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
                       className={`w-4 h-4 transition-colors ${
-                        isActive ? "text-[#DFD2BD]" : "text-slate-400"
+                        isActive ? "text-amber-300" : "text-slate-400"
                       }`}
                     />
                     <span>{item.label}</span>
@@ -263,10 +263,10 @@ function AdminDashboardContent() {
 
                   {item.badge !== undefined && item.badge !== null && (
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-mono ${
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${
                         isActive
-                          ? "bg-[#1C2434] text-[#DFD2BD] font-bold border border-slate-700"
-                          : "bg-[#24303F] text-slate-300 border border-slate-800"
+                          ? "bg-slate-800 text-amber-200 border border-slate-700"
+                          : "bg-slate-100 text-slate-600 border border-slate-200/60"
                       }`}
                     >
                       {item.badge}
@@ -282,13 +282,13 @@ function AdminDashboardContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F1F5F9] text-slate-800 flex flex-col font-sans">
-      <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-xs">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col font-sans">
+      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]">
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             type="button"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer flex items-center justify-center shadow-2xs"
+            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer flex items-center justify-center shadow-2xs"
             aria-label="Toggle Sidebar Navigation"
             title={isSidebarOpen ? "Sembunyikan Menu" : "Buka Menu"}
           >
@@ -302,10 +302,10 @@ function AdminDashboardContent() {
           <button
             type="button"
             onClick={() => setIsCoupleModalOpen(true)}
-            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors text-left cursor-pointer group shadow-2xs"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-left cursor-pointer group shadow-2xs bg-white"
             title="Klik untuk mengatur nama mempelai"
           >
-            <div className="w-6 h-6 rounded-md bg-[#1C2434] text-[#DFD2BD] flex items-center justify-center font-bold text-[10px] uppercase font-mono">
+            <div className="w-6 h-6 rounded-lg bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-[10px] uppercase font-mono shadow-2xs">
               {monogram}
             </div>
             <div className="max-w-[130px] sm:max-w-[200px] truncate">
@@ -317,7 +317,7 @@ function AdminDashboardContent() {
               </span>
             </div>
             {!isCoupleConfigured && (
-              <span className="hidden md:inline px-1.5 py-0.5 rounded text-[9px] bg-amber-50 text-amber-700 border border-amber-200 font-medium">
+              <span className="hidden md:inline px-1.5 py-0.5 rounded-full text-[9px] bg-amber-50 text-amber-700 border border-amber-200 font-medium">
                 Wajib
               </span>
             )}
@@ -326,7 +326,7 @@ function AdminDashboardContent() {
         <div className="flex items-center gap-2 sm:gap-2.5">
           {backendStatus && (
             <div
-              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-mono ${
+              className={`hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-mono ${
                 backendStatus.online
                   ? "bg-emerald-50 border-emerald-200 text-emerald-800"
                   : "bg-amber-50 border-amber-200 text-amber-800"
@@ -334,7 +334,7 @@ function AdminDashboardContent() {
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  backendStatus.online ? "bg-emerald-600" : "bg-amber-600"
+                  backendStatus.online ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
                 }`}
               />
               <span>
@@ -347,7 +347,7 @@ function AdminDashboardContent() {
 
           <button
             onClick={handleCopyLink}
-            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Salin tautan web undangan"
           >
             {isCopiedPublicLink ? (
@@ -362,7 +362,7 @@ function AdminDashboardContent() {
 
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+            className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             title="Buka pratinjau mobile"
           >
             <Smartphone className="w-3.5 h-3.5 text-slate-500" />
@@ -373,10 +373,10 @@ function AdminDashboardContent() {
             href="/undangan"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-[#1C2434] hover:bg-[#24303F] text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+            className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-[0.98]"
             title="Buka halaman undangan langsung"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-[#DFD2BD]" />
+            <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
             <span className="hidden sm:inline">Buka Undangan</span>
           </Link>
 
@@ -384,45 +384,45 @@ function AdminDashboardContent() {
             href="/photobox"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
+            className="px-3 py-1.5 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 text-amber-900 border border-amber-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
             title="Buka Photobox Studio"
           >
-            <Camera className="w-3.5 h-3.5 text-[#8C6239]" />
+            <Camera className="w-3.5 h-3.5 text-amber-700" />
             <span className="hidden sm:inline">Photobox</span>
           </Link>
 
           <button
             onClick={() => setIsA3PosterOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
             title="Generate & Cetak Poster QR Code Standee A3 untuk Photobox"
           >
-            <QrCode className="w-3.5 h-3.5 text-[#DFD2BD]" />
+            <QrCode className="w-3.5 h-3.5 text-rose-700" />
             <span className="hidden sm:inline">QR Standee A3</span>
           </button>
 
           <button
             onClick={handleResetData}
-            className="p-1.5 rounded-lg border border-transparent hover:border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl border border-transparent hover:border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
             title="Kembalikan data ke awal"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div className="w-7 h-7 rounded-full bg-[#1C2434] text-[#DFD2BD] flex items-center justify-center font-bold text-xs uppercase border border-slate-700 shadow-2xs">
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-xs uppercase shadow-2xs">
               {user?.fullName?.charAt(0) || user?.username?.charAt(0) || "A"}
             </div>
             <div className="text-left hidden xl:block">
               <p className="text-xs font-semibold text-slate-800 leading-none">
                 {user?.fullName || user?.username}
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Admin</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Administrator</p>
             </div>
           </div>
 
           <button
             onClick={() => logout()}
-            className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer ml-1"
+            className="p-1.5 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer ml-1"
             title="Keluar dari akun (Logout)"
           >
             <LogOut className="w-4 h-4" />
@@ -431,31 +431,34 @@ function AdminDashboardContent() {
       </header>
       <div className="flex-1 flex w-full relative overflow-x-hidden">
         <aside
-          className={`hidden lg:flex shrink-0 bg-[#1C2434] text-slate-200 border-r border-[#24303F] flex-col justify-between transition-all duration-300 ease-in-out ${
+          className={`hidden lg:flex shrink-0 bg-white text-slate-800 border-r border-slate-200/80 flex-col justify-between transition-all duration-300 ease-in-out shadow-[1px_0_12px_rgba(0,0,0,0.02)] ${
             isSidebarOpen
               ? "w-64 opacity-100 translate-x-0"
               : "w-0 opacity-0 -translate-x-full overflow-hidden pointer-events-none"
           }`}
         >
           <div className="w-64 p-4 space-y-6">
-            <div className="px-2 pt-1 pb-3 flex items-center justify-between border-b border-[#2E3A4B]">
+            <div className="px-2 pt-1 pb-3 flex items-center justify-between border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-[#2E3A4B] text-[#DFD2BD] flex items-center justify-center font-mono font-bold text-xs border border-slate-600 shadow-2xs">
+                <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shadow-xs">
                   AU
                 </div>
                 <div>
-                  <span className="text-xs font-bold text-white tracking-wider uppercase block">
-                    ATELIER ADMIN
-                  </span>
-                  <span className="text-[10px] text-slate-400 block font-mono">
-                    Sistem Kelola Undangan
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-slate-900 tracking-wider uppercase block">
+                      ATELIER
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+                  <span className="text-[10px] text-slate-500 block font-mono">
+                    MyFin Dasbor
                   </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-[#24303F] transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 title="Sembunyikan Menu"
               >
                 <PanelLeftClose className="w-3.5 h-3.5" />
@@ -464,18 +467,18 @@ function AdminDashboardContent() {
 
             {renderNavSection()}
           </div>
-          <div className="w-64 p-4 border-t border-[#24303F] bg-[#171E2D]">
+          <div className="w-64 p-4 border-t border-slate-100 bg-slate-50/50">
             <Link
               href="/undangan"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-[#24303F] transition-colors border border-transparent hover:border-[#313D4A]"
+              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-white transition-all border border-transparent hover:border-slate-200 hover:shadow-2xs"
             >
               <span className="flex items-center gap-2.5">
-                <ExternalLink className="w-3.5 h-3.5 text-[#DFD2BD]" />
-                <span className="font-medium">Web Undangan Tamu</span>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                <span className="font-semibold">Web Undangan Tamu</span>
               </span>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             </Link>
           </div>
         </aside>
@@ -486,26 +489,26 @@ function AdminDashboardContent() {
               onClick={() => setIsSidebarOpen(false)}
             />
 
-            <div className="relative w-72 max-w-[85vw] bg-[#1C2434] text-slate-200 h-full p-4 shadow-2xl flex flex-col justify-between z-10 animate-in slide-in-from-left duration-200 border-r border-[#24303F]">
+            <div className="relative w-72 max-w-[85vw] bg-white text-slate-800 h-full p-4 shadow-2xl flex flex-col justify-between z-10 animate-in slide-in-from-left duration-200 border-r border-slate-200">
               <div className="space-y-6">
-                <div className="flex items-center justify-between pb-3 border-b border-[#2E3A4B]">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-[#2E3A4B] text-[#DFD2BD] flex items-center justify-center font-mono font-bold text-xs border border-slate-600">
+                    <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shadow-xs">
                       AU
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-white tracking-wider uppercase block">
-                        ATELIER ADMIN
+                      <span className="text-xs font-bold text-slate-900 tracking-wider uppercase block">
+                        ATELIER
                       </span>
-                      <span className="text-[10px] text-slate-400 block font-mono">
-                        Sistem Kelola Undangan
+                      <span className="text-[10px] text-slate-500 block font-mono">
+                        MyFin Dasbor
                       </span>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsSidebarOpen(false)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#24303F] transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                     aria-label="Tutup Menu"
                   >
                     <X className="w-4 h-4" />
@@ -515,18 +518,18 @@ function AdminDashboardContent() {
                 {renderNavSection(() => setIsSidebarOpen(false))}
               </div>
 
-              <div className="pt-3 border-t border-[#24303F]">
+              <div className="pt-3 border-t border-slate-100">
                 <Link
                   href="/undangan"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-[#24303F] transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
                 >
                   <span className="flex items-center gap-2">
-                    <ExternalLink className="w-3.5 h-3.5 text-[#DFD2BD]" />
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
                     <span>Buka Web Undangan</span>
                   </span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 </Link>
               </div>
             </div>
