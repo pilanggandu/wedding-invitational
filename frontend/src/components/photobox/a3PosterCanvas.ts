@@ -9,6 +9,7 @@ export interface A3PosterOptions {
   coupleNames?: string;
   weddingDate?: string;
   hashtag?: string;
+  passcode?: string;
   wifiInfo?: {
     enabled: boolean;
     ssid: string;
@@ -45,6 +46,7 @@ export async function generateA3PosterCanvas(
     coupleNames = "GILANG & SALSADILA",
     weddingDate = "Rabu, 28 Oktober 2026 • Jakarta",
     hashtag = "#GilangSalsaWedding",
+    passcode = "2026",
     wifiInfo,
   } = options;
 
@@ -480,10 +482,13 @@ export async function generateA3PosterCanvas(
     ctx.restore();
   });
 
-  // URL Display Box
+  // URL & Passcode Display Box
   ctx.fillStyle = "#8C6239";
   ctx.font = "600 34px 'Courier New', monospace";
-  ctx.fillText(targetUrl, A3_WIDTH / 2, cardY + cardHeight - 90);
+  const displayFooter = passcode
+    ? `${targetUrl}   •   Passcode: ${passcode}`
+    : targetUrl;
+  ctx.fillText(displayFooter, A3_WIDTH / 2, cardY + cardHeight - 90);
   ctx.restore();
 
   // --- 6. OPTIONAL VENUE WIFI CARD OR STEP GUIDE ---
@@ -523,7 +528,13 @@ export async function generateA3PosterCanvas(
   ctx.textBaseline = "middle";
 
   const stepList = [
-    { num: "1", title: "Scan QR", desc: "Arahkan kamera HP ke QR Code tanpa aplikasi tambahan" },
+    {
+      num: "1",
+      title: "Scan QR & Masukkan Kode",
+      desc: passcode
+        ? `Arahkan kamera HP ke QR Code dan masukkan passcode ${passcode}`
+        : "Arahkan kamera HP ke QR Code tanpa aplikasi tambahan",
+    },
     { num: "2", title: "Pilih Frame & Pose", desc: "Pilih layout kolase dan pose bersama teman/pasangan" },
     { num: "3", title: "Simpan & Bagikan", desc: "Unduh foto hasil photobox resolusi tinggi ke galeri HP" },
   ];

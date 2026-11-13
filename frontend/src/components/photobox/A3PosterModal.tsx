@@ -17,6 +17,7 @@ import {
   Eye,
   Sliders,
   Share2,
+  KeyRound,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import {
@@ -40,6 +41,7 @@ export function A3PosterModal({
   const [targetUrl, setTargetUrl] = useState<string>(
     defaultUrl || "https://cut-fishing-postal-violations.trycloudflare.com/photobox"
   );
+  const [posterPasscode, setPosterPasscode] = useState<string>("2026");
   const [includeWifi, setIncludeWifi] = useState<boolean>(false);
   const [wifiSsid, setWifiSsid] = useState<string>("WiFi-Wedding-Venue");
   const [wifiPassword, setWifiPassword] = useState<string>("gilangsalsa2026");
@@ -75,6 +77,7 @@ export function A3PosterModal({
           coupleNames: "GILANG & SALSADILA",
           weddingDate: "Rabu, 28 Oktober 2026 • Jakarta",
           hashtag: "#GilangSalsaWedding",
+          passcode: posterPasscode.trim(),
           wifiInfo: includeWifi
             ? {
                 enabled: true,
@@ -100,7 +103,7 @@ export function A3PosterModal({
       isMounted = false;
       clearTimeout(timer);
     };
-  }, [isOpen, theme, targetUrl, includeWifi, wifiSsid, wifiPassword]);
+  }, [isOpen, theme, targetUrl, posterPasscode, includeWifi, wifiSsid, wifiPassword]);
 
   // Full-Res 300 DPI Download
   const handleDownloadA3 = async () => {
@@ -113,6 +116,7 @@ export function A3PosterModal({
         coupleNames: "GILANG & SALSADILA",
         weddingDate: "Rabu, 28 Oktober 2026 • Jakarta",
         hashtag: "#GilangSalsaWedding",
+        passcode: posterPasscode.trim(),
         wifiInfo: includeWifi
           ? {
               enabled: true,
@@ -413,7 +417,29 @@ export function A3PosterModal({
               </div>
             </div>
 
-            {/* 3. Optional WiFi Details for Wedding Guests */}
+            {/* 3. Passcode Akses Photobox */}
+            <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
+                  <KeyRound className="w-4 h-4 text-[#8C6239]" />
+                  <span>Passcode Masuk Bilik Foto</span>
+                </label>
+                <span className="text-[10px] text-[#786551] font-mono">4 digit</span>
+              </div>
+              <input
+                type="text"
+                maxLength={8}
+                value={posterPasscode}
+                onChange={(e) => setPosterPasscode(e.target.value)}
+                placeholder="2026"
+                className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-[#E8DFC8] bg-[#FAF6EE]/50 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#4A121A] text-[#3A332C]"
+              />
+              <p className="text-[10px] text-[#786551]">
+                Passcode ini dicantumkan pada poster cetak untuk membuka akses tamu di lokasi acara.
+              </p>
+            </div>
+
+            {/* 4. Optional WiFi Details for Wedding Guests */}
             <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 cursor-pointer">

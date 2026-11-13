@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
@@ -10,17 +10,32 @@ import {
   HelpCircle,
   Share2,
   QrCode,
+  Lock,
 } from "lucide-react";
 import { PhotoboxLayout, getLayoutShotsCount } from "./types";
 import { CameraCapture } from "./CameraCapture";
 import { FrameCustomizer } from "./FrameCustomizer";
 import { A3PosterModal } from "./A3PosterModal";
+import { PhotoboxPasscodeGate } from "./PhotoboxPasscodeGate";
+import {
+  isPhotoboxUnlockedSession,
+  setPhotoboxUnlockedSession,
+} from "./passcode";
 
 export function PhotoboxStudio() {
+  const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
+  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<"camera" | "frames">("camera");
   const [layout, setLayout] = useState<PhotoboxLayout>("4-strip");
   const [photos, setPhotos] = useState<string[]>(["", "", "", ""]);
   const [isA3ModalOpen, setIsA3ModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+    if (isPhotoboxUnlockedSession()) {
+      setIsUnlocked(true);
+    }
+  }, []);
 
   // Adjust photos array length when layout changes if needed
   const handleLayoutChange = (newLayout: PhotoboxLayout) => {
@@ -35,6 +50,18 @@ export function PhotoboxStudio() {
       return copy;
     });
   };
+
+  if (!hasMounted) {
+    return (
+      <div className="min-h-screen bg-[#FAF6EE] flex items-center justify-center p-4">
+        <div className="w-10 h-10 rounded-full border-2 border-[#4A121A]/20 border-t-[#4A121A] animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isUnlocked) {
+    return <PhotoboxPasscodeGate onUnlock={() => setIsUnlocked(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF6EE] text-[#3A332C] flex flex-col font-sans selection:bg-[#DFD2BD] selection:text-[#4A121A]">
@@ -103,6 +130,20 @@ export function PhotoboxStudio() {
             <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DFD2BD]" />
             <span className="hidden sm:inline">Cetak Poster QR (A3)</span>
             <span className="sm:hidden font-mono text-[11px]">QR A3</span>
+          </button>
+
+          {/* Button Kunci Studio */}
+          <button
+            type="button"
+            onClick={() => {
+              setPhotoboxUnlockedSession(false);
+              setIsUnlocked(false);
+            }}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px]"
+            title="Kunci kembali bilik foto"
+          >
+            <Lock className="w-3.5 h-3.5 text-[#8C6239]" />
+            <span className="hidden sm:inline">Kunci</span>
           </button>
         </div>
       </header>
