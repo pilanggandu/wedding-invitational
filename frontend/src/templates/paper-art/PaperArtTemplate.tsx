@@ -1407,7 +1407,7 @@ function SketchbookFooter() {
         )}
         <ItemMotion variant="pop" delay={0.22}>
           <p className="text-xs font-mono text-white/60 tracking-widest uppercase font-medium pt-1">
-            SKETCHBOOK MEMORY &bull; 2026
+            HAPPY MEMORY &bull; 2026
           </p>
         </ItemMotion>
       </div>
