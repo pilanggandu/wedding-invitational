@@ -134,15 +134,15 @@ export function PhotoboxStudio() {
             </button>
           </div>
 
-          {/* Button Generate QR Code A3 */}
+          {/* Button Generate QR Code Poster */}
           <button
             onClick={() => setIsA3ModalOpen(true)}
             className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px]"
-            title="Generate & Cetak Poster QR Code A3 untuk Meja/Standee Acara"
+            title="Generate & Cetak Poster QR Code (A3, A4, A5, A6, F4) untuk Meja/Standee Acara"
           >
             <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DFD2BD]" />
-            <span className="hidden sm:inline">Cetak Poster QR (A3)</span>
-            <span className="sm:hidden font-mono text-[11px]">QR A3</span>
+            <span className="hidden sm:inline">Cetak Poster QR</span>
+            <span className="sm:hidden font-mono text-[11px]">QR Standee</span>
           </button>
 
           {/* Button Kunci Studio */}

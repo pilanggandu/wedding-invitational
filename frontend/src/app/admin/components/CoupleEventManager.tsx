@@ -1636,9 +1636,10 @@ export function CoupleEventManager({
               type="button"
               onClick={onOpenA3Poster}
               className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] hover:bg-[#F3ECE0] border border-[#E8DFC8] text-xs font-bold text-[#4A121A] flex items-center gap-2 cursor-pointer transition-colors shadow-2xs active:scale-95"
+              title="Cetak Poster QR Code Standee (A3, A4, A5, A6, F4)"
             >
               <QrCode className="w-3.5 h-3.5 text-[#8C6239]" />
-              <span>Cetak Poster QR Standee (A3)</span>
+              <span>Cetak Poster QR Standee (A3-A6)</span>
             </button>
           )}
         </div>

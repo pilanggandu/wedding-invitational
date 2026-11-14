@@ -1935,10 +1935,10 @@ export function FrameCustomizer({
           <button
             onClick={() => setIsA3ModalOpen(true)}
             className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-            title="Cetak Poster Standee QR Code A3 untuk Acara"
+            title="Cetak Poster Standee QR Code (A3, A4, A5, A6, F4) untuk Acara"
           >
             <QrCode className="w-4 h-4 text-[#8C6239]" />
-            <span>Poster QR (A3)</span>
+            <span>Poster QR (A3-A6)</span>
           </button>
 
           <button

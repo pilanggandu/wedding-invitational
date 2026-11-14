@@ -901,9 +901,10 @@ export function AdminOverview({
               type="button"
               onClick={onOpenA3Poster}
               className="px-4 py-2 rounded-xl bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
+              title="Cetak Poster QR Code Standee (A3, A4, A5, A6, F4)"
             >
               <QrCode className="w-3.5 h-3.5 text-[#DFD2BD]" />
-              <span>Cetak Poster Standee (A3)</span>
+              <span>Cetak Poster QR Standee</span>
             </button>
           )}
         </div>

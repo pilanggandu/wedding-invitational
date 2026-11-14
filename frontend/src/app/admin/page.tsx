@@ -394,10 +394,10 @@ function AdminDashboardContent() {
           <button
             onClick={() => setIsA3PosterOpen(true)}
             className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
-            title="Generate & Cetak Poster QR Code Standee A3 untuk Photobox"
+            title="Generate & Cetak Poster QR Code Standee (A3, A4, A5, A6, F4, 4R/5R)"
           >
             <QrCode className="w-3.5 h-3.5 text-rose-700" />
-            <span className="hidden sm:inline">QR Standee A3</span>
+            <span className="hidden sm:inline">Cetak Poster QR</span>
           </button>
 
           <button
@@ -644,6 +644,17 @@ function AdminDashboardContent() {
         isOpen={isA3PosterOpen}
         onClose={() => setIsA3PosterOpen(false)}
         defaultPasscode={invitationData.general?.photoboxPasscode || "2026"}
+        coupleNames={
+          invitationData.couple?.groom?.name && invitationData.couple?.bride?.name
+            ? `${invitationData.couple.groom.name} & ${invitationData.couple.bride.name}`.toUpperCase()
+            : "GILANG & SALSADILA"
+        }
+        weddingDate={
+          invitationData.events?.[0]?.displayDate
+            ? `${invitationData.events[0].displayDate} • Jakarta`
+            : "Rabu, 28 Oktober 2026 • Jakarta"
+        }
+        hashtag={invitationData.general?.hashtag || "#GilangSalsaWedding"}
       />
     </div>
   );
