@@ -363,14 +363,14 @@ export function A3PosterModal({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-base sm:text-lg font-bold font-serif text-[#4A121A]">
-                  Generator Poster &amp; Standee QR Code
+                  Cetak Poster QR Photobox
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
-                  Pilihan: A3 • A4 • A5 • A6 • F4 • 5R • 4R
+                  Pilihan: A3, A4, A5, A6, F4, 5R, 4R
                 </span>
               </div>
               <p className="text-xs text-[#786551]">
-                Cetak poster QR Code bilik foto photobox dengan beragam ukuran standee meja, tent card, atau easel
+                Siapkan poster untuk standee meja atau easel pintu masuk photobox.
               </p>
             </div>
           </div>
@@ -472,7 +472,7 @@ export function A3PosterModal({
                   </span>
                 </div>
                 <p className="text-[10px] text-[#786551] mt-0.5">
-                  <strong>Rekomendasi:</strong> {currentSizeConfig.useCase}
+                  <strong>Peruntukan:</strong> {currentSizeConfig.useCase}
                 </p>
               </div>
 
@@ -492,7 +492,7 @@ export function A3PosterModal({
                     />
                   </div>
                   <p className="text-[10px] text-amber-900/80 leading-relaxed">
-                    Mencetak langsung {currentSizeConfig.multiUpCount}x kartu {currentSizeConfig.code} pada 1 lembar kertas A4 standar lengkap dengan tanda garis potong (cut guide) rapi. Hemat kertas printer rumahan!
+                    Cetak {currentSizeConfig.multiUpCount} kartu {currentSizeConfig.code} dalam satu lembar A4 dengan garis panduan potong.
                   </p>
                 </div>
               )}
@@ -502,37 +502,37 @@ export function A3PosterModal({
             <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs">
               <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 mb-2.5">
                 <Palette className="w-4 h-4 text-[#8C6239]" />
-                <span>Pilih Tema Desain Poster:</span>
+                <span>Pilih Tema Tampilan:</span>
               </label>
 
               <div className="grid grid-cols-1 gap-2">
                 {[
                   {
                     id: "emerald-gold",
-                    name: "Emerald Green & Gold",
-                    desc: "Hijau emerald botani mewah dengan aksen emas filigree (Sesuai Dekorasi Hijau)",
-                    badge: "Tema Dekor",
+                    name: "Emerald & Emas",
+                    desc: "Hijau zamrud dengan lis emas, serasi untuk dekorasi hijau.",
+                    badge: "Dekorasi Hijau",
                     color: "bg-[#0A241A] text-[#DFD2BD] border-[#DFD2BD]",
                   },
                   {
                     id: "royal-maroon",
-                    name: "Royal Maroon & Gold",
-                    desc: "Burgundy mewah dengan aksen emas filigree & medallion cameo",
+                    name: "Marun & Emas",
+                    desc: "Merah marun dengan lis emas klasik.",
                     badge: "Klasik",
                     color: "bg-[#3E0F16] text-[#DFD2BD] border-[#DFD2BD]",
                   },
                   {
                     id: "paper-keepsake",
-                    name: "Paper Keepsake & Botanical",
-                    desc: "Kertas antik bertekstur ivory dengan lukisan cat air & segel lilin",
+                    name: "Kertas Antik",
+                    desc: "Kertas krem bertekstur dengan sentuhan cat air dan segel lilin.",
                     badge: "Artistik",
                     color: "bg-[#FAF6EE] text-[#4A121A] border-[#8C6239]",
                   },
                   {
                     id: "korean-studio",
-                    name: "Korean Minimalist Studio",
-                    desc: "Gaya modern studio photobooth Korea yang bersih dan elegan",
-                    badge: "Modern",
+                    name: "Studio Minimalis",
+                    desc: "Latar putih bersih dengan bingkai monokrom.",
+                    badge: "Minimalis",
                     color: "bg-white text-zinc-900 border-zinc-400",
                   },
                 ].map((t) => {
@@ -690,7 +690,7 @@ export function A3PosterModal({
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 cursor-pointer">
                   <Wifi className="w-4 h-4 text-[#8C6239]" />
-                  <span>Sertakan Info WiFi Gedung di Poster</span>
+                  <span>Cantumkan Info WiFi di Poster</span>
                 </label>
                 <input
                   type="checkbox"
@@ -715,7 +715,7 @@ export function A3PosterModal({
                   </div>
                   <div>
                     <label className="block text-[10px] font-semibold text-[#5A4D3E] mb-1">
-                      Password WiFi
+                      Kata Sandi WiFi
                     </label>
                     <input
                       type="text"
@@ -764,7 +764,7 @@ export function A3PosterModal({
               ) : (
                 <div className="flex flex-col items-center justify-center p-6 text-center text-slate-400">
                   <RefreshCw className="w-8 h-8 animate-spin mb-2 text-[#4A121A]" />
-                  <p className="text-xs font-semibold">Sedang merender poster...</p>
+                  <p className="text-xs font-semibold">Sedang menyiapkan gambar poster...</p>
                 </div>
               )}
             </div>
@@ -774,16 +774,16 @@ export function A3PosterModal({
               <div>
                 <p className="font-bold text-[#4A121A] flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-[#C99A45]" />
-                  <span>Siap Cetak / Frame:</span>
+                  <span>Kesesuaian Ukuran:</span>
                 </p>
                 <p className="text-[11px] text-[#786551]">
                   {multiUpOnA4
-                    ? `Dicetak pada lembar A4 landscape/portrait, potong menjadi ${currentSizeConfig.multiUpCount} lembar.`
-                    : `Ukuran standar ${currentSizeConfig.dimensionsMm} pas dengan bingkai / standee akrilik.`}
+                    ? `Dicetak pada lembar A4, lalu potong menjadi ${currentSizeConfig.multiUpCount} kartu.`
+                    : `Ukuran ${currentSizeConfig.dimensionsMm} pas untuk bingkai atau akrilik meja ${currentSizeConfig.code}.`}
                 </p>
               </div>
               <span className="text-[10px] font-mono font-bold text-[#8C6239] bg-[#FAF6EE] px-2 py-1 rounded-md shrink-0 border border-[#E8DFC8]">
-                {multiUpOnA4 ? "A4 Paper" : currentSizeConfig.code}
+                {multiUpOnA4 ? "Kertas A4" : currentSizeConfig.code}
               </span>
             </div>
 
@@ -797,8 +797,8 @@ export function A3PosterModal({
                 <Download className="w-5 h-5 text-[#DFD2BD]" />
                 <span>
                   {isExporting
-                    ? "Memproses Resolusi 300 DPI..."
-                    : `Unduh Format ${multiUpOnA4 ? "Multi-Up A4" : currentSizeConfig.code} (File PNG HD)`}
+                    ? "Menyimpan file 300 DPI..."
+                    : `Unduh Gambar (PNG 300 DPI)`}
                 </span>
               </button>
 
@@ -809,7 +809,7 @@ export function A3PosterModal({
               >
                 <Printer className="w-4 h-4 text-[#8C6239]" />
                 <span>
-                  Cetak Langsung {multiUpOnA4 ? "Kertas A4" : currentSizeConfig.code} / Simpan PDF
+                  Cetak atau Simpan PDF ({multiUpOnA4 ? "Kertas A4" : currentSizeConfig.code})
                 </span>
               </button>
             </div>
@@ -819,7 +819,7 @@ export function A3PosterModal({
         {/* Footer Bar */}
         <div className="px-6 py-3 border-t border-[#E8DFC8] bg-white flex items-center justify-between text-xs text-[#786551] shrink-0">
           <span>
-            Format {currentSizeConfig.code} ({currentSizeConfig.dimensionsCm}) • 300 DPI Ultra HD • Siap Cetak Langsung
+            Format {currentSizeConfig.code} ({currentSizeConfig.dimensionsCm}) • 300 DPI • Siap cetak
           </span>
           <button
             onClick={onClose}

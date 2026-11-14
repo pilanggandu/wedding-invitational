@@ -31,7 +31,7 @@ export interface PosterSizeConfig {
 export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
   a3: {
     id: "a3",
-    name: "A3 Poster Standee",
+    name: "A3 Poster",
     code: "A3",
     dimensionsMm: "297 × 420 mm",
     dimensionsCm: "29.7 × 42 cm",
@@ -41,12 +41,12 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 4960,
     cssPageSize: "A3 portrait",
     category: "poster",
-    useCase: "Standing Easel / Pintu Masuk / Welcome Board",
-    description: "Ukuran poster besar utama untuk dipasang di easel/tripod dekat gate atau pintu masuk photobox.",
+    useCase: "Standing Easel / Pintu Masuk",
+    description: "Ukuran poster besar untuk diletakkan di easel atau standing frame dekat pintu masuk.",
   },
   a4: {
     id: "a4",
-    name: "A4 Standee Meja",
+    name: "A4 Standee",
     code: "A4",
     dimensionsMm: "210 × 297 mm",
     dimensionsCm: "21 × 29.7 cm",
@@ -56,8 +56,8 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 3508,
     cssPageSize: "A4 portrait",
     category: "standee",
-    useCase: "Meja Registrasi / Standing Akrilik Sedang",
-    description: "Ukuran paling populer dan praktis untuk meja penerima tamu, booth photobox, atau meja souvenir.",
+    useCase: "Meja Penerima Tamu / Meja Registrasi",
+    description: "Ukuran standar untuk meja registrasi tamu atau stan photobox.",
   },
   a5: {
     id: "a5",
@@ -71,17 +71,17 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 2480,
     cssPageSize: "A5 portrait",
     category: "table",
-    useCase: "Tent Card Meja Makan / Table Top Stand",
-    description: "Separuh dari ukuran A4. Ideal diletakkan di setiap meja tamu (round table) agar tamu dapat scan langsung.",
+    useCase: "Akrilik Meja Makan Tamu",
+    description: "Separuh ukuran A4. Pas untuk akrilik meja makan atau nomor meja.",
     supportsA4MultiUp: true,
     multiUpCount: 2,
-    multiUpLabel: "2x A5 dalam 1 Lembar A4 (Hemat Kertas + Garis Potong)",
+    multiUpLabel: "2x A5 dalam 1 Lembar A4 (dengan garis potong)",
     multiUpPageSize: "A4 landscape",
     multiUpOrientation: "landscape",
   },
   a6: {
     id: "a6",
-    name: "A6 Mini Card",
+    name: "A6 Kartu Meja",
     code: "A6",
     dimensionsMm: "105 × 148 mm",
     dimensionsCm: "10.5 × 14.8 cm",
@@ -91,17 +91,17 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 1748,
     cssPageSize: "A6 portrait",
     category: "mini",
-    useCase: "Mini Akrilik / Kartu Meja Kecil / Souvenir",
-    description: "Seperempat A4. Sangat kompak untuk nomor meja, akrilik mini L-shape, atau sisipan ucapan terima kasih.",
+    useCase: "Akrilik Mini / Kartu Meja Kecil",
+    description: "Seperempat ukuran A4. Ringkas untuk nomor meja atau sisipan souvenir.",
     supportsA4MultiUp: true,
     multiUpCount: 4,
-    multiUpLabel: "4x A6 dalam 1 Lembar A4 (Kolase 4 Kartu Meja + Garis Potong)",
+    multiUpLabel: "4x A6 dalam 1 Lembar A4 (dengan garis potong)",
     multiUpPageSize: "A4 portrait",
     multiUpOrientation: "portrait",
   },
   f4: {
     id: "f4",
-    name: "F4 / Folio Standee",
+    name: "F4 Folio",
     code: "F4",
     dimensionsMm: "215 × 330 mm",
     dimensionsCm: "21.5 × 33 cm",
@@ -111,12 +111,12 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 3898,
     cssPageSize: "215mm 330mm",
     category: "poster",
-    useCase: "Kertas Folio / HVS Percetakan Indonesia",
-    description: "Standar kertas percetakan dan fotokopi lokal Indonesia. Pas untuk cetak art paper/karton F4 tanpa terpotong.",
+    useCase: "Kertas Folio / HVS Percetakan",
+    description: "Format kertas percetakan lokal untuk kertas HVS atau art paper F4.",
   },
   "5r": {
     id: "5r",
-    name: "5R Frame Foto",
+    name: "5R Frame",
     code: "5R",
     dimensionsMm: "127 × 178 mm",
     dimensionsCm: "12.7 × 17.8 cm",
@@ -126,12 +126,12 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 2102,
     cssPageSize: "127mm 178mm",
     category: "frame",
-    useCase: "Bingkai Foto 5R (5 x 7 inci)",
-    description: "Format bingkai foto meja dekorasi 5R yang estetik dan cocok dengan berbagai frame dekoratif.",
+    useCase: "Bingkai Foto 5R (5 × 7 inci)",
+    description: "Format bingkai foto meja ukuran 5R.",
   },
   "4r": {
     id: "4r",
-    name: "4R Frame Foto",
+    name: "4R Frame",
     code: "4R",
     dimensionsMm: "102 × 152 mm",
     dimensionsCm: "10.2 × 15.2 cm",
@@ -141,8 +141,8 @@ export const POSTER_SIZES: Record<PosterPaperSize, PosterSizeConfig> = {
     heightPx: 1795,
     cssPageSize: "102mm 152mm",
     category: "frame",
-    useCase: "Bingkai Foto 4R (4 x 6 inci)",
-    description: "Ukuran standar foto meja atau akrilik 4R yang umum tersedia di toko dekorasi pesta.",
+    useCase: "Bingkai Foto 4R (4 × 6 inci)",
+    description: "Format bingkai foto standar meja ukuran 4R.",
   },
 };
 
@@ -519,9 +519,9 @@ async function renderMasterPoster(
 
   const heroBannerY = 1380;
 
-  // Badge Pill "LIVE PHOTOBOOTH"
+  // Badge Pill "BILIK FOTO PERNIKAHAN"
   ctx.save();
-  const badgeWidth = 620;
+  const badgeWidth = 560;
   const badgeHeight = 76;
   const badgeX = MASTER_WIDTH / 2 - badgeWidth / 2;
   const badgeY = heroBannerY - 80;
@@ -537,22 +537,22 @@ async function renderMasterPoster(
       : theme === "royal-maroon"
       ? "#3E0F16"
       : "#DFD2BD";
-  ctx.font = "bold 36px 'Plus Jakarta Sans', sans-serif";
+  ctx.font = "bold 34px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "4px";
-  ctx.fillText("📸  LIVE WEDDING PHOTOBOX", MASTER_WIDTH / 2, badgeY + badgeHeight / 2);
+  ctx.fillText("BILIK FOTO PERNIKAHAN", MASTER_WIDTH / 2, badgeY + badgeHeight / 2);
   ctx.restore();
 
   // Grand Invitation Headline
   ctx.fillStyle = textColorPrimary;
   ctx.font = "bold 96px 'Playfair Display', Georgia, serif";
-  ctx.fillText("Abadikan Senyumanmu Bersama Kami", MASTER_WIDTH / 2, heroBannerY + 70);
+  ctx.fillText("Foto Bersama Pengantin", MASTER_WIDTH / 2, heroBannerY + 70);
 
   // Subtitle
   ctx.fillStyle = textColorAccent;
   ctx.font = "500 44px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "1.5px";
   ctx.fillText(
-    "Arahkan kamera HP ke QR Code di bawah untuk berfoto langsung",
+    "Pindai kode QR di bawah untuk membuka bilik foto di ponsel Anda",
     MASTER_WIDTH / 2,
     heroBannerY + 160
   );
@@ -614,14 +614,14 @@ async function renderMasterPoster(
       : "#18181B";
   ctx.font = "bold 52px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "2px";
-  ctx.fillText("SCAN DENGAN KAMERA HP", MASTER_WIDTH / 2, cardY + 120);
+  ctx.fillText("PINDAI KODE QR", MASTER_WIDTH / 2, cardY + 120);
 
   ctx.fillStyle =
     theme === "emerald-gold"
       ? "#325746"
       : "#785E46";
   ctx.font = "500 36px 'Plus Jakarta Sans', sans-serif";
-  ctx.fillText("Buka aplikasi Kamera / Google Lens pada smartphone Anda", MASTER_WIDTH / 2, cardY + 185);
+  ctx.fillText("Buka kamera ponsel Anda dan arahkan ke kode berikut", MASTER_WIDTH / 2, cardY + 185);
   ctx.restore();
 
   // Draw QR Code
@@ -666,17 +666,17 @@ async function renderMasterPoster(
   }
   ctx.restore();
 
-  // Card Bottom Section: Friendly Feature Pills
+  // Card Bottom Section: Practical Feature Pills
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   const featurePillsY = cardY + cardHeight - 240;
   const features = [
-    "✨ 30+ Frame Desain",
-    "⚡ Langsung di Browser",
-    "🖨️ Cetak & Unduh HD",
-    "🎁 100% Gratis",
+    "Pilihan Bingkai Foto",
+    "Tanpa Unduh Aplikasi",
+    "Simpan ke Ponsel",
+    "Foto Berkali-kali",
   ];
 
   const totalFeatures = features.length;
@@ -704,7 +704,7 @@ async function renderMasterPoster(
       theme === "emerald-gold"
         ? "#0A241A"
         : "#4A121A";
-    ctx.font = "bold 30px 'Plus Jakarta Sans', sans-serif";
+    ctx.font = "bold 28px 'Plus Jakarta Sans', sans-serif";
     ctx.fillText(feature, fx, featurePillsY);
     ctx.restore();
   });
@@ -716,7 +716,7 @@ async function renderMasterPoster(
       : "#8C6239";
   ctx.font = "600 34px 'Courier New', monospace";
   const displayFooter = passcode
-    ? `${targetUrl}   •   Passcode: ${passcode}`
+    ? `${targetUrl}   •   Kode Akses: ${passcode}`
     : targetUrl;
   ctx.fillText(displayFooter, MASTER_WIDTH / 2, cardY + cardHeight - 90);
   ctx.restore();
@@ -744,7 +744,7 @@ async function renderMasterPoster(
     ctx.fillStyle = textColorPrimary;
     ctx.font = "bold 38px 'Plus Jakarta Sans', sans-serif";
     ctx.fillText(
-      `📶 WiFi Acara: "${wifiInfo.ssid}"   •   Password: "${wifiInfo.password}"`,
+      `WiFi Acara: "${wifiInfo.ssid}"   •   Kata Sandi: "${wifiInfo.password}"`,
       MASTER_WIDTH / 2,
       wifiCardY + wifiCardHeight / 2
     );
@@ -760,13 +760,21 @@ async function renderMasterPoster(
   const stepList = [
     {
       num: "1",
-      title: "Scan QR & Masukkan Kode",
+      title: "Pindai Kode",
       desc: passcode
-        ? `Arahkan kamera HP ke QR Code dan masukkan passcode ${passcode}`
-        : "Arahkan kamera HP ke QR Code tanpa aplikasi tambahan",
+        ? `Arahkan kamera ponsel ke kode QR lalu masukkan kode akses ${passcode}.`
+        : "Arahkan kamera ponsel ke kode QR di atas.",
     },
-    { num: "2", title: "Pilih Frame & Pose", desc: "Pilih layout kolase dan pose bersama teman/pasangan" },
-    { num: "3", title: "Simpan & Bagikan", desc: "Unduh foto hasil photobox resolusi tinggi ke galeri HP" },
+    {
+      num: "2",
+      title: "Pilih Bingkai",
+      desc: "Pilih tata letak dan desain bingkai foto yang Anda sukai.",
+    },
+    {
+      num: "3",
+      title: "Simpan Foto",
+      desc: "Unduh dan simpan hasil foto langsung ke galeri ponsel Anda.",
+    },
   ];
 
   const colWidth = 980;
@@ -822,13 +830,13 @@ async function renderMasterPoster(
   ctx.fillStyle = textColorAccent;
   ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
   ctx.letterSpacing = "4px";
-  ctx.fillText(`Tag Momen Serumu: ${hashtag}`, MASTER_WIDTH / 2, footerY + 90);
+  ctx.fillText(`Tagar Pernikahan: ${hashtag}`, MASTER_WIDTH / 2, footerY + 90);
 
   ctx.fillStyle = textColorMuted;
   ctx.font = "500 34px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "1.5px";
   ctx.fillText(
-    "Terima kasih telah berbagi kebahagiaan dan mengabadikan kenangan bersama Gilang & Salsa",
+    "Terima kasih telah hadir dan merayakan hari bahagia ini bersama kami.",
     MASTER_WIDTH / 2,
     footerY + 170
   );
