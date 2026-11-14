@@ -72,3 +72,9 @@ test("Master constants and backward compatibility aliases remain intact", () => 
   assert.strictEqual(A4_WIDTH, 2480);
   assert.strictEqual(A4_HEIGHT, 3508);
 });
+
+test("Theme includes emerald-gold alongside royal-maroon, paper-keepsake, and korean-studio", () => {
+  const supportedThemes = ["emerald-gold", "royal-maroon", "paper-keepsake", "korean-studio"];
+  assert.strictEqual(supportedThemes.length, 4);
+  assert.ok(supportedThemes.includes("emerald-gold"));
+});

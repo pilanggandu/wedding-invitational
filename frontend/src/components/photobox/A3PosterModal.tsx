@@ -45,13 +45,13 @@ export function A3PosterModal({
   onClose,
   defaultUrl,
   defaultPasscode,
-  defaultPaperSize = "a4",
+  defaultPaperSize = "a5",
   weddingTitle = "THE WEDDING CELEBRATION OF",
   coupleNames = "GILANG & SALSADILA",
   weddingDate = "Rabu, 28 Oktober 2026 • Jakarta",
   hashtag = "#GilangSalsaWedding",
 }: A3PosterModalProps) {
-  const [theme, setTheme] = useState<A3PosterTheme>("royal-maroon");
+  const [theme, setTheme] = useState<A3PosterTheme>("emerald-gold");
   const [paperSize, setPaperSize] = useState<PosterPaperSize>(defaultPaperSize);
   const [multiUpOnA4, setMultiUpOnA4] = useState<boolean>(false);
 
@@ -197,7 +197,10 @@ export function A3PosterModal({
           particleCount: 100,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ["#DFD2BD", "#4A121A", "#8C6239", "#FAF6EE"],
+          colors:
+            theme === "emerald-gold"
+              ? ["#DFD2BD", "#0A241A", "#134231", "#FAF6EE"]
+              : ["#DFD2BD", "#4A121A", "#8C6239", "#FAF6EE"],
         });
       } catch {
         // Confetti fallback
@@ -505,10 +508,17 @@ export function A3PosterModal({
               <div className="grid grid-cols-1 gap-2">
                 {[
                   {
+                    id: "emerald-gold",
+                    name: "Emerald Green & Gold",
+                    desc: "Hijau emerald botani mewah dengan aksen emas filigree (Sesuai Dekorasi Hijau)",
+                    badge: "Tema Dekor",
+                    color: "bg-[#0A241A] text-[#DFD2BD] border-[#DFD2BD]",
+                  },
+                  {
                     id: "royal-maroon",
                     name: "Royal Maroon & Gold",
                     desc: "Burgundy mewah dengan aksen emas filigree & medallion cameo",
-                    badge: "Rekomendasi",
+                    badge: "Klasik",
                     color: "bg-[#3E0F16] text-[#DFD2BD] border-[#DFD2BD]",
                   },
                   {

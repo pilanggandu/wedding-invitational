@@ -1,7 +1,11 @@
 import QRCode from "qrcode";
 
 export type PosterPaperSize = "a3" | "a4" | "a5" | "a6" | "f4" | "5r" | "4r";
-export type A3PosterTheme = "royal-maroon" | "paper-keepsake" | "korean-studio";
+export type A3PosterTheme =
+  | "emerald-gold"
+  | "royal-maroon"
+  | "paper-keepsake"
+  | "korean-studio";
 
 export interface PosterSizeConfig {
   id: PosterPaperSize;
@@ -208,14 +212,18 @@ async function renderMasterPoster(
 
   // QR Code colors
   const qrColorDark =
-    theme === "royal-maroon"
+    theme === "emerald-gold"
+      ? "#0B261C"
+      : theme === "royal-maroon"
       ? "#3E0F16"
       : theme === "paper-keepsake"
       ? "#2D2013"
       : "#18181B";
 
   const qrColorLight =
-    theme === "royal-maroon"
+    theme === "emerald-gold"
+      ? "#FAFDFB"
+      : theme === "royal-maroon"
       ? "#FAF6EE"
       : theme === "paper-keepsake"
       ? "#FFFDF9"
@@ -261,7 +269,52 @@ async function renderMasterPoster(
   }
 
   // --- 1. RENDER BACKGROUND BASED ON THEME ---
-  if (theme === "royal-maroon") {
+  if (theme === "emerald-gold") {
+    // Rich Royal Botanical Emerald Gradient
+    const bgGradient = ctx.createRadialGradient(
+      MASTER_WIDTH / 2,
+      MASTER_HEIGHT * 0.35,
+      200,
+      MASTER_WIDTH / 2,
+      MASTER_HEIGHT * 0.5,
+      3000
+    );
+    bgGradient.addColorStop(0, "#134231"); // Deep rich botanical emerald
+    bgGradient.addColorStop(0.55, "#0A241A"); // Midnight pine
+    bgGradient.addColorStop(1, "#04110C"); // Dark forest edge
+    ctx.fillStyle = bgGradient;
+    ctx.fillRect(0, 0, MASTER_WIDTH, MASTER_HEIGHT);
+
+    // Warm champagne/gold botanical dust pattern
+    ctx.save();
+    ctx.fillStyle = "rgba(223, 210, 189, 0.025)";
+    for (let x = 0; x < MASTER_WIDTH; x += 32) {
+      for (let y = 0; y < MASTER_HEIGHT; y += 32) {
+        if ((x + y) % 64 === 0) {
+          ctx.beginPath();
+          ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    ctx.restore();
+
+    // Elegant Double Gold Filigree Border
+    ctx.save();
+    ctx.strokeStyle = "#DFD2BD";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(100, 100, MASTER_WIDTH - 200, MASTER_HEIGHT - 200);
+
+    ctx.strokeStyle = "rgba(223, 210, 189, 0.45)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(130, 130, MASTER_WIDTH - 260, MASTER_HEIGHT - 260);
+
+    drawCornerFlourish(ctx, 100, 100, 0, "#DFD2BD");
+    drawCornerFlourish(ctx, MASTER_WIDTH - 100, 100, Math.PI / 2, "#DFD2BD");
+    drawCornerFlourish(ctx, MASTER_WIDTH - 100, MASTER_HEIGHT - 100, Math.PI, "#DFD2BD");
+    drawCornerFlourish(ctx, 100, MASTER_HEIGHT - 100, -Math.PI / 2, "#DFD2BD");
+    ctx.restore();
+  } else if (theme === "royal-maroon") {
     const bgGradient = ctx.createRadialGradient(
       MASTER_WIDTH / 2,
       MASTER_HEIGHT * 0.35,
@@ -353,23 +406,25 @@ async function renderMasterPoster(
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
+  const isDarkBg = theme === "royal-maroon" || theme === "emerald-gold";
+
   const textColorPrimary =
-    theme === "royal-maroon"
+    isDarkBg
       ? "#FAF6EE"
       : theme === "paper-keepsake"
       ? "#3A2A1E"
       : "#18181B";
 
   const textColorAccent =
-    theme === "royal-maroon"
+    theme === "emerald-gold" || theme === "royal-maroon"
       ? "#DFD2BD"
       : theme === "paper-keepsake"
       ? "#8C6239"
       : "#C99A45";
 
   const textColorMuted =
-    theme === "royal-maroon"
-      ? "rgba(223, 210, 189, 0.75)"
+    isDarkBg
+      ? "rgba(223, 210, 189, 0.78)"
       : theme === "paper-keepsake"
       ? "#6D533B"
       : "#71717A";
@@ -385,7 +440,7 @@ async function renderMasterPoster(
   ctx.font = "bold 130px 'Playfair Display', Georgia, serif";
   ctx.letterSpacing = "8px";
   ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-  ctx.shadowBlur = theme === "royal-maroon" ? 18 : 6;
+  ctx.shadowBlur = isDarkBg ? 18 : 6;
   ctx.shadowOffsetY = 4;
   ctx.fillText(coupleNames, MASTER_WIDTH / 2, 420);
   ctx.shadowColor = "transparent";
@@ -423,12 +478,17 @@ async function renderMasterPoster(
 
     ctx.beginPath();
     ctx.arc(MASTER_WIDTH / 2, medallionCenterY, medallionRadius + 14, 0, Math.PI * 2);
-    ctx.fillStyle = theme === "royal-maroon" ? "#DFD2BD" : "#8C6239";
+    ctx.fillStyle = isDarkBg ? "#DFD2BD" : "#8C6239";
     ctx.fill();
 
     ctx.beginPath();
     ctx.arc(MASTER_WIDTH / 2, medallionCenterY, medallionRadius + 4, 0, Math.PI * 2);
-    ctx.fillStyle = theme === "royal-maroon" ? "#2B070D" : "#FFFDF9";
+    ctx.fillStyle =
+      theme === "emerald-gold"
+        ? "#05160F"
+        : theme === "royal-maroon"
+        ? "#2B070D"
+        : "#FFFDF9";
     ctx.fill();
 
     ctx.beginPath();
@@ -466,12 +526,17 @@ async function renderMasterPoster(
   const badgeX = MASTER_WIDTH / 2 - badgeWidth / 2;
   const badgeY = heroBannerY - 80;
 
-  ctx.fillStyle = theme === "royal-maroon" ? "#DFD2BD" : "#4A121A";
+  ctx.fillStyle = isDarkBg ? "#DFD2BD" : "#134231";
   ctx.beginPath();
   ctx.roundRect(badgeX, badgeY, badgeWidth, badgeHeight, 38);
   ctx.fill();
 
-  ctx.fillStyle = theme === "royal-maroon" ? "#3E0F16" : "#DFD2BD";
+  ctx.fillStyle =
+    theme === "emerald-gold"
+      ? "#0A241A"
+      : theme === "royal-maroon"
+      ? "#3E0F16"
+      : "#DFD2BD";
   ctx.font = "bold 36px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "4px";
   ctx.fillText("📸  LIVE WEDDING PHOTOBOX", MASTER_WIDTH / 2, badgeY + badgeHeight / 2);
@@ -505,7 +570,9 @@ async function renderMasterPoster(
   ctx.shadowOffsetY = 16;
 
   const cardBg =
-    theme === "royal-maroon"
+    theme === "emerald-gold"
+      ? "#F5FAF7"
+      : theme === "royal-maroon"
       ? "#FAF6EE"
       : theme === "paper-keepsake"
       ? "#FFFDF9"
@@ -518,14 +585,17 @@ async function renderMasterPoster(
   ctx.shadowColor = "transparent";
 
   // Card Outer Gold Border
-  ctx.strokeStyle = theme === "royal-maroon" ? "#DFD2BD" : "#E8DFC8";
+  ctx.strokeStyle = isDarkBg ? "#DFD2BD" : "#E8DFC8";
   ctx.lineWidth = 8;
   ctx.beginPath();
   ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 48);
   ctx.stroke();
 
   // Card Inner Border
-  ctx.strokeStyle = "rgba(140, 98, 57, 0.25)";
+  ctx.strokeStyle =
+    theme === "emerald-gold"
+      ? "rgba(10, 36, 26, 0.2)"
+      : "rgba(140, 98, 57, 0.25)";
   ctx.lineWidth = 3;
   ctx.beginPath();
   ctx.roundRect(cardX + 24, cardY + 24, cardWidth - 48, cardHeight - 48, 36);
@@ -536,12 +606,20 @@ async function renderMasterPoster(
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillStyle = "#3E0F16";
+  ctx.fillStyle =
+    theme === "emerald-gold"
+      ? "#0A241A"
+      : theme === "royal-maroon"
+      ? "#3E0F16"
+      : "#18181B";
   ctx.font = "bold 52px 'Plus Jakarta Sans', sans-serif";
   ctx.letterSpacing = "2px";
   ctx.fillText("SCAN DENGAN KAMERA HP", MASTER_WIDTH / 2, cardY + 120);
 
-  ctx.fillStyle = "#785E46";
+  ctx.fillStyle =
+    theme === "emerald-gold"
+      ? "#325746"
+      : "#785E46";
   ctx.font = "500 36px 'Plus Jakarta Sans', sans-serif";
   ctx.fillText("Buka aplikasi Kamera / Google Lens pada smartphone Anda", MASTER_WIDTH / 2, cardY + 185);
   ctx.restore();
@@ -567,14 +645,20 @@ async function renderMasterPoster(
   ctx.arc(MASTER_WIDTH / 2, qrY + qrDisplaySize / 2, emblemSize / 2 + 10, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.strokeStyle = "#4A121A";
+  ctx.strokeStyle =
+    theme === "emerald-gold"
+      ? "#0A241A"
+      : "#4A121A";
   ctx.lineWidth = 5;
   ctx.stroke();
 
   if (ringsImg) {
     ctx.drawImage(ringsImg, emblemX + 20, emblemY + 20, emblemSize - 40, emblemSize - 40);
   } else {
-    ctx.fillStyle = "#4A121A";
+    ctx.fillStyle =
+      theme === "emerald-gold"
+        ? "#0A241A"
+        : "#4A121A";
     ctx.font = "bold 64px 'Playfair Display', Georgia, serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -601,23 +685,35 @@ async function renderMasterPoster(
   features.forEach((feature, idx) => {
     const fx = cardX + pillSpacing * (idx + 1);
     ctx.save();
-    ctx.fillStyle = "#F5EFE3";
+    ctx.fillStyle =
+      theme === "emerald-gold"
+        ? "#E7F3EC"
+        : "#F5EFE3";
     ctx.beginPath();
     ctx.roundRect(fx - 180, featurePillsY - 34, 360, 68, 34);
     ctx.fill();
 
-    ctx.strokeStyle = "#DFD2BD";
+    ctx.strokeStyle =
+      theme === "emerald-gold"
+        ? "rgba(19, 66, 49, 0.25)"
+        : "#DFD2BD";
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.fillStyle = "#4A121A";
+    ctx.fillStyle =
+      theme === "emerald-gold"
+        ? "#0A241A"
+        : "#4A121A";
     ctx.font = "bold 30px 'Plus Jakarta Sans', sans-serif";
     ctx.fillText(feature, fx, featurePillsY);
     ctx.restore();
   });
 
   // URL & Passcode Display Box
-  ctx.fillStyle = "#8C6239";
+  ctx.fillStyle =
+    theme === "emerald-gold"
+      ? "#1E503B"
+      : "#8C6239";
   ctx.font = "600 34px 'Courier New', monospace";
   const displayFooter = passcode
     ? `${targetUrl}   •   Passcode: ${passcode}`
@@ -634,7 +730,7 @@ async function renderMasterPoster(
 
     ctx.save();
     ctx.fillStyle =
-      theme === "royal-maroon" ? "rgba(250, 246, 238, 0.12)" : "rgba(140, 98, 57, 0.1)";
+      isDarkBg ? "rgba(250, 246, 238, 0.12)" : "rgba(140, 98, 57, 0.1)";
     ctx.beginPath();
     ctx.roundRect(wifiCardX, wifiCardY, wifiCardWidth, wifiCardHeight, 28);
     ctx.fill();
@@ -683,12 +779,17 @@ async function renderMasterPoster(
   stepList.forEach((st, idx) => {
     const cx = colCenters[idx];
     ctx.save();
-    ctx.fillStyle = theme === "royal-maroon" ? "#DFD2BD" : "#4A121A";
+    ctx.fillStyle = isDarkBg ? "#DFD2BD" : "#134231";
     ctx.beginPath();
     ctx.arc(cx, stepsY, 52, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = theme === "royal-maroon" ? "#3E0F16" : "#DFD2BD";
+    ctx.fillStyle =
+      theme === "emerald-gold"
+        ? "#0A241A"
+        : theme === "royal-maroon"
+        ? "#3E0F16"
+        : "#DFD2BD";
     ctx.font = "bold 44px 'Playfair Display', Georgia, serif";
     ctx.fillText(st.num, cx, stepsY);
 
@@ -907,7 +1008,9 @@ export async function generatePosterCanvas(
 
     // Fill background with theme color first
     const bgColor =
-      options.theme === "royal-maroon"
+      options.theme === "emerald-gold"
+        ? "#04110C"
+        : options.theme === "royal-maroon"
         ? "#180306"
         : options.theme === "paper-keepsake"
         ? "#FAF6EE"
