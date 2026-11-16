@@ -22,7 +22,6 @@ import {
   Camera,
   ChevronRight,
   Film,
-  QrCode,
   Upload,
   Image as ImageIcon,
   RotateCw,
@@ -52,7 +51,6 @@ import {
   STICKER_LIST,
 } from "./templates";
 import { generatePhotoboxCanvas } from "./canvasExport";
-import { A3PosterModal } from "./A3PosterModal";
 import { LayoutWireframe } from "./LayoutWireframe";
 
 interface FrameCustomizerProps {
@@ -81,7 +79,6 @@ export function FrameCustomizer({
   const [activeTab, setActiveTab] = useState<"templates" | "filters" | "stickers" | "text" | "layout">("templates");
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
-  const [isA3ModalOpen, setIsA3ModalOpen] = useState<boolean>(false);
 
   // Advanced sticker editing states
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
@@ -1939,15 +1936,6 @@ export function FrameCustomizer({
         {/* Desktop Quick Actions */}
         <div className="hidden lg:flex items-center gap-2">
           <button
-            onClick={() => setIsA3ModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[40px]"
-            title="Cetak Poster Standee QR Code (A3, A4, A5, A6, F4) untuk Acara"
-          >
-            <QrCode className="w-4 h-4 text-[#8C6239]" />
-            <span>Poster QR (A3-A6)</span>
-          </button>
-
-          <button
             onClick={handleCopyToClipboard}
             disabled={isExporting}
             className="px-3.5 py-2 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[40px]"
@@ -1989,12 +1977,17 @@ export function FrameCustomizer({
         {/* Mobile Action Buttons in Header */}
         <div className="lg:hidden flex items-center gap-1.5">
           <button
-            onClick={() => setIsA3ModalOpen(true)}
-            className="px-2.5 py-2 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 min-h-[38px]"
-            title="Cetak Poster QR Standee"
+            onClick={handleCopyToClipboard}
+            disabled={isExporting}
+            className="px-2.5 py-2 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] text-xs font-semibold flex items-center gap-1 shadow-xs active:scale-95 min-h-[38px]"
+            title="Salin foto ke clipboard"
           >
-            <QrCode className="w-3.5 h-3.5 text-[#8C6239]" />
-            <span className="text-[11px]">Poster QR</span>
+            {copySuccess ? (
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
+            ) : (
+              <Copy className="w-3.5 h-3.5 text-[#8C6239]" />
+            )}
+            <span className="text-[11px]">{copySuccess ? "Tersalin!" : "Salin"}</span>
           </button>
 
           <button
@@ -2173,12 +2166,6 @@ export function FrameCustomizer({
           <span>{isExporting ? "Memproses..." : "Unduh HD"}</span>
         </button>
       </div>
-
-      {/* A3 Poster Standee Generator Modal */}
-      <A3PosterModal
-        isOpen={isA3ModalOpen}
-        onClose={() => setIsA3ModalOpen(false)}
-      />
     </div>
   );
 }

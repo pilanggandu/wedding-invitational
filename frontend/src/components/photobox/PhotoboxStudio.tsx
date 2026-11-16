@@ -1,26 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
   Palette,
-  Sparkles,
   Heart,
-  HelpCircle,
-  Share2,
-  QrCode,
-  Lock,
+  ArrowLeft,
 } from "lucide-react";
 import { PhotoboxLayout, getLayoutShotsCount } from "./types";
 import { CameraCapture } from "./CameraCapture";
 import { FrameCustomizer } from "./FrameCustomizer";
-import { A3PosterModal } from "./A3PosterModal";
 import { PhotoboxPasscodeGate } from "./PhotoboxPasscodeGate";
-import {
-  isPhotoboxUnlockedSession,
-  setPhotoboxUnlockedSession,
-} from "./passcode";
+import { isPhotoboxUnlockedSession } from "./passcode";
 import { getInvitationData } from "@/lib/invitationStore";
 
 export function PhotoboxStudio() {
@@ -30,7 +23,6 @@ export function PhotoboxStudio() {
   const [currentStep, setCurrentStep] = useState<"camera" | "frames">("camera");
   const [layout, setLayout] = useState<PhotoboxLayout>("4-strip");
   const [photos, setPhotos] = useState<string[]>(["", "", "", ""]);
-  const [isA3ModalOpen, setIsA3ModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -138,32 +130,16 @@ export function PhotoboxStudio() {
             </button>
           </div>
 
-          {/* Button Generate QR Code Poster */}
-          <button
-            onClick={() => setIsA3ModalOpen(true)}
-            className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px] min-w-[38px] justify-center"
-            title="Generate & Cetak Poster QR Code (A3 - A6) untuk Standee Acara"
-            aria-label="Generate & Cetak Poster QR Standee"
+          {/* Link Kembali ke Halaman Undangan */}
+          <Link
+            href="/undangan"
+            className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs active:scale-95 min-h-[36px]"
+            title="Kembali ke Halaman Undangan Pernikahan"
           >
-            <QrCode className="w-4 h-4 text-[#DFD2BD]" />
-            <span className="hidden md:inline">Cetak Poster QR</span>
-            <span className="hidden sm:inline md:hidden font-mono text-[11px]">QR Standee</span>
-          </button>
-
-          {/* Button Kunci Studio */}
-          <button
-            type="button"
-            onClick={() => {
-              setPhotoboxUnlockedSession(false);
-              setIsUnlocked(false);
-            }}
-            className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px] min-w-[38px] justify-center"
-            title="Kunci kembali bilik foto"
-            aria-label="Kunci bilik foto"
-          >
-            <Lock className="w-4 h-4 text-[#8C6239]" />
-            <span className="hidden sm:inline">Kunci</span>
-          </button>
+            <ArrowLeft className="w-3.5 h-3.5 text-[#8C6239]" />
+            <span className="hidden sm:inline">Halaman Undangan</span>
+            <span className="sm:hidden text-[11px]">Undangan</span>
+          </Link>
         </div>
       </header>
 
@@ -215,13 +191,6 @@ export function PhotoboxStudio() {
           <span>untuk merayakan cinta Gilang & Salsadila</span>
         </p>
       </footer>
-
-      {/* A3 Poster Standee Generator Modal */}
-      <A3PosterModal
-        isOpen={isA3ModalOpen}
-        onClose={() => setIsA3ModalOpen(false)}
-        defaultPasscode={configuredPasscode}
-      />
     </div>
   );
 }
