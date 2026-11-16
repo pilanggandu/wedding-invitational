@@ -96,6 +96,135 @@ export function FrameCustomizer({
 
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
+  // Floating ghost state & ref for touch drag from tray to canvas on mobile
+  const [touchGhost, setTouchGhost] = useState<{
+    emoji?: string;
+    imageUrl?: string;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const trayTouchStateRef = useRef<{
+    data: { emoji: string; imageUrl?: string; hasFrame?: boolean };
+    startX: number;
+    startY: number;
+    timer: ReturnType<typeof setTimeout> | null;
+    isDragging: boolean;
+  } | null>(null);
+
+  const handleTrayItemTouchStart = (
+    e: React.TouchEvent,
+    data: { emoji: string; imageUrl?: string; hasFrame?: boolean }
+  ) => {
+    if (e.touches.length !== 1) return;
+    const touch = e.touches[0];
+
+    if (trayTouchStateRef.current?.timer) {
+      clearTimeout(trayTouchStateRef.current.timer);
+    }
+
+    const state = {
+      data,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      isDragging: false,
+      timer: null as ReturnType<typeof setTimeout> | null,
+    };
+
+    state.timer = setTimeout(() => {
+      state.isDragging = true;
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+          navigator.vibrate(25);
+        } catch {}
+      }
+      setTouchGhost({
+        emoji: data.emoji,
+        imageUrl: data.imageUrl,
+        x: touch.clientX,
+        y: touch.clientY,
+      });
+    }, 180);
+
+    trayTouchStateRef.current = state;
+  };
+
+  const handleTrayItemTouchMove = (e: React.TouchEvent) => {
+    const state = trayTouchStateRef.current;
+    if (!state || e.touches.length !== 1) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - state.startX;
+    const dy = touch.clientY - state.startY;
+
+    if (!state.isDragging) {
+      // Natural vertical/horizontal scroll detection: cancel hold timer if finger moves
+      if (Math.hypot(dx, dy) > 8) {
+        if (state.timer) clearTimeout(state.timer);
+        trayTouchStateRef.current = null;
+      }
+      return;
+    }
+
+    // Actively dragging sticker: move ghost and lock screen scrolling
+    if (e.cancelable) {
+      e.preventDefault();
+    }
+    setTouchGhost({
+      emoji: state.data.emoji,
+      imageUrl: state.data.imageUrl,
+      x: touch.clientX,
+      y: touch.clientY,
+    });
+  };
+
+  const handleTrayItemTouchEnd = (e: React.TouchEvent) => {
+    const state = trayTouchStateRef.current;
+    if (!state) return;
+
+    if (state.timer) {
+      clearTimeout(state.timer);
+    }
+
+    if (state.isDragging) {
+      const touch = e.changedTouches[0];
+      if (touch) {
+        // Detect photobox strip container under touch drop point
+        const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+        const stripContainer = elements
+          .map((el) => el.closest<HTMLElement>("[data-photobox-strip]"))
+          .find((el) => el !== null);
+
+        if (stripContainer) {
+          const rect = stripContainer.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            const dropX = ((touch.clientX - rect.left) / rect.width) * 100;
+            const dropY = ((touch.clientY - rect.top) / rect.height) * 100;
+            const clampedX = Math.max(5, Math.min(95, Math.round(dropX)));
+            const clampedY = Math.max(5, Math.min(95, Math.round(dropY)));
+
+            handleAddSticker(
+              state.data.emoji,
+              state.data.imageUrl,
+              state.data.hasFrame,
+              { x: clampedX, y: clampedY }
+            );
+          }
+        }
+      }
+    }
+
+    trayTouchStateRef.current = null;
+    setTouchGhost(null);
+  };
+
+  const handleTrayItemTouchCancel = () => {
+    if (trayTouchStateRef.current?.timer) {
+      clearTimeout(trayTouchStateRef.current.timer);
+    }
+    trayTouchStateRef.current = null;
+    setTouchGhost(null);
+  };
+
   // Set localized date on client mount to eliminate SSR hydration mismatch
   useEffect(() => {
     try {
@@ -249,9 +378,20 @@ export function FrameCustomizer({
     e.stopPropagation();
     setSelectedStickerId(sticker.id);
 
-    const container = previewContainerRef.current;
+    const targetEl = e.currentTarget as HTMLElement;
+    const container =
+      targetEl.closest<HTMLElement>("[data-photobox-strip]") ||
+      previewContainerRef.current;
     if (!container) return;
     const rect = container.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const pointerId = e.pointerId;
+    try {
+      targetEl.setPointerCapture(pointerId);
+    } catch {
+      // Ignore if setPointerCapture fails on certain browsers
+    }
 
     const startX = e.clientX;
     const startY = e.clientY;
@@ -261,17 +401,24 @@ export function FrameCustomizer({
     let hasDragged = false;
 
     const onPointerMove = (moveEvt: PointerEvent) => {
+      if (moveEvt.pointerId !== pointerId) return;
+
       const deltaX = moveEvt.clientX - startX;
       const deltaY = moveEvt.clientY - startY;
 
-      if (!hasDragged && Math.hypot(deltaX, deltaY) > 4) {
+      if (!hasDragged && Math.hypot(deltaX, deltaY) > 3) {
         hasDragged = true;
         setIsDraggingSticker(true);
       }
 
       if (hasDragged) {
-        const deltaPercentX = (deltaX / rect.width) * 100;
-        const deltaPercentY = (deltaY / rect.height) * 100;
+        const currentRect = container.getBoundingClientRect();
+        const width = currentRect.width || rect.width;
+        const height = currentRect.height || rect.height;
+        if (!width || !height) return;
+
+        const deltaPercentX = (deltaX / width) * 100;
+        const deltaPercentY = (deltaY / height) * 100;
 
         const newX = Math.max(3, Math.min(97, Math.round((origX + deltaPercentX) * 10) / 10));
         const newY = Math.max(2, Math.min(98, Math.round((origY + deltaPercentY) * 10) / 10));
@@ -282,7 +429,15 @@ export function FrameCustomizer({
       }
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (upEvt: PointerEvent) => {
+      if (upEvt.pointerId !== pointerId) return;
+      try {
+        if (targetEl.hasPointerCapture(pointerId)) {
+          targetEl.releasePointerCapture(pointerId);
+        }
+      } catch {
+        // Ignore
+      }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
@@ -447,6 +602,7 @@ export function FrameCustomizer({
     return (
       <div
         ref={previewContainerRef}
+        data-photobox-strip="true"
         style={{
           backgroundColor: customBgColor || currentTemplate.bgColor,
           borderColor: currentTemplate.borderColor || "#E5E5E5",
@@ -468,9 +624,13 @@ export function FrameCustomizer({
             const raw = e.dataTransfer.getData("application/json");
             if (!raw) return;
             const data = JSON.parse(raw);
-            const container = previewContainerRef.current;
+            const targetEl = e.currentTarget as HTMLElement;
+            const container =
+              targetEl.closest<HTMLElement>("[data-photobox-strip]") ||
+              previewContainerRef.current;
             if (!container) return;
             const rect = container.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
             const dropX = ((e.clientX - rect.left) / rect.width) * 100;
             const dropY = ((e.clientY - rect.top) / rect.height) * 100;
             const clampedX = Math.max(5, Math.min(95, Math.round(dropX)));
@@ -1380,7 +1540,7 @@ export function FrameCustomizer({
                     <div>
                       <p className="font-bold text-[#3A332C] mb-0.5">Tip Stiker Interaktif:</p>
                       <p className="text-[11px] leading-relaxed text-[#705A46]">
-                        Kamu bisa langsung <strong>menggeser (drag & drop)</strong> stiker di atas lembar foto. Ketuk stiker mana saja untuk memutar, memperbesar, mencerminkan, atau mengatur transparansinya.
+                        Ketuk stiker untuk menempelkan ke lembar foto, lalu <strong>geser (drag)</strong> langsung stiker di atas foto untuk memindahkan posisinya.
                       </p>
                     </div>
                   </div>
@@ -1738,6 +1898,16 @@ export function FrameCustomizer({
                             })
                           );
                         }}
+                        onTouchStart={(e) =>
+                          handleTrayItemTouchStart(e, {
+                            emoji: "",
+                            imageUrl: cImg.imageUrl,
+                            hasFrame: cImg.hasFrame,
+                          })
+                        }
+                        onTouchMove={handleTrayItemTouchMove}
+                        onTouchEnd={handleTrayItemTouchEnd}
+                        onTouchCancel={handleTrayItemTouchCancel}
                         onClick={() =>
                           handleAddSticker("", cImg.imageUrl, cImg.hasFrame)
                         }
@@ -1747,7 +1917,7 @@ export function FrameCustomizer({
                         <img
                           src={cImg.imageUrl}
                           alt={cImg.title}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain pointer-events-none"
                         />
                       </button>
                     ))}
@@ -1763,7 +1933,7 @@ export function FrameCustomizer({
                   <Sparkles className="w-3.5 h-3.5 text-[#C99A45]" />
                   <span>Stiker Foto Pengantin (Gilang & Salsa):</span>
                 </span>
-                <span className="text-[10px] text-[#8C6239] font-medium">Bisa drag ke foto</span>
+                <span className="text-[10px] text-[#8C6239] font-medium">Ketuk / geser ke foto</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1785,6 +1955,16 @@ export function FrameCustomizer({
                           })
                         );
                       }}
+                      onTouchStart={(e) =>
+                        handleTrayItemTouchStart(e, {
+                          emoji: "",
+                          imageUrl: stk.imageUrl,
+                          hasFrame: isPhotoCard,
+                        })
+                      }
+                      onTouchMove={handleTrayItemTouchMove}
+                      onTouchEnd={handleTrayItemTouchEnd}
+                      onTouchCancel={handleTrayItemTouchCancel}
                       onClick={() =>
                         handleAddSticker("", stk.imageUrl, isPhotoCard)
                       }
@@ -1794,7 +1974,7 @@ export function FrameCustomizer({
                         <img
                           src={stk.imageUrl}
                           alt={stk.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform pointer-events-none"
                         />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -1836,7 +2016,7 @@ export function FrameCustomizer({
                 )}
               </div>
 
-              {/* Sticker Tray Grid with Draggable Support */}
+              {/* Sticker Tray Grid with Touch & Draggable Support */}
               <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 bg-[#FAF6EE] p-3 rounded-xl border border-[#E8DFC8]">
                 {STICKER_LIST.map((emoji, idx) => (
                   <button
@@ -1849,9 +2029,19 @@ export function FrameCustomizer({
                         JSON.stringify({ emoji, imageUrl: "", hasFrame: false })
                       );
                     }}
+                    onTouchStart={(e) =>
+                      handleTrayItemTouchStart(e, {
+                        emoji,
+                        imageUrl: "",
+                        hasFrame: false,
+                      })
+                    }
+                    onTouchMove={handleTrayItemTouchMove}
+                    onTouchEnd={handleTrayItemTouchEnd}
+                    onTouchCancel={handleTrayItemTouchCancel}
                     onClick={() => handleAddSticker(emoji)}
                     className="text-2xl p-2 rounded-lg hover:bg-white hover:scale-125 transition-all cursor-pointer flex items-center justify-center shadow-2xs active:scale-95 min-h-[44px] min-w-[44px]"
-                    title="Klik atau geser langsung ke foto"
+                    title="Ketuk atau geser langsung ke foto"
                   >
                     {emoji}
                   </button>
@@ -2105,7 +2295,7 @@ export function FrameCustomizer({
             </div>
           </div>
           <p className="text-[10px] text-center text-[#786551] mt-2">
-            Ketuk stiker untuk mengatur rotasi, ukuran, atau hapus
+            Geser stiker di foto untuk mengatur posisi. Ketuk untuk opsi ukuran, putar, & cermin.
           </p>
         </div>
 
@@ -2166,6 +2356,26 @@ export function FrameCustomizer({
           <span>{isExporting ? "Memproses..." : "Unduh HD"}</span>
         </button>
       </div>
+
+      {/* Floating Ghost Element during Touch Drag & Drop on Mobile */}
+      {touchGhost && (
+        <div
+          className="fixed pointer-events-none z-9999 -translate-x-1/2 -translate-y-1/2 select-none"
+          style={{ left: touchGhost.x, top: touchGhost.y }}
+        >
+          <div className="w-14 h-14 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-[#8C6239] shadow-2xl flex items-center justify-center p-1 scale-110">
+            {touchGhost.imageUrl ? (
+              <img
+                src={touchGhost.imageUrl}
+                alt="Stiker"
+                className="w-full h-full object-contain pointer-events-none"
+              />
+            ) : (
+              <span className="text-3xl">{touchGhost.emoji}</span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
