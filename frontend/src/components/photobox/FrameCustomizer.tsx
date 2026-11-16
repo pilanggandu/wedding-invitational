@@ -257,8 +257,38 @@ export function FrameCustomizer({
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
-  // Mobile fit-to-view auto scale state
+  // Mobile fit-to-view auto scale state & scroll reset refs
   const [isFitToView, setIsFitToView] = useState<boolean>(true);
+  const fitViewportRef = useRef<HTMLDivElement>(null);
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const mobilePreviewCardRef = useRef<HTMLDivElement>(null);
+
+  const handleToggleFitToView = (fit: boolean) => {
+    setIsFitToView(fit);
+    if (fit) {
+      if (scrollViewportRef.current) {
+        scrollViewportRef.current.scrollTop = 0;
+        scrollViewportRef.current.scrollLeft = 0;
+      }
+      if (fitViewportRef.current) {
+        fitViewportRef.current.scrollTop = 0;
+        fitViewportRef.current.scrollLeft = 0;
+      }
+      if (mobilePreviewCardRef.current) {
+        const rect = mobilePreviewCardRef.current.getBoundingClientRect();
+        if (rect.top < 60) {
+          mobilePreviewCardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isFitToView && fitViewportRef.current) {
+      fitViewportRef.current.scrollTop = 0;
+      fitViewportRef.current.scrollLeft = 0;
+    }
+  }, [isFitToView]);
 
   // Photo slot swapping & single replacement states
   const [swapSourceIndex, setSwapSourceIndex] = useState<number | null>(null);
@@ -2739,7 +2769,10 @@ export function FrameCustomizer({
         </AnimatePresence>
 
         {/* Live Interactive Strip Viewport Header */}
-        <div className="w-full bg-[#FAF6EE] p-3 rounded-2xl border border-[#E8DFC8] mb-4 shadow-2xs">
+        <div
+          ref={mobilePreviewCardRef}
+          className="w-full bg-[#FAF6EE] p-3 rounded-2xl border border-[#E8DFC8] mb-4 shadow-2xs"
+        >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] font-mono uppercase tracking-wider text-[#A67A53] font-bold">
@@ -2755,7 +2788,7 @@ export function FrameCustomizer({
               <div className="flex items-center bg-white p-0.5 rounded-lg border border-[#E8DFC8] text-[10px] font-bold shadow-2xs">
                 <button
                   type="button"
-                  onClick={() => setIsFitToView(true)}
+                  onClick={() => handleToggleFitToView(true)}
                   className={`px-2 py-0.5 rounded-md transition-all ${
                     isFitToView
                       ? "bg-[#4A121A] text-[#DFD2BD] shadow-2xs"
@@ -2767,7 +2800,7 @@ export function FrameCustomizer({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsFitToView(false)}
+                  onClick={() => handleToggleFitToView(false)}
                   className={`px-2 py-0.5 rounded-md transition-all ${
                     !isFitToView
                       ? "bg-[#4A121A] text-[#DFD2BD] shadow-2xs"
@@ -2792,7 +2825,11 @@ export function FrameCustomizer({
 
           {/* Scaled Live Photobox Strip Viewport */}
           {isFitToView ? (
-            <div className="w-full flex justify-center items-center h-[42dvh] min-h-[300px] max-h-[440px] overflow-hidden rounded-xl bg-gradient-to-b from-white/70 to-white/40 p-2 border border-[#E8DFC8]/60 shadow-inner relative overscroll-contain touch-pan-y">
+            <div
+              key="viewport-fit-to-view"
+              ref={fitViewportRef}
+              className="w-full flex justify-center items-center h-[42dvh] min-h-[300px] max-h-[440px] overflow-hidden rounded-xl bg-gradient-to-b from-white/70 to-white/40 p-2 border border-[#E8DFC8]/60 shadow-inner relative overscroll-contain touch-pan-y"
+            >
               <div
                 style={{
                   transform: `scale(${
@@ -2806,7 +2843,11 @@ export function FrameCustomizer({
               </div>
             </div>
           ) : (
-            <div className="w-full flex justify-center py-2 max-h-[420px] overflow-y-auto overscroll-contain rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
+            <div
+              key="viewport-100-scroll"
+              ref={scrollViewportRef}
+              className="w-full flex justify-center py-2 max-h-[420px] overflow-y-auto overscroll-contain rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner"
+            >
               <div className="origin-top transition-transform">
                 {renderPhotoboxStrip()}
               </div>
