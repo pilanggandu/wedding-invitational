@@ -417,7 +417,7 @@ export function CameraCapture({
               </div>
 
               {/* Layout Options Grid With Visual Wireframe Illustrations */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[300px] overflow-y-auto pr-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[320px] overflow-y-auto pr-1">
                 {filteredLayouts.map((opt) => {
                   const isSelected = layout === opt.id;
                   return (
@@ -427,18 +427,20 @@ export function CameraCapture({
                         onLayoutChange(opt.id);
                         setShowLayoutMenu(false);
                       }}
-                      className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 min-h-[64px] ${
+                      className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col xs:flex-row items-start xs:items-center gap-2 xs:gap-2.5 min-h-[64px] ${
                         isSelected
                           ? "border-[#4A121A] bg-[#FAF6EE] ring-2 ring-[#4A121A]/20 shadow-xs"
                           : "border-[#E8DFC8] bg-white hover:bg-[#FAF6EE]/50"
                       }`}
                     >
                       {/* Visual Wireframe Preview */}
-                      <LayoutWireframe layout={opt.id} isSelected={isSelected} />
+                      <div className="shrink-0 mx-auto xs:mx-0">
+                        <LayoutWireframe layout={opt.id} isSelected={isSelected} size="sm" />
+                      </div>
 
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 w-full">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-xs font-bold text-[#3A332C] truncate">
+                          <span className="text-[11px] sm:text-xs font-bold text-[#3A332C] truncate">
                             {opt.name}
                           </span>
                           {isSelected && (
@@ -446,16 +448,16 @@ export function CameraCapture({
                           )}
                         </div>
 
-                        <div className="flex items-center gap-1.5 text-[9px] mb-0.5">
+                        <div className="flex items-center gap-1 sm:gap-1.5 text-[8.5px] sm:text-[9px] mb-0.5 flex-wrap">
                           <span className="font-mono font-bold text-[#4A121A] bg-[#4A121A]/10 px-1.5 py-0.2 rounded">
                             {opt.shots} Foto
                           </span>
-                          <span className="text-[#8C6239] font-medium truncate">
+                          <span className="text-[#8C6239] font-medium truncate max-w-[65px] xs:max-w-none">
                             {opt.badge || opt.tag}
                           </span>
                         </div>
 
-                        <p className="text-[10px] text-[#786551] line-clamp-1">
+                        <p className="text-[9.5px] sm:text-[10px] text-[#786551] line-clamp-1 hidden xs:block">
                           {opt.description}
                         </p>
                       </div>
@@ -559,81 +561,160 @@ export function CameraCapture({
         )}
 
         {/* Top Viewfinder Stamp */}
-        <div className="absolute top-3 left-3 z-20 flex items-center gap-2 pointer-events-none">
-          <div className="px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-xs text-white text-[10px] font-mono flex items-center gap-1.5 border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            LIVE REC • {photos[activeSlot] ? `SLOT ${activeSlot + 1} (ISI)` : `SLOT ${activeSlot + 1}/${requiredCount}`}
+        <div className="absolute top-2.5 sm:top-3 left-2.5 sm:left-3 z-20 flex items-center gap-2 pointer-events-none">
+          <div className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-black/60 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-mono flex items-center gap-1.5 border border-white/10">
+            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-ping" />
+            <span className="hidden xs:inline">LIVE REC • </span>
+            <span>{photos[activeSlot] ? `SLOT ${activeSlot + 1} (ISI)` : `SLOT ${activeSlot + 1}/${requiredCount}`}</span>
           </div>
         </div>
 
         {/* Auto Session Badge */}
         {isAutoSessionActive && (
-          <div className="absolute top-3 right-3 z-20 px-3 py-1 rounded-md bg-[#4A121A]/90 text-[#DFD2BD] text-[11px] font-mono font-bold border border-[#DFD2BD]/30 animate-pulse">
-            ★ AUTO SESI BERJALAN ★
+          <div className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 z-20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md bg-[#4A121A]/90 text-[#DFD2BD] text-[9px] sm:text-[11px] font-mono font-bold border border-[#DFD2BD]/30 animate-pulse">
+            ★ <span className="hidden xs:inline">AUTO SESI</span><span className="xs:hidden">AUTO</span> ★
           </div>
         )}
       </div>
 
       {/* Camera Controls Bar */}
-      <div className="w-full max-w-[640px] mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-[#E8DFC8] shadow-xs">
-        {/* Timer Selector */}
-        <div className="flex items-center gap-1 bg-[#FAF6EE] p-1 rounded-lg border border-[#E8DFC8]/60">
-          <Clock className="w-3.5 h-3.5 text-[#8C6239] ml-1.5 mr-0.5" />
-          <span className="text-[11px] font-medium text-[#6B5A49] mr-1 hidden xs:inline">Timer:</span>
-          {[
-            { sec: 0, label: "0s" },
-            { sec: 3, label: "3s" },
-            { sec: 5, label: "5s" },
-          ].map(({ sec, label }) => (
-            <button
-              key={sec}
-              onClick={() => setTimerDuration(sec)}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer min-h-[34px] min-w-[34px] ${
-                timerDuration === sec
-                  ? "bg-[#4A121A] text-[#F7F3EB] shadow-xs"
-                  : "text-[#6B5A49] hover:text-[#2A241D] hover:bg-white"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Center Main Shutter Trigger Button */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => handleTakeSnapshot()}
-            disabled={countdown !== null || isAutoSessionActive}
-            aria-label="Ambil foto sekarang"
-            className="group relative flex items-center justify-center w-16 h-16 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] shadow-lg hover:shadow-xl transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-4 border-[#FAF6EE]"
-            title="Tekan untuk Ambil Foto"
-          >
-            <div className="w-12 h-12 rounded-full border-2 border-[#DFD2BD] flex items-center justify-center transition-transform group-hover:scale-105">
-              <Camera className="w-6 h-6 text-[#DFD2BD]" />
+      <div className="w-full max-w-[640px] mt-3 sm:mt-4 bg-white p-3 sm:p-3.5 rounded-2xl border border-[#E8DFC8] shadow-xs">
+        {/* Mobile Layout (< sm): 2-Row Ergonomic Mobile Camera Controls */}
+        <div className="flex sm:hidden flex-col gap-3">
+          {/* Row 1: Auxiliary Controls (Timer Selector & Auto Session) */}
+          <div className="flex items-center justify-between gap-2">
+            {/* Timer Selector */}
+            <div className="flex items-center gap-1 bg-[#FAF6EE] p-1 rounded-xl border border-[#E8DFC8]/60">
+              <Clock className="w-3.5 h-3.5 text-[#8C6239] ml-1 mr-0.5" />
+              {[
+                { sec: 0, label: "0s" },
+                { sec: 3, label: "3s" },
+                { sec: 5, label: "5s" },
+              ].map(({ sec, label }) => (
+                <button
+                  key={sec}
+                  onClick={() => setTimerDuration(sec)}
+                  className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-[32px] min-w-[32px] ${
+                    timerDuration === sec
+                      ? "bg-[#4A121A] text-[#F7F3EB] shadow-xs"
+                      : "text-[#6B5A49] hover:text-[#2A241D]"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
-          </button>
+
+            {/* Auto Session Button */}
+            <button
+              onClick={startAutoPhotoboxSession}
+              disabled={countdown !== null || isAutoSessionActive}
+              className="px-3 py-1.5 rounded-xl bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 border border-[#E8DFC8] transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
+              title="Ambil semua pose secara otomatis"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Sesi Auto</span>
+            </button>
+          </div>
+
+          {/* Row 2: Shutter Bar with Native Mobile Thumb Alignment */}
+          <div className="flex items-center justify-between px-2 pt-1">
+            {/* Upload from Gallery (Left) */}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="p-3 rounded-full bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-all cursor-pointer min-h-[48px] min-w-[48px] flex items-center justify-center active:scale-95 shadow-xs"
+              title="Unggah foto dari perangkat"
+              aria-label="Unggah foto dari galeri"
+            >
+              <Upload className="w-5 h-5 text-[#8C6239]" />
+            </button>
+
+            {/* Large Shutter Button (Center) */}
+            <button
+              onClick={() => handleTakeSnapshot()}
+              disabled={countdown !== null || isAutoSessionActive}
+              aria-label="Ambil foto sekarang"
+              className="group relative flex items-center justify-center w-18 h-18 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] shadow-lg transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-4 border-[#FAF6EE]"
+              title="Tekan untuk Ambil Foto"
+            >
+              <div className="w-14 h-14 rounded-full border-2 border-[#DFD2BD] flex items-center justify-center transition-transform group-hover:scale-105">
+                <Camera className="w-7 h-7 text-[#DFD2BD]" />
+              </div>
+            </button>
+
+            {/* Flip Camera (Right) */}
+            <button
+              onClick={handleToggleCamera}
+              aria-label="Balik kamera depan / belakang"
+              className="p-3 rounded-full bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-all cursor-pointer min-h-[48px] min-w-[48px] flex items-center justify-center active:scale-95 shadow-xs"
+              title="Putar Kamera Depan/Belakang"
+            >
+              <RefreshCw className="w-5 h-5 text-[#8C6239]" />
+            </button>
+          </div>
         </div>
 
-        {/* Action Buttons: Auto Session & File Upload */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={startAutoPhotoboxSession}
-            disabled={countdown !== null || isAutoSessionActive}
-            className="px-3 py-2 rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 border border-[#E8DFC8] transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
-            title="Ambil semua pose secara otomatis dengan jeda waktu"
-          >
-            <Play className="w-3.5 h-3.5 fill-current" />
-            <span>Sesi Otomatis</span>
-          </button>
+        {/* Desktop Layout (>= sm): Sleek 1-Row Bar */}
+        <div className="hidden sm:flex items-center justify-between gap-3">
+          {/* Timer Selector */}
+          <div className="flex items-center gap-1 bg-[#FAF6EE] p-1 rounded-lg border border-[#E8DFC8]/60">
+            <Clock className="w-3.5 h-3.5 text-[#8C6239] ml-1.5 mr-0.5" />
+            <span className="text-[11px] font-medium text-[#6B5A49] mr-1 hidden xs:inline">Timer:</span>
+            {[
+              { sec: 0, label: "0s" },
+              { sec: 3, label: "3s" },
+              { sec: 5, label: "5s" },
+            ].map(({ sec, label }) => (
+              <button
+                key={sec}
+                onClick={() => setTimerDuration(sec)}
+                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer min-h-[34px] min-w-[34px] ${
+                  timerDuration === sec
+                    ? "bg-[#4A121A] text-[#F7F3EB] shadow-xs"
+                    : "text-[#6B5A49] hover:text-[#2A241D] hover:bg-white"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-2.5 rounded-lg bg-white hover:bg-[#FAF6EE] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-colors cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center"
-            title="Unggah foto dari perangkat"
-            aria-label="Unggah foto dari galeri"
-          >
-            <Upload className="w-4 h-4" />
-          </button>
+          {/* Center Main Shutter Trigger Button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => handleTakeSnapshot()}
+              disabled={countdown !== null || isAutoSessionActive}
+              aria-label="Ambil foto sekarang"
+              className="group relative flex items-center justify-center w-16 h-16 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] shadow-lg hover:shadow-xl transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-4 border-[#FAF6EE]"
+              title="Tekan untuk Ambil Foto"
+            >
+              <div className="w-12 h-12 rounded-full border-2 border-[#DFD2BD] flex items-center justify-center transition-transform group-hover:scale-105">
+                <Camera className="w-6 h-6 text-[#DFD2BD]" />
+              </div>
+            </button>
+          </div>
+
+          {/* Action Buttons: Auto Session & File Upload */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={startAutoPhotoboxSession}
+              disabled={countdown !== null || isAutoSessionActive}
+              className="px-3 py-2 rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 border border-[#E8DFC8] transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
+              title="Ambil semua pose secara otomatis dengan jeda waktu"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Sesi Otomatis</span>
+            </button>
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="p-2.5 rounded-lg bg-white hover:bg-[#FAF6EE] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-colors cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center"
+              title="Unggah foto dari perangkat"
+              aria-label="Unggah foto dari galeri"
+            >
+              <Upload className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -653,20 +734,22 @@ export function CameraCapture({
         </div>
 
         <div
-          className={`grid gap-2 ${
-            requiredCount === 1
-              ? "grid-cols-1 max-w-[200px] mx-auto"
-              : requiredCount === 2
-              ? "grid-cols-2 max-w-[320px] mx-auto"
-              : requiredCount === 3
-              ? "grid-cols-3"
-              : requiredCount === 4
-              ? "grid-cols-4"
-              : requiredCount === 5
-              ? "grid-cols-5"
-              : requiredCount === 6
-              ? "grid-cols-3 sm:grid-cols-6"
-              : "grid-cols-4 sm:grid-cols-8"
+          className={`gap-2 pb-1 ${
+            requiredCount >= 5
+              ? "flex overflow-x-auto snap-x scrollbar-none sm:grid " +
+                (requiredCount === 5
+                  ? "sm:grid-cols-5"
+                  : requiredCount === 6
+                  ? "sm:grid-cols-6"
+                  : "sm:grid-cols-8")
+              : "grid " +
+                (requiredCount === 1
+                  ? "grid-cols-1 max-w-[200px] mx-auto"
+                  : requiredCount === 2
+                  ? "grid-cols-2 max-w-[320px] mx-auto"
+                  : requiredCount === 3
+                  ? "grid-cols-3"
+                  : "grid-cols-4")
           }`}
         >
           {Array.from({ length: requiredCount }).map((_, index) => {
@@ -677,7 +760,9 @@ export function CameraCapture({
               <button
                 key={index}
                 onClick={() => setActiveSlot(index)}
-                className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center p-1 min-h-[50px] ${
+                className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center p-1 min-h-[52px] ${
+                  requiredCount >= 5 ? "min-w-[68px] sm:min-w-0 flex-1 shrink-0 snap-start " : ""
+                }${
                   isActive
                     ? "border-[#4A121A] ring-2 ring-[#4A121A]/20 shadow-md scale-102 bg-[#FAF6EE]"
                     : photoUrl

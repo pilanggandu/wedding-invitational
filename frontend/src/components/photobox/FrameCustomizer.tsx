@@ -94,8 +94,8 @@ export function FrameCustomizer({
   const [isUrlInputOpen, setIsUrlInputOpen] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Dedicated mobile view switcher: "editor" (pick frames) or "preview" (inspect result)
-  const [mobileView, setMobileView] = useState<"editor" | "preview">("editor");
+  // Mobile full-screen inspection overlay toggle
+  const [isFullScreenPreview, setIsFullScreenPreview] = useState<boolean>(false);
 
   const previewContainerRef = useRef<HTMLDivElement>(null);
 
@@ -881,7 +881,9 @@ export function FrameCustomizer({
               {isSelected && (
                 <div
                   onPointerDown={(e) => e.stopPropagation()}
-                  className="absolute -top-9 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#3A332C]/95 backdrop-blur-xs text-white px-2 py-1 rounded-full shadow-lg border border-white/20 z-50 text-[10px] whitespace-nowrap animate-in fade-in zoom-in-95 duration-150"
+                  className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#3A332C]/95 backdrop-blur-xs text-white px-2 py-1 rounded-full shadow-lg border border-white/20 z-50 text-[10px] whitespace-nowrap animate-in fade-in zoom-in-95 duration-150 ${
+                    stk.y < 16 ? "top-full mt-2" : "-top-10"
+                  }`}
                   style={{
                     transform: `translateX(-50%) scaleX(${stk.isFlipped ? -1 : 1})`,
                   }}
@@ -893,10 +895,11 @@ export function FrameCustomizer({
                         rotation: ((stk.rotation || 0) + 45) % 360,
                       })
                     }
-                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    className="p-1.5 sm:p-1 hover:bg-white/20 rounded-full transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer"
                     title="Putar 45°"
+                    aria-label="Putar stiker"
                   >
-                    <RotateCw className="w-3 h-3" />
+                    <RotateCw className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
@@ -905,26 +908,29 @@ export function FrameCustomizer({
                         isFlipped: !stk.isFlipped,
                       })
                     }
-                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    className="p-1.5 sm:p-1 hover:bg-white/20 rounded-full transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer"
                     title="Cermin Horizontal"
+                    aria-label="Cermin stiker"
                   >
-                    <FlipHorizontal className="w-3 h-3" />
+                    <FlipHorizontal className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDuplicateSticker(stk.id)}
-                    className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    className="p-1.5 sm:p-1 hover:bg-white/20 rounded-full transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer"
                     title="Gandakan"
+                    aria-label="Gandakan stiker"
                   >
-                    <Copy className="w-3 h-3" />
+                    <Copy className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => handleRemoveSticker(stk.id)}
-                    className="p-1 hover:bg-red-500 rounded-full transition-colors text-red-300 hover:text-white"
+                    className="p-1.5 sm:p-1 hover:bg-red-500 rounded-full transition-colors text-red-300 hover:text-white min-h-[32px] min-w-[32px] flex items-center justify-center cursor-pointer"
                     title="Hapus"
+                    aria-label="Hapus stiker"
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -1919,7 +1925,7 @@ export function FrameCustomizer({
   );
 
   return (
-    <div className="w-full max-w-6xl mx-auto flex flex-col items-center pb-20 lg:pb-8">
+    <div className="w-full max-w-6xl mx-auto flex flex-col items-center pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pb-8">
       {/* Top Action Bar (Desktop only, or compact on mobile) */}
       <div className="w-full flex items-center justify-between gap-2 mb-4 px-1 sm:px-2">
         <button
@@ -1934,7 +1940,7 @@ export function FrameCustomizer({
         <div className="hidden lg:flex items-center gap-2">
           <button
             onClick={() => setIsA3ModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            className="px-3.5 py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[40px]"
             title="Cetak Poster Standee QR Code (A3, A4, A5, A6, F4) untuk Acara"
           >
             <QrCode className="w-4 h-4 text-[#8C6239]" />
@@ -1944,7 +1950,7 @@ export function FrameCustomizer({
           <button
             onClick={handleCopyToClipboard}
             disabled={isExporting}
-            className="px-3.5 py-2 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            className="px-3.5 py-2 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[40px]"
             title="Salin gambar ke clipboard"
           >
             {copySuccess ? (
@@ -1963,7 +1969,7 @@ export function FrameCustomizer({
           <button
             onClick={handlePrint}
             disabled={isExporting}
-            className="px-3 py-2 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#5A4D3E] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            className="px-3 py-2 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#5A4D3E] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs min-h-[40px]"
             title="Cetak foto"
           >
             <Printer className="w-4 h-4 text-[#8C6239]" />
@@ -1973,171 +1979,146 @@ export function FrameCustomizer({
           <button
             onClick={handleDownload}
             disabled={isExporting}
-            className="px-4 py-2 rounded-xl bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] text-xs font-bold flex items-center gap-2 transition-all shadow-md cursor-pointer hover:scale-102 disabled:opacity-50"
+            className="px-4 py-2 rounded-xl bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] text-xs font-bold flex items-center gap-2 transition-all shadow-md cursor-pointer hover:scale-102 disabled:opacity-50 min-h-[40px]"
           >
             <Download className="w-4 h-4 text-[#DFD2BD]" />
             <span>{isExporting ? "Memproses..." : "Unduh Foto HD"}</span>
           </button>
         </div>
 
-        {/* Mobile Mini Quick Download & QR Button in Header */}
+        {/* Mobile Action Buttons in Header */}
         <div className="lg:hidden flex items-center gap-1.5">
           <button
             onClick={() => setIsA3ModalOpen(true)}
-            className="px-2.5 py-2 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95"
-            title="Poster QR A3"
+            className="px-2.5 py-2 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 min-h-[38px]"
+            title="Cetak Poster QR Standee"
           >
             <QrCode className="w-3.5 h-3.5 text-[#8C6239]" />
-            <span>QR A3</span>
+            <span className="text-[11px]">Poster QR</span>
           </button>
 
           <button
-            onClick={handleDownload}
-            disabled={isExporting}
-            className="px-3 py-2 rounded-xl bg-[#4A121A] text-[#DFD2BD] text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 disabled:opacity-50"
+            onClick={() => setIsFullScreenPreview(true)}
+            className="px-2.5 py-2 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-xs active:scale-95 min-h-[38px]"
+            title="Layar Penuh"
           >
-            <Download className="w-3.5 h-3.5 text-[#DFD2BD]" />
-            <span>{isExporting ? "Proses..." : "Unduh HD"}</span>
+            <Eye className="w-3.5 h-3.5 text-[#C99A45]" />
+            <span className="text-[11px]">Layar Penuh</span>
           </button>
         </div>
       </div>
 
-      {/* MOBILE SEGMENTED VIEW SWITCHER (< lg) */}
-      <div className="lg:hidden w-full flex items-center bg-white p-1 rounded-2xl border border-[#E8DFC8] shadow-xs mb-4">
-        <button
-          onClick={() => setMobileView("editor")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
-            mobileView === "editor"
-              ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
-              : "text-[#6B5A49] hover:text-[#2A241D]"
-          }`}
-        >
-          <Palette className="w-4 h-4" />
-          <span>Pilih Desain Frame</span>
-        </button>
-
-        <button
-          onClick={() => setMobileView("preview")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all min-h-[44px] cursor-pointer ${
-            mobileView === "preview"
-              ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
-              : "text-[#6B5A49] hover:text-[#2A241D]"
-          }`}
-        >
-          <Eye className="w-4 h-4 text-[#C99A45]" />
-          <span>Lihat Hasil Strip</span>
-        </button>
-      </div>
-
-      {/* MOBILE VIEW 1: EDITOR WITH COMPACT PREVIEW BANNER */}
-      <div className={`w-full lg:hidden ${mobileView === "editor" ? "block" : "hidden"}`}>
-        {/* Compact Live Preview Ribbon */}
-        <div className="w-full bg-[#FAF6EE] p-3 rounded-2xl border border-[#E8DFC8] mb-4 flex items-center justify-between shadow-2xs">
-          <div className="flex items-center gap-2.5">
-            <div
-              style={{
-                backgroundColor: customBgColor || currentTemplate.bgColor,
-                borderColor: currentTemplate.borderColor || "#DFD2BD",
-              }}
-              className="w-10 h-14 rounded-md border flex flex-col justify-center items-center shadow-xs overflow-hidden shrink-0"
+      {/* MOBILE UNIFIED VIEW (< lg): Live Photobox Strip on Top + Tabs Studio Below */}
+      <div className="w-full lg:hidden flex flex-col items-center">
+        {/* Fullscreen Preview Modal Overlay when active */}
+        <AnimatePresence>
+          {isFullScreenPreview && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-4 overflow-y-auto"
             >
-              <div className="w-6 h-3 bg-black/20 rounded-xs mb-1" />
-              <div className="w-6 h-3 bg-black/20 rounded-xs" />
+              <div className="w-full flex items-center justify-between max-w-md pt-1 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-serif font-bold text-sm">
+                    Pratinjau Hasil Photobox
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-[#DFD2BD]/20 text-[#DFD2BD]">
+                    {currentTemplate.name}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setIsFullScreenPreview(false)}
+                  className="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+                  aria-label="Tutup Layar Penuh"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="my-auto py-3">
+                {renderPhotoboxStrip()}
+              </div>
+
+              <div className="w-full max-w-sm flex flex-col gap-2.5 pt-3 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
+                <button
+                  onClick={handleDownload}
+                  disabled={isExporting}
+                  className="w-full py-3.5 rounded-xl bg-[#4A121A] text-[#DFD2BD] font-bold text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer active:scale-95 disabled:opacity-50 min-h-[48px]"
+                >
+                  <Download className="w-5 h-5 text-[#DFD2BD]" />
+                  <span>{isExporting ? "Sedang Memproses..." : "Unduh Foto HD (Siap Cetak)"}</span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={handleCopyToClipboard}
+                    disabled={isExporting}
+                    className="py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    {copySuccess ? (
+                      <>
+                        <Check className="w-4 h-4 text-emerald-400" />
+                        <span>Tersalin!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4" />
+                        <span>Salin Gambar</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={handlePrint}
+                    disabled={isExporting}
+                    className="py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Cetak / Print</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Live Interactive Strip Viewport Header */}
+        <div className="w-full bg-[#FAF6EE] p-3 rounded-2xl border border-[#E8DFC8] mb-4 shadow-2xs">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#A67A53] font-bold">
+                Pratinjau Live
+              </span>
+              <span className="px-1.5 py-0.2 rounded text-[8px] font-mono bg-[#4A121A] text-[#DFD2BD] font-bold">
+                {currentTemplate.name}
+              </span>
             </div>
 
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-[#3A332C] truncate max-w-[150px]">
-                  {currentTemplate.name}
-                </span>
-                {currentTemplate.badge && (
-                  <span className="px-1.5 py-0.2 rounded text-[8px] font-mono bg-[#4A121A] text-[#DFD2BD] font-bold">
-                    {currentTemplate.badge}
-                  </span>
-                )}
-              </div>
-              <p className="text-[10px] text-[#786551] mt-0.5">
-                Format: {layout} • {photos.filter(Boolean).length}/{slotCount} Foto
-              </p>
-            </div>
+            <button
+              onClick={() => setIsFullScreenPreview(true)}
+              className="px-2.5 py-1 rounded-lg bg-white border border-[#E8DFC8] text-[#4A121A] text-[11px] font-bold flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
+              title="Buka pratinjau layar penuh"
+            >
+              <Eye className="w-3.5 h-3.5 text-[#C99A45]" />
+              <span>Layar Penuh</span>
+            </button>
           </div>
 
-          <button
-            onClick={() => setMobileView("preview")}
-            className="px-3 py-1.5 rounded-xl bg-white border border-[#E8DFC8] hover:bg-[#FAF6EE] text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-2xs cursor-pointer min-h-[38px]"
-          >
-            <span>Lihat Strip</span>
-            <ChevronRight className="w-3.5 h-3.5 text-[#8C6239]" />
-          </button>
-        </div>
-
-        {/* Tabbed Editor Controls */}
-        {renderEditorControls()}
-      </div>
-
-      {/* MOBILE VIEW 2: FULL PREVIEW STRIP & ACTIONS */}
-      <div className={`w-full lg:hidden ${mobileView === "preview" ? "flex flex-col items-center" : "hidden"}`}>
-        <div className="text-center mb-3">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#A67A53] font-bold">
-            Pratinjau Hasil Photobox
-          </span>
-          <p className="text-xs text-[#786551]">
-            Ketuk stiker pada foto jika ingin menghapusnya
+          {/* Scaled Live Photobox Strip Viewport */}
+          <div className="w-full flex justify-center py-2 max-h-[350px] sm:max-h-[420px] overflow-y-auto rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
+            <div className="origin-top transition-transform">
+              {renderPhotoboxStrip()}
+            </div>
+          </div>
+          <p className="text-[10px] text-center text-[#786551] mt-2">
+            Ketuk stiker untuk mengatur rotasi, ukuran, atau hapus
           </p>
         </div>
 
-        {/* Live Photobox Strip (NO STICKY ON MOBILE!) */}
-        <div className="w-full flex justify-center py-2">
-          {renderPhotoboxStrip()}
-        </div>
-
-        {/* Mobile Full Action Buttons Bar */}
-        <div className="w-full max-w-[340px] mt-6 space-y-2.5 px-2">
-          <button
-            onClick={handleDownload}
-            disabled={isExporting}
-            className="w-full py-3.5 rounded-xl bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-bold text-sm flex items-center justify-center gap-2 shadow-lg cursor-pointer active:scale-98 disabled:opacity-50 min-h-[48px]"
-          >
-            <Download className="w-5 h-5 text-[#DFD2BD]" />
-            <span>{isExporting ? "Sedang Memproses..." : "Unduh Foto HD (Siap Cetak)"}</span>
-          </button>
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={handleCopyToClipboard}
-              disabled={isExporting}
-              className="py-2.5 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 min-h-[44px]"
-            >
-              {copySuccess ? (
-                <>
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span className="text-emerald-700">Tersalin!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4 text-[#8C6239]" />
-                  <span>Salin Gambar</span>
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handlePrint}
-              disabled={isExporting}
-              className="py-2.5 rounded-xl bg-white border border-[#E8DFC8] text-[#5A4D3E] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 min-h-[44px]"
-            >
-              <Printer className="w-4 h-4 text-[#8C6239]" />
-              <span>Cetak / Print</span>
-            </button>
-          </div>
-
-          <button
-            onClick={() => setMobileView("editor")}
-            className="w-full py-2.5 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] text-[#4A121A] font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer min-h-[44px]"
-          >
-            <Palette className="w-4 h-4 text-[#8C6239]" />
-            <span>Ubah Desain Frame / Format</span>
-          </button>
+        {/* Tabbed Editor Controls (Directly accessible under the live strip!) */}
+        <div className="w-full">
+          {renderEditorControls()}
         </div>
       </div>
 
@@ -2165,20 +2146,20 @@ export function FrameCustomizer({
       </div>
 
       {/* Floating Bottom Navigation Bar for Mobile (< lg) */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF6EE]/95 backdrop-blur-md border-t border-[#E8DFC8] px-4 py-2.5 flex items-center justify-between gap-3 shadow-lg">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF6EE]/95 backdrop-blur-md border-t border-[#E8DFC8] px-3 sm:px-4 py-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] flex items-center justify-between gap-2.5 shadow-lg">
         <button
-          onClick={() => setMobileView((prev) => (prev === "editor" ? "preview" : "editor"))}
-          className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer min-h-[44px]"
+          onClick={() => setIsFullScreenPreview((prev) => !prev)}
+          className="flex-1 py-2.5 px-3 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer min-h-[44px] active:scale-95"
         >
-          {mobileView === "editor" ? (
+          {isFullScreenPreview ? (
             <>
-              <Eye className="w-4 h-4 text-[#C99A45]" />
-              <span>Lihat Hasil Strip</span>
+              <Palette className="w-4 h-4 text-[#8C6239]" />
+              <span>Kembali Edit</span>
             </>
           ) : (
             <>
-              <Palette className="w-4 h-4 text-[#8C6239]" />
-              <span>Ganti Frame</span>
+              <Eye className="w-4 h-4 text-[#C99A45]" />
+              <span>Lihat Penuh</span>
             </>
           )}
         </button>

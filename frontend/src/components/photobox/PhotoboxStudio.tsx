@@ -61,7 +61,7 @@ export function PhotoboxStudio() {
 
   if (!hasMounted) {
     return (
-      <div className="min-h-screen bg-[#FAF6EE] flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-[#FAF6EE] flex items-center justify-center p-4">
         <div className="w-10 h-10 rounded-full border-2 border-[#4A121A]/20 border-t-[#4A121A] animate-spin" />
       </div>
     );
@@ -77,12 +77,12 @@ export function PhotoboxStudio() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF6EE] text-[#3A332C] flex flex-col font-sans selection:bg-[#DFD2BD] selection:text-[#4A121A]">
+    <div className="min-h-dvh bg-[#FAF6EE] text-[#3A332C] flex flex-col font-sans selection:bg-[#DFD2BD] selection:text-[#4A121A]">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-[#FAF6EE]/90 backdrop-blur-md border-b border-[#E8DFC8] px-3 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-2.5 sm:gap-3">
+      <header className="sticky top-0 z-40 bg-[#FAF6EE]/90 backdrop-blur-md border-b border-[#E8DFC8] px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <div
-            className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] shadow-xs min-w-[38px] min-h-[38px] flex items-center justify-center shrink-0"
+            className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] shadow-xs w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0"
             title="The Wedding Photobox of Gilang & Salsa"
           >
             <Camera className="w-4 h-4 text-[#8C6239]" />
@@ -90,59 +90,64 @@ export function PhotoboxStudio() {
 
           <div>
             <div className="flex items-center gap-1 sm:gap-1.5">
-              <span className="font-serif font-bold text-sm sm:text-lg text-[#4A121A] truncate max-w-[130px] sm:max-w-none">
+              <span className="font-serif font-bold text-sm sm:text-lg text-[#4A121A]">
                 Photobox
               </span>
-              <span className="hidden xs:inline px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
+              <span className="hidden xs:inline px-1.5 py-0.2 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
                 Studio
               </span>
             </div>
-            <p className="text-[11px] text-[#786551] hidden sm:block">
+            <p className="text-[11px] text-[#786551] hidden md:block">
               Bilik Foto & Frame ala Korea untuk momen spesial Gilang & Salsa
             </p>
           </div>
         </div>
 
         {/* Right Navigation & Tools */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Step Navigation Pill Indicator */}
-          <div className="flex items-center gap-1 bg-white px-1.5 py-1 sm:px-3 sm:py-1.5 rounded-full border border-[#E8DFC8] shadow-xs">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-white p-1 sm:px-2.5 sm:py-1 rounded-full border border-[#E8DFC8] shadow-xs">
             <button
               onClick={() => setCurrentStep("camera")}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer min-h-[32px] sm:min-h-[34px] ${
                 currentStep === "camera"
                   ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
                   : "text-[#786551] hover:text-[#2A241D]"
               }`}
+              aria-label="Langkah 1: Ambil Foto"
             >
               <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              <span>1. Kamera</span>
+              <span className="hidden xs:inline">1. Kamera</span>
+              <span className="xs:hidden font-mono font-bold">1</span>
             </button>
 
-            <span className="text-[#C5B7A1] text-xs">/</span>
+            <span className="text-[#C5B7A1] text-[10px] sm:text-xs">/</span>
 
             <button
               onClick={() => setCurrentStep("frames")}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer min-h-[32px] sm:min-h-[34px] ${
                 currentStep === "frames"
                   ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
                   : "text-[#786551] hover:text-[#2A241D]"
               }`}
+              aria-label="Langkah 2: Pilih Frame"
             >
               <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              <span>2. Frame</span>
+              <span className="hidden xs:inline">2. Frame</span>
+              <span className="xs:hidden font-mono font-bold">2</span>
             </button>
           </div>
 
           {/* Button Generate QR Code Poster */}
           <button
             onClick={() => setIsA3ModalOpen(true)}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px]"
-            title="Generate & Cetak Poster QR Code (A3, A4, A5, A6, F4) untuk Meja/Standee Acara"
+            className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px] min-w-[38px] justify-center"
+            title="Generate & Cetak Poster QR Code (A3 - A6) untuk Standee Acara"
+            aria-label="Generate & Cetak Poster QR Standee"
           >
-            <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DFD2BD]" />
-            <span className="hidden sm:inline">Cetak Poster QR</span>
-            <span className="sm:hidden font-mono text-[11px]">QR Standee</span>
+            <QrCode className="w-4 h-4 text-[#DFD2BD]" />
+            <span className="hidden md:inline">Cetak Poster QR</span>
+            <span className="hidden sm:inline md:hidden font-mono text-[11px]">QR Standee</span>
           </button>
 
           {/* Button Kunci Studio */}
@@ -152,17 +157,18 @@ export function PhotoboxStudio() {
               setPhotoboxUnlockedSession(false);
               setIsUnlocked(false);
             }}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px]"
+            className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs cursor-pointer active:scale-95 min-h-[38px] min-w-[38px] justify-center"
             title="Kunci kembali bilik foto"
+            aria-label="Kunci bilik foto"
           >
-            <Lock className="w-3.5 h-3.5 text-[#8C6239]" />
+            <Lock className="w-4 h-4 text-[#8C6239]" />
             <span className="hidden sm:inline">Kunci</span>
           </button>
         </div>
       </header>
 
       {/* Main Studio Viewport */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         <AnimatePresence mode="wait">
           {currentStep === "camera" ? (
             <motion.div
@@ -202,7 +208,7 @@ export function PhotoboxStudio() {
       </main>
 
       {/* Friendly Bottom Footer */}
-      <footer className="border-t border-[#E8DFC8] bg-[#FAF6EE] py-4 px-4 text-center text-xs text-[#786551]">
+      <footer className="border-t border-[#E8DFC8] bg-[#FAF6EE] py-4 px-4 text-center text-xs text-[#786551] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
         <p className="flex items-center justify-center gap-1.5">
           <span>Dibuat dengan</span>
           <Heart className="w-3.5 h-3.5 text-[#B85461] fill-current" />

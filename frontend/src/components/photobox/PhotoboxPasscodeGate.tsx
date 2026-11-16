@@ -156,7 +156,7 @@ export function PhotoboxPasscodeGate({
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAF6EE] text-[#3A332C] flex flex-col items-center justify-center p-4 sm:p-6 font-sans relative overflow-hidden select-none">
+    <div className="min-h-dvh bg-[#FAF6EE] text-[#3A332C] flex flex-col items-center justify-center p-3 sm:p-6 font-sans relative overflow-y-auto select-none py-6 sm:py-8">
       {/* Background Ornament Lembut */}
       <div className="absolute inset-0 pointer-events-none opacity-40">
         <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-[#EADCC7] blur-3xl" />
@@ -168,7 +168,7 @@ export function PhotoboxPasscodeGate({
         initial={{ opacity: 0, scale: 0.96, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="w-full max-w-sm sm:max-w-md bg-white/90 backdrop-blur-md border border-[#E8DFC8] rounded-3xl p-6 sm:p-8 shadow-xl relative z-10 flex flex-col items-center text-center"
+        className="w-full max-w-sm sm:max-w-md bg-white/90 backdrop-blur-md border border-[#E8DFC8] rounded-3xl p-5 sm:p-8 shadow-xl relative z-10 flex flex-col items-center text-center my-auto"
       >
         {/* Top Header Badge & Seal */}
         <div className="relative mb-4">
@@ -294,7 +294,7 @@ export function PhotoboxPasscodeGate({
         </div>
 
         {/* Touch / Click Numeric Keypad */}
-        <div className="grid grid-cols-3 gap-2.5 sm:gap-3 w-full max-w-[290px] sm:max-w-[320px]">
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3 w-full max-w-[290px] sm:max-w-[320px] touch-manipulation">
           {keypadButtons.map((btn, idx) => {
             if (btn.type === "digit") {
               return (
@@ -303,7 +303,7 @@ export function PhotoboxPasscodeGate({
                   type="button"
                   onClick={() => handleAddDigit(btn.value)}
                   disabled={isSuccess || pin.length >= 4}
-                  className="h-12 sm:h-14 rounded-2xl bg-white hover:bg-[#FAF6EE] active:scale-95 border border-[#E8DFC8] text-lg sm:text-xl font-bold text-[#4A121A] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-hidden focus:ring-2 focus:ring-[#8C6239]"
+                  className="h-12 sm:h-14 rounded-2xl bg-white hover:bg-[#FAF6EE] active:scale-95 border border-[#E8DFC8] text-lg sm:text-xl font-bold text-[#4A121A] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-hidden focus:ring-2 focus:ring-[#8C6239] touch-manipulation"
                   aria-label={`Digit ${btn.label}`}
                 >
                   {btn.label}
@@ -318,7 +318,7 @@ export function PhotoboxPasscodeGate({
                   type="button"
                   onClick={btn.action}
                   disabled={isSuccess || pin.length === 0}
-                  className="h-12 sm:h-14 rounded-2xl bg-[#FAF6EE] hover:bg-[#F2E8D5] active:scale-95 border border-[#E8DFC8] text-xs font-bold text-[#786551] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus:outline-hidden"
+                  className="h-12 sm:h-14 rounded-2xl bg-[#FAF6EE] hover:bg-[#F2E8D5] active:scale-95 border border-[#E8DFC8] text-xs font-bold text-[#786551] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus:outline-hidden touch-manipulation"
                   aria-label="Bersihkan input PIN"
                 >
                   C
@@ -332,7 +332,7 @@ export function PhotoboxPasscodeGate({
                 type="button"
                 onClick={btn.action}
                 disabled={isSuccess || pin.length === 0}
-                className="h-12 sm:h-14 rounded-2xl bg-[#FAF6EE] hover:bg-[#F2E8D5] active:scale-95 border border-[#E8DFC8] text-[#786551] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus:outline-hidden"
+                className="h-12 sm:h-14 rounded-2xl bg-[#FAF6EE] hover:bg-[#F2E8D5] active:scale-95 border border-[#E8DFC8] text-[#786551] transition-all shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus:outline-hidden touch-manipulation"
                 aria-label="Hapus satu angka terakhir"
               >
                 <Delete className="w-5 h-5" />
