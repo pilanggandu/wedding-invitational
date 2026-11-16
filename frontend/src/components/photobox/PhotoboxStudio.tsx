@@ -176,6 +176,7 @@ export function PhotoboxStudio() {
                 layout={layout}
                 onLayoutChange={handleLayoutChange}
                 photos={photos}
+                onPhotosChange={setPhotos}
                 onBackToCamera={() => setCurrentStep("camera")}
               />
             </motion.div>

@@ -32,6 +32,8 @@ import {
   Minus,
   Link as LinkIcon,
   X,
+  ArrowLeftRight,
+  RefreshCw,
 } from "lucide-react";
 import {
   PhotoboxLayout,
@@ -53,10 +55,106 @@ import {
 import { generatePhotoboxCanvas } from "./canvasExport";
 import { LayoutWireframe } from "./LayoutWireframe";
 
+export interface AestheticPreset {
+  id: string;
+  name: string;
+  tagline: string;
+  icon: string;
+  badge: string;
+  templateId: string;
+  filter: PhotoboxFilter;
+  customTitle?: string;
+  customSubtitle?: string;
+  accentColor: string;
+  previewBg: string;
+}
+
+export const AESTHETIC_PRESETS: AestheticPreset[] = [
+  {
+    id: "preset-botanical-pressed",
+    name: "Pressed Botanical",
+    tagline: "Bunga kering alami, kertas ivory, & segel wax emas",
+    icon: "🌿",
+    badge: "Asset Asli",
+    templateId: "real-botanical-pressed",
+    filter: "pastel",
+    customTitle: "GILANG & SALSA",
+    customSubtitle: "Hari Bahagia Kami",
+    accentColor: "#C5A880",
+    previewBg: "#FAF7F2",
+  },
+  {
+    id: "preset-korean-studio",
+    name: "Korean Studio Soft",
+    tagline: "Nuansa bilik foto Seoul yang cerah & minimalis",
+    icon: "✨",
+    badge: "Populer",
+    templateId: "korean-film-clean",
+    filter: "warm",
+    customTitle: "Gilang & Salsadila",
+    customSubtitle: "Photobox Studio",
+    accentColor: "#8C6239",
+    previewBg: "#F7F5F0",
+  },
+  {
+    id: "preset-royal-gold",
+    name: "Royal Baroque & Gold",
+    tagline: "Ukiran emas filigree mewah & sketsa cincin kawin",
+    icon: "💍",
+    badge: "Mewah",
+    templateId: "real-royal-baroque",
+    filter: "warm",
+    customTitle: "ROYAL CELEBRATION",
+    customSubtitle: "Gilang & Salsa • 2026",
+    accentColor: "#D4AF37",
+    previewBg: "#FBF9F4",
+  },
+  {
+    id: "preset-romantic-silk",
+    name: "Romantic Silk Ribbon",
+    tagline: "Pita sutra manis, warna blush, dan bunga liar",
+    icon: "🎀",
+    badge: "Romantis",
+    templateId: "real-silk-ribbon-bow",
+    filter: "pastel",
+    customTitle: "Sweet Love Story",
+    customSubtitle: "A Beautiful Day Together",
+    accentColor: "#C9687E",
+    previewBg: "#FFF8F9",
+  },
+  {
+    id: "preset-vintage-90s",
+    name: "Vintage 90s Film",
+    tagline: "Kertas bertekstur, nuansa analog antik abadi",
+    icon: "🎞️",
+    badge: "Klasik",
+    templateId: "paper-keepsake",
+    filter: "vintage",
+    customTitle: "GILANG & SALSA",
+    customSubtitle: "Koleksi Kenangan Indah",
+    accentColor: "#8C6239",
+    previewBg: "#F5EFE6",
+  },
+  {
+    id: "preset-noir-chic",
+    name: "Classic Noir Monochrome",
+    tagline: "Hitam putih artistik dengan kontras studio tinggi",
+    icon: "🖤",
+    badge: "Artistik",
+    templateId: "modern-minimalist",
+    filter: "bw",
+    customTitle: "GILANG & SALSA",
+    customSubtitle: "MEMORIES IN NOIR",
+    accentColor: "#111111",
+    previewBg: "#FFFFFF",
+  },
+];
+
 interface FrameCustomizerProps {
   layout: PhotoboxLayout;
   onLayoutChange: (layout: PhotoboxLayout) => void;
   photos: string[];
+  onPhotosChange?: (photos: string[]) => void;
   onBackToCamera: () => void;
 }
 
@@ -64,6 +162,7 @@ export function FrameCustomizer({
   layout,
   onLayoutChange,
   photos,
+  onPhotosChange,
   onBackToCamera,
 }: FrameCustomizerProps) {
   // State
@@ -76,12 +175,25 @@ export function FrameCustomizer({
   const [customDate, setCustomDate] = useState<string>("28 Okt 2026");
   const [customBgColor, setCustomBgColor] = useState<string>("");
   const [stickers, setStickers] = useState<StickerItem[]>([]);
-  const [activeTab, setActiveTab] = useState<"templates" | "filters" | "stickers" | "text" | "layout">("templates");
+  const [activeTab, setActiveTab] = useState<
+    "presets" | "templates" | "filters" | "photos" | "stickers" | "text" | "layout"
+  >("presets");
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
 
+  // Mobile fit-to-view auto scale state
+  const [isFitToView, setIsFitToView] = useState<boolean>(true);
+
+  // Photo slot swapping & single replacement states
+  const [swapSourceIndex, setSwapSourceIndex] = useState<number | null>(null);
+  const [swapNotification, setSwapNotification] = useState<string | null>(null);
+  const [presetToast, setPresetToast] = useState<string | null>(null);
+  const singlePhotoInputRef = useRef<HTMLInputElement>(null);
+  const [replacingSlotIndex, setReplacingSlotIndex] = useState<number | null>(null);
+
   // Advanced sticker editing states
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
+  const selectedSticker = stickers.find((s) => s.id === selectedStickerId);
   const [isDraggingSticker, setIsDraggingSticker] = useState<boolean>(false);
   const [customImages, setCustomImages] = useState<
     Array<{ id: string; title: string; imageUrl: string; hasFrame: boolean }>
@@ -223,6 +335,64 @@ export function FrameCustomizer({
     }
     trayTouchStateRef.current = null;
     setTouchGhost(null);
+  };
+
+  // Preset handler
+  const handleApplyPreset = (preset: AestheticPreset) => {
+    setSelectedTemplateId(preset.templateId);
+    setFilter(preset.filter);
+    if (preset.customTitle) setCustomTitle(preset.customTitle);
+    if (preset.customSubtitle) setCustomSubtitle(preset.customSubtitle);
+    setCustomBgColor("");
+    setPresetToast(`Gaya "${preset.name}" berhasil diterapkan! ✨`);
+    setTimeout(() => setPresetToast(null), 3000);
+  };
+
+  // Photo swapping & replacement handlers
+  const handleSelectSwapSlot = (index: number) => {
+    if (swapSourceIndex === null) {
+      setSwapSourceIndex(index);
+      setSwapNotification(`Pilih foto kedua untuk ditukar dengan Pose #${index + 1}`);
+    } else if (swapSourceIndex === index) {
+      setSwapSourceIndex(null);
+      setSwapNotification(null);
+    } else {
+      const newPhotos = [...photos];
+      const temp = newPhotos[swapSourceIndex];
+      newPhotos[swapSourceIndex] = newPhotos[index];
+      newPhotos[index] = temp;
+      onPhotosChange?.(newPhotos);
+      setSwapNotification(`Pose #${swapSourceIndex + 1} dan Pose #${index + 1} berhasil ditukar!`);
+      setSwapSourceIndex(null);
+      setTimeout(() => setSwapNotification(null), 3000);
+    }
+  };
+
+  const handleTriggerReplacePhoto = (index: number) => {
+    setReplacingSlotIndex(index);
+    singlePhotoInputRef.current?.click();
+  };
+
+  const handleSinglePhotoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || replacingSlotIndex === null) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Mohon pilih file gambar yang valid (PNG, JPG, WebP).");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (!dataUrl) return;
+      const newPhotos = [...photos];
+      newPhotos[replacingSlotIndex] = dataUrl;
+      onPhotosChange?.(newPhotos);
+      setSwapNotification(`Foto di Pose #${replacingSlotIndex + 1} berhasil diganti!`);
+      setTimeout(() => setSwapNotification(null), 3000);
+      setReplacingSlotIndex(null);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
   // Set localized date on client mount to eliminate SSR hydration mismatch
@@ -1195,11 +1365,13 @@ export function FrameCustomizer({
       {/* Tab Navigation Bar */}
       <div className="flex border-b border-[#E8DFC8] bg-[#FAF6EE]/50 overflow-x-auto scrollbar-none">
         {[
+          { id: "presets", label: "Gaya Instan", icon: Sparkles, badge: "1-Klik" },
           { id: "templates", label: `Frame (${filteredTemplates.length})`, icon: Palette },
-          { id: "layout", label: `Format (${LAYOUT_OPTIONS.length})`, icon: LayoutGrid },
-          { id: "filters", label: "Filter", icon: Sliders },
-          { id: "stickers", label: "Stiker", icon: Smile },
+          { id: "filters", label: `Filter (${PHOTO_FILTERS.length})`, icon: Sliders },
+          { id: "photos", label: `Atur Foto (${slotCount})`, icon: ArrowLeftRight, badge: "Tukar" },
+          { id: "stickers", label: `Stiker (${stickers.length})`, icon: Smile },
           { id: "text", label: "Teks & Info", icon: Type },
+          { id: "layout", label: `Format (${LAYOUT_OPTIONS.length})`, icon: LayoutGrid },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -1215,12 +1387,108 @@ export function FrameCustomizer({
             >
               <Icon className="w-3.5 h-3.5 text-[#8C6239]" />
               <span>{tab.label}</span>
+              {tab.badge && (
+                <span
+                  className={`px-1.5 py-0.2 rounded text-[8px] font-mono font-bold ${
+                    isActive
+                      ? "bg-[#4A121A] text-[#DFD2BD]"
+                      : "bg-[#4A121A]/10 text-[#4A121A]"
+                  }`}
+                >
+                  {tab.badge}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
       <div className="p-3.5 sm:p-5">
+        {/* TAB 0: GAYA INSTAN (AESTHETIC PRESETS) */}
+        {activeTab === "presets" && (
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-gradient-to-r from-[#FAF6EE] to-[#F5ECE0] border border-[#E8DFC8] text-xs text-[#5C4A3A]">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="w-4 h-4 text-[#C99A45]" />
+                <span className="font-bold text-[#3A332C]">
+                  Gaya Instan 1-Ketukan (Aesthetic Presets):
+                </span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-[#705A46]">
+                Pilih salah satu tema di bawah untuk menerapkan kombinasi bingkai, filter warna foto, dan tipografi yang serasi secara otomatis dalam 1 detik.
+              </p>
+            </div>
+
+            {presetToast && (
+              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center gap-2 animate-in fade-in duration-150">
+                <Check className="w-4 h-4 text-emerald-600" />
+                <span>{presetToast}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {AESTHETIC_PRESETS.map((preset) => {
+                const isActive =
+                  selectedTemplateId === preset.templateId && filter === preset.filter;
+
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => handleApplyPreset(preset)}
+                    className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between group min-h-[105px] ${
+                      isActive
+                        ? "border-[#4A121A] bg-[#FAF6EE] shadow-md ring-2 ring-[#4A121A]/20"
+                        : "border-[#E8DFC8] bg-white hover:border-[#8C6239]/60 hover:bg-[#FAF6EE]/40"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-lg leading-none">{preset.icon}</span>
+                          <span className="text-xs font-bold text-[#3A332C]">
+                            {preset.name}
+                          </span>
+                        </div>
+                        <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
+                          {preset.badge}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-[#786551] line-clamp-2 leading-relaxed">
+                        {preset.tagline}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 mt-2 border-t border-[#E8DFC8]/60">
+                      <div className="flex items-center gap-1.5">
+                        <div
+                          style={{
+                            backgroundColor: preset.previewBg,
+                            borderColor: preset.accentColor,
+                          }}
+                          className="w-4 h-4 rounded-full border shadow-2xs"
+                        />
+                        <span className="text-[9px] font-mono font-semibold text-[#8C6239]">
+                          {preset.filter.toUpperCase()}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-bold ${
+                          isActive
+                            ? "text-[#4A121A]"
+                            : "text-[#8C6239] group-hover:text-[#4A121A]"
+                        }`}
+                      >
+                        {isActive ? "✓ Aktif" : "Terapkan →"}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* TAB 1: TEMPLATES SELECTION ("frame template yg banyak yaa xixi") */}
         {activeTab === "templates" && (
           <div className="space-y-4">
@@ -1521,6 +1789,127 @@ export function FrameCustomizer({
                       {f.description}
                     </p>
                   </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: ATUR & TUKAR POSE FOTO */}
+        {activeTab === "photos" && (
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8] text-xs text-[#5C4A3A]">
+              <div className="flex items-center gap-2 mb-1">
+                <ArrowLeftRight className="w-4 h-4 text-[#8C6239]" />
+                <span className="font-bold text-[#3A332C]">Tukar Posisi & Ganti Pose Foto:</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-[#705A46]">
+                Ketuk tombol <strong>Tukar Posisi</strong> pada salah satu foto, lalu pilih foto lain untuk menukar posisinya secara instan. Kamu juga bisa mengganti foto individu langsung dari galeri ponsel tanpa perlu mengulang dari awal.
+              </p>
+            </div>
+
+            {/* Status / Notification Banner */}
+            {swapNotification && (
+              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center justify-between animate-in fade-in duration-150">
+                <span>{swapNotification}</span>
+                {swapSourceIndex !== null && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSwapSourceIndex(null);
+                      setSwapNotification(null);
+                    }}
+                    className="text-[11px] text-amber-700 hover:text-amber-900 underline font-bold cursor-pointer"
+                  >
+                    Batal
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Hidden Single-Photo File Input */}
+            <input
+              ref={singlePhotoInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleSinglePhotoFile}
+              className="hidden"
+            />
+
+            {/* Grid of Photo Slots */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {Array.from({ length: slotCount }).map((_, idx) => {
+                const photoSrc = photos[idx];
+                const isSelectedForSwap = swapSourceIndex === idx;
+
+                return (
+                  <div
+                    key={idx}
+                    className={`p-2.5 rounded-xl border-2 transition-all flex flex-col justify-between ${
+                      isSelectedForSwap
+                        ? "border-[#4A121A] bg-[#FAF6EE] shadow-md ring-2 ring-[#4A121A]/30 scale-[1.02]"
+                        : "border-[#E8DFC8] bg-white hover:border-[#8C6239]/50"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-mono font-bold text-[#4A121A]">
+                        Pose #{idx + 1}
+                      </span>
+                      {idx === 0 && (
+                        <span className="px-1.5 py-0.2 rounded text-[8px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
+                          Hero
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Photo Thumbnail */}
+                    <div className="relative aspect-3/4 rounded-lg overflow-hidden bg-black/5 border border-black/10 flex items-center justify-center mb-2 shadow-2xs">
+                      {photoSrc ? (
+                        <img
+                          src={photoSrc}
+                          alt={`Pose ${idx + 1}`}
+                          style={{ filter: activeFilterCss }}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-mono">Kosong</span>
+                      )}
+
+                      {isSelectedForSwap && (
+                        <div className="absolute inset-0 bg-[#4A121A]/20 backdrop-blur-2xs flex items-center justify-center">
+                          <span className="px-2 py-1 rounded-md bg-[#4A121A] text-white text-[10px] font-bold shadow-md">
+                            Dipilih
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions: Swap & Replace */}
+                    <div className="flex flex-col gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectSwapSlot(idx)}
+                        className={`w-full py-1.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer min-h-[34px] ${
+                          isSelectedForSwap
+                            ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
+                            : "bg-[#FAF6EE] text-[#4A121A] hover:bg-[#F3ECE0] border border-[#E8DFC8]"
+                        }`}
+                      >
+                        <ArrowLeftRight className="w-3.5 h-3.5" />
+                        <span>{isSelectedForSwap ? "Batal" : "Tukar"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleTriggerReplacePhoto(idx)}
+                        className="w-full py-1 text-[10px] font-semibold text-[#786551] hover:text-[#2A241D] hover:bg-black/5 rounded-md flex items-center justify-center gap-1 transition-colors cursor-pointer min-h-[28px]"
+                        title="Unggah foto baru untuk pose ini"
+                      >
+                        <Upload className="w-3 h-3" />
+                        <span>Ganti Foto</span>
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -2278,24 +2667,152 @@ export function FrameCustomizer({
               </span>
             </div>
 
-            <button
-              onClick={() => setIsFullScreenPreview(true)}
-              className="px-2.5 py-1 rounded-lg bg-white border border-[#E8DFC8] text-[#4A121A] text-[11px] font-bold flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
-              title="Buka pratinjau layar penuh"
-            >
-              <Eye className="w-3.5 h-3.5 text-[#C99A45]" />
-              <span>Layar Penuh</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              {/* Fit-to-view toggle */}
+              <div className="flex items-center bg-white p-0.5 rounded-lg border border-[#E8DFC8] text-[10px] font-bold shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => setIsFitToView(true)}
+                  className={`px-2 py-0.5 rounded-md transition-all ${
+                    isFitToView
+                      ? "bg-[#4A121A] text-[#DFD2BD] shadow-2xs"
+                      : "text-[#786551] hover:text-[#3A332C]"
+                  }`}
+                  title="Lihat seluruh strip foto tanpa scroll"
+                >
+                  Muat Layar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsFitToView(false)}
+                  className={`px-2 py-0.5 rounded-md transition-all ${
+                    !isFitToView
+                      ? "bg-[#4A121A] text-[#DFD2BD] shadow-2xs"
+                      : "text-[#786551] hover:text-[#3A332C]"
+                  }`}
+                  title="Ukuran asli untuk melihat detail foto"
+                >
+                  100%
+                </button>
+              </div>
+
+              <button
+                onClick={() => setIsFullScreenPreview(true)}
+                className="px-2 py-1 rounded-lg bg-white border border-[#E8DFC8] text-[#4A121A] text-[11px] font-bold flex items-center gap-1 shadow-2xs cursor-pointer active:scale-95"
+                title="Buka pratinjau layar penuh"
+              >
+                <Eye className="w-3.5 h-3.5 text-[#C99A45]" />
+                <span className="hidden xs:inline">Layar Penuh</span>
+              </button>
+            </div>
           </div>
 
           {/* Scaled Live Photobox Strip Viewport */}
-          <div className="w-full flex justify-center py-2 max-h-[350px] sm:max-h-[420px] overflow-y-auto rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
-            <div className="origin-top transition-transform">
-              {renderPhotoboxStrip()}
+          {isFitToView ? (
+            <div className="w-full flex justify-center items-center h-[42dvh] min-h-[300px] max-h-[440px] overflow-hidden rounded-xl bg-gradient-to-b from-white/70 to-white/40 p-2 border border-[#E8DFC8]/60 shadow-inner relative">
+              <div
+                style={{
+                  transform: `scale(${
+                    isGridLayout(layout) ? 0.46 : layout === "polaroid" ? 0.72 : 0.40
+                  })`,
+                  transformOrigin: "center center",
+                }}
+                className="shrink-0 transition-transform duration-300"
+              >
+                {renderPhotoboxStrip()}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="w-full flex justify-center py-2 max-h-[420px] overflow-y-auto rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
+              <div className="origin-top transition-transform">
+                {renderPhotoboxStrip()}
+              </div>
+            </div>
+          )}
+
+          {/* Contextual Floating Mini-Inspector when a sticker is selected */}
+          {selectedSticker && (
+            <div className="mt-2.5 p-2 bg-[#3A332C] text-white rounded-xl flex items-center justify-between gap-1.5 shadow-md border border-white/20 animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  {selectedSticker.imageUrl ? (
+                    <img
+                      src={selectedSticker.imageUrl}
+                      alt="Stiker"
+                      className="w-5 h-5 object-contain"
+                    />
+                  ) : (
+                    <span className="text-base">{selectedSticker.emoji}</span>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-bold block truncate">Stiker Terpilih</span>
+                  <span className="text-[8px] text-[#DFD2BD] block truncate">
+                    Geser untuk posisikan
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleUpdateSticker(selectedSticker.id, {
+                      rotation: ((selectedSticker.rotation || 0) + 45) % 360,
+                    })
+                  }
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Putar 45°"
+                  aria-label="Putar stiker"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleUpdateSticker(selectedSticker.id, {
+                      isFlipped: !selectedSticker.isFlipped,
+                    })
+                  }
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Cermin"
+                  aria-label="Cermin stiker"
+                >
+                  <FlipHorizontal className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDuplicateSticker(selectedSticker.id)}
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Gandakan"
+                  aria-label="Gandakan stiker"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveSticker(selectedSticker.id)}
+                  className="p-1.5 rounded-lg bg-red-500/80 hover:bg-red-500 active:scale-95 text-white"
+                  title="Hapus"
+                  aria-label="Hapus stiker"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedStickerId(null)}
+                  className="px-2 py-1 rounded-lg bg-[#DFD2BD] text-[#4A121A] text-[10px] font-bold active:scale-95 ml-0.5"
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+          )}
+
           <p className="text-[10px] text-center text-[#786551] mt-2">
-            Geser stiker di foto untuk mengatur posisi. Ketuk untuk opsi ukuran, putar, & cermin.
+            {isFitToView
+              ? "Pratinjau utuh aktif. Ketuk stiker untuk opsi putar, cermin, atau hapus."
+              : "Mode 100% aktif. Gulir untuk melihat detail foto."}
           </p>
         </div>
 
@@ -2314,12 +2831,91 @@ export function FrameCustomizer({
               Pratinjau Hasil Cetak
             </span>
             <p className="text-xs text-[#786551]">
-              Ketuk stiker pada foto jika ingin menghapusnya
+              Geser stiker langsung pada foto. Ketuk untuk opsi ukuran, putar, & cermin.
             </p>
           </div>
 
           {/* Strip Canvas Preview Card */}
           {renderPhotoboxStrip()}
+
+          {/* Desktop Contextual Sticker Quick-Bar */}
+          {selectedSticker && (
+            <div className="mt-3 w-full max-w-[320px] p-2 bg-[#3A332C] text-white rounded-xl flex items-center justify-between gap-1.5 shadow-lg border border-white/20 animate-in fade-in duration-150">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  {selectedSticker.imageUrl ? (
+                    <img
+                      src={selectedSticker.imageUrl}
+                      alt="Stiker"
+                      className="w-5 h-5 object-contain"
+                    />
+                  ) : (
+                    <span className="text-base">{selectedSticker.emoji}</span>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-bold block truncate">Stiker Terpilih</span>
+                  <span className="text-[8px] text-[#DFD2BD] block truncate">
+                    Geser untuk posisikan
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleUpdateSticker(selectedSticker.id, {
+                      rotation: ((selectedSticker.rotation || 0) + 45) % 360,
+                    })
+                  }
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Putar 45°"
+                  aria-label="Putar stiker"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleUpdateSticker(selectedSticker.id, {
+                      isFlipped: !selectedSticker.isFlipped,
+                    })
+                  }
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Cermin"
+                  aria-label="Cermin stiker"
+                >
+                  <FlipHorizontal className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDuplicateSticker(selectedSticker.id)}
+                  className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 active:scale-95 text-white"
+                  title="Gandakan"
+                  aria-label="Gandakan stiker"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveSticker(selectedSticker.id)}
+                  className="p-1.5 rounded-lg bg-red-500/80 hover:bg-red-500 active:scale-95 text-white"
+                  title="Hapus"
+                  aria-label="Hapus stiker"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedStickerId(null)}
+                  className="px-2 py-1 rounded-lg bg-[#DFD2BD] text-[#4A121A] text-[10px] font-bold active:scale-95 ml-0.5"
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Column: Customizer Tabs Studio */}
