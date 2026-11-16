@@ -49,7 +49,10 @@ export function CameraCapture({
   // Required photos based on layout
   const requiredCount = getLayoutShotsCount(layout);
 
-  const [activeSlot, setActiveSlot] = useState<number>(0);
+  const [activeSlot, setActiveSlot] = useState<number>(() => {
+    const firstEmpty = photos.findIndex((p) => !p);
+    return firstEmpty !== -1 ? firstEmpty : 0;
+  });
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -61,6 +64,14 @@ export function CameraCapture({
   const [isAutoSessionActive, setIsAutoSessionActive] = useState<boolean>(false);
   const [showLayoutMenu, setShowLayoutMenu] = useState<boolean>(false);
   const [layoutCategory, setLayoutCategory] = useState<"all" | "strip" | "grid">("all");
+
+  // Jika sesi dipulihkan dari draft dan slot 0 sudah terisi, arahkan ke slot kosong berikutnya
+  useEffect(() => {
+    const firstEmpty = photos.findIndex((p) => !p);
+    if (firstEmpty !== -1 && activeSlot === 0 && photos[0]) {
+      setActiveSlot(firstEmpty);
+    }
+  }, [photos]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -396,7 +407,7 @@ export function CameraCapture({
               className="overflow-hidden pt-3 mt-3 border-t border-[#E8DFC8]"
             >
               {/* Category tabs */}
-              <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto pb-1 scrollbar-none">
+              <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto pb-1 scrollbar-none overscroll-x-contain touch-pan-x">
                 {[
                   { id: "all", label: "Semua Format (14)" },
                   { id: "strip", label: "🎞️ Strip Vertikal (1 - 6)" },
@@ -417,7 +428,7 @@ export function CameraCapture({
               </div>
 
               {/* Layout Options Grid With Visual Wireframe Illustrations */}
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[320px] overflow-y-auto pr-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[320px] overflow-y-auto pr-1 overscroll-contain">
                 {filteredLayouts.map((opt) => {
                   const isSelected = layout === opt.id;
                   return (
@@ -736,7 +747,7 @@ export function CameraCapture({
         <div
           className={`gap-2 pb-1 ${
             requiredCount >= 5
-              ? "flex overflow-x-auto snap-x scrollbar-none sm:grid " +
+              ? "flex overflow-x-auto snap-x scrollbar-none overscroll-x-contain touch-pan-x sm:grid " +
                 (requiredCount === 5
                   ? "sm:grid-cols-5"
                   : requiredCount === 6

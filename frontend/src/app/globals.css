@@ -18,6 +18,11 @@
     --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
     --font-sans: var(--font-jakarta), "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   }
+
+  html,
+  body {
+    overscroll-behavior-y: contain;
+  }
 }
 
 /* Specific Typography Utility Classes */

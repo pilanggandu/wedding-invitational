@@ -54,6 +54,7 @@ import {
 } from "./templates";
 import { generatePhotoboxCanvas } from "./canvasExport";
 import { LayoutWireframe } from "./LayoutWireframe";
+import { PhotoboxCustomizerDraft } from "./photoboxStorage";
 
 export interface AestheticPreset {
   id: string;
@@ -155,7 +156,10 @@ interface FrameCustomizerProps {
   onLayoutChange: (layout: PhotoboxLayout) => void;
   photos: string[];
   onPhotosChange?: (photos: string[]) => void;
+  initialCustomizerState?: PhotoboxCustomizerDraft | null;
+  onCustomizerStateChange?: (state: PhotoboxCustomizerDraft) => void;
   onBackToCamera: () => void;
+  onResetSession?: () => void;
 }
 
 export function FrameCustomizer({
@@ -163,18 +167,90 @@ export function FrameCustomizer({
   onLayoutChange,
   photos,
   onPhotosChange,
+  initialCustomizerState,
+  onCustomizerStateChange,
   onBackToCamera,
+  onResetSession,
 }: FrameCustomizerProps) {
   // State
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("real-botanical-pressed");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
+    initialCustomizerState?.templateId || "real-botanical-pressed"
+  );
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory>("all");
-  const [filter, setFilter] = useState<PhotoboxFilter>("none");
-  const [customTitle, setCustomTitle] = useState<string>("");
-  const [customSubtitle, setCustomSubtitle] = useState<string>("");
-  const [showDate, setShowDate] = useState<boolean>(true);
-  const [customDate, setCustomDate] = useState<string>("28 Okt 2026");
-  const [customBgColor, setCustomBgColor] = useState<string>("");
-  const [stickers, setStickers] = useState<StickerItem[]>([]);
+  const [filter, setFilter] = useState<PhotoboxFilter>(
+    initialCustomizerState?.filter || "none"
+  );
+  const [customTitle, setCustomTitle] = useState<string>(
+    initialCustomizerState?.customTitle ?? ""
+  );
+  const [customSubtitle, setCustomSubtitle] = useState<string>(
+    initialCustomizerState?.customSubtitle ?? ""
+  );
+  const [showDate, setShowDate] = useState<boolean>(
+    initialCustomizerState?.showDate ?? true
+  );
+  const [customDate, setCustomDate] = useState<string>(
+    initialCustomizerState?.customDate ?? "28 Okt 2026"
+  );
+  const [customBgColor, setCustomBgColor] = useState<string>(
+    initialCustomizerState?.customBgColor ?? ""
+  );
+  const [stickers, setStickers] = useState<StickerItem[]>(
+    initialCustomizerState?.stickers ?? []
+  );
+
+  // Sync state if restored from draft asynchronously
+  useEffect(() => {
+    if (!initialCustomizerState) return;
+    if (initialCustomizerState.templateId) {
+      setSelectedTemplateId(initialCustomizerState.templateId);
+    }
+    if (initialCustomizerState.filter) {
+      setFilter(initialCustomizerState.filter);
+    }
+    if (initialCustomizerState.customTitle !== undefined) {
+      setCustomTitle(initialCustomizerState.customTitle);
+    }
+    if (initialCustomizerState.customSubtitle !== undefined) {
+      setCustomSubtitle(initialCustomizerState.customSubtitle);
+    }
+    if (initialCustomizerState.showDate !== undefined) {
+      setShowDate(initialCustomizerState.showDate);
+    }
+    if (initialCustomizerState.customDate !== undefined) {
+      setCustomDate(initialCustomizerState.customDate);
+    }
+    if (initialCustomizerState.customBgColor !== undefined) {
+      setCustomBgColor(initialCustomizerState.customBgColor);
+    }
+    if (Array.isArray(initialCustomizerState.stickers) && initialCustomizerState.stickers.length > 0) {
+      setStickers(initialCustomizerState.stickers);
+    }
+  }, [initialCustomizerState]);
+
+  // Laporkan setiap perubahan kustomisasi ke parent untuk autosave
+  useEffect(() => {
+    onCustomizerStateChange?.({
+      templateId: selectedTemplateId,
+      filter,
+      customTitle,
+      customSubtitle,
+      showDate,
+      customDate,
+      customBgColor,
+      stickers,
+    });
+  }, [
+    selectedTemplateId,
+    filter,
+    customTitle,
+    customSubtitle,
+    showDate,
+    customDate,
+    customBgColor,
+    stickers,
+    onCustomizerStateChange,
+  ]);
   const [activeTab, setActiveTab] = useState<
     "presets" | "templates" | "filters" | "photos" | "stickers" | "text" | "layout"
   >("presets");
@@ -813,7 +889,7 @@ export function FrameCustomizer({
             // Ignore invalid drop data
           }
         }}
-        className={`relative shadow-2xl transition-all duration-300 select-none overflow-hidden mx-auto ${
+        className={`relative shadow-2xl transition-all duration-300 select-none overflow-hidden mx-auto overscroll-contain touch-pan-y ${
           isGrid
             ? "w-[280px] xs:w-[310px] sm:w-[340px]"
             : "w-[230px] xs:w-[250px] sm:w-[270px]"
@@ -1363,7 +1439,7 @@ export function FrameCustomizer({
   const renderEditorControls = () => (
     <div className="w-full bg-white rounded-2xl border border-[#E8DFC8] shadow-sm overflow-hidden">
       {/* Tab Navigation Bar */}
-      <div className="flex border-b border-[#E8DFC8] bg-[#FAF6EE]/50 overflow-x-auto scrollbar-none">
+      <div className="flex border-b border-[#E8DFC8] bg-[#FAF6EE]/50 overflow-x-auto scrollbar-none overscroll-x-contain touch-pan-x">
         {[
           { id: "presets", label: "Gaya Instan", icon: Sparkles, badge: "1-Klik" },
           { id: "templates", label: `Frame (${filteredTemplates.length})`, icon: Palette },
@@ -1403,7 +1479,7 @@ export function FrameCustomizer({
         })}
       </div>
 
-      <div className="p-3.5 sm:p-5">
+      <div className="p-3.5 sm:p-5 overscroll-contain">
         {/* TAB 0: GAYA INSTAN (AESTHETIC PRESETS) */}
         {activeTab === "presets" && (
           <div className="space-y-4">
@@ -2512,6 +2588,13 @@ export function FrameCustomizer({
           <span>Kembali ke Kamera</span>
         </button>
 
+        {/* Autosave status indicator */}
+        <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white border border-[#E8DFC8] text-[#5C4A3A] text-xs font-medium shadow-2xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <span className="hidden sm:inline">Editan Tersimpan Otomatis</span>
+          <span className="sm:hidden text-[11px]">Tersimpan</span>
+        </div>
+
         {/* Desktop Quick Actions */}
         <div className="hidden lg:flex items-center gap-2">
           <button
@@ -2709,7 +2792,7 @@ export function FrameCustomizer({
 
           {/* Scaled Live Photobox Strip Viewport */}
           {isFitToView ? (
-            <div className="w-full flex justify-center items-center h-[42dvh] min-h-[300px] max-h-[440px] overflow-hidden rounded-xl bg-gradient-to-b from-white/70 to-white/40 p-2 border border-[#E8DFC8]/60 shadow-inner relative">
+            <div className="w-full flex justify-center items-center h-[42dvh] min-h-[300px] max-h-[440px] overflow-hidden rounded-xl bg-gradient-to-b from-white/70 to-white/40 p-2 border border-[#E8DFC8]/60 shadow-inner relative overscroll-contain touch-pan-y">
               <div
                 style={{
                   transform: `scale(${
@@ -2723,7 +2806,7 @@ export function FrameCustomizer({
               </div>
             </div>
           ) : (
-            <div className="w-full flex justify-center py-2 max-h-[420px] overflow-y-auto rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
+            <div className="w-full flex justify-center py-2 max-h-[420px] overflow-y-auto overscroll-contain rounded-xl bg-white/60 p-2 border border-[#E8DFC8]/60 shadow-inner">
               <div className="origin-top transition-transform">
                 {renderPhotoboxStrip()}
               </div>
