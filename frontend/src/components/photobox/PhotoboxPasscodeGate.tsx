@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -11,7 +10,6 @@ import {
   Delete,
   Sparkles,
   HelpCircle,
-  ArrowLeft,
   Camera,
   CheckCircle2,
 } from "lucide-react";
@@ -372,17 +370,6 @@ export function PhotoboxPasscodeGate({
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-
-        {/* Exit Link to Main Invitation */}
-        <div className="mt-6 pt-4 border-t border-[#E8DFC8] w-full flex items-center justify-center">
-          <Link
-            href="/undangan"
-            className="inline-flex items-center gap-1.5 text-xs text-[#786551] hover:text-[#4A121A] transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Kembali ke Halaman Undangan</span>
-          </Link>
         </div>
       </motion.div>
     </div>

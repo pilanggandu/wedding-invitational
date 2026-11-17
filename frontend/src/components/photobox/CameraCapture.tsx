@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
@@ -14,7 +13,6 @@ import {
   Grid,
   CheckCircle2,
   ArrowRight,
-  ArrowLeft,
   Play,
   RotateCcw,
   AlertCircle,
@@ -382,23 +380,11 @@ export function CameraCapture({
 
       {/* 2. LAYER FLOATING: Top Bar Controls */}
       <header className="relative z-30 w-full pt-[max(0.75rem,env(safe-area-inset-top))] px-3 sm:px-6 pb-2 flex items-center justify-between gap-2 pointer-events-auto">
-        {/* Left: Kembali ke Undangan */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <Link
-            href="/undangan"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#F7F3EB] text-xs font-semibold shadow-md transition-all active:scale-95 min-h-[40px]"
-            title="Kembali ke Halaman Undangan"
-          >
-            <ArrowLeft className="w-4 h-4 text-[#DFD2BD]" />
-            <span className="hidden sm:inline">Undangan</span>
-          </Link>
-        </div>
-
-        {/* Center: Format Layout & Slot Progress Pill */}
-        <div className="flex items-center justify-center min-w-0">
+        {/* Left: Format Layout & Slot Progress Pill */}
+        <div className="flex items-center min-w-0">
           <button
             onClick={() => setShowLayoutModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-white/20 text-[#DFD2BD] text-xs font-semibold shadow-lg transition-all active:scale-95 cursor-pointer min-h-[40px] max-w-[210px] xs:max-w-none"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-white/20 text-[#DFD2BD] text-xs font-semibold shadow-lg transition-all active:scale-95 cursor-pointer min-h-[40px] max-w-[240px] xs:max-w-none"
             title="Klik untuk ganti format photobox"
           >
             <Film className="w-3.5 h-3.5 text-amber-300 shrink-0" />

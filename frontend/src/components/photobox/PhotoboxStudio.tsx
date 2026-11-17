@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
   Palette,
   Heart,
-  ArrowLeft,
   RotateCcw,
   Sparkles,
   ShieldCheck,
@@ -287,17 +285,6 @@ export function PhotoboxStudio() {
               <span className="xs:hidden font-mono font-bold">2</span>
             </button>
           </div>
-
-          {/* Link Kembali ke Halaman Undangan */}
-          <Link
-            href="/undangan"
-            className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-full bg-white hover:bg-[#FAF6EE] text-[#786551] hover:text-[#4A121A] border border-[#E8DFC8] font-semibold text-xs transition-all shadow-xs active:scale-95 min-h-[36px]"
-            title="Kembali ke Halaman Undangan Pernikahan"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#8C6239]" />
-            <span className="hidden sm:inline">Halaman Undangan</span>
-            <span className="sm:hidden text-[11px]">Undangan</span>
-          </Link>
         </div>
       </header>
 
