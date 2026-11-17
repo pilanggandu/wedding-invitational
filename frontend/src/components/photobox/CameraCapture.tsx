@@ -382,62 +382,58 @@ export function CameraCapture({
 
       {/* 2. LAYER FLOATING: Top Bar Controls */}
       <header className="relative z-30 w-full pt-[max(0.75rem,env(safe-area-inset-top))] px-3 sm:px-6 pb-2 flex items-center justify-between gap-2 pointer-events-auto">
-        {/* Left: Kembali ke Undangan & Slot Status */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Left: Kembali ke Undangan */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <Link
             href="/undangan"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-[#F7F3EB] text-xs font-semibold shadow-lg transition-all active:scale-95 min-h-[38px]"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#F7F3EB] text-xs font-semibold shadow-md transition-all active:scale-95 min-h-[40px]"
             title="Kembali ke Halaman Undangan"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#DFD2BD]" />
-            <span className="hidden xs:inline">Undangan</span>
+            <ArrowLeft className="w-4 h-4 text-[#DFD2BD]" />
+            <span className="hidden sm:inline">Undangan</span>
           </Link>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-[11px] font-mono font-bold text-white shadow-lg min-h-[38px]">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="text-[#DFD2BD]">
-              {photos[activeSlot] ? `SLOT ${activeSlot + 1} (ISI)` : `SLOT ${activeSlot + 1}/${requiredCount}`}
-            </span>
-          </div>
         </div>
 
-        {/* Center: Format Layout Pill (Klik untuk ganti kolase) */}
-        <div className="flex items-center">
+        {/* Center: Format Layout & Slot Progress Pill */}
+        <div className="flex items-center justify-center min-w-0">
           <button
             onClick={() => setShowLayoutModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-[#DFD2BD]/40 text-[#DFD2BD] text-xs font-bold shadow-xl transition-all active:scale-95 cursor-pointer min-h-[38px]"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-white/20 text-[#DFD2BD] text-xs font-semibold shadow-lg transition-all active:scale-95 cursor-pointer min-h-[40px] max-w-[210px] xs:max-w-none"
             title="Klik untuk ganti format photobox"
           >
-            <Film className="w-3.5 h-3.5 text-amber-300" />
-            <span className="max-w-[110px] xs:max-w-none truncate">
-              {activeLayoutOption.name}
+            <Film className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+            <span className="truncate text-[#F7F3EB] font-medium">
+              {activeLayoutOption.name.replace(/\s*\([^)]*\)/, "")}
             </span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#DFD2BD]/70" />
+            <span className="text-[10px] font-mono font-bold text-amber-200/90 bg-white/10 px-1.5 py-0.5 rounded-full shrink-0">
+              {activeSlot + 1}/{requiredCount}
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 text-white/50 shrink-0" />
           </button>
         </div>
 
-        {/* Right: Quick Tools (Timer, Grid, Sound, & Ke Frame) */}
-        <div className="flex items-center gap-1 sm:gap-1.5">
+        {/* Right: Quick Tools (Timer, Grid, Sound) */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* Timer Toggle */}
           <button
             onClick={() => {
               const nextTimer = timerDuration === 0 ? 3 : timerDuration === 3 ? 5 : 0;
               setTimerDuration(nextTimer);
             }}
-            className="px-2.5 py-1.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-xs font-mono font-bold text-white flex items-center gap-1 shadow-lg transition-all cursor-pointer min-h-[38px]"
+            className="px-2.5 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-xs font-mono font-bold text-white flex items-center gap-1 shadow-md transition-all cursor-pointer min-h-[40px]"
             title={`Timer Kamera: ${timerDuration} detik`}
           >
             <Clock className="w-3.5 h-3.5 text-amber-300" />
-            <span>{timerDuration}s</span>
+            <span>{timerDuration === 0 ? "Off" : `${timerDuration}s`}</span>
           </button>
 
           {/* Grid Toggle */}
           <button
             onClick={() => setShowGrid((p) => !p)}
-            className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center shadow-lg ${
+            className={`w-10 h-10 rounded-full backdrop-blur-md border transition-all cursor-pointer flex items-center justify-center shadow-md ${
               showGrid
-                ? "bg-[#4A121A]/80 border-[#DFD2BD] text-amber-200"
-                : "bg-black/45 border-white/15 text-white/70 hover:bg-black/65"
+                ? "bg-[#4A121A]/80 border-amber-300/60 text-amber-200"
+                : "bg-black/50 border-white/20 text-white/70 hover:bg-black/70"
             }`}
             title="Garis Panduan Pose (Rule of Thirds)"
           >
@@ -447,7 +443,7 @@ export function CameraCapture({
           {/* Sound Toggle */}
           <button
             onClick={() => setSoundEnabled((p) => !p)}
-            className="p-2 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-white/80 transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center shadow-lg"
+            className="w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-white/80 transition-all cursor-pointer flex items-center justify-center shadow-md"
             title={soundEnabled ? "Suara Shutter Aktif" : "Suara Shutter Senyap"}
           >
             {soundEnabled ? (
@@ -457,11 +453,11 @@ export function CameraCapture({
             )}
           </button>
 
-          {/* Tombol Cepat ke Frame jika sudah ada foto */}
+          {/* Tombol Cepat ke Frame jika sudah ada foto (desktop) */}
           {photos.some(Boolean) && (
             <button
               onClick={onProceedToFrames}
-              className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#DFD2BD] hover:bg-white text-[#4A121A] text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer min-h-[38px]"
+              className="hidden md:flex items-center gap-1 px-3 py-2 rounded-full bg-[#DFD2BD] hover:bg-white text-[#4A121A] text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer min-h-[40px]"
               title="Lanjut memilih frame & cetak"
             >
               <span>Frame</span>
@@ -474,28 +470,30 @@ export function CameraCapture({
       {/* Reassurance Banner jika sesi dipulihkan */}
       {restoreMessage && (
         <div className="relative z-30 mx-auto px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-amber-300/40 text-amber-200 text-xs flex items-center gap-2 shadow-xl animate-in slide-in-from-top-2">
-          <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-amber-300 shrink-0" />
           <span>{restoreMessage}</span>
         </div>
       )}
 
       {/* 3. LAYER TENGAH: Safe-Area Viewfinder Framing Guide & Countdown */}
-      <div className="relative flex-1 w-full flex items-center justify-center p-3 sm:p-6 overflow-hidden pointer-events-none z-10">
+      <div className="relative flex-1 min-h-0 w-full flex items-center justify-center p-2 xs:p-4 my-auto overflow-hidden pointer-events-none z-10">
         {/* Frame Box Presisi (Memberi tahu pengguna batas area yang akan tercetak) */}
         <div
-          className={`relative w-[92vw] max-w-[540px] ${
-            isSquareLayout ? "aspect-square max-h-[50vh]" : "aspect-4/3 max-h-[54vh] sm:max-h-[62vh]"
-          } rounded-3xl transition-all duration-300 pointer-events-none flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.35)] border border-white/25`}
+          className={`relative w-[90vw] max-w-[480px] ${
+            isSquareLayout
+              ? "aspect-square max-h-[36vh] xs:max-h-[42vh] sm:max-h-[50vh]"
+              : "aspect-4/3 max-h-[38vh] xs:max-h-[44vh] sm:max-h-[56vh]"
+          } rounded-2xl transition-all duration-300 pointer-events-none flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.4)] border border-white/25`}
         >
-          {/* Viewfinder Corner Brackets Klasik (Gaya Kamera Analog / Photobox Kiosk) */}
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-amber-200 rounded-tl-2xl -mt-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-amber-200 rounded-tr-2xl -mt-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-amber-200 rounded-bl-2xl -mb-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-amber-200 rounded-br-2xl -mb-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          {/* Viewfinder Corner Brackets Klasik */}
+          <div className="absolute top-0 left-0 w-5 h-5 border-t-3 border-l-3 border-amber-300 rounded-tl-xl -mt-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute top-0 right-0 w-5 h-5 border-t-3 border-r-3 border-amber-300 rounded-tr-xl -mt-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute bottom-0 left-0 w-5 h-5 border-b-3 border-l-3 border-amber-300 rounded-bl-xl -mb-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute bottom-0 right-0 w-5 h-5 border-b-3 border-r-3 border-amber-300 rounded-br-xl -mb-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
 
           {/* Rule of Thirds Grid di dalam area safe frame */}
           {showGrid && !cameraError && (
-            <div className="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 z-10 opacity-30">
+            <div className="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 z-10 opacity-25">
               <div className="border-r border-b border-white" />
               <div className="border-r border-b border-white" />
               <div className="border-b border-white" />
@@ -509,13 +507,13 @@ export function CameraCapture({
           )}
 
           {/* Center Target Reticle */}
-          <div className="w-5 h-5 flex items-center justify-center text-white/35 pointer-events-none font-mono text-xl font-light">
+          <div className="w-5 h-5 flex items-center justify-center text-white/30 pointer-events-none font-mono text-xl font-light">
             +
           </div>
 
           {/* Viewfinder Badge Safe-Zone */}
-          <div className="absolute bottom-2.5 px-3 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono text-[#DFD2BD] border border-white/15 drop-shadow-md">
-            AREA CETAK • {activeLayoutOption.shots} POSE
+          <div className="absolute bottom-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-mono tracking-wider text-[#DFD2BD] border border-white/15 drop-shadow-md uppercase">
+            Area Cetak • {activeLayoutOption.shots} Pose
           </div>
         </div>
 
@@ -569,28 +567,29 @@ export function CameraCapture({
         )}
       </div>
 
-      {/* 4. LAYER FLOATING: Bottom Ergonomic Dock (Slot Film Strip & Hero Shutter) */}
-      <footer className="relative z-30 w-full pb-[max(1rem,env(safe-area-inset-bottom))] px-3 sm:px-6 flex flex-col items-center gap-2.5 pointer-events-auto">
+      {/* 4. LAYER FLOATING: Bottom Ergonomic Dock (Slot Film Strip, Auto Mode & Hero Shutter) */}
+      <footer className="relative z-30 w-full pb-[max(0.75rem,calc(env(safe-area-inset-bottom)+0.25rem))] px-3 sm:px-6 flex flex-col items-center gap-2 pointer-events-auto">
         {/* Banner Navigasi Saat Semua Foto Selesai */}
         {isAllPhotosTaken && (
           <motion.button
-            initial={{ y: 20, opacity: 0 }}
+            initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             onClick={onProceedToFrames}
-            className="w-full max-w-md py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-300 via-[#DFD2BD] to-amber-200 text-[#4A121A] font-bold text-xs sm:text-sm shadow-[0_4px_24px_rgba(223,210,189,0.4)] flex items-center justify-between border border-white cursor-pointer active:scale-98 transition-all"
+            className="w-full max-w-md py-2 px-3.5 rounded-xl bg-[#DFD2BD] hover:bg-white text-[#4A121A] font-bold text-xs shadow-lg flex items-center justify-between border border-white/60 active:scale-98 transition-all cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#8C6239]" />
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
               <span>{requiredCount} Foto Lengkap! Lanjut Pilih Frame</span>
             </div>
-            <div className="w-7 h-7 rounded-full bg-[#4A121A] text-[#DFD2BD] flex items-center justify-center shadow-xs">
-              <ArrowRight className="w-4 h-4" />
+            <div className="flex items-center gap-1 text-[11px] font-bold bg-[#4A121A] text-[#DFD2BD] px-2.5 py-1 rounded-lg shadow-xs">
+              <span>Lanjut</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </motion.button>
         )}
 
         {/* Film Strip Slot Mini Preview Bar */}
-        <div className="w-full max-w-md bg-black/55 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-2xl flex items-center justify-between gap-1.5">
+        <div className="w-full max-w-md bg-black/60 backdrop-blur-md p-1.5 px-2 rounded-2xl border border-white/15 shadow-2xl flex items-center justify-between gap-1.5">
           <div className="flex-1 flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
             {Array.from({ length: requiredCount }).map((_, index) => {
               const photoUrl = photos[index];
@@ -600,7 +599,7 @@ export function CameraCapture({
                 <button
                   key={index}
                   onClick={() => setActiveSlot(index)}
-                  className={`relative flex-1 aspect-4/3 min-w-[48px] max-h-[50px] rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center ${
+                  className={`relative flex-1 aspect-4/3 min-w-[44px] max-h-[46px] rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center ${
                     isActive
                       ? "border-amber-300 ring-2 ring-amber-300/40 scale-102 bg-white/15"
                       : photoUrl
@@ -627,8 +626,8 @@ export function CameraCapture({
                   )}
 
                   {isActive && (
-                    <div className="absolute bottom-0 inset-x-0 bg-amber-300 text-[#4A121A] text-[8px] font-bold text-center py-0.2 tracking-wider">
-                      AKTIF
+                    <div className="absolute bottom-0 inset-x-0 bg-amber-300 text-[#4A121A] text-[7.5px] font-bold text-center py-0.2 tracking-wider uppercase">
+                      Aktif
                     </div>
                   )}
                 </button>
@@ -640,7 +639,7 @@ export function CameraCapture({
           {photos.some(Boolean) && (
             <button
               onClick={handleResetAll}
-              className="p-2 rounded-xl text-rose-300 hover:text-white hover:bg-rose-950/60 transition-colors flex items-center justify-center cursor-pointer min-h-[40px] min-w-[40px]"
+              className="p-2 rounded-xl text-rose-300 hover:text-white hover:bg-rose-950/60 transition-colors flex items-center justify-center cursor-pointer min-h-[38px] min-w-[38px] shrink-0"
               title="Reset foto & mulai dari awal"
             >
               <RotateCcw className="w-4 h-4" />
@@ -648,28 +647,33 @@ export function CameraCapture({
           )}
         </div>
 
-        {/* Shutter Bar with Native Mobile Thumb Alignment */}
-        <div className="w-full max-w-md flex items-center justify-between px-2 pt-1">
-          {/* Left Action: Gallery Upload or Auto Sequence */}
-          <div className="flex items-center gap-1.5">
+        {/* Auto Photobox Mode Quick Pill */}
+        <button
+          onClick={startAutoPhotoboxSession}
+          disabled={countdown !== null || isAutoSessionActive}
+          className={`px-3 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md border transition-all flex items-center gap-1.5 shadow-md active:scale-95 cursor-pointer disabled:opacity-50 ${
+            isAutoSessionActive
+              ? "bg-amber-400 text-[#4A121A] border-amber-300 animate-pulse"
+              : "bg-black/50 hover:bg-black/70 border-white/20 text-[#DFD2BD] hover:text-white"
+          }`}
+          title="Ambil semua pose secara otomatis berurutan (jeda 3 detik per pose)"
+        >
+          <Play className="w-3 h-3 fill-current text-amber-300" />
+          <span>{isAutoSessionActive ? `Auto Mode: Pose ${activeSlot + 1}/${requiredCount}...` : `Auto ${requiredCount} Pose (Timer)`}</span>
+        </button>
+
+        {/* Shutter Bar with Native Mobile Thumb Alignment (Symmetrical) */}
+        <div className="w-full max-w-md flex items-center justify-between px-3 pt-0.5">
+          {/* Left Action: Gallery Upload */}
+          <div className="w-14 flex justify-start">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="w-13 h-13 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer min-h-[52px] min-w-[52px]"
+              className="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer"
               title="Unggah foto dari galeri perangkat"
               aria-label="Unggah foto dari galeri"
             >
-              <Upload className="w-5 h-5 text-amber-300" />
-              <span className="text-[9px] text-white/70">Galeri</span>
-            </button>
-
-            <button
-              onClick={startAutoPhotoboxSession}
-              disabled={countdown !== null || isAutoSessionActive}
-              className="px-3 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-amber-300/40 text-amber-200 text-xs font-bold flex items-center gap-1.5 shadow-lg active:scale-95 cursor-pointer disabled:opacity-50 min-h-[52px]"
-              title="Ambil semua pose otomatis dengan timer pose"
-            >
-              <Play className="w-3.5 h-3.5 fill-current text-amber-300" />
-              <span className="hidden xs:inline">Auto</span>
+              <Upload className="w-4 h-4 text-amber-300" />
+              <span className="text-[9px] text-white/70 mt-0.5">Galeri</span>
             </button>
           </div>
 
@@ -679,25 +683,25 @@ export function CameraCapture({
               onClick={() => handleTakeSnapshot()}
               disabled={countdown !== null || isAutoSessionActive}
               aria-label="Ambil foto sekarang"
-              className="group relative flex items-center justify-center w-20 h-20 rounded-full border-4 border-white/50 bg-black/30 backdrop-blur-xs shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="group relative flex items-center justify-center w-18 h-18 rounded-full border-3 border-white/60 bg-black/30 backdrop-blur-xs shadow-[0_0_25px_rgba(255,255,255,0.2)] transition-all cursor-pointer active:scale-95 disabled:opacity-50"
               title="Tekan Spasi atau Klik untuk Jepret"
             >
-              <div className="w-15 h-15 rounded-full bg-[#DFD2BD] group-hover:bg-white text-[#4A121A] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 active:scale-90">
-                <Camera className="w-7 h-7 text-[#4A121A]" />
+              <div className="w-14 h-14 rounded-full bg-[#DFD2BD] group-hover:bg-white text-[#4A121A] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 active:scale-90">
+                <Camera className="w-6 h-6 text-[#4A121A]" />
               </div>
             </button>
           </div>
 
           {/* Right Action: Flip Camera (Depan / Belakang) */}
-          <div className="flex items-center gap-1.5">
+          <div className="w-14 flex justify-end">
             <button
               onClick={handleToggleCamera}
               aria-label="Balik kamera depan / belakang"
-              className="w-13 h-13 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer min-h-[52px] min-w-[52px]"
+              className="w-12 h-12 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer"
               title="Putar Kamera Depan/Belakang"
             >
-              <RefreshCw className="w-5 h-5 text-amber-300" />
-              <span className="text-[9px] text-white/70">Putar</span>
+              <RefreshCw className="w-4 h-4 text-amber-300" />
+              <span className="text-[9px] text-white/70 mt-0.5">Putar</span>
             </button>
           </div>
         </div>
