@@ -205,6 +205,21 @@ export function PhotoboxStudio() {
     );
   }
 
+  // Jika di langkah Kamera, tampilkan bilik Full Kamera imersif (100dvh kiosk mode)
+  if (currentStep === "camera") {
+    return (
+      <CameraCapture
+        layout={layout}
+        onLayoutChange={handleLayoutChange}
+        photos={photos}
+        onPhotosChange={setPhotos}
+        onProceedToFrames={() => setCurrentStep("frames")}
+        onResetSession={handleResetSession}
+        restoreMessage={restoreToast}
+      />
+    );
+  }
+
   const hasPhotosTaken = photos.some((p) => Boolean(p));
 
   return (
@@ -252,12 +267,8 @@ export function PhotoboxStudio() {
           <div className="flex items-center gap-0.5 sm:gap-1 bg-white p-1 sm:px-2.5 sm:py-1 rounded-full border border-[#E8DFC8] shadow-xs">
             <button
               onClick={() => setCurrentStep("camera")}
-              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer min-h-[32px] sm:min-h-[34px] ${
-                currentStep === "camera"
-                  ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
-                  : "text-[#786551] hover:text-[#2A241D]"
-              }`}
-              aria-label="Langkah 1: Ambil Foto"
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-[#786551] hover:text-[#2A241D] transition-all cursor-pointer min-h-[32px] sm:min-h-[34px]"
+              aria-label="Kembali ke Langkah 1: Kamera"
             >
               <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span className="hidden xs:inline">1. Kamera</span>
@@ -268,11 +279,7 @@ export function PhotoboxStudio() {
 
             <button
               onClick={() => setCurrentStep("frames")}
-              className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all cursor-pointer min-h-[32px] sm:min-h-[34px] ${
-                currentStep === "frames"
-                  ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
-                  : "text-[#786551] hover:text-[#2A241D]"
-              }`}
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#4A121A] text-[#DFD2BD] shadow-xs cursor-pointer min-h-[32px] sm:min-h-[34px]"
               aria-label="Langkah 2: Pilih Frame"
             >
               <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -312,46 +319,16 @@ export function PhotoboxStudio() {
 
       {/* Main Studio Viewport */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 overscroll-contain">
-        <AnimatePresence mode="wait">
-          {currentStep === "camera" ? (
-            <motion.div
-              key="camera-step"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-              className="w-full"
-            >
-              <CameraCapture
-                layout={layout}
-                onLayoutChange={handleLayoutChange}
-                photos={photos}
-                onPhotosChange={setPhotos}
-                onProceedToFrames={() => setCurrentStep("frames")}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="frames-step"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
-              className="w-full"
-            >
-              <FrameCustomizer
-                layout={layout}
-                onLayoutChange={handleLayoutChange}
-                photos={photos}
-                onPhotosChange={setPhotos}
-                initialCustomizerState={restoredCustomizerState}
-                onCustomizerStateChange={handleCustomizerStateChange}
-                onBackToCamera={() => setCurrentStep("camera")}
-                onResetSession={handleResetSession}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <FrameCustomizer
+          layout={layout}
+          onLayoutChange={handleLayoutChange}
+          photos={photos}
+          onPhotosChange={setPhotos}
+          initialCustomizerState={restoredCustomizerState}
+          onCustomizerStateChange={handleCustomizerStateChange}
+          onBackToCamera={() => setCurrentStep("camera")}
+          onResetSession={handleResetSession}
+        />
       </main>
 
       {/* Friendly Bottom Footer */}

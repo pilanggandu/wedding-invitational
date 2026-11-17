@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
@@ -13,20 +14,19 @@ import {
   Grid,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Play,
   RotateCcw,
   AlertCircle,
-  HelpCircle,
-  LayoutGrid,
   Film,
   ChevronDown,
-  ChevronUp,
+  X,
+  Layers,
 } from "lucide-react";
 import {
   PhotoboxLayout,
   LAYOUT_OPTIONS,
   getLayoutShotsCount,
-  isGridLayout,
 } from "./types";
 import { playShutterSound, playCountdownBeep } from "./audio";
 import { LayoutWireframe } from "./LayoutWireframe";
@@ -37,6 +37,8 @@ interface CameraCaptureProps {
   photos: string[];
   onPhotosChange: (photos: string[]) => void;
   onProceedToFrames: () => void;
+  onResetSession?: () => void;
+  restoreMessage?: string | null;
 }
 
 export function CameraCapture({
@@ -45,8 +47,10 @@ export function CameraCapture({
   photos,
   onPhotosChange,
   onProceedToFrames,
+  onResetSession,
+  restoreMessage,
 }: CameraCaptureProps) {
-  // Required photos based on layout
+  // Required photos count based on selected collage layout
   const requiredCount = getLayoutShotsCount(layout);
 
   const [activeSlot, setActiveSlot] = useState<number>(() => {
@@ -62,10 +66,10 @@ export function CameraCapture({
   const [showGrid, setShowGrid] = useState<boolean>(true);
   const [isFlashActive, setIsFlashActive] = useState<boolean>(false);
   const [isAutoSessionActive, setIsAutoSessionActive] = useState<boolean>(false);
-  const [showLayoutMenu, setShowLayoutMenu] = useState<boolean>(false);
+  const [showLayoutModal, setShowLayoutModal] = useState<boolean>(false);
   const [layoutCategory, setLayoutCategory] = useState<"all" | "strip" | "grid">("all");
 
-  // Jika sesi dipulihkan dari draft dan slot 0 sudah terisi, arahkan ke slot kosong berikutnya
+  // Arahkan ke slot kosong berikutnya jika slot saat ini sudah terisi
   useEffect(() => {
     const firstEmpty = photos.findIndex((p) => !p);
     if (firstEmpty !== -1 && activeSlot === 0 && photos[0]) {
@@ -78,7 +82,7 @@ export function CameraCapture({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize Camera Stream with resilient fallback
+  // Inisialisasi stream kamera dengan resolusi optimal
   const startCamera = useCallback(async () => {
     try {
       setCameraError(null);
@@ -87,7 +91,7 @@ export function CameraCapture({
       }
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setCameraError("Perangkat peramban kamu belum mendukung akses kamera langsung.");
+        setCameraError("Peramban (browser) kamu belum mendukung akses kamera langsung.");
         return;
       }
 
@@ -96,8 +100,8 @@ export function CameraCapture({
         mediaStream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: facingMode },
-            width: { ideal: 1280 },
-            height: { ideal: 960 },
+            width: { ideal: 1920 },
+            height: { ideal: 1440 },
           },
           audio: false,
         });
@@ -117,8 +121,8 @@ export function CameraCapture({
       console.warn("Camera access error:", err);
       const errorMsg =
         err instanceof Error && err.name === "NotAllowedError"
-          ? "Izin kamera ditolak. Silakan aktifkan izin kamera di browser, atau gunakan tombol 'Unggah Foto' di bawah."
-          : "Kamera tidak dapat diakses atau sedang digunakan oleh aplikasi lain.";
+          ? "Izin kamera ditolak. Silakan izinkan kamera di browser kamu, atau gunakan tombol 'Unggah Galeri'."
+          : "Kamera tidak dapat diakses atau sedang dipakai aplikasi lain.";
       setCameraError(errorMsg);
     }
   }, [facingMode]);
@@ -133,20 +137,19 @@ export function CameraCapture({
         clearInterval(countdownIntervalRef.current);
       }
     };
-  }, [facingMode]);
+  }, [facingMode, startCamera]);
 
-  // Flip camera between front & back
+  // Putar kamera depan / belakang
   const handleToggleCamera = () => {
     setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
   };
 
-  // Capture current video frame to data URL
+  // Tangkap frame saat ini ke canvas beresolusi tinggi
   const capturePhoto = useCallback((): string | null => {
     if (!videoRef.current || !canvasRef.current) return null;
     const video = videoRef.current;
     const canvas = canvasRef.current;
 
-    // Use high resolution from video stream
     const width = video.videoWidth || 1280;
     const height = video.videoHeight || 960;
     canvas.width = width;
@@ -156,7 +159,7 @@ export function CameraCapture({
     if (!ctx) return null;
 
     ctx.save();
-    // Mirror horizontally if front camera for natural selfie view
+    // Efek cermin jika kamera depan agar natural seperti selfie
     if (facingMode === "user") {
       ctx.translate(width, 0);
       ctx.scale(-1, 1);
@@ -165,11 +168,11 @@ export function CameraCapture({
     ctx.drawImage(video, 0, 0, width, height);
     ctx.restore();
 
-    // Trigger visual flash
+    // Efek kilatan shutter (flash)
     setIsFlashActive(true);
     setTimeout(() => setIsFlashActive(false), 200);
 
-    // Trigger mechanical audio shutter
+    // Audio shutter mekanik
     if (soundEnabled) {
       playShutterSound();
     }
@@ -177,7 +180,7 @@ export function CameraCapture({
     return canvas.toDataURL("image/jpeg", 0.92);
   }, [facingMode, soundEnabled]);
 
-  // Perform single shot with timer
+  // Ambil satu foto dengan timer
   const handleTakeSnapshot = useCallback(
     (targetSlot?: number) => {
       const slot = targetSlot !== undefined ? targetSlot : activeSlot;
@@ -189,14 +192,12 @@ export function CameraCapture({
           updated[slot] = photoUrl;
           onPhotosChange(updated);
 
-          // Advance to next unfilled slot if exists
           const nextSlot = (slot + 1) % requiredCount;
           setActiveSlot(nextSlot);
         }
         return;
       }
 
-      // Countdown timer
       let timeLeft = timerDuration;
       setCountdown(timeLeft);
       if (soundEnabled) playCountdownBeep(false);
@@ -224,7 +225,6 @@ export function CameraCapture({
             updated[slot] = photoUrl;
             onPhotosChange(updated);
 
-            // Move to next slot
             const nextSlot = (slot + 1) % requiredCount;
             setActiveSlot(nextSlot);
           }
@@ -234,7 +234,7 @@ export function CameraCapture({
     [activeSlot, timerDuration, capturePhoto, photos, onPhotosChange, requiredCount, soundEnabled]
   );
 
-  // Auto-Sequence Photobox Mode (Takes all slots automatically with poses!)
+  // Ambil semua pose secara otomatis berurutan (Korean Photobooth Style)
   const startAutoPhotoboxSession = async () => {
     setIsAutoSessionActive(true);
     const newPhotos = [...photos];
@@ -242,7 +242,6 @@ export function CameraCapture({
     for (let i = 0; i < requiredCount; i++) {
       setActiveSlot(i);
 
-      // Countdown loop for this frame
       const waitCountdown = async (seconds: number) => {
         for (let s = seconds; s > 0; s--) {
           setCountdown(s);
@@ -260,7 +259,6 @@ export function CameraCapture({
         onPhotosChange([...newPhotos]);
       }
 
-      // Pause before next shot to allow switching pose
       if (i < requiredCount - 1) {
         await new Promise((resolve) => setTimeout(resolve, 1500));
       }
@@ -269,7 +267,24 @@ export function CameraCapture({
     setIsAutoSessionActive(false);
   };
 
-  // Upload fallback
+  // Keyboard shortcut (Space) untuk jepret foto
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.code === "Space" &&
+        !showLayoutModal &&
+        countdown === null &&
+        !isAutoSessionActive
+      ) {
+        e.preventDefault();
+        handleTakeSnapshot();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showLayoutModal, countdown, isAutoSessionActive, handleTakeSnapshot]);
+
+  // Upload fallback dari galeri
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -293,10 +308,21 @@ export function CameraCapture({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleResetAll = () => {
+    if (onResetSession) {
+      onResetSession();
+    } else {
+      const confirmed = window.confirm("Bersihkan semua foto dan mulai dari awal?");
+      if (confirmed) {
+        onPhotosChange(Array(requiredCount).fill(""));
+        setActiveSlot(0);
+      }
+    }
+  };
+
   const isAllPhotosTaken =
     photos.filter((p) => Boolean(p)).length >= requiredCount;
 
-  // Active Layout Info
   const activeLayoutOption =
     LAYOUT_OPTIONS.find((l) => l.id === layout) || LAYOUT_OPTIONS[3];
 
@@ -305,8 +331,11 @@ export function CameraCapture({
       ? LAYOUT_OPTIONS
       : LAYOUT_OPTIONS.filter((l) => l.type === layoutCategory);
 
+  // Rasio safe area guide disesuaikan dengan jenis layout aktif
+  const isSquareLayout = layout === "grid-1";
+
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+    <div className="fixed inset-0 z-50 h-dvh min-h-dvh w-screen bg-[#0E0C0A] text-white flex flex-col justify-between overflow-hidden select-none overscroll-none font-sans">
       {/* Hidden processing canvas */}
       <canvas ref={canvasRef} className="hidden" />
 
@@ -320,170 +349,8 @@ export function CameraCapture({
         className="hidden"
       />
 
-      {/* Top Header & Session Status */}
-      <div className="w-full flex items-center justify-between mb-3 px-1 sm:px-2">
-        <div>
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#A67A53] font-bold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Langkah 1: Ambil Foto ({photos.filter(Boolean).length}/{requiredCount})
-          </span>
-          <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#3A332C]">
-            Bilik Foto Photobox
-          </h2>
-        </div>
-
-        {/* Sound & Camera Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            onClick={() => setSoundEnabled((prev) => !prev)}
-            aria-label={soundEnabled ? "Nonaktifkan suara shutter" : "Aktifkan suara shutter"}
-            className="p-2 sm:p-2.5 rounded-full bg-white border border-[#E8DFC8] text-[#5A4D3E] hover:text-[#2A241D] hover:bg-[#FAF6EE] transition-all cursor-pointer shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center"
-            title={soundEnabled ? "Suara Aktif" : "Suara Senyap"}
-          >
-            {soundEnabled ? <Volume2 className="w-4 h-4 text-[#8C6239]" /> : <VolumeX className="w-4 h-4 text-slate-400" />}
-          </button>
-
-          <button
-            onClick={() => setShowGrid((prev) => !prev)}
-            aria-label="Toggle garis panduan pose"
-            className={`p-2 sm:p-2.5 rounded-full border transition-all cursor-pointer shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center ${
-              showGrid
-                ? "bg-[#4A121A] text-[#DFD2BD] border-[#4A121A]"
-                : "bg-white border-[#E8DFC8] text-[#5A4D3E] hover:bg-[#FAF6EE]"
-            }`}
-            title="Garis Panduan Pose (Rule of Thirds)"
-          >
-            <Grid className="w-4 h-4" />
-          </button>
-
-          <button
-            onClick={handleToggleCamera}
-            aria-label="Balik kamera depan / belakang"
-            className="p-2 sm:p-2.5 rounded-full bg-white border border-[#E8DFC8] text-[#5A4D3E] hover:text-[#2A241D] hover:bg-[#FAF6EE] transition-all cursor-pointer shadow-xs min-h-[40px] min-w-[40px] flex items-center justify-center"
-            title="Putar Kamera Depan/Belakang"
-          >
-            <RefreshCw className="w-4 h-4 text-[#8C6239]" />
-          </button>
-        </div>
-      </div>
-
-      {/* --- SEBELUM TAKE FOTO: PILIH VARIAN FORMAT & KOLASE --- */}
-      <div className="w-full max-w-[640px] mb-3 bg-white rounded-2xl border border-[#E8DFC8] p-3 shadow-xs">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <LayoutWireframe layout={layout} isSelected={true} size="sm" />
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-[#3A332C]">
-                  {activeLayoutOption.name}
-                </span>
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#4A121A] text-[#DFD2BD]">
-                  {activeLayoutOption.tag}
-                </span>
-              </div>
-              <p className="text-[10px] text-[#786551] hidden xs:block">
-                {activeLayoutOption.description}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowLayoutMenu((prev) => !prev)}
-            className="px-3 py-1.5 rounded-xl bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] border border-[#E8DFC8] text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer min-h-[38px]"
-          >
-            <span>{showLayoutMenu ? "Tutup Pilihan" : "Ganti Format"}</span>
-            {showLayoutMenu ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          </button>
-        </div>
-
-        {/* Collapsible Layouts Catalog */}
-        <AnimatePresence>
-          {showLayoutMenu && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden pt-3 mt-3 border-t border-[#E8DFC8]"
-            >
-              {/* Category tabs */}
-              <div className="flex items-center gap-1.5 mb-2.5 overflow-x-auto pb-1 scrollbar-none overscroll-x-contain touch-pan-x">
-                {[
-                  { id: "all", label: "Semua Format (14)" },
-                  { id: "strip", label: "🎞️ Strip Vertikal (1 - 6)" },
-                  { id: "grid", label: "🔲 Kotak & Kolase (1 - 9)" },
-                ].map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setLayoutCategory(cat.id as typeof layoutCategory)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer min-h-[36px] ${
-                      layoutCategory === cat.id
-                        ? "bg-[#4A121A] text-[#DFD2BD] shadow-xs"
-                        : "bg-[#FAF6EE] text-[#5A4D3E] hover:bg-[#F3ECE0] border border-[#E8DFC8]"
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Layout Options Grid With Visual Wireframe Illustrations */}
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[320px] overflow-y-auto pr-1 overscroll-contain">
-                {filteredLayouts.map((opt) => {
-                  const isSelected = layout === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => {
-                        onLayoutChange(opt.id);
-                        setShowLayoutMenu(false);
-                      }}
-                      className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col xs:flex-row items-start xs:items-center gap-2 xs:gap-2.5 min-h-[64px] ${
-                        isSelected
-                          ? "border-[#4A121A] bg-[#FAF6EE] ring-2 ring-[#4A121A]/20 shadow-xs"
-                          : "border-[#E8DFC8] bg-white hover:bg-[#FAF6EE]/50"
-                      }`}
-                    >
-                      {/* Visual Wireframe Preview */}
-                      <div className="shrink-0 mx-auto xs:mx-0">
-                        <LayoutWireframe layout={opt.id} isSelected={isSelected} size="sm" />
-                      </div>
-
-                      <div className="flex-1 min-w-0 w-full">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[11px] sm:text-xs font-bold text-[#3A332C] truncate">
-                            {opt.name}
-                          </span>
-                          {isSelected && (
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#4A121A] shrink-0 ml-1" />
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-1 sm:gap-1.5 text-[8.5px] sm:text-[9px] mb-0.5 flex-wrap">
-                          <span className="font-mono font-bold text-[#4A121A] bg-[#4A121A]/10 px-1.5 py-0.2 rounded">
-                            {opt.shots} Foto
-                          </span>
-                          <span className="text-[#8C6239] font-medium truncate max-w-[65px] xs:max-w-none">
-                            {opt.badge || opt.tag}
-                          </span>
-                        </div>
-
-                        <p className="text-[9.5px] sm:text-[10px] text-[#786551] line-clamp-1 hidden xs:block">
-                          {opt.description}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Main Viewfinder Window */}
-      <div className="relative w-full aspect-4/3 max-w-[640px] bg-[#1A1816] rounded-2xl overflow-hidden shadow-xl border-4 border-[#3A332C]/10 flex items-center justify-center">
-        {/* Live Video Feed */}
+      {/* 1. LAYER BACKGROUND: Full-Screen Live Video Feed */}
+      <div className="absolute inset-0 z-0 bg-[#0E0C0A] overflow-hidden pointer-events-none">
         <video
           ref={videoRef}
           autoPlay
@@ -507,349 +374,448 @@ export function CameraCapture({
           )}
         </AnimatePresence>
 
-        {/* Rule of Thirds Grid Overlay */}
-        {showGrid && !cameraError && (
-          <div className="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 z-10 opacity-35">
-            <div className="border-r border-b border-white/60" />
-            <div className="border-r border-b border-white/60" />
-            <div className="border-b border-white/60" />
-            <div className="border-r border-b border-white/60" />
-            <div className="border-r border-b border-white/60" />
-            <div className="border-b border-white/60" />
-            <div className="border-r border-b border-white/60" />
-            <div className="border-r border-b border-white/60" />
-            <div />
-          </div>
+        {/* Auto Session Pulsing Border Indicator */}
+        {isAutoSessionActive && (
+          <div className="absolute inset-0 border-4 border-amber-300/80 z-30 pointer-events-none animate-pulse" />
         )}
+      </div>
 
-        {/* Live Countdown Display */}
+      {/* 2. LAYER FLOATING: Top Bar Controls */}
+      <header className="relative z-30 w-full pt-[max(0.75rem,env(safe-area-inset-top))] px-3 sm:px-6 pb-2 flex items-center justify-between gap-2 pointer-events-auto">
+        {/* Left: Kembali ke Undangan & Slot Status */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Link
+            href="/undangan"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-[#F7F3EB] text-xs font-semibold shadow-lg transition-all active:scale-95 min-h-[38px]"
+            title="Kembali ke Halaman Undangan"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 text-[#DFD2BD]" />
+            <span className="hidden xs:inline">Undangan</span>
+          </Link>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-white/15 text-[11px] font-mono font-bold text-white shadow-lg min-h-[38px]">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span className="text-[#DFD2BD]">
+              {photos[activeSlot] ? `SLOT ${activeSlot + 1} (ISI)` : `SLOT ${activeSlot + 1}/${requiredCount}`}
+            </span>
+          </div>
+        </div>
+
+        {/* Center: Format Layout Pill (Klik untuk ganti kolase) */}
+        <div className="flex items-center">
+          <button
+            onClick={() => setShowLayoutModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-[#DFD2BD]/40 text-[#DFD2BD] text-xs font-bold shadow-xl transition-all active:scale-95 cursor-pointer min-h-[38px]"
+            title="Klik untuk ganti format photobox"
+          >
+            <Film className="w-3.5 h-3.5 text-amber-300" />
+            <span className="max-w-[110px] xs:max-w-none truncate">
+              {activeLayoutOption.name}
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#DFD2BD]/70" />
+          </button>
+        </div>
+
+        {/* Right: Quick Tools (Timer, Grid, Sound, & Ke Frame) */}
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          {/* Timer Toggle */}
+          <button
+            onClick={() => {
+              const nextTimer = timerDuration === 0 ? 3 : timerDuration === 3 ? 5 : 0;
+              setTimerDuration(nextTimer);
+            }}
+            className="px-2.5 py-1.5 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-xs font-mono font-bold text-white flex items-center gap-1 shadow-lg transition-all cursor-pointer min-h-[38px]"
+            title={`Timer Kamera: ${timerDuration} detik`}
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-300" />
+            <span>{timerDuration}s</span>
+          </button>
+
+          {/* Grid Toggle */}
+          <button
+            onClick={() => setShowGrid((p) => !p)}
+            className={`p-2 rounded-full backdrop-blur-md border transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center shadow-lg ${
+              showGrid
+                ? "bg-[#4A121A]/80 border-[#DFD2BD] text-amber-200"
+                : "bg-black/45 border-white/15 text-white/70 hover:bg-black/65"
+            }`}
+            title="Garis Panduan Pose (Rule of Thirds)"
+          >
+            <Grid className="w-4 h-4" />
+          </button>
+
+          {/* Sound Toggle */}
+          <button
+            onClick={() => setSoundEnabled((p) => !p)}
+            className="p-2 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-white/80 transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center shadow-lg"
+            title={soundEnabled ? "Suara Shutter Aktif" : "Suara Shutter Senyap"}
+          >
+            {soundEnabled ? (
+              <Volume2 className="w-4 h-4 text-amber-300" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-white/40" />
+            )}
+          </button>
+
+          {/* Tombol Cepat ke Frame jika sudah ada foto */}
+          {photos.some(Boolean) && (
+            <button
+              onClick={onProceedToFrames}
+              className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#DFD2BD] hover:bg-white text-[#4A121A] text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer min-h-[38px]"
+              title="Lanjut memilih frame & cetak"
+            >
+              <span>Frame</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Reassurance Banner jika sesi dipulihkan */}
+      {restoreMessage && (
+        <div className="relative z-30 mx-auto px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-amber-300/40 text-amber-200 text-xs flex items-center gap-2 shadow-xl animate-in slide-in-from-top-2">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+          <span>{restoreMessage}</span>
+        </div>
+      )}
+
+      {/* 3. LAYER TENGAH: Safe-Area Viewfinder Framing Guide & Countdown */}
+      <div className="relative flex-1 w-full flex items-center justify-center p-3 sm:p-6 overflow-hidden pointer-events-none z-10">
+        {/* Frame Box Presisi (Memberi tahu pengguna batas area yang akan tercetak) */}
+        <div
+          className={`relative w-[92vw] max-w-[540px] ${
+            isSquareLayout ? "aspect-square max-h-[50vh]" : "aspect-4/3 max-h-[54vh] sm:max-h-[62vh]"
+          } rounded-3xl transition-all duration-300 pointer-events-none flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.35)] border border-white/25`}
+        >
+          {/* Viewfinder Corner Brackets Klasik (Gaya Kamera Analog / Photobox Kiosk) */}
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-amber-200 rounded-tl-2xl -mt-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-amber-200 rounded-tr-2xl -mt-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-amber-200 rounded-bl-2xl -mb-0.5 -ml-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-amber-200 rounded-br-2xl -mb-0.5 -mr-0.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]" />
+
+          {/* Rule of Thirds Grid di dalam area safe frame */}
+          {showGrid && !cameraError && (
+            <div className="absolute inset-0 pointer-events-none grid grid-cols-3 grid-rows-3 z-10 opacity-30">
+              <div className="border-r border-b border-white" />
+              <div className="border-r border-b border-white" />
+              <div className="border-b border-white" />
+              <div className="border-r border-b border-white" />
+              <div className="border-r border-b border-white" />
+              <div className="border-b border-white" />
+              <div className="border-r border-b border-white" />
+              <div className="border-r border-b border-white" />
+              <div />
+            </div>
+          )}
+
+          {/* Center Target Reticle */}
+          <div className="w-5 h-5 flex items-center justify-center text-white/35 pointer-events-none font-mono text-xl font-light">
+            +
+          </div>
+
+          {/* Viewfinder Badge Safe-Zone */}
+          <div className="absolute bottom-2.5 px-3 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono text-[#DFD2BD] border border-white/15 drop-shadow-md">
+            AREA CETAK • {activeLayoutOption.shots} POSE
+          </div>
+        </div>
+
+        {/* Live Huge Animated Countdown in Center */}
         <AnimatePresence>
           {countdown !== null && (
             <motion.div
               key={countdown}
-              initial={{ scale: 0.5, opacity: 0 }}
+              initial={{ scale: 0.4, opacity: 0 }}
               animate={{ scale: 1.15, opacity: 1 }}
-              exit={{ scale: 1.6, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="absolute z-30 w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-black/60 backdrop-blur-xs flex items-center justify-center border-4 border-[#DFD2BD] shadow-2xl pointer-events-none"
+              exit={{ scale: 1.5, opacity: 0 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
+              className="absolute z-40 w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black/80 backdrop-blur-md border-4 border-amber-300 flex items-center justify-center shadow-[0_0_50px_rgba(0,0,0,0.9)] pointer-events-none"
             >
-              <span className="text-5xl sm:text-6xl font-bold font-mono text-[#F7F3EB] drop-shadow-md">
+              <span className="text-7xl sm:text-8xl font-black font-mono text-amber-200 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
                 {countdown}
               </span>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Camera Error or Fallback State */}
+        {/* Error State Viewfinder */}
         {cameraError && (
-          <div className="absolute inset-0 bg-[#2A241D]/95 text-white p-6 flex flex-col items-center justify-center text-center z-20">
-            <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center mb-3">
-              <AlertCircle className="w-6 h-6" />
+          <div className="absolute inset-0 bg-[#0E0C0A]/95 p-6 flex flex-col items-center justify-center text-center z-30 pointer-events-auto">
+            <div className="w-14 h-14 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center mb-3">
+              <AlertCircle className="w-7 h-7" />
             </div>
             <h3 className="text-lg font-serif font-bold text-[#F7F3EB] mb-1">
               Kamera Tidak Dapat Dibuka
             </h3>
-            <p className="text-xs text-[#DFD2BD] max-w-sm mb-4 leading-relaxed">
+            <p className="text-xs text-[#DFD2BD] max-w-sm mb-5 leading-relaxed">
               {cameraError}
             </p>
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-wrap gap-2.5 justify-center">
               <button
                 onClick={startCamera}
-                className="px-4 py-2 rounded-lg bg-[#FAF6EE] text-[#3A332C] hover:bg-white text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors min-h-[44px]"
+                className="px-4 py-2.5 rounded-xl bg-[#DFD2BD] text-[#4A121A] hover:bg-white text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors shadow-lg min-h-[44px]"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Coba Lagi
+                <RefreshCw className="w-4 h-4" />
+                Coba Buka Lagi
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 rounded-lg bg-[#8C6239] hover:bg-[#A67A53] text-white text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors min-h-[44px]"
+                className="px-4 py-2.5 rounded-xl bg-black/50 hover:bg-black/70 text-white border border-white/20 text-xs font-bold flex items-center gap-2 cursor-pointer transition-colors shadow-lg min-h-[44px]"
               >
-                <Upload className="w-3.5 h-3.5" />
+                <Upload className="w-4 h-4 text-amber-300" />
                 Unggah Foto dari Galeri
               </button>
             </div>
           </div>
         )}
-
-        {/* Top Viewfinder Stamp */}
-        <div className="absolute top-2.5 sm:top-3 left-2.5 sm:left-3 z-20 flex items-center gap-2 pointer-events-none">
-          <div className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-black/60 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-mono flex items-center gap-1.5 border border-white/10">
-            <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-ping" />
-            <span className="hidden xs:inline">LIVE REC • </span>
-            <span>{photos[activeSlot] ? `SLOT ${activeSlot + 1} (ISI)` : `SLOT ${activeSlot + 1}/${requiredCount}`}</span>
-          </div>
-        </div>
-
-        {/* Auto Session Badge */}
-        {isAutoSessionActive && (
-          <div className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 z-20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md bg-[#4A121A]/90 text-[#DFD2BD] text-[9px] sm:text-[11px] font-mono font-bold border border-[#DFD2BD]/30 animate-pulse">
-            ★ <span className="hidden xs:inline">AUTO SESI</span><span className="xs:hidden">AUTO</span> ★
-          </div>
-        )}
       </div>
 
-      {/* Camera Controls Bar */}
-      <div className="w-full max-w-[640px] mt-3 sm:mt-4 bg-white p-3 sm:p-3.5 rounded-2xl border border-[#E8DFC8] shadow-xs">
-        {/* Mobile Layout (< sm): 2-Row Ergonomic Mobile Camera Controls */}
-        <div className="flex sm:hidden flex-col gap-3">
-          {/* Row 1: Auxiliary Controls (Timer Selector & Auto Session) */}
-          <div className="flex items-center justify-between gap-2">
-            {/* Timer Selector */}
-            <div className="flex items-center gap-1 bg-[#FAF6EE] p-1 rounded-xl border border-[#E8DFC8]/60">
-              <Clock className="w-3.5 h-3.5 text-[#8C6239] ml-1 mr-0.5" />
-              {[
-                { sec: 0, label: "0s" },
-                { sec: 3, label: "3s" },
-                { sec: 5, label: "5s" },
-              ].map(({ sec, label }) => (
-                <button
-                  key={sec}
-                  onClick={() => setTimerDuration(sec)}
-                  className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer min-h-[32px] min-w-[32px] ${
-                    timerDuration === sec
-                      ? "bg-[#4A121A] text-[#F7F3EB] shadow-xs"
-                      : "text-[#6B5A49] hover:text-[#2A241D]"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+      {/* 4. LAYER FLOATING: Bottom Ergonomic Dock (Slot Film Strip & Hero Shutter) */}
+      <footer className="relative z-30 w-full pb-[max(1rem,env(safe-area-inset-bottom))] px-3 sm:px-6 flex flex-col items-center gap-2.5 pointer-events-auto">
+        {/* Banner Navigasi Saat Semua Foto Selesai */}
+        {isAllPhotosTaken && (
+          <motion.button
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            onClick={onProceedToFrames}
+            className="w-full max-w-md py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-300 via-[#DFD2BD] to-amber-200 text-[#4A121A] font-bold text-xs sm:text-sm shadow-[0_4px_24px_rgba(223,210,189,0.4)] flex items-center justify-between border border-white cursor-pointer active:scale-98 transition-all"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#8C6239]" />
+              <span>{requiredCount} Foto Lengkap! Lanjut Pilih Frame</span>
             </div>
+            <div className="w-7 h-7 rounded-full bg-[#4A121A] text-[#DFD2BD] flex items-center justify-center shadow-xs">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </motion.button>
+        )}
 
-            {/* Auto Session Button */}
+        {/* Film Strip Slot Mini Preview Bar */}
+        <div className="w-full max-w-md bg-black/55 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-2xl flex items-center justify-between gap-1.5">
+          <div className="flex-1 flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
+            {Array.from({ length: requiredCount }).map((_, index) => {
+              const photoUrl = photos[index];
+              const isActive = activeSlot === index;
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => setActiveSlot(index)}
+                  className={`relative flex-1 aspect-4/3 min-w-[48px] max-h-[50px] rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center ${
+                    isActive
+                      ? "border-amber-300 ring-2 ring-amber-300/40 scale-102 bg-white/15"
+                      : photoUrl
+                      ? "border-emerald-400/80 bg-black/40"
+                      : "border-dashed border-white/30 bg-white/5 hover:bg-white/10"
+                  }`}
+                  title={`Pilih Slot Foto #${index + 1}`}
+                >
+                  {photoUrl ? (
+                    <>
+                      <img
+                        src={photoUrl}
+                        alt={`Foto slot ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                      </div>
+                    </>
+                  ) : (
+                    <span className="text-[10px] font-mono font-bold text-white/70">
+                      #{index + 1}
+                    </span>
+                  )}
+
+                  {isActive && (
+                    <div className="absolute bottom-0 inset-x-0 bg-amber-300 text-[#4A121A] text-[8px] font-bold text-center py-0.2 tracking-wider">
+                      AKTIF
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Reset button jika ada foto terambil */}
+          {photos.some(Boolean) && (
+            <button
+              onClick={handleResetAll}
+              className="p-2 rounded-xl text-rose-300 hover:text-white hover:bg-rose-950/60 transition-colors flex items-center justify-center cursor-pointer min-h-[40px] min-w-[40px]"
+              title="Reset foto & mulai dari awal"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Shutter Bar with Native Mobile Thumb Alignment */}
+        <div className="w-full max-w-md flex items-center justify-between px-2 pt-1">
+          {/* Left Action: Gallery Upload or Auto Sequence */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-13 h-13 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer min-h-[52px] min-w-[52px]"
+              title="Unggah foto dari galeri perangkat"
+              aria-label="Unggah foto dari galeri"
+            >
+              <Upload className="w-5 h-5 text-amber-300" />
+              <span className="text-[9px] text-white/70">Galeri</span>
+            </button>
+
             <button
               onClick={startAutoPhotoboxSession}
               disabled={countdown !== null || isAutoSessionActive}
-              className="px-3 py-1.5 rounded-xl bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-bold flex items-center gap-1.5 border border-[#E8DFC8] transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
-              title="Ambil semua pose secara otomatis"
+              className="px-3 py-2 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-amber-300/40 text-amber-200 text-xs font-bold flex items-center gap-1.5 shadow-lg active:scale-95 cursor-pointer disabled:opacity-50 min-h-[52px]"
+              title="Ambil semua pose otomatis dengan timer pose"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Sesi Auto</span>
+              <Play className="w-3.5 h-3.5 fill-current text-amber-300" />
+              <span className="hidden xs:inline">Auto</span>
             </button>
           </div>
 
-          {/* Row 2: Shutter Bar with Native Mobile Thumb Alignment */}
-          <div className="flex items-center justify-between px-2 pt-1">
-            {/* Upload from Gallery (Left) */}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-3 rounded-full bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-all cursor-pointer min-h-[48px] min-w-[48px] flex items-center justify-center active:scale-95 shadow-xs"
-              title="Unggah foto dari perangkat"
-              aria-label="Unggah foto dari galeri"
-            >
-              <Upload className="w-5 h-5 text-[#8C6239]" />
-            </button>
-
-            {/* Large Shutter Button (Center) */}
+          {/* Center: Large Hero Shutter Button */}
+          <div className="flex items-center justify-center">
             <button
               onClick={() => handleTakeSnapshot()}
               disabled={countdown !== null || isAutoSessionActive}
               aria-label="Ambil foto sekarang"
-              className="group relative flex items-center justify-center w-18 h-18 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] shadow-lg transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-4 border-[#FAF6EE]"
-              title="Tekan untuk Ambil Foto"
+              className="group relative flex items-center justify-center w-20 h-20 rounded-full border-4 border-white/50 bg-black/30 backdrop-blur-xs shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              title="Tekan Spasi atau Klik untuk Jepret"
             >
-              <div className="w-14 h-14 rounded-full border-2 border-[#DFD2BD] flex items-center justify-center transition-transform group-hover:scale-105">
-                <Camera className="w-7 h-7 text-[#DFD2BD]" />
+              <div className="w-15 h-15 rounded-full bg-[#DFD2BD] group-hover:bg-white text-[#4A121A] flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 active:scale-90">
+                <Camera className="w-7 h-7 text-[#4A121A]" />
               </div>
             </button>
+          </div>
 
-            {/* Flip Camera (Right) */}
+          {/* Right Action: Flip Camera (Depan / Belakang) */}
+          <div className="flex items-center gap-1.5">
             <button
               onClick={handleToggleCamera}
               aria-label="Balik kamera depan / belakang"
-              className="p-3 rounded-full bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-all cursor-pointer min-h-[48px] min-w-[48px] flex items-center justify-center active:scale-95 shadow-xs"
+              className="w-13 h-13 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white flex flex-col items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer min-h-[52px] min-w-[52px]"
               title="Putar Kamera Depan/Belakang"
             >
-              <RefreshCw className="w-5 h-5 text-[#8C6239]" />
+              <RefreshCw className="w-5 h-5 text-amber-300" />
+              <span className="text-[9px] text-white/70">Putar</span>
             </button>
           </div>
         </div>
+      </footer>
 
-        {/* Desktop Layout (>= sm): Sleek 1-Row Bar */}
-        <div className="hidden sm:flex items-center justify-between gap-3">
-          {/* Timer Selector */}
-          <div className="flex items-center gap-1 bg-[#FAF6EE] p-1 rounded-lg border border-[#E8DFC8]/60">
-            <Clock className="w-3.5 h-3.5 text-[#8C6239] ml-1.5 mr-0.5" />
-            <span className="text-[11px] font-medium text-[#6B5A49] mr-1 hidden xs:inline">Timer:</span>
-            {[
-              { sec: 0, label: "0s" },
-              { sec: 3, label: "3s" },
-              { sec: 5, label: "5s" },
-            ].map(({ sec, label }) => (
-              <button
-                key={sec}
-                onClick={() => setTimerDuration(sec)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer min-h-[34px] min-w-[34px] ${
-                  timerDuration === sec
-                    ? "bg-[#4A121A] text-[#F7F3EB] shadow-xs"
-                    : "text-[#6B5A49] hover:text-[#2A241D] hover:bg-white"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+      {/* 5. MODAL BOTTOM-SHEET: Pemilihan Format Kolase (14 Opsi) */}
+      <AnimatePresence>
+        {showLayoutModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLayoutModal(false)}
+              className="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 pointer-events-auto"
+            />
 
-          {/* Center Main Shutter Trigger Button */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => handleTakeSnapshot()}
-              disabled={countdown !== null || isAutoSessionActive}
-              aria-label="Ambil foto sekarang"
-              className="group relative flex items-center justify-center w-16 h-16 rounded-full bg-[#4A121A] hover:bg-[#5C1D24] text-[#DFD2BD] shadow-lg hover:shadow-xl transition-all cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border-4 border-[#FAF6EE]"
-              title="Tekan untuk Ambil Foto"
+            {/* Slide-Up Sheet */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 26, stiffness: 280 }}
+              className="fixed bottom-0 inset-x-0 max-h-[82dvh] bg-[#1A1613] text-[#FAF6EE] rounded-t-3xl border-t border-[#DFD2BD]/30 z-50 flex flex-col pointer-events-auto pb-[calc(1rem+env(safe-area-inset-bottom,0px))] shadow-2xl"
             >
-              <div className="w-12 h-12 rounded-full border-2 border-[#DFD2BD] flex items-center justify-center transition-transform group-hover:scale-105">
-                <Camera className="w-6 h-6 text-[#DFD2BD]" />
+              {/* Sheet Drag Handle & Header */}
+              <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
+                <div>
+                  <h3 className="text-base font-serif font-bold text-amber-100 flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-amber-300" />
+                    Pilih Format Kolase Photobox
+                  </h3>
+                  <p className="text-xs text-white/70">
+                    Pilih jumlah foto dan gaya layout sebelum mengambil gambar
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowLayoutModal(false)}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            </button>
-          </div>
 
-          {/* Action Buttons: Auto Session & File Upload */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={startAutoPhotoboxSession}
-              disabled={countdown !== null || isAutoSessionActive}
-              className="px-3 py-2 rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#4A121A] text-xs font-semibold flex items-center gap-1.5 border border-[#E8DFC8] transition-colors cursor-pointer disabled:opacity-50 min-h-[38px]"
-              title="Ambil semua pose secara otomatis dengan jeda waktu"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Sesi Otomatis</span>
-            </button>
+              {/* Category Filter Pills */}
+              <div className="flex items-center gap-1.5 px-4 pt-3 pb-2 overflow-x-auto scrollbar-none shrink-0">
+                {[
+                  { id: "all", label: "Semua Format (14)" },
+                  { id: "strip", label: "🎞️ Strip Vertikal (1 - 6)" },
+                  { id: "grid", label: "🔲 Kotak & Kolase (1 - 9)" },
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setLayoutCategory(cat.id as typeof layoutCategory)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer min-h-[36px] ${
+                      layoutCategory === cat.id
+                        ? "bg-[#DFD2BD] text-[#4A121A] font-bold shadow-md"
+                        : "bg-white/10 text-white/80 hover:bg-white/15"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
 
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-2.5 rounded-lg bg-white hover:bg-[#FAF6EE] text-[#6B5A49] hover:text-[#2A241D] border border-[#E8DFC8] transition-colors cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center"
-              title="Unggah foto dari perangkat"
-              aria-label="Unggah foto dari galeri"
-            >
-              <Upload className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
+              {/* Layouts Grid Catalog */}
+              <div className="p-4 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[55vh]">
+                {filteredLayouts.map((opt) => {
+                  const isSelected = layout === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => {
+                        onLayoutChange(opt.id);
+                        setShowLayoutModal(false);
+                      }}
+                      className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col xs:flex-row items-start xs:items-center gap-2.5 ${
+                        isSelected
+                          ? "border-amber-300 bg-amber-400/15 ring-2 ring-amber-300/40 shadow-lg"
+                          : "border-white/15 bg-white/5 hover:bg-white/10"
+                      }`}
+                    >
+                      <div className="shrink-0 mx-auto xs:mx-0">
+                        <LayoutWireframe layout={opt.id} isSelected={isSelected} size="sm" />
+                      </div>
 
-      {/* Photo Slots Film Strip Preview (Dynamic Grid for 1, 2, 3, 4, 5, 6, 8, 9 slots) */}
-      <div className="w-full max-w-[640px] mt-4">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-xs font-semibold text-[#5A4D3E] flex items-center gap-1">
-            Slot Foto ({photos.filter(Boolean).length} dari {requiredCount} terisi):
-          </span>
-          <button
-            onClick={() => onPhotosChange(Array(requiredCount).fill(""))}
-            className="text-[11px] text-red-700 hover:text-red-900 flex items-center gap-1 transition-colors cursor-pointer"
-          >
-            <RotateCcw className="w-3 h-3" />
-            Reset Foto
-          </button>
-        </div>
+                      <div className="flex-1 min-w-0 w-full">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="text-xs font-bold text-white truncate">
+                            {opt.name}
+                          </span>
+                          {isSelected && (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-amber-300 shrink-0 ml-1" />
+                          )}
+                        </div>
 
-        <div
-          className={`gap-2 pb-1 ${
-            requiredCount >= 5
-              ? "flex overflow-x-auto snap-x scrollbar-none overscroll-x-contain touch-pan-x sm:grid " +
-                (requiredCount === 5
-                  ? "sm:grid-cols-5"
-                  : requiredCount === 6
-                  ? "sm:grid-cols-6"
-                  : "sm:grid-cols-8")
-              : "grid " +
-                (requiredCount === 1
-                  ? "grid-cols-1 max-w-[200px] mx-auto"
-                  : requiredCount === 2
-                  ? "grid-cols-2 max-w-[320px] mx-auto"
-                  : requiredCount === 3
-                  ? "grid-cols-3"
-                  : "grid-cols-4")
-          }`}
-        >
-          {Array.from({ length: requiredCount }).map((_, index) => {
-            const photoUrl = photos[index];
-            const isActive = activeSlot === index;
+                        <div className="flex items-center gap-1 text-[9px] mb-0.5">
+                          <span className="font-mono font-bold text-amber-200 bg-amber-400/20 px-1.5 py-0.2 rounded">
+                            {opt.shots} Foto
+                          </span>
+                          <span className="text-[#DFD2BD] truncate">
+                            {opt.badge || opt.tag}
+                          </span>
+                        </div>
 
-            return (
-              <button
-                key={index}
-                onClick={() => setActiveSlot(index)}
-                className={`relative aspect-4/3 rounded-xl overflow-hidden border-2 transition-all cursor-pointer flex flex-col items-center justify-center p-1 min-h-[52px] ${
-                  requiredCount >= 5 ? "min-w-[68px] sm:min-w-0 flex-1 shrink-0 snap-start " : ""
-                }${
-                  isActive
-                    ? "border-[#4A121A] ring-2 ring-[#4A121A]/20 shadow-md scale-102 bg-[#FAF6EE]"
-                    : photoUrl
-                    ? "border-emerald-500/80 bg-white shadow-2xs"
-                    : "border-dashed border-[#D2C2A4] bg-[#FAF6EE]/60 hover:bg-[#FAF6EE]"
-                }`}
-              >
-                {photoUrl ? (
-                  <>
-                    <img
-                      src={photoUrl}
-                      alt={`Foto slot ${index + 1}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                    <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-                      <CheckCircle2 className="w-3 h-3" />
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center text-[#8C6239]">
-                    <Camera className="w-4 h-4 opacity-40 mb-0.5" />
-                    <span className="text-[9px] font-mono font-bold">
-                      #{index + 1}
-                    </span>
-                  </div>
-                )}
-
-                {isActive && (
-                  <div className="absolute bottom-1 px-1 py-0.2 rounded bg-[#4A121A] text-[#DFD2BD] text-[8px] font-mono font-bold uppercase">
-                    Aktif
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Guided Next Step Banner when photos are ready */}
-      {isAllPhotosTaken && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-[640px] mt-6 p-4 rounded-2xl bg-gradient-to-r from-[#4A121A] to-[#631B25] text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-[#DFD2BD]/30"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#DFD2BD]/20 text-[#DFD2BD] flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-serif font-bold text-base text-[#F7F3EB]">
-                Yeay! {requiredCount} foto sudah lengkap 🎉
-              </p>
-              <p className="text-xs text-[#DFD2BD] mt-0.5">
-                Sekarang saatnya memilih dari 25+ template frame estetik!
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={onProceedToFrames}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#DFD2BD] hover:bg-[#ECE4D4] text-[#4A121A] font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer hover:scale-103 min-h-[44px]"
-          >
-            <span>Pilih Frame Sekarang</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </motion.div>
-      )}
-
-      {/* Quick Pose Tip Helper */}
-      <div className="mt-4 text-center">
-        <p className="text-[11px] text-[#786551] flex items-center justify-center gap-1.5">
-          <HelpCircle className="w-3.5 h-3.5 text-[#A67A53]" />
-          <span>Tips: Kamu bisa memilih format kolase kotak atau strip vertikal di menu atas kapan saja sebelum take foto!</span>
-        </p>
-      </div>
+                        <p className="text-[9.5px] text-white/60 line-clamp-1 hidden xs:block">
+                          {opt.description}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
