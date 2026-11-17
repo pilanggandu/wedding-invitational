@@ -377,8 +377,9 @@ export function A3PosterModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center"
             title="Tutup"
+            aria-label="Tutup"
           >
             <X className="w-5 h-5" />
           </button>

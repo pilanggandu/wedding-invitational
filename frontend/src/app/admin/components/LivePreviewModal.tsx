@@ -111,49 +111,49 @@ export function LivePreviewModal({
     >
       <div className="relative w-full max-w-4xl max-h-[96vh] sm:max-h-[95vh] bg-white rounded-2xl border border-zinc-200 shadow-2xl flex flex-col overflow-hidden">
         {/* Modal Top Bar */}
-        <div className="px-3.5 py-2.5 sm:px-5 sm:py-3.5 bg-zinc-900 text-white flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 sm:gap-3">
+        <div className="px-3 py-2.5 sm:px-5 sm:py-3.5 bg-zinc-900 text-white flex items-center justify-between shrink-0 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={onClose}
-              className="p-1.5 sm:px-2.5 sm:py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
               title="Kembali ke Katalog"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
+              <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Kembali</span>
             </button>
 
             <div className="h-4 w-px bg-zinc-700 hidden sm:block" />
 
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-xs sm:text-sm text-white truncate max-w-[180px] sm:max-w-none">
+                <h3 className="font-semibold text-xs sm:text-sm text-white truncate max-w-[130px] xs:max-w-[180px] sm:max-w-none">
                   {tmplName}
                 </h3>
                 <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-800 text-zinc-300 border border-zinc-700">
                   Pratinjau Baca-Saja
                 </span>
               </div>
-              <p className="hidden md:block text-[11px] text-zinc-400">
+              <p className="hidden md:block text-[11px] text-zinc-300">
                 Tema aktif saat ini tidak berubah sampai Anda menyimpannya dari Editor.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {onEditTemplate && (
               <button
                 onClick={() => onEditTemplate(activeTmpl)}
-                className="px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                className="min-h-[40px] px-2.5 sm:px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                 title="Buka template ini di editor"
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>Edit Template</span>
+                <span className="hidden xs:inline">Edit Template</span>
               </button>
             )}
 
             <button
               onClick={() => setReloadKey((k) => k + 1)}
-              className="px-2 sm:px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
+              className="min-h-[40px] px-2 sm:px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs flex items-center gap-1 transition-colors cursor-pointer"
               title="Ulangi Buka Amplop"
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -164,7 +164,7 @@ export function LivePreviewModal({
               href={previewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-100 text-zinc-900 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-lg bg-white hover:bg-zinc-100 text-zinc-900 text-xs font-semibold flex items-center gap-1.5 transition-colors"
               title="Buka di tab browser baru"
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -173,10 +173,10 @@ export function LivePreviewModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer ml-0.5"
+              className="min-h-[40px] min-w-[40px] p-2 rounded-lg hover:bg-zinc-800 text-zinc-300 hover:text-white transition-colors cursor-pointer flex items-center justify-center"
               aria-label="Tutup Preview"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>

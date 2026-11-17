@@ -499,22 +499,22 @@ export function TemplateThemeManager({
           )}
         </div>
       )}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 rounded-2xl border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 bg-white p-5 sm:p-6 rounded-2xl border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono tracking-wider uppercase text-[#888D9C] font-medium">
+            <span className="text-[10px] font-mono tracking-wider uppercase text-slate-600 font-semibold">
               ESTETIKA &amp; TEMA UNDANGAN
             </span>
           </div>
           <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#14161C] tracking-tight">
             Katalog Template &amp; Gaya Visual
           </h2>
-          <p className="text-xs text-[#717686] mt-1 font-sans">
+          <p className="text-xs text-slate-600 mt-1 font-sans">
             Pilih konsep arsitektur visual utama dan sesuaikan tipografi nama pengantin secara presisi.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
           {savedNotice && (
             <span className="text-xs font-medium text-[#24623E] bg-[#F3F8F5] px-3.5 py-1.5 rounded-xl border border-[#D4EADB] flex items-center gap-1.5 animate-in fade-in">
               <Check className="w-3.5 h-3.5 text-[#2E7A4A]" />
@@ -523,7 +523,7 @@ export function TemplateThemeManager({
           )}
           <button
             onClick={() => onOpenPreview(selectedTemplateId)}
-            className="px-4 py-2 rounded-xl bg-white border border-[#E2E2DC] hover:bg-[#F5F5F0] text-[#2C303B] font-medium text-xs flex items-center gap-2 transition-colors cursor-pointer shadow-2xs"
+            className="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-white border border-[#E2E2DC] hover:bg-[#F5F5F0] text-[#2C303B] font-semibold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-2xs"
           >
             <Eye className="w-4 h-4 text-[#717686]" />
             <span>Pratinjau Layar HP</span>
@@ -531,31 +531,31 @@ export function TemplateThemeManager({
         </div>
       </div>
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
               Pilihan Template Desain ({AVAILABLE_TEMPLATES.length})
             </h3>
-            <p className="text-xs text-[#717686] mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               Klik kartu untuk memilih. Gunakan tombol &quot;Preview&quot; untuk melihat atau &quot;Edit Template&quot; untuk menyesuaikan sebelum menerapkan.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => onOpenPreview(selectedTemplateId)}
-              className="px-3 py-1.5 rounded-xl border border-[#E2E2DC] hover:bg-[#F5F5F0] text-[#2C303B] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl border border-[#E2E2DC] hover:bg-[#F5F5F0] text-[#2C303B] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5 text-[#717686]" />
-              <span>Preview Terpilih</span>
+              <span>Preview</span>
             </button>
             <button
               type="button"
               onClick={() => onEditTemplate(selectedTemplateId)}
-              className="px-3.5 py-1.5 rounded-xl bg-[#14161C] hover:bg-[#232734] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              className="flex-1 sm:flex-initial min-h-[40px] px-4 py-2 rounded-xl bg-[#14161C] hover:bg-[#232734] text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-[#DFD2BD]" />
-              <span>Edit Template Terpilih</span>
+              <span>Edit Template</span>
             </button>
           </div>
         </div>
@@ -600,7 +600,7 @@ export function TemplateThemeManager({
                       {tmpl.name}
                     </h4>
                   </div>
-                  <p className="text-xs text-zinc-500 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-zinc-600 leading-relaxed line-clamp-2">
                     {tmpl.description}
                   </p>
                 </div>
@@ -612,7 +612,7 @@ export function TemplateThemeManager({
                       e.stopPropagation();
                       onOpenPreview(tmpl.id);
                     }}
-                    className="flex-1 py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                    className="flex-1 min-h-[42px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
                     title={`Pratinjau baca-saja ${tmpl.name}`}
                   >
                     <Eye className="w-3.5 h-3.5 text-slate-500" />
@@ -625,7 +625,7 @@ export function TemplateThemeManager({
                       e.stopPropagation();
                       onEditTemplate(tmpl.id);
                     }}
-                    className="flex-1 py-2 px-3 rounded-xl bg-[#14161C] hover:bg-[#232734] active:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                    className="flex-1 min-h-[42px] py-2 px-3 rounded-xl bg-[#14161C] hover:bg-[#232734] active:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
                     title={`Buka draf editor untuk ${tmpl.name}`}
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5 text-[#DFD2BD]" />
@@ -673,24 +673,24 @@ export function TemplateThemeManager({
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#F0F0EA]">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#F0F0EA]">
           {categories.map((cat) => (
             <button
               key={cat.id}
               type="button"
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`min-h-[40px] px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer flex items-center gap-2 ${
                 selectedCategory === cat.id
                   ? "bg-[#14161C] text-white shadow-xs"
-                  : "bg-[#F5F5F0] hover:bg-[#EBEBE5] text-[#555966]"
+                  : "bg-[#F5F5F0] hover:bg-[#EBEBE5] text-slate-700"
               }`}
             >
               <span>{cat.label}</span>
               <span
-                className={`text-[10px] px-1.5 py-0.2 rounded-md ${
+                className={`text-[10px] px-1.5 py-0.5 rounded-md font-mono ${
                   selectedCategory === cat.id
                     ? "bg-[#2A2E3B] text-[#DFD2BD]"
-                    : "bg-[#E5E5DF] text-[#717686]"
+                    : "bg-[#E5E5DF] text-slate-600"
                 }`}
               >
                 {cat.count}

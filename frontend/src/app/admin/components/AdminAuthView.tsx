@@ -258,7 +258,7 @@ export function AdminAuthView() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-zinc-200" />
                 </div>
-                <div className="relative bg-white px-3 text-[11px] uppercase tracking-wider text-zinc-400 font-medium">
+                <div className="relative bg-white px-3 text-[11px] uppercase tracking-wider text-zinc-600 font-semibold">
                   atau kredensial pengelola
                 </div>
               </div>
@@ -278,9 +278,9 @@ export function AdminAuthView() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Masukkan nama pengguna"
-                    className="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:bg-white transition-colors"
+                    className="w-full min-h-[44px] pl-9 pr-3.5 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-xs text-zinc-900 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-900 focus:bg-white transition-colors"
                   />
-                  <User className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+                  <User className="w-4 h-4 text-zinc-500 absolute left-3 top-3.5 pointer-events-none" />
                 </div>
               </div>
 
@@ -296,13 +296,13 @@ export function AdminAuthView() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Masukkan kata sandi"
-                    className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-zinc-900 focus:bg-white transition-colors"
+                    className="w-full min-h-[44px] pl-9 pr-10 py-2.5 rounded-xl border border-zinc-200 bg-zinc-50/50 text-xs text-zinc-900 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-900 focus:bg-white transition-colors"
                   />
-                  <Lock className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+                  <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-3.5 pointer-events-none" />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 p-0.5 text-zinc-400 hover:text-zinc-600 transition-colors cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] absolute right-0 top-0 p-2 text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer flex items-center justify-center"
                     title={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
                   >
                     {showPassword ? (
@@ -318,7 +318,7 @@ export function AdminAuthView() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer mt-2"
+                className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer mt-2"
               >
                 {isSubmitting ? (
                   <span>Memverifikasi...</span>

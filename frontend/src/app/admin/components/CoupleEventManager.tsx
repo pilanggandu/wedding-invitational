@@ -475,22 +475,22 @@ export function CoupleEventManager({
       className="space-y-6 animate-in fade-in duration-300"
     >
       {/* Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white/95 backdrop-blur-md p-6 rounded-2xl border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] sticky top-4 z-20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5 bg-white/95 backdrop-blur-md p-5 sm:p-6 rounded-2xl border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] static sm:sticky sm:top-16 z-20">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono tracking-wider uppercase text-[#888D9C] font-medium">
+            <span className="text-[10px] font-mono tracking-wider uppercase text-slate-600 font-semibold">
               DATA PERSONALISASI INTI
             </span>
           </div>
           <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#14161C] tracking-tight">
             Data Mempelai, Acara &amp; Rekening
           </h2>
-          <p className="text-xs text-[#717686] mt-1 font-sans">
+          <p className="text-xs text-slate-600 mt-1 font-sans">
             Perbarui data lengkap kedua mempelai, susunan jadwal acara, rekening amplop, dan pesan penutup.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
           {saveError && (
             <span className="text-xs font-medium text-[#B91C1C] bg-[#FEF2F2] px-3.5 py-1.5 rounded-xl border border-[#FCA5A5] flex items-center gap-1.5 animate-in fade-in">
               {saveError}
@@ -505,7 +505,7 @@ export function CoupleEventManager({
           <button
             type="submit"
             disabled={isSaving}
-            className="px-5 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] disabled:opacity-75 disabled:cursor-not-allowed text-white font-medium text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
+            className="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#14161C] hover:bg-[#232734] disabled:opacity-75 disabled:cursor-not-allowed text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-[0.98]"
           >
             {isSaving ? (
               <>

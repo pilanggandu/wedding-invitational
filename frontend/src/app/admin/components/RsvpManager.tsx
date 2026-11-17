@@ -65,27 +65,27 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-6 sm:p-7 rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 bg-white p-5 sm:p-7 rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200/60">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Kehadiran &amp; Doa Restu
             </span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-xl sm:text-3xl font-bold text-slate-900 tracking-tight">
             Buku Tamu &amp; Konfirmasi RSVP
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-sans">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 font-sans">
             Pantau data kehadiran real-time dan untaian doa restu dari para tamu undangan.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/60 self-start sm:self-auto shadow-2xs">
+        <div className="w-full sm:w-auto flex items-center gap-1.5 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/60 shadow-2xs">
           <button
             onClick={() => setActiveTab("rsvps")}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`min-h-[44px] flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center justify-center ${
               activeTab === "rsvps"
                 ? "bg-slate-900 text-white shadow-xs"
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
@@ -95,7 +95,7 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
           </button>
           <button
             onClick={() => setActiveTab("wishes")}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+            className={`min-h-[44px] flex-1 sm:flex-initial px-4 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center justify-center ${
               activeTab === "wishes"
                 ? "bg-slate-900 text-white shadow-xs"
                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
@@ -197,74 +197,147 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-mono uppercase tracking-wider text-[10px]">
-                  <tr>
-                    <th className="py-3.5 px-5">Nama Tamu &amp; Kontak</th>
-                    <th className="py-3.5 px-4">Grup Tamu</th>
-                    <th className="py-3.5 px-4 text-center">Status</th>
-                    <th className="py-3.5 px-4 text-center">Jumlah Pax</th>
-                    <th className="py-3.5 px-5">Pesan RSVP</th>
-                    <th className="py-3.5 px-5 text-right">Waktu Konfirmasi</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {rsvpList.map((r) => {
-                    const initial = r.guestName?.charAt(0).toUpperCase() || "T";
-                    return (
-                      <tr key={r.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="py-3.5 px-5">
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
-                              {initial}
-                            </div>
-                            <div>
-                              <div className="font-semibold text-xs sm:text-sm text-slate-900">
-                                {r.guestName}
+            <>
+              {/* DESKTOP TABLE VIEW (md+) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-mono uppercase tracking-wider text-[10px] font-bold">
+                    <tr>
+                      <th className="py-3.5 px-5">Nama Tamu &amp; Kontak</th>
+                      <th className="py-3.5 px-4">Grup Tamu</th>
+                      <th className="py-3.5 px-4 text-center">Status</th>
+                      <th className="py-3.5 px-4 text-center">Jumlah Pax</th>
+                      <th className="py-3.5 px-5">Pesan RSVP</th>
+                      <th className="py-3.5 px-5 text-right">Waktu Konfirmasi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {rsvpList.map((r) => {
+                      const initial = r.guestName?.charAt(0).toUpperCase() || "T";
+                      return (
+                        <tr key={r.id} className="hover:bg-slate-50/70 transition-colors">
+                          <td className="py-3.5 px-5">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
+                                {initial}
                               </div>
-                              {r.guestPhone && (
-                                <div className="text-[10px] font-mono text-slate-400 mt-0.5">
-                                  {r.guestPhone}
+                              <div>
+                                <div className="font-semibold text-xs sm:text-sm text-slate-900">
+                                  {r.guestName}
                                 </div>
-                              )}
+                                {r.guestPhone && (
+                                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">
+                                    {r.guestPhone}
+                                  </div>
+                                )}
+                              </div>
                             </div>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200/80">
+                              {r.groupName}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-center">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
+                                r.status === 1
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+                                  : "bg-rose-50 text-rose-800 border-rose-200/80"
+                              }`}
+                            >
+                              {r.status === 1 ? "Pasti Hadir" : "Tidak Hadir"}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-center font-mono font-medium text-slate-900">
+                            {r.status === 1 ? `${r.attendeeCount} Orang` : "0"}
+                            <span className="text-[10px] text-slate-500 block font-normal font-mono">
+                              Maks. {r.guestQuota} Pax
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-5 text-slate-600 max-w-xs truncate">
+                            {r.message || "-"}
+                          </td>
+                          <td className="py-3.5 px-5 text-right text-slate-500 font-mono text-[10px]">
+                            {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE CARD VIEW (< md) */}
+              <div className="md:hidden divide-y divide-slate-100">
+                {rsvpList.map((r) => {
+                  const initial = r.guestName?.charAt(0).toUpperCase() || "T";
+                  return (
+                    <div key={r.id} className="p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
+                            {initial}
                           </div>
-                        </td>
-                        <td className="py-3.5 px-4">
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200/80">
-                            {r.groupName}
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-slate-900 text-sm truncate">
+                              {r.guestName}
+                            </h4>
+                            {r.guestPhone && (
+                              <p className="text-[11px] font-mono text-slate-500">
+                                {r.guestPhone}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border shrink-0 ${
+                            r.status === 1
+                              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                              : "bg-rose-50 text-rose-800 border-rose-200"
+                          }`}
+                        >
+                          {r.status === 1 ? "Pasti Hadir" : "Tidak Hadir"}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <div>
+                          <span className="text-[10px] font-mono uppercase text-slate-500 block">
+                            Kategori / Grup
                           </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-center">
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
-                              r.status === 1
-                                ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
-                                : "bg-rose-50 text-rose-800 border-rose-200/80"
-                            }`}
-                          >
-                            {r.status === 1 ? "Pasti Hadir" : "Tidak Hadir"}
+                          <span className="font-semibold text-slate-800">
+                            {r.groupName || "Umum"}
                           </span>
-                        </td>
-                        <td className="py-3.5 px-4 text-center font-mono font-medium text-slate-900">
-                          {r.status === 1 ? `${r.attendeeCount} Orang` : "0"}
-                          <span className="text-[10px] text-slate-400 block font-normal font-mono">
-                            Maks. {r.guestQuota} Pax
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-mono uppercase text-slate-500 block">
+                            Jumlah Kehadiran
                           </span>
-                        </td>
-                        <td className="py-3.5 px-5 text-slate-600 max-w-xs truncate">
-                          {r.message || "-"}
-                        </td>
-                        <td className="py-3.5 px-5 text-right text-slate-400 font-mono text-[10px]">
-                          {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          <span className="font-mono font-bold text-slate-900">
+                            {r.status === 1 ? `${r.attendeeCount} Orang` : "0 Orang"}
+                            <span className="text-[10px] font-normal text-slate-500 ml-1">
+                              (Maks {r.guestQuota})
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {r.message && (
+                        <p className="text-xs text-slate-700 italic bg-white p-2.5 rounded-xl border border-slate-200/80 leading-relaxed">
+                          &ldquo;{r.message}&rdquo;
+                        </p>
+                      )}
+
+                      <div className="text-[10px] font-mono text-slate-500 text-right">
+                        {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </div>
       )}
@@ -322,7 +395,7 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                       <span className="text-xs text-slate-500">
                         ({item.relationship})
                       </span>
-                      <span className="text-[11px] font-mono text-slate-400 ml-auto sm:ml-0">
+                      <span className="text-[11px] font-mono text-slate-500 ml-auto sm:ml-0">
                         • {item.date}
                       </span>
                     </div>
@@ -347,7 +420,7 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
 
                     <button
                       onClick={() => handleDelete(item.id)}
-                      className="px-2.5 py-1 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-transparent hover:border-rose-200 text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer"
+                      className="min-h-[40px] px-3.5 py-2 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200/60 hover:border-rose-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                       title="Hapus ucapan ini"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

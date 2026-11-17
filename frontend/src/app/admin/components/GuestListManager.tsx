@@ -697,7 +697,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Input Pencarian */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id={`${id}-search`}
               type="search"
@@ -707,13 +707,13 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                 setPage(0);
               }}
               placeholder="Cari nama, WhatsApp, catatan..."
-              className={`w-full min-h-[42px] pl-9 pr-8 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-slate-400 transition ${focusRing}`}
+              className={`w-full min-h-[44px] pl-9 pr-8 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-500 focus:bg-white focus:border-slate-400 transition ${focusRing}`}
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-slate-700 rounded-md cursor-pointer"
                 title="Hapus pencarian"
               >
                 <X className="w-3.5 h-3.5" />
@@ -730,7 +730,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                 setCategoryFilter(e.target.value);
                 setPage(0);
               }}
-              className={`w-full min-h-[42px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
+              className={`w-full min-h-[44px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
             >
               <option value="">Semua Kategori ({categories.length})</option>
               {categories.map((c) => (
@@ -750,7 +750,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                 setStatusFilter(e.target.value as "all" | "sent" | "unsent");
                 setPage(0);
               }}
-              className={`w-full min-h-[42px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
+              className={`w-full min-h-[44px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
             >
               <option value="all">Semua Status Kirim</option>
               <option value="sent">Sudah Terkirim ({sentCount})</option>
@@ -767,7 +767,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                 setRsvpFilter(e.target.value as "all" | "attending" | "not_attending" | "pending");
                 setPage(0);
               }}
-              className={`w-full min-h-[42px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
+              className={`w-full min-h-[44px] px-3 py-2 text-xs sm:text-sm bg-slate-50/70 border border-slate-200 rounded-xl text-slate-800 focus:bg-white focus:border-slate-400 transition cursor-pointer ${focusRing}`}
             >
               <option value="all">Semua Status RSVP</option>
               <option value="attending">Pasti Hadir</option>
@@ -1167,19 +1167,19 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                             {guest.name}
                           </h4>
                           {guest.notes && (
-                            <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
+                            <p className="text-xs text-slate-600 mt-0.5 line-clamp-2">
                               {guest.notes}
                             </p>
                           )}
                           <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                             <span
-                              className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold border ${getCategoryColor(
+                              className={`inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold border ${getCategoryColor(
                                 guest.category || "Lainnya"
                               )}`}
                             >
                               {guest.category || "Lainnya"}
                             </span>
-                            <span className="text-[11px] text-slate-600 font-medium">
+                            <span className="text-[11px] text-slate-700 font-medium">
                               Kuota: {guest.quota ?? 1} org
                             </span>
                           </div>
@@ -1194,15 +1194,15 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                             setError(errorMessage(cause))
                           );
                         }}
-                        className={`shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+                        className={`shrink-0 min-h-[38px] inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border transition-all cursor-pointer ${
                           guest.isSent
                             ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                            : "bg-slate-100 text-slate-700 border-slate-200"
+                            : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
                         }`}
                       >
                         {guest.isSent ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" />
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
                             <span>Terkirim</span>
                           </>
                         ) : (
@@ -1212,10 +1212,10 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                     </div>
 
                     {/* Info Nomor & RSVP Mobile */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <div className="flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="font-mono text-[11px]">
+                        <Phone className="w-3.5 h-3.5 text-slate-500" />
+                        <span className="font-mono text-[11px] font-medium">
                           {guest.phone || "Tanpa nomor"}
                         </span>
                       </div>
@@ -1223,30 +1223,30 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                       <div>
                         {guest.rsvp ? (
                           guest.rsvp.status === 1 ? (
-                            <span className="text-emerald-700 font-semibold text-[11px]">
+                            <span className="text-emerald-800 font-bold text-[11px]">
                               Pasti Hadir ({guest.rsvp.count})
                             </span>
                           ) : (
-                            <span className="text-rose-700 font-semibold text-[11px]">
+                            <span className="text-rose-800 font-bold text-[11px]">
                               Tidak Hadir
                             </span>
                           )
                         ) : (
-                          <span className="text-slate-400 italic text-[11px]">Belum respon</span>
+                          <span className="text-slate-500 italic text-[11px]">Belum respon</span>
                         )}
                       </div>
                     </div>
 
                     {/* Tombol Aksi Mobile */}
-                    <div className="flex items-center justify-between gap-1.5 pt-1">
-                      <div className="flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           disabled={!!busy || !phoneValid}
                           onClick={() => setQueueGuests([guest])}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 ${
+                          className={`min-h-[42px] px-3.5 py-2 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition-all cursor-pointer ${
                             phoneValid
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-2xs"
                               : "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed"
                           }`}
                         >
@@ -1259,23 +1259,23 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                           onClick={() => {
                             void copyLink(guest);
                           }}
-                          className="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center gap-1"
+                          className="min-h-[42px] px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 transition-colors cursor-pointer"
                         >
                           {copiedId === guest.id ? (
                             <Check className="w-3.5 h-3.5 text-emerald-600" />
                           ) : (
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy className="w-3.5 h-3.5 text-slate-500" />
                           )}
                           <span>{copiedId === guest.id ? "Tersalin" : "Link"}</span>
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <a
                           href={personalUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+                          className="min-h-[42px] min-w-[42px] p-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center justify-center transition-colors cursor-pointer"
                           title="Buka Undangan"
                         >
                           <ExternalLink className="w-4 h-4" />
@@ -1285,7 +1285,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                           type="button"
                           disabled={!!busy}
                           onClick={() => editGuest(guest)}
-                          className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50"
+                          className="min-h-[42px] min-w-[42px] p-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 flex items-center justify-center transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Pencil className="w-4 h-4" />
@@ -1297,7 +1297,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
                           onClick={() => {
                             void removeGuest(guest);
                           }}
-                          className="p-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50"
+                          className="min-h-[42px] min-w-[42px] p-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors cursor-pointer"
                           title="Hapus"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1321,7 +1321,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
               type="button"
               disabled={activePage === 0}
               onClick={() => setPage((p) => Math.max(0, p - 1))}
-              className={`min-h-[38px] px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed ${focusRing}`}
+              className={`min-h-[44px] px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${focusRing}`}
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Sebelumnya</span>
@@ -1336,7 +1336,7 @@ export function GuestListManager({ data, guests, onGuestsUpdated }: GuestListMan
               type="button"
               disabled={activePage + 1 >= pageCount}
               onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))}
-              className={`min-h-[38px] px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed ${focusRing}`}
+              className={`min-h-[44px] px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${focusRing}`}
             >
               <span>Berikutnya</span>
               <ChevronRight className="w-4 h-4" />

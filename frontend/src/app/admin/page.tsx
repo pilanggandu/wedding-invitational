@@ -26,6 +26,7 @@ import {
   ShieldCheck,
   Camera,
   QrCode,
+  MoreVertical,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { AdminAuthView } from "./components/AdminAuthView";
@@ -79,6 +80,7 @@ function AdminDashboardContent() {
   const [isCoupleModalOpen, setIsCoupleModalOpen] = useState<boolean>(false);
   const [isA3PosterOpen, setIsA3PosterOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isCopiedPublicLink, setIsCopiedPublicLink] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<{
     online: boolean;
@@ -283,50 +285,52 @@ function AdminDashboardContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col font-sans">
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-2.5 flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center gap-3 sm:gap-4">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3.5 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <button
             type="button"
             onClick={() => setIsSidebarOpen((prev) => !prev)}
-            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer flex items-center justify-center shadow-2xs"
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer flex items-center justify-center shadow-2xs shrink-0"
             aria-label="Toggle Sidebar Navigation"
             title={isSidebarOpen ? "Sembunyikan Menu" : "Buka Menu"}
           >
             {isSidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
-          <div className="hidden sm:flex items-center gap-2 text-xs font-medium">
-            <span className="text-slate-400">Dashboard</span>
+          <div className="hidden sm:flex items-center gap-2 text-xs font-medium shrink-0">
+            <span className="text-slate-500">Dashboard</span>
             <span className="text-slate-300">/</span>
-            <span className="text-slate-800 font-semibold">{currentTabLabel}</span>
+            <span className="text-slate-900 font-semibold">{currentTabLabel}</span>
           </div>
           <button
             type="button"
             onClick={() => setIsCoupleModalOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-left cursor-pointer group shadow-2xs bg-white"
+            className="min-h-[44px] flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors text-left cursor-pointer group shadow-2xs bg-white min-w-0 max-w-[150px] xs:max-w-[190px] sm:max-w-[240px]"
             title="Klik untuk mengatur nama mempelai"
           >
-            <div className="w-6 h-6 rounded-lg bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-[10px] uppercase font-mono shadow-2xs">
+            <div className="w-6 h-6 rounded-lg bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-[10px] uppercase font-mono shadow-2xs shrink-0">
               {monogram}
             </div>
-            <div className="max-w-[130px] sm:max-w-[200px] truncate">
-              <span className="text-xs font-semibold text-slate-800 block truncate leading-none">
+            <div className="min-w-0 truncate">
+              <span className="text-xs font-semibold text-slate-900 block truncate leading-tight">
                 {coupleDisplayTitle}
               </span>
-              <span className="text-[10px] text-slate-500 mt-0.5 block truncate">
-                {isCoupleConfigured ? "Klik untuk edit" : "Belum diisi"}
+              <span className="text-[10px] text-slate-500 block truncate leading-none mt-0.5">
+                {isCoupleConfigured ? "Edit data" : "Belum diisi"}
               </span>
             </div>
             {!isCoupleConfigured && (
-              <span className="hidden md:inline px-1.5 py-0.5 rounded-full text-[9px] bg-amber-50 text-amber-700 border border-amber-200 font-medium">
+              <span className="hidden md:inline px-1.5 py-0.5 rounded-full text-[9px] bg-amber-50 text-amber-700 border border-amber-200 font-medium shrink-0">
                 Wajib
               </span>
             )}
           </button>
         </div>
-        <div className="flex items-center gap-2 sm:gap-2.5">
+
+        {/* Toolbar: Desktop View (lg+) */}
+        <div className="hidden lg:flex items-center gap-2 sm:gap-2.5">
           {backendStatus && (
             <div
-              className={`hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-mono ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[11px] font-mono ${
                 backendStatus.online
                   ? "bg-emerald-50 border-emerald-200 text-emerald-800"
                   : "bg-amber-50 border-amber-200 text-amber-800"
@@ -334,7 +338,7 @@ function AdminDashboardContent() {
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  backendStatus.online ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                  backendStatus.online ? "bg-emerald-500" : "bg-amber-500"
                 }`}
               />
               <span>
@@ -347,83 +351,213 @@ function AdminDashboardContent() {
 
           <button
             onClick={handleCopyLink}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="min-h-[40px] px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Salin tautan web undangan"
           >
             {isCopiedPublicLink ? (
               <Check className="w-3.5 h-3.5 text-emerald-600" />
             ) : (
-              <Copy className="w-3.5 h-3.5 text-slate-500" />
+              <Copy className="w-3.5 h-3.5 text-slate-600" />
             )}
-            <span className="hidden md:inline">
-              {isCopiedPublicLink ? "Tersalin" : "Salin Link"}
-            </span>
+            <span>{isCopiedPublicLink ? "Tersalin" : "Salin Link"}</span>
           </button>
 
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+            className="min-h-[40px] px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
             title="Buka pratinjau mobile"
           >
-            <Smartphone className="w-3.5 h-3.5 text-slate-500" />
-            <span className="hidden sm:inline">Pratinjau HP</span>
+            <Smartphone className="w-3.5 h-3.5 text-slate-600" />
+            <span>Pratinjau HP</span>
           </button>
 
           <Link
             href="/undangan"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-[0.98]"
+            className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-[0.98]"
             title="Buka halaman undangan langsung"
           >
             <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
-            <span className="hidden sm:inline">Buka Undangan</span>
+            <span>Buka Undangan</span>
           </Link>
 
           <Link
             href="/photobox"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 text-amber-900 border border-amber-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
+            className="min-h-[40px] px-3 py-1.5 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 text-amber-900 border border-amber-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs"
             title="Buka Photobox Studio"
           >
             <Camera className="w-3.5 h-3.5 text-amber-700" />
-            <span className="hidden sm:inline">Photobox</span>
+            <span>Photobox</span>
           </Link>
 
           <button
             onClick={() => setIsA3PosterOpen(true)}
-            className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+            className="min-h-[40px] px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200/80 font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
             title="Generate & Cetak Poster QR Code Standee (A3, A4, A5, A6, F4, 4R/5R)"
           >
             <QrCode className="w-3.5 h-3.5 text-rose-700" />
-            <span className="hidden sm:inline">Cetak Poster QR</span>
+            <span>Cetak Poster QR</span>
           </button>
 
           <button
             onClick={handleResetData}
-            className="p-1.5 rounded-xl border border-transparent hover:border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+            className="min-h-[40px] min-w-[40px] p-2 rounded-xl border border-transparent hover:border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer flex items-center justify-center"
             title="Kembalikan data ke awal"
+            aria-label="Kembalikan data ke awal"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-            <div className="w-8 h-8 rounded-full bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-xs uppercase shadow-2xs">
+            <div className="w-8 h-8 rounded-full bg-slate-900 text-amber-200 flex items-center justify-center font-bold text-xs uppercase shadow-2xs font-mono">
               {user?.fullName?.charAt(0) || user?.username?.charAt(0) || "A"}
             </div>
             <div className="text-left hidden xl:block">
               <p className="text-xs font-semibold text-slate-800 leading-none">
                 {user?.fullName || user?.username}
               </p>
-              <p className="text-[10px] text-slate-400 mt-0.5">Administrator</p>
+              <p className="text-[10px] text-slate-500 mt-0.5">Administrator</p>
             </div>
           </div>
 
           <button
             onClick={() => logout()}
-            className="p-1.5 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer ml-1"
+            className="min-h-[40px] min-w-[40px] p-2 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer flex items-center justify-center ml-1"
             title="Keluar dari akun (Logout)"
+            aria-label="Keluar dari akun"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Toolbar: Mobile & Tablet View (< lg) */}
+        <div className="flex lg:hidden items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsPreviewOpen(true)}
+            className="min-h-[44px] px-2.5 sm:px-3 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+            title="Buka pratinjau mobile"
+          >
+            <Smartphone className="w-4 h-4 text-slate-700" />
+            <span className="hidden xs:inline">Preview</span>
+          </button>
+
+          {/* Quick Tools Dropdown Toggle */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="min-h-[44px] min-w-[44px] rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors cursor-pointer flex items-center justify-center shadow-2xs bg-white"
+              aria-label="Menu Aksi Cepat"
+              title="Menu Aksi Cepat"
+            >
+              <MoreVertical className="w-4 h-4" />
+            </button>
+
+            {isMobileMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                />
+                <div className="absolute right-0 top-12 z-50 w-56 bg-white rounded-2xl border border-slate-200/90 shadow-xl p-2 space-y-1 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
+                  <div className="px-3 py-1.5 border-b border-slate-100 flex items-center justify-between">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold">
+                      Aksi Cepat
+                    </span>
+                    <span className="text-[10px] text-slate-600 font-medium">
+                      {user?.username || "Admin"}
+                    </span>
+                  </div>
+
+                  <Link
+                    href="/undangan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-800 hover:bg-slate-100 font-medium transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4 text-slate-500" />
+                    <span>Buka Web Undangan</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleCopyLink();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-800 hover:bg-slate-100 font-medium transition-colors cursor-pointer text-left"
+                  >
+                    {isCopiedPublicLink ? (
+                      <Check className="w-4 h-4 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-slate-500" />
+                    )}
+                    <span>{isCopiedPublicLink ? "Link Tersalin!" : "Salin Link Undangan"}</span>
+                  </button>
+
+                  <Link
+                    href="/photobox"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-amber-900 bg-amber-50/50 hover:bg-amber-100/70 font-semibold transition-colors"
+                  >
+                    <Camera className="w-4 h-4 text-amber-700" />
+                    <span>Buka Photobox Studio</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsA3PosterOpen(true);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-rose-900 bg-rose-50/50 hover:bg-rose-100/70 font-semibold transition-colors cursor-pointer text-left"
+                  >
+                    <QrCode className="w-4 h-4 text-rose-700" />
+                    <span>Cetak Poster QR Standee</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleResetData();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium transition-colors cursor-pointer text-left"
+                  >
+                    <RotateCcw className="w-4 h-4 text-slate-500" />
+                    <span>Reset Pengaturan Awal</span>
+                  </button>
+
+                  <div className="pt-1 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-rose-600 hover:bg-rose-50 font-semibold transition-colors cursor-pointer text-left"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-600" />
+                      <span>Keluar (Logout)</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <button
+            onClick={() => logout()}
+            className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer flex items-center justify-center"
+            title="Keluar dari akun (Logout)"
+            aria-label="Keluar dari akun"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -448,7 +582,7 @@ function AdminDashboardContent() {
                     <span className="text-xs font-bold text-slate-900 tracking-wider uppercase block">
                       ATELIER
                     </span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   </div>
                   <span className="text-[10px] text-slate-500 block font-mono">
                     MyFin Dasbor
@@ -489,7 +623,7 @@ function AdminDashboardContent() {
               onClick={() => setIsSidebarOpen(false)}
             />
 
-            <div className="relative w-72 max-w-[85vw] bg-white text-slate-800 h-full p-4 shadow-2xl flex flex-col justify-between z-10 animate-in slide-in-from-left duration-200 border-r border-slate-200">
+            <div className="relative w-80 max-w-[85vw] bg-white text-slate-800 h-full p-4 shadow-2xl flex flex-col justify-between z-10 animate-in slide-in-from-left duration-200 border-r border-slate-200 overflow-y-auto">
               <div className="space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
@@ -501,41 +635,90 @@ function AdminDashboardContent() {
                         ATELIER
                       </span>
                       <span className="text-[10px] text-slate-500 block font-mono">
-                        MyFin Dasbor
+                        Dasbor Pengelola
                       </span>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsSidebarOpen(false)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                    className="min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center"
                     aria-label="Tutup Menu"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {renderNavSection(() => setIsSidebarOpen(false))}
               </div>
 
-              <div className="pt-3 border-t border-slate-100">
+              {/* Mobile Drawer Bottom Shortcuts */}
+              <div className="pt-4 border-t border-slate-100 space-y-1.5 mt-4">
+                <div className="px-2 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold mb-1">
+                  Akses Cepat
+                </div>
+
                 <Link
                   href="/undangan"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors border border-slate-200/60"
                 >
-                  <span className="flex items-center gap-2">
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Buka Web Undangan</span>
+                  <span className="flex items-center gap-2.5">
+                    <ExternalLink className="w-4 h-4 text-slate-500" />
+                    <span className="font-semibold">Web Undangan Tamu</span>
                   </span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                 </Link>
+
+                <Link
+                  href="/photobox"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-amber-900 bg-amber-50/60 hover:bg-amber-100/70 transition-colors border border-amber-200/70"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Camera className="w-4 h-4 text-amber-700" />
+                    <span className="font-semibold">Photobox Studio</span>
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 text-amber-700" />
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSidebarOpen(false);
+                    setIsA3PosterOpen(true);
+                  }}
+                  className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-rose-900 bg-rose-50/60 hover:bg-rose-100/70 transition-colors border border-rose-200/70 text-left cursor-pointer"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <QrCode className="w-4 h-4 text-rose-700" />
+                    <span className="font-semibold">Cetak Poster Standee QR</span>
+                  </span>
+                  <ChevronRight className="w-3.5 h-3.5 text-rose-700" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setIsSidebarOpen(false);
+                  }}
+                  className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer font-semibold"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <LogOut className="w-4 h-4 text-rose-600" />
+                    <span>Keluar (Logout)</span>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
         )}
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 lg:pb-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -656,6 +839,48 @@ function AdminDashboardContent() {
         }
         hashtag={invitationData.general?.hashtag || "#GilangSalsaWedding"}
       />
+
+      {/* Mobile Fixed Bottom Navigation Bar (< lg) */}
+      <nav
+        aria-label="Navigasi Utama Mobile"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-2px_12px_rgba(0,0,0,0.06)] pb-[max(0.35rem,env(safe-area-inset-bottom))] px-1"
+      >
+        <div className="flex items-center justify-around">
+          {[
+            { id: "overview", label: "Ringkasan", icon: LayoutDashboard },
+            { id: "templates", label: "Tema", icon: Palette },
+            { id: "wedding-data", label: "Mempelai", icon: HeartHandshake },
+            { id: "guests", label: "Tamu", icon: Users, badge: guests.length },
+            { id: "wishes", label: "RSVP", icon: MessageSquareHeart, badge: wishes.length },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveTab(item.id as AdminTab)}
+                className={`min-h-[48px] flex-1 py-1 px-1 flex flex-col items-center justify-center gap-0.5 relative transition-colors cursor-pointer ${
+                  isActive ? "text-slate-950 font-bold" : "text-slate-500 hover:text-slate-800 font-medium"
+                }`}
+              >
+                <div className="relative">
+                  <Icon className={`w-5 h-5 ${isActive ? "text-slate-950 stroke-[2.2]" : "text-slate-500"}`} />
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className="absolute -top-1 -right-2 px-1 min-w-[14px] h-3.5 rounded-full bg-slate-900 text-amber-200 text-[8px] font-mono font-bold flex items-center justify-center border border-white">
+                      {item.badge > 99 ? "99+" : item.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] leading-none tracking-tight">{item.label}</span>
+                {isActive && (
+                  <span className="w-4 h-0.5 rounded-full bg-slate-900 absolute bottom-0.5" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
