@@ -1,7 +1,7 @@
 import { PhotoboxTemplate, TemplateCategory } from "./types";
 
 export const CATEGORIES: { id: TemplateCategory; label: string; icon: string }[] = [
-  { id: "real-art", label: "Real Frame (2)", icon: "🖼️" },
+  { id: "real-art", label: "Frame Resmi (Sadil & Gilang)", icon: "👑" },
   { id: "all", label: "Semua Frame", icon: "✨" },
   { id: "wedding", label: "Wedding & Love", icon: "💍" },
   { id: "korean", label: "Korean Studio", icon: "🇰🇷" },
@@ -11,6 +11,38 @@ export const CATEGORIES: { id: TemplateCategory; label: string; icon: string }[]
 ];
 
 export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
+  // --- FRAME RESMI PERNIKAHAN SADIL & GILANG (Full Overlay Asset Asli) ---
+  {
+    id: "sadil-gilang-official",
+    name: "The Wedding of Sadil & Gilang",
+    category: "real-art",
+    description: "Frame bordir renda klasik elegan Sadil & Gilang dengan 2 slot foto spiral album dan beludru maroon.",
+    badge: "⭐ Official Frame",
+    bgColor: "#260304",
+    borderColor: "#4A080E",
+    borderWidth: 0,
+    borderRadius: 16,
+    textColor: "#FAF1D9",
+    subtextColor: "#DFD2BD",
+    accentColor: "#C99A45",
+    fontFamily: "serif",
+    realAssets: {
+      fullOverlayUrl: "/images/frame-photobox-sadil-gilang.png",
+      aspectRatio: "9/16",
+      slotCoordinates: [
+        { xPercent: 21.667, yPercent: 28.854, wPercent: 56.111, hPercent: 18.542 },
+        { xPercent: 21.667, yPercent: 54.792, wPercent: 56.111, hPercent: 18.542 },
+      ],
+    },
+    themeStyle: {
+      headerTitle: "",
+      headerSubtitle: "",
+      footerTitle: "",
+      footerSubtitle: "",
+      photoRadius: 6,
+    },
+  },
+
   // --- REAL ASSET KEEPSAKE FRAMES (2 Frame Real Asset Utama) ---
   {
     id: "real-botanical-pressed",

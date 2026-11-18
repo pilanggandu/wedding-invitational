@@ -106,6 +106,127 @@ function drawGildedBorderFrame(
   ctx.restore();
 }
 
+/**
+ * Render Full Overlay Frame (Khusus Asset Resmi Sadil & Gilang 1080x1920)
+ * Foto ditempatkan presisi di 2 slot jendela transparan di bawah layer frame bordir renda.
+ */
+async function generateFullOverlayCanvas(
+  options: ExportOptions
+): Promise<HTMLCanvasElement> {
+  const { template, photos, filter, stickers, customBgColor } = options;
+
+  const canvas = document.createElement("canvas");
+  const canvasWidth = 1080;
+  const canvasHeight = 1920;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not get 2d context");
+
+  // 1. Fill Velvet Maroon Background
+  ctx.fillStyle = customBgColor || template.bgColor || "#260304";
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Koordinat presisi 2 slot jendela transparan pada asset frame-photobox-sadil-gilang.png
+  const slotCoords = [
+    { x: 234, y: 554, w: 606, h: 356, r: 6 },
+    { x: 234, y: 1052, w: 606, h: 356, r: 6 },
+  ];
+
+  // 2. Render Photos ke dalam masing-masing slot dengan filter & cover aspect-fill
+  for (let i = 0; i < slotCoords.length; i++) {
+    const slot = slotCoords[i];
+    const photoSrc = photos[i];
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(slot.x, slot.y, slot.w, slot.h, slot.r);
+    ctx.clip();
+
+    if (photoSrc) {
+      try {
+        const img = await loadImage(photoSrc);
+        ctx.filter = getCanvasFilter(filter);
+
+        const imgAspect = img.width / img.height;
+        const targetAspect = slot.w / slot.h;
+        let drawW = slot.w;
+        let drawH = slot.h;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (imgAspect > targetAspect) {
+          drawH = slot.h;
+          drawW = slot.h * imgAspect;
+          offsetX = (slot.w - drawW) / 2;
+        } else {
+          drawW = slot.w;
+          drawH = slot.w / imgAspect;
+          offsetY = (slot.h - drawH) / 2;
+        }
+
+        ctx.drawImage(img, slot.x + offsetX, slot.y + offsetY, drawW, drawH);
+      } catch (e) {
+        console.warn(`Could not draw photo in slot ${i + 1}`, e);
+        ctx.fillStyle = "#1E0203";
+        ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
+      }
+    } else {
+      ctx.fillStyle = "#1E0203";
+      ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
+    }
+    ctx.restore();
+  }
+
+  // 3. Render Asset Frame Overlay di atas foto (Renda bordir, ring spiral, bunga & tipografi resmi)
+  if (template.realAssets?.fullOverlayUrl) {
+    try {
+      const overlayImg = await loadImage(template.realAssets.fullOverlayUrl);
+      ctx.drawImage(overlayImg, 0, 0, canvasWidth, canvasHeight);
+    } catch (e) {
+      console.warn("Could not draw full frame overlay", e);
+    }
+  }
+
+  // 4. Render Stiker Tambahan (jika pengguna menambahkan stiker)
+  if (stickers && stickers.length > 0) {
+    for (const stk of stickers) {
+      const posX = (stk.x / 100) * canvasWidth;
+      const posY = (stk.y / 100) * canvasHeight;
+      const scale = (stk.scale || 1) * 2.2;
+      const rot = ((stk.rotation || 0) * Math.PI) / 180;
+      const flip = stk.isFlipped ? -1 : 1;
+      const op = stk.opacity !== undefined ? stk.opacity : 1;
+
+      ctx.save();
+      ctx.translate(posX, posY);
+      ctx.rotate(rot);
+      ctx.scale(flip * scale, scale);
+      ctx.globalAlpha = op;
+
+      if (stk.imageUrl) {
+        try {
+          const stkImg = await loadImage(stk.imageUrl);
+          const sW = 80;
+          const sH = (stkImg.height / stkImg.width) * sW;
+          ctx.drawImage(stkImg, -sW / 2, -sH / 2, sW, sH);
+        } catch (e) {
+          console.warn("Could not draw sticker", e);
+        }
+      } else if (stk.emoji) {
+        ctx.font = "64px 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(stk.emoji, 0, 0);
+      }
+      ctx.restore();
+    }
+  }
+
+  return canvas;
+}
+
 export async function generatePhotoboxCanvas(
   options: ExportOptions
 ): Promise<HTMLCanvasElement> {
@@ -121,6 +242,11 @@ export async function generatePhotoboxCanvas(
     customBgColor,
     stickers,
   } = options;
+
+  // Jika template menggunakan full frame overlay (seperti frame resmi Sadil & Gilang)
+  if (template.realAssets?.fullOverlayUrl) {
+    return generateFullOverlayCanvas(options);
+  }
 
   // Ensure all web fonts are loaded in canvas context before drawing
   try {

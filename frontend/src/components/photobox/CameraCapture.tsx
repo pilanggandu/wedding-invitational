@@ -322,14 +322,13 @@ export function CameraCapture({
     photos.filter((p) => Boolean(p)).length >= requiredCount;
 
   const activeLayoutOption =
-    LAYOUT_OPTIONS.find((l) => l.id === layout) || LAYOUT_OPTIONS[3];
+    LAYOUT_OPTIONS.find((l) => l.id === layout) || LAYOUT_OPTIONS[1];
 
-  const filteredLayouts =
-    layoutCategory === "all"
-      ? LAYOUT_OPTIONS
-      : LAYOUT_OPTIONS.filter((l) => l.type === layoutCategory);
+  // Limit opsi layout ke format 2 foto saja sesuai instruksi & frame resmi Sadil & Gilang
+  const filteredLayouts = LAYOUT_OPTIONS.filter((l) => l.shots === 2);
 
   // Rasio safe area guide disesuaikan dengan jenis layout aktif
+  const isSadilGilangSlot = layout === "strip-2" || layout === "2-strip";
   const isSquareLayout = layout === "grid-1";
 
   return (
@@ -466,7 +465,9 @@ export function CameraCapture({
         {/* Frame Box Presisi (Memberi tahu pengguna batas area yang akan tercetak) */}
         <div
           className={`relative w-[90vw] max-w-[480px] ${
-            isSquareLayout
+            isSadilGilangSlot
+              ? "aspect-[606/356] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
+              : isSquareLayout
               ? "aspect-square max-h-[36vh] xs:max-h-[42vh] sm:max-h-[50vh]"
               : "aspect-4/3 max-h-[38vh] xs:max-h-[44vh] sm:max-h-[56vh]"
           } rounded-2xl transition-all duration-300 pointer-events-none flex items-center justify-center shadow-[0_0_0_9999px_rgba(0,0,0,0.4)] border border-white/25`}
@@ -499,7 +500,7 @@ export function CameraCapture({
 
           {/* Viewfinder Badge Safe-Zone */}
           <div className="absolute bottom-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-mono tracking-wider text-[#DFD2BD] border border-white/15 drop-shadow-md uppercase">
-            Area Cetak • {activeLayoutOption.shots} Pose
+            {isSadilGilangSlot ? "Area Cetak • 2 Pose Sadil & Gilang" : `Area Cetak • ${activeLayoutOption.shots} Pose`}
           </div>
         </div>
 
@@ -719,10 +720,10 @@ export function CameraCapture({
                 <div>
                   <h3 className="text-base font-serif font-bold text-amber-100 flex items-center gap-2">
                     <Layers className="w-4 h-4 text-amber-300" />
-                    Pilih Format Kolase Photobox
+                    Format Photobox (Limit 2 Foto)
                   </h3>
                   <p className="text-xs text-white/70">
-                    Pilih jumlah foto dan gaya layout sebelum mengambil gambar
+                    Sesi foto dibatasi 2 pose sesuai frame resmi bordir renda Sadil &amp; Gilang
                   </p>
                 </div>
                 <button
@@ -733,25 +734,12 @@ export function CameraCapture({
                 </button>
               </div>
 
-              {/* Category Filter Pills */}
-              <div className="flex items-center gap-1.5 px-4 pt-3 pb-2 overflow-x-auto scrollbar-none shrink-0">
-                {[
-                  { id: "all", label: "Semua Format (14)" },
-                  { id: "strip", label: "🎞️ Strip Vertikal (1 - 6)" },
-                  { id: "grid", label: "🔲 Kotak & Kolase (1 - 9)" },
-                ].map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setLayoutCategory(cat.id as typeof layoutCategory)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer min-h-[36px] ${
-                      layoutCategory === cat.id
-                        ? "bg-[#DFD2BD] text-[#4A121A] font-bold shadow-md"
-                        : "bg-white/10 text-white/80 hover:bg-white/15"
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
+              {/* Info Pill */}
+              <div className="px-4 pt-3 pb-1">
+                <div className="p-2.5 rounded-xl bg-amber-400/10 border border-amber-300/20 text-amber-200 text-xs flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span>Format 2 Pose dioptimalkan untuk Frame Resmi Sadil &amp; Gilang (1080x1920)</span>
+                </div>
               </div>
 
               {/* Layouts Grid Catalog */}

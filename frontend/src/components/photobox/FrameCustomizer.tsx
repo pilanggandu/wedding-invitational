@@ -74,6 +74,19 @@ export interface AestheticPreset {
 
 export const AESTHETIC_PRESETS: AestheticPreset[] = [
   {
+    id: "preset-sadil-gilang-official",
+    name: "Wedding Sadil & Gilang",
+    tagline: "Frame resmi bordir renda & beludru maroon Sadil & Gilang (2 Pose)",
+    icon: "👑",
+    badge: "⭐ Official",
+    templateId: "sadil-gilang-official",
+    filter: "none",
+    customTitle: "",
+    customSubtitle: "",
+    accentColor: "#C99A45",
+    previewBg: "#260304",
+  },
+  {
     id: "preset-botanical-pressed",
     name: "Pressed Botanical",
     tagline: "Bunga kering alami, kertas ivory, & segel wax emas",
@@ -176,7 +189,7 @@ export function FrameCustomizer({
 }: FrameCustomizerProps) {
   // State
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
-    initialCustomizerState?.templateId || "real-botanical-pressed"
+    initialCustomizerState?.templateId || "sadil-gilang-official"
   );
   const [selectedCategory, setSelectedCategory] = useState<TemplateCategory>(() => {
     if (initialCustomizerState?.templateId) {
@@ -946,12 +959,77 @@ export function FrameCustomizer({
           }
         }}
         className={`relative shadow-2xl transition-all duration-300 select-none overflow-hidden mx-auto overscroll-contain touch-pan-y ${
-          isGrid
+          currentTemplate.realAssets?.fullOverlayUrl
+            ? "w-[260px] xs:w-[290px] sm:w-[320px] md:w-[340px] aspect-9/16 rounded-2xl"
+            : isGrid
             ? "w-[280px] xs:w-[310px] sm:w-[340px]"
             : "w-[230px] xs:w-[250px] sm:w-[270px]"
         }`}
       >
-        {/* Real Texture Background Asset (Menggunakan asset kertas tekstur asli) */}
+        {currentTemplate.realAssets?.fullOverlayUrl ? (
+          <div className="absolute inset-0 w-full h-full pointer-events-none">
+            {/* Slot 1: Foto Atas */}
+            <div
+              style={{
+                left: "21.667%",
+                top: "28.854%",
+                width: "56.111%",
+                height: "18.542%",
+                borderRadius: "6px",
+              }}
+              className="absolute overflow-hidden bg-black/20 flex items-center justify-center z-10 pointer-events-auto shadow-inner"
+            >
+              {photos[0] ? (
+                <img
+                  src={photos[0]}
+                  alt="Pose 1 (Atas)"
+                  style={{ filter: activeFilterCss }}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center px-1">
+                  <span className="text-[10px] font-mono font-bold text-amber-200/80 block">Pose 1</span>
+                  <span className="text-[8px] text-white/50 block">Atas</span>
+                </div>
+              )}
+            </div>
+
+            {/* Slot 2: Foto Bawah */}
+            <div
+              style={{
+                left: "21.667%",
+                top: "54.792%",
+                width: "56.111%",
+                height: "18.542%",
+                borderRadius: "6px",
+              }}
+              className="absolute overflow-hidden bg-black/20 flex items-center justify-center z-10 pointer-events-auto shadow-inner"
+            >
+              {photos[1] ? (
+                <img
+                  src={photos[1]}
+                  alt="Pose 2 (Bawah)"
+                  style={{ filter: activeFilterCss }}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center px-1">
+                  <span className="text-[10px] font-mono font-bold text-amber-200/80 block">Pose 2</span>
+                  <span className="text-[8px] text-white/50 block">Bawah</span>
+                </div>
+              )}
+            </div>
+
+            {/* Real Full Frame Overlay Image (Renda bordir, spiral binder, bunga, & tipografi resmi Sadil & Gilang) */}
+            <img
+              src={currentTemplate.realAssets.fullOverlayUrl}
+              alt={currentTemplate.name}
+              className="absolute inset-0 w-full h-full object-fill pointer-events-none z-20"
+            />
+          </div>
+        ) : (
+          <>
+            {/* Real Texture Background Asset (Menggunakan asset kertas tekstur asli) */}
         {currentTemplate.realAssets?.bgTextureUrl && (
           <div
             className="absolute inset-0 pointer-events-none z-0 bg-repeat opacity-50 mix-blend-multiply"
@@ -1306,6 +1384,99 @@ export function FrameCustomizer({
           )}
         </div>
 
+        {/* Footer Section */}
+        <div
+          className={`pt-3 pb-5 px-4 text-center ${
+            currentTemplate.themeStyle.filmSprockets ? "px-6" : ""
+          }`}
+        >
+          {/* Real Bottom Ornament (Gold Wax Seal / Wedding Rings / Cats Couple) */}
+          {currentTemplate.realAssets?.bottomOrnamentUrl && (
+            <div className="flex justify-center -mt-0.5 mb-2.5 z-20 relative pointer-events-none">
+              <img
+                src={currentTemplate.realAssets.bottomOrnamentUrl}
+                alt="Bottom ornament"
+                className="h-12 sm:h-14 w-auto object-contain drop-shadow-md"
+              />
+            </div>
+          )}
+
+          {/* Couple Badge (Footer Position) */}
+          {currentTemplate.coupleBadge &&
+            (!currentTemplate.coupleBadge.position ||
+              currentTemplate.coupleBadge.position === "footer") && (
+              <div className="flex flex-col items-center justify-center my-2">
+                <div
+                  style={{
+                    borderColor: currentTemplate.accentColor || "#DFD2BD",
+                  }}
+                  className={`relative overflow-hidden shadow-md ${
+                    currentTemplate.coupleBadge.shape === "cutout"
+                      ? "w-20 h-14 bg-transparent shadow-none"
+                      : currentTemplate.coupleBadge.shape === "polaroid"
+                      ? "w-16 h-18 rounded-md bg-white p-1 pb-3.5 border border-black/10 shadow-md"
+                      : currentTemplate.coupleBadge.shape === "stamp"
+                      ? "w-14 h-16 rounded-xs border-2 border-dashed bg-white p-0.5 shadow-xs"
+                      : "w-14 h-14 rounded-full border-2 shadow-md bg-white/20"
+                  }`}
+                >
+                  <img
+                    src={currentTemplate.coupleBadge.imageUrl}
+                    alt={currentTemplate.coupleBadge.title || "Pengantin Gilang & Salsa"}
+                    className={`w-full h-full ${
+                      currentTemplate.coupleBadge.shape === "cutout"
+                        ? "object-contain"
+                        : "object-cover rounded-xs"
+                    }`}
+                  />
+                </div>
+                {currentTemplate.coupleBadge.title && (
+                  <span
+                    style={{ color: currentTemplate.accentColor || currentTemplate.textColor }}
+                    className="text-[9px] font-bold tracking-wider mt-1"
+                  >
+                    {currentTemplate.coupleBadge.title}
+                  </span>
+                )}
+              </div>
+            )}
+
+          <h4
+            style={{ color: currentTemplate.textColor }}
+            className={`text-xs font-bold leading-tight ${
+              currentTemplate.fontFamily === "serif"
+                ? "font-serif tracking-wider"
+                : currentTemplate.fontFamily === "handwriting"
+                ? "font-caveat text-lg"
+                : currentTemplate.fontFamily === "mono"
+                ? "font-mono text-[11px]"
+                : "font-sans uppercase text-[11px]"
+            }`}
+          >
+            {currentTemplate.themeStyle.footerTitle || "MEMORIES"}
+          </h4>
+          {currentTemplate.themeStyle.footerSubtitle && (
+            <p
+              style={{ color: currentTemplate.subtextColor }}
+              className="text-[9px] font-medium tracking-wide mt-0.5"
+            >
+              {currentTemplate.themeStyle.footerSubtitle}
+            </p>
+          )}
+
+          {/* Date Stamp */}
+          {showDate && (
+            <div
+              style={{ color: currentTemplate.accentColor || currentTemplate.subtextColor }}
+              className="mt-1 text-[9px] font-mono font-semibold tracking-wider"
+            >
+              • {customDate} •
+            </div>
+          )}
+        </div>
+      </>
+    )}
+
         {/* Placed Stickers on Preview (Draggable, Rotatable, Scalable with Quick Actions) */}
         {stickers.map((stk) => {
           const isSelected = stk.id === selectedStickerId;
@@ -1415,97 +1586,6 @@ export function FrameCustomizer({
             </div>
           );
         })}
-
-        {/* Footer Section */}
-        <div
-          className={`pt-3 pb-5 px-4 text-center ${
-            currentTemplate.themeStyle.filmSprockets ? "px-6" : ""
-          }`}
-        >
-          {/* Real Bottom Ornament (Gold Wax Seal / Wedding Rings / Cats Couple) */}
-          {currentTemplate.realAssets?.bottomOrnamentUrl && (
-            <div className="flex justify-center -mt-0.5 mb-2.5 z-20 relative pointer-events-none">
-              <img
-                src={currentTemplate.realAssets.bottomOrnamentUrl}
-                alt="Bottom ornament"
-                className="h-12 sm:h-14 w-auto object-contain drop-shadow-md"
-              />
-            </div>
-          )}
-
-          {/* Couple Badge (Footer Position) */}
-          {currentTemplate.coupleBadge &&
-            (!currentTemplate.coupleBadge.position ||
-              currentTemplate.coupleBadge.position === "footer") && (
-              <div className="flex flex-col items-center justify-center my-2">
-                <div
-                  style={{
-                    borderColor: currentTemplate.accentColor || "#DFD2BD",
-                  }}
-                  className={`relative overflow-hidden shadow-md ${
-                    currentTemplate.coupleBadge.shape === "cutout"
-                      ? "w-20 h-14 bg-transparent shadow-none"
-                      : currentTemplate.coupleBadge.shape === "polaroid"
-                      ? "w-16 h-18 rounded-md bg-white p-1 pb-3.5 border border-black/10 shadow-md"
-                      : currentTemplate.coupleBadge.shape === "stamp"
-                      ? "w-14 h-16 rounded-xs border-2 border-dashed bg-white p-0.5 shadow-xs"
-                      : "w-14 h-14 rounded-full border-2 shadow-md bg-white/20"
-                  }`}
-                >
-                  <img
-                    src={currentTemplate.coupleBadge.imageUrl}
-                    alt={currentTemplate.coupleBadge.title || "Pengantin Gilang & Salsa"}
-                    className={`w-full h-full ${
-                      currentTemplate.coupleBadge.shape === "cutout"
-                        ? "object-contain"
-                        : "object-cover rounded-xs"
-                    }`}
-                  />
-                </div>
-                {currentTemplate.coupleBadge.title && (
-                  <span
-                    style={{ color: currentTemplate.accentColor || currentTemplate.textColor }}
-                    className="text-[9px] font-bold tracking-wider mt-1"
-                  >
-                    {currentTemplate.coupleBadge.title}
-                  </span>
-                )}
-              </div>
-            )}
-
-          <h4
-            style={{ color: currentTemplate.textColor }}
-            className={`text-xs font-bold leading-tight ${
-              currentTemplate.fontFamily === "serif"
-                ? "font-serif tracking-wider"
-                : currentTemplate.fontFamily === "handwriting"
-                ? "font-caveat text-lg"
-                : currentTemplate.fontFamily === "mono"
-                ? "font-mono text-[11px]"
-                : "font-sans uppercase text-[11px]"
-            }`}
-          >
-            {currentTemplate.themeStyle.footerTitle || "MEMORIES"}
-          </h4>
-          {currentTemplate.themeStyle.footerSubtitle && (
-            <p
-              style={{ color: currentTemplate.subtextColor }}
-              className="text-[9px] font-medium tracking-wide mt-0.5"
-            >
-              {currentTemplate.themeStyle.footerSubtitle}
-            </p>
-          )}
-
-          {/* Date Stamp */}
-          {showDate && (
-            <div
-              style={{ color: currentTemplate.accentColor || currentTemplate.subtextColor }}
-              className="mt-1 text-[9px] font-mono font-semibold tracking-wider"
-            >
-              • {customDate} •
-            </div>
-          )}
-        </div>
       </div>
     );
   };
@@ -1697,6 +1777,17 @@ export function FrameCustomizer({
                       }}
                       className="w-full h-16 sm:h-20 rounded-lg p-1.5 flex flex-col justify-between mb-2 shadow-2xs overflow-hidden relative"
                     >
+                      {/* Real full overlay preview if present (Frame Sadil & Gilang) */}
+                      {tmpl.realAssets?.fullOverlayUrl ? (
+                        <div className="absolute inset-0 bg-[#260304] flex items-center justify-center p-0.5 z-10">
+                          <img
+                            src={tmpl.realAssets.fullOverlayUrl}
+                            alt={tmpl.name}
+                            className="w-full h-full object-contain pointer-events-none drop-shadow-xs"
+                          />
+                        </div>
+                      ) : null}
+
                       {/* Real texture preview if present */}
                       {tmpl.realAssets?.bgTextureUrl && (
                         <div
@@ -1824,62 +1915,21 @@ export function FrameCustomizer({
           </div>
         )}
 
-        {/* TAB 2: TATA LETAK & KOLASE (Varian Kotak & Strip Vertikal Lengkap) */}
+        {/* TAB 2: TATA LETAK & KOLASE (Dikhususkan 2 Pose untuk Frame Sadil & Gilang) */}
         {activeTab === "layout" && (
-          <div className="space-y-5">
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-amber-50 border border-amber-200/60 text-amber-900 text-xs flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#C99A45] shrink-0" />
+              <span>Sesi photobox dikhususkan <strong>2 Pose</strong> untuk keserasian frame resmi bordir renda Sadil &amp; Gilang.</span>
+            </div>
+
             <div>
               <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 mb-2">
                 <Film className="w-4 h-4 text-[#8C6239]" />
-                <span>Model Strip Vertikal (1 sampai 6 Foto):</span>
+                <span>Pilihan Format 2 Foto:</span>
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-                {LAYOUT_OPTIONS.filter((l) => l.type === "strip").map((l) => {
-                  const isSelected = layout === l.id;
-                  return (
-                    <button
-                      key={l.id}
-                      onClick={() => onLayoutChange(l.id)}
-                      className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-3 min-h-[72px] ${
-                        isSelected
-                          ? "border-[#4A121A] bg-[#FAF6EE] ring-2 ring-[#4A121A]/20 shadow-xs"
-                          : "border-[#E8DFC8] hover:bg-[#FAF6EE]/50 bg-white"
-                      }`}
-                    >
-                      {/* Wireframe Illustration */}
-                      <LayoutWireframe layout={l.id} isSelected={isSelected} />
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-xs font-bold text-[#3A332C] truncate">
-                            {l.name}
-                          </span>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-[#4A121A] shrink-0 ml-1" />}
-                        </div>
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
-                            {l.tag}
-                          </span>
-                          <span className="text-[9px] font-mono font-bold text-[#8C6239]">
-                            {l.shots} Foto
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-[#786551] line-clamp-1">
-                          {l.description}
-                        </p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-[#E8DFC8]">
-              <span className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 mb-2">
-                <LayoutGrid className="w-4 h-4 text-[#8C6239]" />
-                <span>Model Kotak & Kolase Grid (1 sampai 9 Foto):</span>
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-                {LAYOUT_OPTIONS.filter((l) => l.type === "grid").map((l) => {
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {LAYOUT_OPTIONS.filter((l) => l.shots === 2).map((l) => {
                   const isSelected = layout === l.id;
                   return (
                     <button
@@ -2624,6 +2674,15 @@ export function FrameCustomizer({
         {/* TAB 5: CUSTOM TEXT & DATE */}
         {activeTab === "text" && (
           <div className="space-y-4">
+            {currentTemplate.realAssets?.fullOverlayUrl && (
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200/60 text-amber-900 text-xs leading-relaxed">
+                <div className="font-bold flex items-center gap-1.5 mb-1 text-[#4A121A]">
+                  <Sparkles className="w-4 h-4 text-[#C99A45] shrink-0" />
+                  <span>Frame Resmi Eksklusif</span>
+                </div>
+                Frame bordir renda Sadil &amp; Gilang sudah menyertakan tipografi elegan <em>&ldquo;The Wedding of Sadil &amp; Gilang&rdquo;</em>, tanggal <em>21.11.2026</em>, dan tagar <em>#SALSAidYesToGILANG</em>.
+              </div>
+            )}
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-semibold text-[#5A4D3E] mb-1">

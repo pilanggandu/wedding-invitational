@@ -28,8 +28,8 @@ export function PhotoboxStudio() {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [configuredPasscode, setConfiguredPasscode] = useState<string>("2026");
   const [currentStep, setCurrentStep] = useState<"camera" | "frames">("camera");
-  const [layout, setLayout] = useState<PhotoboxLayout>("4-strip");
-  const [photos, setPhotos] = useState<string[]>(["", "", "", ""]);
+  const [layout, setLayout] = useState<PhotoboxLayout>("strip-2");
+  const [photos, setPhotos] = useState<string[]>(["", ""]);
   const [restoredCustomizerState, setRestoredCustomizerState] = useState<PhotoboxCustomizerDraft | null>(null);
   const [restoreToast, setRestoreToast] = useState<string | null>(null);
   const customizerStateRef = useRef<PhotoboxCustomizerDraft | null>(null);
@@ -49,8 +49,15 @@ export function PhotoboxStudio() {
         if (draft && Array.isArray(draft.photos) && draft.photos.some((p) => Boolean(p))) {
           const isRecent = Date.now() - draft.timestamp < 24 * 60 * 60 * 1000;
           if (isRecent) {
-            if (draft.layout) setLayout(draft.layout);
-            setPhotos(draft.photos);
+            if (draft.layout === "strip-2" || draft.layout === "grid-2") {
+              setLayout(draft.layout);
+            } else {
+              setLayout("strip-2");
+            }
+            // Pastikan limit 2 foto sesuai frame Sadil & Gilang
+            const clampedPhotos = draft.photos.slice(0, 2);
+            while (clampedPhotos.length < 2) clampedPhotos.push("");
+            setPhotos(clampedPhotos);
             if (draft.currentStep) setCurrentStep(draft.currentStep);
             if (draft.customizerState) {
               setRestoredCustomizerState(draft.customizerState);

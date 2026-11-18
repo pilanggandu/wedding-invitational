@@ -47,9 +47,9 @@ export const LAYOUT_OPTIONS: LayoutOption[] = [
     id: "strip-2",
     type: "strip",
     shots: 2,
-    name: "Strip 2 Foto (Duo)",
-    badge: "Duo",
-    description: "2 foto vertikal bertingkat cocok untuk berpasangan",
+    name: "Strip 2 Foto (Sadil & Gilang)",
+    badge: "Resmi",
+    description: "2 foto bertingkat sesuai frame resmi bordir renda Sadil & Gilang",
     tag: "2 Pose",
   },
   {
@@ -230,6 +230,14 @@ export interface RealFrameAssets {
   bottomOrnamentUrl?: string; // Real bottom seal/rings (e.g. /images/paper-keepsake/real-gold-wax-seal.png)
   deckleMatUrl?: string; // Real deckled cotton mat behind photos (e.g. /images/paper-keepsake/deckle-photo-mat.png)
   frameBorderUrl?: string; // Real frame border overlay (e.g. /images/paper-keepsake/real-eucalyptus-border.png)
+  fullOverlayUrl?: string; // Real full frame asset covering canvas with cutouts (e.g. /images/frame-photobox-sadil-gilang.png)
+  aspectRatio?: string; // Aspect ratio string (e.g. "9/16" or "1080/1920")
+  slotCoordinates?: {
+    xPercent: number;
+    yPercent: number;
+    wPercent: number;
+    hPercent: number;
+  }[];
 }
 
 export interface StickerItem {
