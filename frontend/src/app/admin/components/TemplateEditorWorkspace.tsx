@@ -174,6 +174,7 @@ export function TemplateEditorWorkspace({
         musicVolume: getMusicVolume(draftData.general.musicVolume),
       },
     };
+    setDraftData(finalData);
     onSaveAndApply(finalData);
     setIsDirty(false);
     setSaveSuccessNotice(true);

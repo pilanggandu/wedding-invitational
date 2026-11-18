@@ -429,8 +429,11 @@ export const postgresService = {
         const wideGallery = parseJson(wideRow?.gallery);
         const wideThemePalette = parseJson(wideRow?.theme_palette);
 
+        const wideActiveTemplateId = wideRow?.active_template_id;
+
         return {
           ...normalizedData,
+          activeTemplateId: wideActiveTemplateId || normalizedData.activeTemplateId || "paper-art-maroon",
           themePalette: wideThemePalette || normalizedData.themePalette,
           couple: wideCouple && (wideCouple.groom || wideCouple.bride)
             ? {
@@ -450,6 +453,7 @@ export const postgresService = {
           gifts: wideGifts?.accounts && Array.isArray(wideGifts.accounts) && wideGifts.accounts.length > 0 ? wideGifts : normalizedData.gifts,
           general: {
             ...normalizedData.general,
+            ...(general && typeof general === "object" && !Array.isArray(general) ? general : {}),
             ...musicSettings,
             coverPhotoUrl:
               musicSettings.coverPhotoUrl ||
@@ -587,8 +591,8 @@ export const postgresService = {
       JSON.stringify(payload.dresscode || {}),
     ];
 
-    const res = await pool.query(query, values);
-    return res.rows[0];
+    await pool.query(query, values);
+    return await this.getWedding(id);
   },
 
   // GUESTS

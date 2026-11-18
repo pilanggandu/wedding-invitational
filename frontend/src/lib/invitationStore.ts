@@ -321,7 +321,9 @@ export async function syncWithBackend(): Promise<void> {
         const localTime = local.updatedAt ? new Date(local.updatedAt).getTime() : 0;
         const serverTime = serverData.updatedAt ? new Date(serverData.updatedAt).getTime() : 0;
 
-        if (localTime > 0 && serverTime > 0 && localTime > serverTime + 1000) {
+        // Jika data lokal lebih baru dari server (atau server belum memiliki timestamp valid),
+        // pertahankan data lokal dan sinkronkan ke server di latar belakang agar perubahan tidak hilang.
+        if (localTime > 0 && (serverTime === 0 || localTime > serverTime)) {
           saveInvitationToBackend(local).catch((e) => console.warn("Background push to server notice:", e));
           return;
         }
@@ -362,6 +364,12 @@ export async function syncWithBackend(): Promise<void> {
           ...DEFAULT_INVITATION_DATA,
           ...local,
           ...serverData,
+          activeTemplateId: serverData.activeTemplateId || local.activeTemplateId || DEFAULT_INVITATION_DATA.activeTemplateId,
+          themePalette: {
+            ...DEFAULT_INVITATION_DATA.themePalette,
+            ...(local.themePalette || {}),
+            ...(serverData.themePalette || {}),
+          },
           couple: {
             ...DEFAULT_INVITATION_DATA.couple,
             ...local.couple,
@@ -383,6 +391,7 @@ export async function syncWithBackend(): Promise<void> {
             ...DEFAULT_INVITATION_DATA.general,
             ...(local.general || {}),
             ...(serverData.general || {}),
+            quote: serverData.general?.quote || local.general?.quote || DEFAULT_INVITATION_DATA.general.quote,
             coverPhotoUrl: resolvedCoverPhoto,
             heroPhotoUrl: resolvedCoverPhoto,
             closingPhotoUrl: resolvedClosingPhoto,

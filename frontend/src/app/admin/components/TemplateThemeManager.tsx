@@ -272,26 +272,57 @@ export function TemplateThemeManager({
   onEditTemplate,
   onOpenCoupleModal,
 }: TemplateThemeManagerProps) {
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
-    data.activeTemplateId || "cityscape-skyline"
-  );
-  const [fontStyle, setFontStyle] = useState<string>(
-    data.themePalette?.fontStyle || "caveat"
-  );
-  const [paperColor, setPaperColor] = useState<string>(
-    data.themePalette?.paperColor || "#D3B49F"
-  );
-  const [primaryColor, setPrimaryColor] = useState<string>(
-    data.themePalette?.primaryColor || "#48181D"
-  );
-  const [colorSchemeId, setColorSchemeId] = useState<string>(
-    data.themePalette?.colorSchemeId || "krem-mahogany"
-  );
+  const persistedTemplateId = data.activeTemplateId || "cityscape-skyline";
+  const [savedTemplateId, setSavedTemplateId] = useState(persistedTemplateId);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>(persistedTemplateId);
+  if (savedTemplateId !== persistedTemplateId) {
+    setSavedTemplateId(persistedTemplateId);
+    setSelectedTemplateId(persistedTemplateId);
+  }
+
+  const persistedFontStyle = data.themePalette?.fontStyle || "caveat";
+  const [savedFontStyle, setSavedFontStyle] = useState(persistedFontStyle);
+  const [fontStyle, setFontStyle] = useState<string>(persistedFontStyle);
+  if (savedFontStyle !== persistedFontStyle) {
+    setSavedFontStyle(persistedFontStyle);
+    setFontStyle(persistedFontStyle);
+  }
+
+  const persistedPaperColor = data.themePalette?.paperColor || "#F4E3C9";
+  const [savedPaperColor, setSavedPaperColor] = useState(persistedPaperColor);
+  const [paperColor, setPaperColor] = useState<string>(persistedPaperColor);
+  if (savedPaperColor !== persistedPaperColor) {
+    setSavedPaperColor(persistedPaperColor);
+    setPaperColor(persistedPaperColor);
+  }
+
+  const persistedPrimaryColor = data.themePalette?.primaryColor || "#49271B";
+  const [savedPrimaryColor, setSavedPrimaryColor] = useState(persistedPrimaryColor);
+  const [primaryColor, setPrimaryColor] = useState<string>(persistedPrimaryColor);
+  if (savedPrimaryColor !== persistedPrimaryColor) {
+    setSavedPrimaryColor(persistedPrimaryColor);
+    setPrimaryColor(persistedPrimaryColor);
+  }
+
+  const persistedColorSchemeId = data.themePalette?.colorSchemeId || "krem-mahogany";
+  const [savedColorSchemeId, setSavedColorSchemeId] = useState(persistedColorSchemeId);
+  const [colorSchemeId, setColorSchemeId] = useState<string>(persistedColorSchemeId);
+  if (savedColorSchemeId !== persistedColorSchemeId) {
+    setSavedColorSchemeId(persistedColorSchemeId);
+    setColorSchemeId(persistedColorSchemeId);
+  }
+
   const [selectedCategory, setSelectedCategory] =
     useState<TypographyCategory>("all");
-  const [particlesEnabled, setParticlesEnabled] = useState<boolean>(
-    data.themePalette?.particlesEnabled ?? true
-  );
+
+  const persistedParticles = data.themePalette?.particlesEnabled ?? true;
+  const [savedParticles, setSavedParticles] = useState(persistedParticles);
+  const [particlesEnabled, setParticlesEnabled] = useState<boolean>(persistedParticles);
+  if (savedParticles !== persistedParticles) {
+    setSavedParticles(persistedParticles);
+    setParticlesEnabled(persistedParticles);
+  }
+
   const [musicAutoplay, setMusicAutoplay] = useState<boolean>(
     data.themePalette?.musicAutoplay ?? true
   );
@@ -302,6 +333,7 @@ export function TemplateThemeManager({
     setMusicAutoplay(persistedAutoplay);
   }
   const [savedNotice, setSavedNotice] = useState<boolean>(false);
+  const [noticeMessage, setNoticeMessage] = useState<string>("Perubahan Disimpan");
   const [musicDraft, setMusicDraft] = useState<MusicSettingsValue>({
     musicUrl: data.general.musicUrl || "",
     musicTitle: data.general.musicTitle || "",
@@ -324,6 +356,23 @@ export function TemplateThemeManager({
       musicVolume: getMusicVolume(data.general.musicVolume),
     });
   }
+
+  const showNotice = (msg = "Perubahan Disimpan") => {
+    setNoticeMessage(msg);
+    setSavedNotice(true);
+    setTimeout(() => setSavedNotice(false), 3000);
+  };
+
+  const handleApplyTemplate = (tmplId: string) => {
+    setSelectedTemplateId(tmplId);
+    const updated: WeddingInvitationData = {
+      ...data,
+      activeTemplateId: tmplId,
+    };
+    saveInvitationData(updated);
+    onUpdate(updated);
+    showNotice(`Tema ${tmplId} Berhasil Diterapkan`);
+  };
 
   const activeFont = getTypographyById(fontStyle);
   const groomName = data.couple?.groom?.name?.trim() || "";
@@ -440,9 +489,10 @@ export function TemplateThemeManager({
 
   const handleSaveThemeSettings = () => {
     if (getMusicUrlError(musicDraft.musicUrl || "")) return;
+    const targetTemplateId = selectedTemplateId || data.activeTemplateId;
     const updated: WeddingInvitationData = {
       ...data,
-      activeTemplateId: data.activeTemplateId,
+      activeTemplateId: targetTemplateId,
       general: {
         ...data.general,
         ...musicDraft,
@@ -463,12 +513,7 @@ export function TemplateThemeManager({
     };
     saveInvitationData(updated);
     onUpdate(updated);
-    showNotice();
-  };
-
-  const showNotice = () => {
-    setSavedNotice(true);
-    setTimeout(() => setSavedNotice(false), 3000);
+    showNotice("Pengaturan Tampilan & Musik Disimpan");
   };
 
   return (
@@ -518,7 +563,7 @@ export function TemplateThemeManager({
           {savedNotice && (
             <span className="text-xs font-medium text-[#24623E] bg-[#F3F8F5] px-3.5 py-1.5 rounded-xl border border-[#D4EADB] flex items-center gap-1.5 animate-in fade-in">
               <Check className="w-3.5 h-3.5 text-[#2E7A4A]" />
-              Perubahan Disimpan
+              {noticeMessage}
             </span>
           )}
           <button
@@ -537,10 +582,21 @@ export function TemplateThemeManager({
               Pilihan Template Desain ({AVAILABLE_TEMPLATES.length})
             </h3>
             <p className="text-xs text-slate-600 mt-0.5">
-              Klik kartu untuk memilih. Gunakan tombol &quot;Preview&quot; untuk melihat atau &quot;Edit Template&quot; untuk menyesuaikan sebelum menerapkan.
+              Klik kartu untuk memilih. Gunakan tombol &quot;Terapkan&quot; untuk langsung mengaktifkan, &quot;Preview&quot; untuk melihat, atau &quot;Edit&quot; untuk kustomisasi penuh.
             </p>
           </div>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+            {selectedTemplateId !== data.activeTemplateId && (
+              <button
+                type="button"
+                onClick={() => handleApplyTemplate(selectedTemplateId)}
+                className="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                title="Terapkan template yang sedang dipilih sebagai tema utama"
+              >
+                <Check className="w-3.5 h-3.5 text-white" />
+                <span>Terapkan Tema Terpilih</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={() => onOpenPreview(selectedTemplateId)}
@@ -605,14 +661,34 @@ export function TemplateThemeManager({
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center gap-2 text-xs">
+                <div className="mt-4 pt-3 border-t border-zinc-100 flex flex-wrap sm:flex-nowrap items-center gap-1.5 text-xs">
+                  {isActive ? (
+                    <div className="flex-1 min-h-[42px] py-2 px-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs select-none">
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Aktif</span>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleApplyTemplate(tmpl.id);
+                      }}
+                      className="flex-1 min-h-[42px] py-2 px-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                      title={`Terapkan ${tmpl.name} sebagai tema utama`}
+                    >
+                      <Check className="w-3.5 h-3.5 text-white" />
+                      <span>Terapkan</span>
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       onOpenPreview(tmpl.id);
                     }}
-                    className="flex-1 min-h-[42px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                    className="min-h-[42px] py-2 px-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer shadow-2xs"
                     title={`Pratinjau baca-saja ${tmpl.name}`}
                   >
                     <Eye className="w-3.5 h-3.5 text-slate-500" />
@@ -625,11 +701,11 @@ export function TemplateThemeManager({
                       e.stopPropagation();
                       onEditTemplate(tmpl.id);
                     }}
-                    className="flex-1 min-h-[42px] py-2 px-3 rounded-xl bg-[#14161C] hover:bg-[#232734] active:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
+                    className="min-h-[42px] py-2 px-3 rounded-xl bg-[#14161C] hover:bg-[#232734] active:bg-black text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs"
                     title={`Buka draf editor untuk ${tmpl.name}`}
                   >
                     <SlidersHorizontal className="w-3.5 h-3.5 text-[#DFD2BD]" />
-                    <span>Edit Template</span>
+                    <span>Edit</span>
                   </button>
                 </div>
               </div>

@@ -212,6 +212,10 @@ export class NormalizedWeddingService {
       const currentSettings = await client.query("SELECT id FROM wedding_settings LIMIT 1");
       const settingsId = currentSettings.rows[0]?.id;
 
+      const formattedQuote = payload.general?.quote
+        ? `${payload.general.quote.arabic || ""}\n${payload.general.quote.translation || ""}`.trim()
+        : null;
+
       if (settingsId) {
         await client.query(
           `UPDATE wedding_settings SET
@@ -222,8 +226,13 @@ export class NormalizedWeddingService {
             dresscode = COALESCE($5, dresscode),
             cover_image = COALESCE($6, cover_image),
             hero_image = COALESCE($7, hero_image),
+            quote = COALESCE($8, quote),
+            quote_source = COALESCE($9, quote_source),
+            opening_text = COALESCE($10, opening_text),
+            background_music = COALESCE($11, background_music),
+            background_music_volume = COALESCE($12, background_music_volume),
             updated_at = NOW()
-          WHERE id = $8`,
+          WHERE id = $13`,
           [
             payload.activeTemplateId,
             payload.themePalette ? JSON.stringify(payload.themePalette) : null,
@@ -232,7 +241,34 @@ export class NormalizedWeddingService {
             payload.dresscode ? JSON.stringify(payload.dresscode) : null,
             payload.general?.coverPhotoUrl,
             payload.general?.heroPhotoUrl,
+            formattedQuote || null,
+            payload.general?.quote?.source || null,
+            payload.general?.openingMessage || null,
+            payload.general?.musicTitle || null,
+            typeof payload.general?.musicVolume === "number" ? payload.general.musicVolume : null,
             settingsId,
+          ]
+        );
+      } else {
+        await client.query(
+          `INSERT INTO wedding_settings (
+            active_template_id, theme_palette, cover_subtitle, closing_text,
+            dresscode, cover_image, hero_image, quote, quote_source,
+            opening_text, background_music, background_music_volume, updated_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())`,
+          [
+            payload.activeTemplateId || "paper-art-maroon",
+            payload.themePalette ? JSON.stringify(payload.themePalette) : null,
+            payload.general?.funTagline || null,
+            payload.general?.closingMessage || null,
+            payload.dresscode ? JSON.stringify(payload.dresscode) : null,
+            payload.general?.coverPhotoUrl || null,
+            payload.general?.heroPhotoUrl || null,
+            formattedQuote || null,
+            payload.general?.quote?.source || null,
+            payload.general?.openingMessage || null,
+            payload.general?.musicTitle || null,
+            typeof payload.general?.musicVolume === "number" ? payload.general.musicVolume : 40,
           ]
         );
       }
