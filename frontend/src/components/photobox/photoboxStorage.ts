@@ -14,7 +14,7 @@ export interface PhotoboxCustomizerDraft {
 export interface PhotoboxSessionDraft {
   version: number;
   timestamp: number;
-  currentStep: "camera" | "frames";
+  currentStep: "layout" | "camera" | "filter" | "done" | "frames";
   layout: PhotoboxLayout;
   photos: string[];
   customizerState?: PhotoboxCustomizerDraft;

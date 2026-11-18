@@ -207,6 +207,7 @@ export function isGridLayout(layout: PhotoboxLayout): boolean {
 
 export type PhotoboxFilter =
   | "none"
+  | "original"
   | "vintage"
   | "bw"
   | "warm"

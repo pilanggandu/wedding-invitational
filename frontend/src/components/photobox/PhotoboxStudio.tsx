@@ -1,18 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Camera,
-  Palette,
-  Heart,
-  RotateCcw,
-  Sparkles,
-  ShieldCheck,
-} from "lucide-react";
-import { PhotoboxLayout, getLayoutShotsCount } from "./types";
+import { PhotoboxLayout, PhotoboxFilter, getLayoutShotsCount } from "./types";
 import { CameraCapture } from "./CameraCapture";
-import { FrameCustomizer } from "./FrameCustomizer";
 import { PhotoboxPasscodeGate } from "./PhotoboxPasscodeGate";
 import { isPhotoboxUnlockedSession } from "./passcode";
 import { getInvitationData } from "@/lib/invitationStore";
@@ -20,19 +10,22 @@ import {
   savePhotoboxDraft,
   loadPhotoboxDraft,
   clearPhotoboxDraft,
-  PhotoboxCustomizerDraft,
 } from "./photoboxStorage";
+import { PhotoboxLayoutSelect, PhotoboxFlowLayout } from "./PhotoboxLayoutSelect";
+import { PhotoboxFilterView } from "./PhotoboxFilterView";
+import { PhotoboxDoneView } from "./PhotoboxDoneView";
+
+export type PhotoboxStep = "layout" | "camera" | "filter" | "done";
 
 export function PhotoboxStudio() {
   const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [configuredPasscode, setConfiguredPasscode] = useState<string>("2026");
-  const [currentStep, setCurrentStep] = useState<"camera" | "frames">("camera");
-  const [layout, setLayout] = useState<PhotoboxLayout>("strip-2");
-  const [photos, setPhotos] = useState<string[]>(["", ""]);
-  const [restoredCustomizerState, setRestoredCustomizerState] = useState<PhotoboxCustomizerDraft | null>(null);
+  const [currentStep, setCurrentStep] = useState<PhotoboxStep>("layout");
+  const [layout, setLayout] = useState<PhotoboxFlowLayout>("strip-3");
+  const [photos, setPhotos] = useState<string[]>(["", "", ""]);
+  const [filter, setFilter] = useState<PhotoboxFilter>("original");
   const [restoreToast, setRestoreToast] = useState<string | null>(null);
-  const customizerStateRef = useRef<PhotoboxCustomizerDraft | null>(null);
 
   // Pencegahan refresh tak sengaja & pemulihan sesi otomatis di HP
   useEffect(() => {
@@ -49,22 +42,28 @@ export function PhotoboxStudio() {
         if (draft && Array.isArray(draft.photos) && draft.photos.some((p) => Boolean(p))) {
           const isRecent = Date.now() - draft.timestamp < 24 * 60 * 60 * 1000;
           if (isRecent) {
-            if (draft.layout === "strip-2" || draft.layout === "grid-2") {
-              setLayout(draft.layout);
+            const chosenLayout: PhotoboxFlowLayout =
+              draft.layout === "strip-2" || draft.layout === "2-strip" ? "strip-2" : "strip-3";
+            setLayout(chosenLayout);
+
+            const count = chosenLayout === "strip-2" ? 2 : 3;
+            const validPhotos = draft.photos.slice(0, count);
+            while (validPhotos.length < count) validPhotos.push("");
+            setPhotos(validPhotos);
+
+            // Restore step safely
+            if (
+              draft.currentStep === "camera" ||
+              draft.currentStep === "filter" ||
+              draft.currentStep === "done"
+            ) {
+              setCurrentStep(draft.currentStep as PhotoboxStep);
             } else {
-              setLayout("strip-2");
+              setCurrentStep("camera");
             }
-            // Pastikan limit 2 foto sesuai frame Sadil & Gilang
-            const clampedPhotos = draft.photos.slice(0, 2);
-            while (clampedPhotos.length < 2) clampedPhotos.push("");
-            setPhotos(clampedPhotos);
-            if (draft.currentStep) setCurrentStep(draft.currentStep);
-            if (draft.customizerState) {
-              setRestoredCustomizerState(draft.customizerState);
-              customizerStateRef.current = draft.customizerState;
-            }
-            setRestoreToast("Sesi foto sebelumnya dipulihkan otomatis ✨ Editan kamu aman.");
-            setTimeout(() => setRestoreToast(null), 5000);
+
+            setRestoreToast("Sesi foto sebelumnya dipulihkan otomatis ✨");
+            setTimeout(() => setRestoreToast(null), 4000);
           }
         }
       } catch (err) {
@@ -80,7 +79,7 @@ export function PhotoboxStudio() {
     };
   }, []);
 
-  // Konfirmasi sebelum unload / refresh jika sudah ada foto atau sedang mengedit
+  // Konfirmasi sebelum unload / refresh jika sudah ada foto
   useEffect(() => {
     const hasPhotos = photos.some((p) => Boolean(p));
     if (!hasPhotos) return;
@@ -97,14 +96,15 @@ export function PhotoboxStudio() {
     };
   }, [photos]);
 
-  // Tangani gestur tombol "Back" di Android agar tidak menutup halaman web saat mengedit
+  // Tangani gestur tombol "Back" di Android
   useEffect(() => {
-    if (currentStep === "frames") {
-      window.history.pushState({ photoboxStep: "frames" }, "");
+    if (currentStep !== "layout") {
+      window.history.pushState({ photoboxStep: currentStep }, "");
 
       const handlePopState = () => {
-        // Alihkan kembali ke langkah kamera tanpa reload halaman
-        setCurrentStep("camera");
+        if (currentStep === "done") setCurrentStep("filter");
+        else if (currentStep === "filter") setCurrentStep("camera");
+        else if (currentStep === "camera") setCurrentStep("layout");
       };
 
       window.addEventListener("popstate", handlePopState);
@@ -123,46 +123,26 @@ export function PhotoboxStudio() {
       savePhotoboxDraft({
         version: 1,
         timestamp: Date.now(),
-        currentStep,
+        currentStep: currentStep === "layout" ? "camera" : currentStep,
         layout,
         photos,
-        customizerState: customizerStateRef.current || undefined,
       });
     }, 400);
 
     return () => clearTimeout(timer);
   }, [photos, layout, currentStep]);
 
-  const handleCustomizerStateChange = useCallback(
-    (newState: PhotoboxCustomizerDraft) => {
-      customizerStateRef.current = newState;
-      const hasPhotos = photos.some((p) => Boolean(p));
-      if (!hasPhotos) return;
-
-      savePhotoboxDraft({
-        version: 1,
-        timestamp: Date.now(),
-        currentStep: "frames",
-        layout,
-        photos,
-        customizerState: newState,
-      });
-    },
-    [layout, photos]
-  );
-
   const handleResetSession = async () => {
     const confirmed = window.confirm(
-      "Mulai sesi foto baru dari awal? Foto dan editan frame saat ini akan dibersihkan."
+      "Mulai sesi foto baru dari awal? Foto saat ini akan dibersihkan."
     );
     if (!confirmed) return;
 
     await clearPhotoboxDraft();
-    const count = getLayoutShotsCount(layout);
+    const count = layout === "strip-2" ? 2 : 3;
     setPhotos(Array(count).fill(""));
-    setRestoredCustomizerState(null);
-    customizerStateRef.current = null;
-    setCurrentStep("camera");
+    setFilter("original");
+    setCurrentStep("layout");
     setRestoreToast(null);
   };
 
@@ -179,16 +159,12 @@ export function PhotoboxStudio() {
     }
   }, []);
 
-  // Adjust photos array length when layout changes if needed
-  const handleLayoutChange = (newLayout: PhotoboxLayout) => {
+  const handleLayoutChange = (newLayout: PhotoboxFlowLayout) => {
     setLayout(newLayout);
-    const count = getLayoutShotsCount(newLayout);
-
+    const count = newLayout === "strip-2" ? 2 : 3;
     setPhotos((prev) => {
-      const copy = [...prev];
-      if (copy.length < count) {
-        while (copy.length < count) copy.push("");
-      }
+      const copy = [...prev].slice(0, count);
+      while (copy.length < count) copy.push("");
       return copy;
     });
   };
@@ -210,129 +186,54 @@ export function PhotoboxStudio() {
     );
   }
 
-  // Jika di langkah Kamera, tampilkan bilik Full Kamera imersif (100dvh kiosk mode)
+  // STEP 1: PILIH LAYOUT (2 Foto atau 3 Foto)
+  if (currentStep === "layout") {
+    return (
+      <PhotoboxLayoutSelect
+        selectedLayout={layout}
+        onSelectLayout={handleLayoutChange}
+        onStartPhoto={() => setCurrentStep("camera")}
+      />
+    );
+  }
+
+  // STEP 2: MULAI FOTO (Kamera Capture)
   if (currentStep === "camera") {
     return (
       <CameraCapture
         layout={layout}
-        onLayoutChange={handleLayoutChange}
+        onLayoutChange={(l) => handleLayoutChange(l === "strip-2" ? "strip-2" : "strip-3")}
         photos={photos}
         onPhotosChange={setPhotos}
-        onProceedToFrames={() => setCurrentStep("frames")}
+        onProceedToFrames={() => setCurrentStep("filter")}
+        onBackToLayout={() => setCurrentStep("layout")}
         onResetSession={handleResetSession}
         restoreMessage={restoreToast}
       />
     );
   }
 
-  const hasPhotosTaken = photos.some((p) => Boolean(p));
+  // STEP 3: PILIH FILTER
+  if (currentStep === "filter") {
+    return (
+      <PhotoboxFilterView
+        layout={layout}
+        photos={photos}
+        selectedFilter={filter}
+        onSelectFilter={setFilter}
+        onBackToCamera={() => setCurrentStep("camera")}
+        onProceedToDone={() => setCurrentStep("done")}
+      />
+    );
+  }
 
+  // STEP 4: DONE (Download & Share Story IG 1080x1920)
   return (
-    <div className="min-h-dvh bg-[#FAF6EE] text-[#3A332C] flex flex-col font-sans selection:bg-[#DFD2BD] selection:text-[#4A121A] overscroll-y-contain">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 bg-[#FAF6EE]/90 backdrop-blur-md border-b border-[#E8DFC8] px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 overscroll-contain">
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div
-            className="p-2 sm:p-2.5 rounded-xl bg-white border border-[#E8DFC8] text-[#4A121A] shadow-xs w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0"
-            title="The Wedding Photobox of Gilang & Salsa"
-          >
-            <Camera className="w-4 h-4 text-[#8C6239]" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-1 sm:gap-1.5">
-              <span className="font-serif font-bold text-sm sm:text-lg text-[#4A121A]">
-                Photobox
-              </span>
-              <span className="hidden xs:inline px-1.5 py-0.2 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
-                Studio
-              </span>
-            </div>
-            <p className="text-[11px] text-[#786551] hidden md:block">
-              Bilik Foto & Frame ala Korea untuk momen spesial Gilang & Salsa
-            </p>
-          </div>
-        </div>
-
-        {/* Right Navigation & Tools */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Tombol Mulai Baru jika sudah ada foto */}
-          {hasPhotosTaken && (
-            <button
-              onClick={handleResetSession}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-white hover:bg-rose-50 text-[#786551] hover:text-rose-700 border border-[#E8DFC8] text-[11px] font-semibold transition-all shadow-xs active:scale-95 cursor-pointer min-h-[32px] sm:min-h-[34px]"
-              title="Reset foto & mulai dari awal"
-            >
-              <RotateCcw className="w-3 h-3 text-[#8C6239]" />
-              <span className="hidden sm:inline">Mulai Baru</span>
-            </button>
-          )}
-
-          {/* Step Navigation Pill Indicator */}
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-white p-1 sm:px-2.5 sm:py-1 rounded-full border border-[#E8DFC8] shadow-xs">
-            <button
-              onClick={() => setCurrentStep("camera")}
-              className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold text-[#786551] hover:text-[#2A241D] transition-all cursor-pointer min-h-[32px] sm:min-h-[34px]"
-              aria-label="Kembali ke Langkah 1: Kamera"
-            >
-              <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              <span className="hidden xs:inline">1. Kamera</span>
-              <span className="xs:hidden font-mono font-bold">1</span>
-            </button>
-
-            <span className="text-[#C5B7A1] text-[10px] sm:text-xs">/</span>
-
-            <button
-              onClick={() => setCurrentStep("frames")}
-              className="flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#4A121A] text-[#DFD2BD] shadow-xs cursor-pointer min-h-[32px] sm:min-h-[34px]"
-              aria-label="Langkah 2: Pilih Frame"
-            >
-              <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              <span className="hidden xs:inline">2. Frame</span>
-              <span className="xs:hidden font-mono font-bold">2</span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Reassurance Banner jika sesi dipulihkan otomatis */}
-      {restoreToast && (
-        <div className="bg-[#4A121A] text-[#DFD2BD] px-4 py-2 text-xs flex items-center justify-between gap-2 shadow-sm animate-in slide-in-from-top-2 duration-200 border-b border-[#E8DFC8]/40">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#C99A45] shrink-0" />
-            <span className="font-medium">{restoreToast}</span>
-          </div>
-          <button
-            onClick={handleResetSession}
-            className="text-[11px] font-bold text-[#E5B869] underline hover:text-white cursor-pointer px-2 py-0.5"
-          >
-            Mulai Ulang
-          </button>
-        </div>
-      )}
-
-      {/* Main Studio Viewport */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8 overscroll-contain">
-        <FrameCustomizer
-          layout={layout}
-          onLayoutChange={handleLayoutChange}
-          photos={photos}
-          onPhotosChange={setPhotos}
-          initialCustomizerState={restoredCustomizerState}
-          onCustomizerStateChange={handleCustomizerStateChange}
-          onBackToCamera={() => setCurrentStep("camera")}
-          onResetSession={handleResetSession}
-        />
-      </main>
-
-      {/* Friendly Bottom Footer */}
-      <footer className="border-t border-[#E8DFC8] bg-[#FAF6EE] py-4 px-4 text-center text-xs text-[#786551] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
-        <p className="flex items-center justify-center gap-1.5">
-          <span>Dibuat dengan</span>
-          <Heart className="w-3.5 h-3.5 text-[#B85461] fill-current" />
-          <span>untuk merayakan cinta Gilang & Salsadila</span>
-        </p>
-      </footer>
-    </div>
+    <PhotoboxDoneView
+      layout={layout}
+      photos={photos}
+      filter={filter}
+      onResetSession={handleResetSession}
+    />
   );
 }

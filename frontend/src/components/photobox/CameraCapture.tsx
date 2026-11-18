@@ -13,6 +13,7 @@ import {
   Grid,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Play,
   RotateCcw,
   AlertCircle,
@@ -36,6 +37,7 @@ interface CameraCaptureProps {
   onPhotosChange: (photos: string[]) => void;
   onProceedToFrames: () => void;
   onResetSession?: () => void;
+  onBackToLayout?: () => void;
   restoreMessage?: string | null;
 }
 
@@ -46,6 +48,7 @@ export function CameraCapture({
   onPhotosChange,
   onProceedToFrames,
   onResetSession,
+  onBackToLayout,
   restoreMessage,
 }: CameraCaptureProps) {
   // Required photos count based on selected collage layout
@@ -329,6 +332,7 @@ export function CameraCapture({
 
   // Rasio safe area guide disesuaikan dengan jenis layout aktif
   const isSadilGilangSlot = layout === "strip-2" || layout === "2-strip";
+  const isThreeShotSlot = layout === "strip-3" || layout === "3-strip";
   const isSquareLayout = layout === "grid-1";
 
   return (
@@ -379,22 +383,27 @@ export function CameraCapture({
 
       {/* 2. LAYER FLOATING: Top Bar Controls */}
       <header className="relative z-30 w-full pt-[max(0.75rem,env(safe-area-inset-top))] px-3 sm:px-6 pb-2 flex items-center justify-between gap-2 pointer-events-auto">
-        {/* Left: Format Layout & Slot Progress Pill */}
-        <div className="flex items-center min-w-0">
-          <button
-            onClick={() => setShowLayoutModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-white/20 text-[#DFD2BD] text-xs font-semibold shadow-lg transition-all active:scale-95 cursor-pointer min-h-[40px] max-w-[240px] xs:max-w-none"
-            title="Klik untuk ganti format photobox"
-          >
+        {/* Left: Back to Layout & Slot Progress Pill */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          {onBackToLayout && (
+            <button
+              onClick={onBackToLayout}
+              className="p-2 rounded-full bg-black/55 hover:bg-black/75 backdrop-blur-md border border-white/20 text-[#DFD2BD] hover:text-white transition-all cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center shrink-0"
+              title="Kembali ke Pilih Layout"
+            >
+              <ArrowLeft className="w-4 h-4 text-amber-300" />
+            </button>
+          )}
+
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-black/55 backdrop-blur-md border border-white/20 text-[#DFD2BD] text-xs font-semibold shadow-lg min-h-[40px]">
             <Film className="w-3.5 h-3.5 text-amber-300 shrink-0" />
             <span className="truncate text-[#F7F3EB] font-medium">
-              {activeLayoutOption.name.replace(/\s*\([^)]*\)/, "")}
+              {requiredCount === 3 ? "3 Pose (Trio)" : "2 Pose (Duo)"}
             </span>
             <span className="text-[10px] font-mono font-bold text-amber-200/90 bg-white/10 px-1.5 py-0.5 rounded-full shrink-0">
               {activeSlot + 1}/{requiredCount}
             </span>
-            <ChevronDown className="w-3.5 h-3.5 text-white/50 shrink-0" />
-          </button>
+          </div>
         </div>
 
         {/* Right: Quick Tools (Timer, Grid, Sound) */}
@@ -467,6 +476,8 @@ export function CameraCapture({
           className={`relative w-[90vw] max-w-[480px] ${
             isSadilGilangSlot
               ? "aspect-[606/356] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
+              : isThreeShotSlot
+              ? "aspect-[720/370] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
               : isSquareLayout
               ? "aspect-square max-h-[36vh] xs:max-h-[42vh] sm:max-h-[50vh]"
               : "aspect-4/3 max-h-[38vh] xs:max-h-[44vh] sm:max-h-[56vh]"
@@ -500,7 +511,11 @@ export function CameraCapture({
 
           {/* Viewfinder Badge Safe-Zone */}
           <div className="absolute bottom-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[9px] font-mono tracking-wider text-[#DFD2BD] border border-white/15 drop-shadow-md uppercase">
-            {isSadilGilangSlot ? "Area Cetak • 2 Pose Sadil & Gilang" : `Area Cetak • ${activeLayoutOption.shots} Pose`}
+            {isSadilGilangSlot
+              ? "Area Cetak • 2 Pose Sadil & Gilang"
+              : isThreeShotSlot
+              ? "Area Cetak • 3 Pose Gilang & Salsa"
+              : `Area Cetak • ${activeLayoutOption.shots} Pose`}
           </div>
         </div>
 
@@ -558,21 +573,42 @@ export function CameraCapture({
       <footer className="relative z-30 w-full pb-[max(0.75rem,calc(env(safe-area-inset-bottom)+0.25rem))] px-3 sm:px-6 flex flex-col items-center gap-2 pointer-events-auto">
         {/* Banner Navigasi Saat Semua Foto Selesai */}
         {isAllPhotosTaken && (
-          <motion.button
+          <motion.div
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            onClick={onProceedToFrames}
-            className="w-full max-w-md py-2 px-3.5 rounded-xl bg-[#DFD2BD] hover:bg-white text-[#4A121A] font-bold text-xs shadow-lg flex items-center justify-between border border-white/60 active:scale-98 transition-all cursor-pointer"
+            className="w-full max-w-md p-2 rounded-2xl bg-black/85 backdrop-blur-md border border-amber-300/40 shadow-2xl flex items-center justify-between gap-2"
           >
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-              <span>{requiredCount} Foto Lengkap! Lanjut Pilih Frame</span>
+            <div className="flex items-center gap-2 pl-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <span className="text-xs font-bold text-[#FAF1D9] block">
+                  {requiredCount} Pose Selesai!
+                </span>
+                <span className="text-[10px] text-white/60 block">
+                  Lanjut ke filter atau foto ulang
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-bold bg-[#4A121A] text-[#DFD2BD] px-2.5 py-1 rounded-lg shadow-xs">
-              <span>Lanjut</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={handleResetAll}
+                className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-rose-950/60 text-white hover:text-rose-200 text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer"
+                title="Foto Ulang"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">Ulang</span>
+              </button>
+
+              <button
+                onClick={onProceedToFrames}
+                className="px-3.5 py-1.5 rounded-xl bg-[#DFD2BD] hover:bg-white text-[#4A121A] text-xs font-bold flex items-center gap-1 shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <span>Filter</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-          </motion.button>
+          </motion.div>
         )}
 
         {/* Film Strip Slot Mini Preview Bar */}
