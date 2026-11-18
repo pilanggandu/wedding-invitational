@@ -1,3 +1,4 @@
+// @ts-ignore
 import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import fs from "node:fs";
@@ -112,6 +113,12 @@ if (!guestColumns.some((column) => column.name === "open_count")) {
 }
 db.exec("CREATE INDEX IF NOT EXISTS idx_guests_token ON guests(token);");
 db.exec("CREATE INDEX IF NOT EXISTS idx_guests_deleted_at ON guests(deleted_at);");
+
+const wishColumns = db.prepare("PRAGMA table_info(wishes)").all() as Array<{ name: string }>;
+if (!wishColumns.some((column) => column.name === "deleted_at")) {
+  db.exec("ALTER TABLE wishes ADD COLUMN deleted_at TEXT;");
+}
+db.exec("CREATE INDEX IF NOT EXISTS idx_wishes_deleted_at ON wishes(deleted_at);");
 
 // ----------------------------------------------------
 // SEED INITIAL DATA (Jika kosong)
@@ -295,7 +302,7 @@ function seedIfEmpty() {
   const wishCountStmt = db.prepare("SELECT COUNT(*) as count FROM wishes");
   const wishCount = (wishCountStmt.get() as any)?.count || 0;
 
-  if (wishCount === 0) {
+  if (weddingCount === 0 && wishCount === 0) {
     const insertWish = db.prepare(`
       INSERT INTO wishes (id, name, relationship, attendance, message, created_at)
       VALUES (?, ?, ?, ?, ?, ?)
@@ -602,7 +609,7 @@ export const sqliteService = {
 
   // WISHES (RSVP & DO'A)
   getWishes() {
-    const stmt = db.prepare("SELECT * FROM wishes ORDER BY created_at DESC");
+    const stmt = db.prepare("SELECT * FROM wishes WHERE deleted_at IS NULL ORDER BY created_at DESC");
     const rows = stmt.all() as any[];
 
     return rows.map((r) => ({
@@ -660,9 +667,18 @@ export const sqliteService = {
   },
 
   deleteWish(id: string) {
-    const stmt = db.prepare("DELETE FROM wishes WHERE id = ?");
-    stmt.run(id);
+    const stmt = db.prepare("UPDATE wishes SET deleted_at = ? WHERE id = ? AND deleted_at IS NULL");
+    const info = stmt.run(new Date().toISOString(), id);
+    if (info.changes === 0) {
+      db.prepare("DELETE FROM wishes WHERE id = ?").run(id);
+    }
     return true;
+  },
+
+  deleteRsvp(id: string | number) {
+    const stmt = db.prepare("DELETE FROM rsvps WHERE id = ? OR guest_id = ?");
+    const info = stmt.run(id, id);
+    return info.changes > 0;
   },
 
   // RSVP (KONFIRMASI KEHADIRAN)

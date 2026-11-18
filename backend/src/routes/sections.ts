@@ -21,7 +21,7 @@ router.get("/", async (_req: Request, res: Response) => {
 });
 
 // PUT /api/sections/:code - Memperbarui status/urutan section (Khusus Admin)
-router.put("/:code", requireAuth, async (req: Request, res: Response) => {
+router.put("/:code", requireAuth, async (req: Request<{ code: string }>, res: Response) => {
   try {
     const { code } = req.params;
     const { isEnabled, sortOrder } = req.body;

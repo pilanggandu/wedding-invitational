@@ -196,6 +196,8 @@ export async function initPostgres(): Promise<boolean> {
       await pool.query("ALTER TABLE guests ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP WITH TIME ZONE;");
       await pool.query("ALTER TABLE guests ADD COLUMN IF NOT EXISTS token VARCHAR(255);");
       await pool.query("CREATE INDEX IF NOT EXISTS idx_wide_guests_deleted_at ON guests(deleted_at);");
+      await pool.query("ALTER TABLE wishes ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP WITH TIME ZONE;");
+      await pool.query("CREATE INDEX IF NOT EXISTS idx_wishes_deleted_at ON wishes(deleted_at);");
 
       // Pastikan kolom foto di tabel-tabel dapat menyimpan path atau base64 tanpa batasan 500 char
       await pool.query("ALTER TABLE couples ALTER COLUMN photo TYPE TEXT").catch(() => {});
@@ -318,9 +320,9 @@ export async function initPostgres(): Promise<boolean> {
         `);
       }
 
-      // 5. Seed ucapan awal jika kosong
+      // 5. Seed ucapan awal jika benar-benar instalasi awal (wedding masih kosong & wish kosong)
       const wishCount = await pool.query("SELECT COUNT(*) FROM wishes");
-      if (parseInt(wishCount.rows[0].count) === 0) {
+      if (parseInt(weddingCount.rows[0].count) === 0 && parseInt(wishCount.rows[0].count) === 0) {
         await pool.query(`
           INSERT INTO wishes (id, name, relationship, attendance, message, created_at)
           VALUES 
@@ -712,12 +714,16 @@ export const postgresService = {
   // WISHES
   async getWishes() {
     if (!pool) return [];
-    const res = await pool.query("SELECT * FROM wishes ORDER BY created_at DESC");
+    const res = await pool.query(
+      "SELECT * FROM wishes WHERE deleted_at IS NULL ORDER BY created_at DESC"
+    ).catch(async () => {
+      return await pool!.query("SELECT * FROM wishes ORDER BY created_at DESC");
+    });
     return res.rows.map((r) => ({
-      id: r.id,
-      name: r.name,
-      relationship: r.relationship,
-      attendance: r.attendance,
+      id: r.id.toString(),
+      name: r.name || r.display_name || "Tamu",
+      relationship: r.relationship || "Sahabat",
+      attendance: r.attendance || "Hadir",
       message: r.message,
       date: new Date(r.created_at).toLocaleDateString("id-ID", {
         day: "numeric",
@@ -738,8 +744,8 @@ export const postgresService = {
   }) {
     if (!pool) return null;
     const query = `
-      INSERT INTO wishes (id, name, relationship, attendance, message, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO wishes (id, name, display_name, relationship, attendance, message, created_at)
+      VALUES ($1, $2, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
     const values = [
@@ -750,11 +756,19 @@ export const postgresService = {
       wish.message,
       wish.createdAt || new Date().toISOString(),
     ];
-    const res = await pool.query(query, values);
+    const res = await pool.query(query, values).catch(async () => {
+      // Fallback jika display_name tidak ada
+      const fallbackQuery = `
+        INSERT INTO wishes (id, name, relationship, attendance, message, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *;
+      `;
+      return await pool!.query(fallbackQuery, values);
+    });
     const r = res.rows[0];
     return {
-      id: r.id,
-      name: r.name,
+      id: r.id.toString(),
+      name: r.name || r.display_name || "Tamu",
       relationship: r.relationship,
       attendance: r.attendance,
       message: r.message,
@@ -768,9 +782,34 @@ export const postgresService = {
   },
 
   async deleteWish(id: string) {
+    if (normalizedWeddingService) {
+      return await normalizedWeddingService.deleteWish(id);
+    }
     if (!pool) return false;
-    await pool.query("DELETE FROM wishes WHERE id = $1", [id]);
+    const res = await pool.query(
+      "UPDATE wishes SET deleted_at = NOW() WHERE (id::text = $1 OR id = $1) AND deleted_at IS NULL",
+      [id]
+    ).catch(() => null);
+    if (!res || (res.rowCount ?? 0) === 0) {
+      const del = await pool.query(
+        "DELETE FROM wishes WHERE id::text = $1 OR id = $1",
+        [id]
+      );
+      return (del.rowCount ?? 0) > 0;
+    }
     return true;
+  },
+
+  async deleteRsvp(id: string | number) {
+    if (normalizedWeddingService) {
+      return await normalizedWeddingService.deleteRsvp(id);
+    }
+    if (!pool) return false;
+    const res = await pool.query(
+      "DELETE FROM rsvps WHERE id::text = $1 OR guest_id = $1",
+      [id.toString()]
+    );
+    return (res.rowCount ?? 0) > 0;
   },
 
   // USERS & AUTH

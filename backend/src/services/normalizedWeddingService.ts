@@ -602,7 +602,7 @@ export class NormalizedWeddingService {
 
   async softDeleteGuest(id: string): Promise<boolean> {
     const res = await this.pool.query(
-      "UPDATE guests SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL",
+      "UPDATE guests SET deleted_at = NOW() WHERE (id::text = $1 OR id = $1) AND deleted_at IS NULL",
       [id]
     );
     return (res.rowCount ?? 0) > 0;
@@ -804,6 +804,14 @@ export class NormalizedWeddingService {
     };
   }
 
+  async deleteRsvp(id: string | number): Promise<boolean> {
+    const res = await this.pool.query(
+      "DELETE FROM rsvps WHERE id::text = $1 OR guest_id = $1",
+      [id.toString()]
+    );
+    return (res.rowCount ?? 0) > 0;
+  }
+
   async getRsvpList(): Promise<any[]> {
     const res = await this.pool.query(`
       SELECT 
@@ -842,17 +850,26 @@ export class NormalizedWeddingService {
   // =========================================================================
 
   async getWishes(status?: number): Promise<any[]> {
-    const filter = status !== undefined ? "WHERE status = $1" : "WHERE status = 1";
+    const filter = status !== undefined 
+      ? "WHERE status = $1 AND (deleted_at IS NULL)" 
+      : "WHERE status = 1 AND (deleted_at IS NULL)";
     const params = status !== undefined ? [status] : [];
 
     const res = await this.pool.query(
       `SELECT * FROM wishes ${filter} ORDER BY created_at DESC LIMIT 50`,
       params
-    );
+    ).catch(async () => {
+      // Fallback jika kolom deleted_at belum ada
+      const fallbackFilter = status !== undefined ? "WHERE status = $1" : "WHERE status = 1";
+      return await this.pool.query(
+        `SELECT * FROM wishes ${fallbackFilter} ORDER BY created_at DESC LIMIT 50`,
+        params
+      );
+    });
 
     return res.rows.map((r) => ({
       id: r.id.toString(),
-      name: r.display_name,
+      name: r.display_name || r.name || "Tamu",
       relationship: r.relationship || "Sahabat",
       attendance: "Hadir",
       message: r.message,
@@ -900,6 +917,22 @@ export class NormalizedWeddingService {
       [status, id]
     );
     return (res.rowCount ?? 0) > 0;
+  }
+
+  async deleteWish(id: string | number): Promise<boolean> {
+    const updateRes = await this.pool.query(
+      "UPDATE wishes SET deleted_at = NOW() WHERE (id::text = $1 OR id = $1) AND deleted_at IS NULL",
+      [id.toString()]
+    ).catch(() => null);
+
+    if (!updateRes || (updateRes.rowCount ?? 0) === 0) {
+      const delRes = await this.pool.query(
+        "DELETE FROM wishes WHERE id::text = $1 OR id = $1",
+        [id.toString()]
+      );
+      return (delRes.rowCount ?? 0) > 0;
+    }
+    return true;
   }
 
   // =========================================================================

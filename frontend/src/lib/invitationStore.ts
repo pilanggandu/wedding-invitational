@@ -19,6 +19,35 @@ const INVITATION_STORAGE_KEY = "wedding_invitation_data_v1";
 const GUESTS_STORAGE_KEY = "wedding_guests_data_v1";
 const WISHES_STORAGE_KEY = "wedding_wishes_gilang_salsa_maroon";
 export const DELETED_GUESTS_STORAGE_KEY = "wedding_deleted_guests_v1";
+export const DELETED_WISHES_STORAGE_KEY = "wedding_deleted_wishes_v1";
+
+export function getDeletedWishes(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(DELETED_WISHES_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (err) {
+    console.error("Gagal membaca daftar ucapan terhapus:", err);
+  }
+  return [];
+}
+
+export function recordDeletedWish(id: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = getDeletedWishes();
+    if (!list.includes(id)) {
+      const updated = [id, ...list];
+      localStorage.setItem(DELETED_WISHES_STORAGE_KEY, JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("wedding-deleted-wishes-changed", { detail: updated }));
+    }
+  } catch (err) {
+    console.error("Gagal mencatat ucapan terhapus ke localStorage:", err);
+  }
+}
 
 export interface DeletedGuestRecord {
   id: string;
@@ -396,7 +425,8 @@ export async function syncWithBackend(): Promise<void> {
       wishesRes.value &&
       Array.isArray(wishesRes.value)
     ) {
-      const serverWishes = wishesRes.value;
+      const deletedIds = new Set(getDeletedWishes());
+      const serverWishes = wishesRes.value.filter((w) => !deletedIds.has(w.id));
       localStorage.setItem(WISHES_STORAGE_KEY, JSON.stringify(serverWishes));
       window.dispatchEvent(
         new CustomEvent("wedding-wishes-changed", { detail: serverWishes })
@@ -688,12 +718,15 @@ export async function submitWishConfirmed(wish: Parameters<typeof submitWish>[0]
   return saved;
 }
 
-export function deleteWish(id: string): void {
+export async function deleteWish(id: string): Promise<boolean> {
+  recordDeletedWish(id);
   const list = getWishes().filter((w) => w.id !== id);
   saveWishesLocalOnly(list);
-  deleteWishFromBackend(id).catch((err) => {
+  const ok = await deleteWishFromBackend(id).catch((err) => {
     console.warn("Gagal menghapus ucapan di backend:", err);
+    return false;
   });
+  return ok;
 }
 
 export function generateWhatsAppInvitationUrl(

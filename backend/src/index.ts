@@ -20,8 +20,8 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
 // Inisialisasi PostgreSQL jika ada konfigurasi
 if (isPostgresConfigured()) {
-  initPostgres().catch((err) => {
-    console.warn("PostgreSQL initialization notice:", err.message);
+  initPostgres().catch((err: any) => {
+    console.warn("PostgreSQL initialization notice:", err?.message || err);
   });
 }
 

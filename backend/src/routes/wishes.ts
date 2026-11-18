@@ -27,7 +27,7 @@ router.get("/", async (_req: Request, res: Response) => {
         return res.status(500).json({ error: error.message });
       }
 
-      const formatted = (data || []).map((row) => ({
+      const formatted = (data || []).map((row: any) => ({
         id: row.id,
         name: row.name,
         relationship: row.relationship,
@@ -148,7 +148,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // PATCH /api/wishes/:id/status - Moderasi ucapan (0=pending, 1=approved, 2=rejected)
-router.patch("/:id/status", async (req: Request, res: Response) => {
+router.patch("/:id/status", async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -171,7 +171,7 @@ router.patch("/:id/status", async (req: Request, res: Response) => {
 });
 
 // DELETE /api/wishes/:id - Hapus ucapan (moderasi)
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
 

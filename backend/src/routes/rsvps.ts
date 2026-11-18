@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { getNormalizedWeddingService, isPostgresConnected } from "../postgres";
+import { getNormalizedWeddingService, isPostgresConnected, postgresService } from "../postgres";
 import { sqliteService } from "../sqlite";
 import { requireAuth } from "../auth";
 
@@ -59,6 +59,29 @@ router.post("/", async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("Error in POST /api/rsvps:", err);
     res.status(400).json({ error: err.message || "Gagal menyimpan konfirmasi kehadiran" });
+  }
+});
+
+// DELETE /api/rsvps/:id - Hapus data konfirmasi RSVP & komentar (Khusus Admin)
+router.delete("/:id", requireAuth, async (req: Request<{ id: string }>, res: Response) => {
+  try {
+    const { id } = req.params;
+    const service = getNormalizedWeddingService();
+
+    if (isPostgresConnected()) {
+      if (service) {
+        await service.deleteRsvp(id);
+      } else {
+        await postgresService.deleteRsvp(id);
+      }
+      return res.json({ success: true, id, message: "Data RSVP berhasil dihapus", source: "postgresql" });
+    }
+
+    sqliteService.deleteRsvp(id);
+    return res.json({ success: true, id, message: "Data RSVP berhasil dihapus", source: "sqlite" });
+  } catch (err: any) {
+    console.error("Error in DELETE /api/rsvps/:id:", err);
+    res.status(500).json({ error: err.message || "Gagal menghapus data RSVP" });
   }
 });
 

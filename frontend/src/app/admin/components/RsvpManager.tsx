@@ -10,10 +10,13 @@ import {
   HelpCircle,
   XCircle,
   Users,
+  AlertCircle,
+  X,
+  Loader2,
 } from "lucide-react";
 import { WishMessage } from "@/types/wedding";
 import { deleteWish } from "@/lib/invitationStore";
-import { fetchRsvpsApi } from "@/lib/api";
+import { fetchRsvpsApi, deleteRsvpApi } from "@/lib/api";
 
 interface RsvpManagerProps {
   wishes: WishMessage[];
@@ -26,20 +29,62 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [rsvpList, setRsvpList] = useState<any[]>([]);
   const [rsvpSummary, setRsvpSummary] = useState<any>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    fetchRsvpsApi().then((res) => {
+  const refreshRsvps = async () => {
+    try {
+      const res = await fetchRsvpsApi();
       if (res) {
         setRsvpSummary(res.summary);
         setRsvpList(res.rsvps || []);
       }
-    });
+    } catch {
+      // offline fallback
+    }
+  };
+
+  useEffect(() => {
+    refreshRsvps();
   }, [wishes]);
 
-  const handleDelete = (id: string) => {
-    if (confirm("Hapus ucapan doa restu ini?")) {
-      deleteWish(id);
+  const handleDeleteWish = async (id: string, name?: string) => {
+    const label = name ? `dari "${name}"` : "ini";
+    if (!window.confirm(`Hapus ucapan doa restu ${label}?`)) return;
+
+    setBusyId(`wish_${id}`);
+    setError("");
+    setNotice("");
+    try {
+      await deleteWish(id);
       onWishesUpdated(wishes.filter((w) => w.id !== id));
+      setNotice(`Ucapan doa restu ${name ? `dari ${name}` : ""} berhasil dihapus.`);
+    } catch (err: any) {
+      setError(err?.message || "Gagal menghapus ucapan doa restu.");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleDeleteRsvp = async (id: string | number, guestName?: string) => {
+    const label = guestName ? `dari "${guestName}"` : "ini";
+    if (!window.confirm(`Hapus data konfirmasi kehadiran dan pesan RSVP ${label}?`)) return;
+
+    setBusyId(`rsvp_${id}`);
+    setError("");
+    setNotice("");
+    try {
+      const ok = await deleteRsvpApi(id);
+      if (!ok) throw new Error("Server gagal menghapus data konfirmasi RSVP.");
+
+      setRsvpList((prev) => prev.filter((r) => r.id !== id && String(r.id) !== String(id)));
+      await refreshRsvps();
+      setNotice(`Konfirmasi RSVP dan pesan ${guestName ? `dari ${guestName}` : ""} berhasil dihapus.`);
+    } catch (err: any) {
+      setError(err?.message || "Gagal menghapus konfirmasi RSVP.");
+    } finally {
+      setBusyId(null);
     }
   };
 
@@ -105,6 +150,39 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
           </button>
         </div>
       </div>
+
+      {/* Alert Notices */}
+      {notice && (
+        <div className="flex items-center justify-between gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+            <span>{notice}</span>
+          </div>
+          <button
+            onClick={() => setNotice("")}
+            className="p-1 rounded-md text-emerald-600 hover:bg-emerald-100 transition-colors"
+            title="Tutup pesan"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center justify-between gap-3 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={() => setError("")}
+            className="p-1 rounded-md text-rose-600 hover:bg-rose-100 transition-colors"
+            title="Tutup pesan"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* 4 KPI Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -209,6 +287,7 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                       <th className="py-3.5 px-4 text-center">Jumlah Pax</th>
                       <th className="py-3.5 px-5">Pesan RSVP</th>
                       <th className="py-3.5 px-5 text-right">Waktu Konfirmasi</th>
+                      <th className="py-3.5 px-4 text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -242,8 +321,8 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                             <span
                               className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium border ${
                                 r.status === 1
-                                  ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
-                                  : "bg-rose-50 text-rose-800 border-rose-200/80"
+                                    ? "bg-emerald-50 text-emerald-800 border-emerald-200/80"
+                                    : "bg-rose-50 text-rose-800 border-rose-200/80"
                               }`}
                             >
                               {r.status === 1 ? "Pasti Hadir" : "Tidak Hadir"}
@@ -260,6 +339,20 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                           </td>
                           <td className="py-3.5 px-5 text-right text-slate-500 font-mono text-[10px]">
                             {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
+                          </td>
+                          <td className="py-3.5 px-4 text-center">
+                            <button
+                              onClick={() => handleDeleteRsvp(r.id, r.guestName)}
+                              disabled={busyId === `rsvp_${r.id}`}
+                              className="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors cursor-pointer disabled:opacity-50"
+                              title="Hapus konfirmasi kehadiran & komentar ini"
+                            >
+                              {busyId === `rsvp_${r.id}` ? (
+                                <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                              ) : (
+                                <Trash2 className="w-4 h-4" />
+                              )}
+                            </button>
                           </td>
                         </tr>
                       );
@@ -330,8 +423,23 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                         </p>
                       )}
 
-                      <div className="text-[10px] font-mono text-slate-500 text-right">
-                        {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <div className="text-[10px] font-mono text-slate-500">
+                          {r.submittedAt ? new Date(r.submittedAt).toLocaleString("id-ID") : "-"}
+                        </div>
+                        <button
+                          onClick={() => handleDeleteRsvp(r.id, r.guestName)}
+                          disabled={busyId === `rsvp_${r.id}`}
+                          className="min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200/80 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                          title="Hapus konfirmasi kehadiran & komentar ini"
+                        >
+                          {busyId === `rsvp_${r.id}` ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Trash2 className="w-3.5 h-3.5" />
+                          )}
+                          <span>Hapus</span>
+                        </button>
                       </div>
                     </div>
                   );
@@ -419,11 +527,16 @@ export function RsvpManager({ wishes, onWishesUpdated }: RsvpManagerProps) {
                     </span>
 
                     <button
-                      onClick={() => handleDelete(item.id)}
-                      className="min-h-[40px] px-3.5 py-2 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200/60 hover:border-rose-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-                      title="Hapus ucapan ini"
+                      onClick={() => handleDeleteWish(item.id, item.name)}
+                      disabled={busyId === `wish_${item.id}`}
+                      className="min-h-[40px] px-3.5 py-2 rounded-xl hover:bg-rose-50 text-slate-500 hover:text-rose-600 border border-slate-200/60 hover:border-rose-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      title="Hapus ucapan doa restu ini"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      {busyId === `wish_${item.id}` ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-500" />
+                      ) : (
+                        <Trash2 className="w-3.5 h-3.5" />
+                      )}
                       <span>Hapus</span>
                     </button>
                   </div>

@@ -361,6 +361,13 @@ export async function submitRsvpApi(params: {
   return { success: true, data: data.data };
 }
 
+export async function deleteRsvpApi(id: string | number): Promise<boolean> {
+  const { error } = await apiRequest(`/rsvps/${encodeURIComponent(String(id))}`, {
+    method: "DELETE",
+  });
+  return !error;
+}
+
 // ----------------------------------------------------
 // WISHES & RSVP API
 // ----------------------------------------------------
@@ -398,7 +405,7 @@ export async function updateWishStatusApi(
 }
 
 export async function deleteWishFromBackend(id: string): Promise<boolean> {
-  const { error } = await apiRequest(`/wishes/${id}`, {
+  const { error } = await apiRequest(`/wishes/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
   return !error;
