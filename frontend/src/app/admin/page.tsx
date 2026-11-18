@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -145,6 +145,90 @@ function AdminDashboardContent() {
     setIsCopiedPublicLink(true);
     setTimeout(() => setIsCopiedPublicLink(false), 2000);
   };
+
+  const defaultPosterPhoto = useMemo(() => {
+    return (
+      invitationData.general?.coverPhotoUrl ||
+      invitationData.general?.heroPhotoUrl ||
+      invitationData.general?.preweddingPhotos?.[0] ||
+      invitationData.couple?.groom?.photoUrl ||
+      "/images/paper-keepsake/couple-watercolor-keepsake.jpg"
+    );
+  }, [invitationData]);
+
+  const posterAvailablePhotos = useMemo(() => {
+    const raw = [
+      ...(invitationData.general?.coverPhotoUrl
+        ? [
+            {
+              id: "cover",
+              label: "Foto Sampul Undangan",
+              url: invitationData.general.coverPhotoUrl,
+              category: "Undangan",
+            },
+          ]
+        : []),
+      ...(invitationData.general?.heroPhotoUrl
+        ? [
+            {
+              id: "hero",
+              label: "Foto Utama (Hero)",
+              url: invitationData.general.heroPhotoUrl,
+              category: "Undangan",
+            },
+          ]
+        : []),
+      ...(invitationData.general?.closingPhotoUrl
+        ? [
+            {
+              id: "closing",
+              label: "Foto Penutup Undangan",
+              url: invitationData.general.closingPhotoUrl,
+              category: "Undangan",
+            },
+          ]
+        : []),
+      ...(invitationData.general?.preweddingPhotos || []).map((url, idx) => ({
+        id: `prewed-${idx}`,
+        label: `Prewedding #${idx + 1}`,
+        url,
+        category: "Prewedding",
+      })),
+      ...(invitationData.couple?.groom?.photoUrl
+        ? [
+            {
+              id: "groom",
+              label: "Foto Pengantin Pria",
+              url: invitationData.couple.groom.photoUrl,
+              category: "Pengantin",
+            },
+          ]
+        : []),
+      ...(invitationData.couple?.bride?.photoUrl
+        ? [
+            {
+              id: "bride",
+              label: "Foto Pengantin Wanita",
+              url: invitationData.couple.bride.photoUrl,
+              category: "Pengantin",
+            },
+          ]
+        : []),
+      {
+        id: "watercolor-default",
+        label: "Ilustrasi Cat Air",
+        url: "/images/paper-keepsake/couple-watercolor-keepsake.jpg",
+        category: "Ilustrasi",
+      },
+    ];
+
+    const seen = new Set<string>();
+    return raw.filter((item) => {
+      if (!item.url || seen.has(item.url)) return false;
+      seen.add(item.url);
+      return true;
+    });
+  }, [invitationData]);
 
   const navGroups: NavGroup[] = [
     {
@@ -838,6 +922,8 @@ function AdminDashboardContent() {
             : "Rabu, 28 Oktober 2026 • Jakarta"
         }
         hashtag={invitationData.general?.hashtag || "#GilangSalsaWedding"}
+        defaultCouplePhoto={defaultPosterPhoto}
+        availablePhotos={posterAvailablePhotos}
       />
 
       {/* Mobile Fixed Bottom Navigation Bar (< lg) */}

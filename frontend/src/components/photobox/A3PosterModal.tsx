@@ -19,8 +19,11 @@ import {
   ChevronDown,
   Layers,
   Scissors,
+  Image as ImageIcon,
+  Upload,
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { uploadImageFile } from "@/lib/imageUpload";
 import {
   A3PosterTheme,
   PosterPaperSize,
@@ -29,6 +32,13 @@ import {
 } from "./a3PosterCanvas";
 import { downloadCanvasImage } from "./photoDownload";
 import { IOSPhotoSaveModal } from "./IOSPhotoSaveModal";
+
+export interface PhotoOptionItem {
+  id: string;
+  label: string;
+  url: string;
+  category?: string;
+}
 
 export interface A3PosterModalProps {
   isOpen: boolean;
@@ -40,6 +50,8 @@ export interface A3PosterModalProps {
   coupleNames?: string;
   weddingDate?: string;
   hashtag?: string;
+  defaultCouplePhoto?: string;
+  availablePhotos?: PhotoOptionItem[];
 }
 
 export function A3PosterModal({
@@ -52,10 +64,17 @@ export function A3PosterModal({
   coupleNames = "GILANG & SALSADILA",
   weddingDate = "Rabu, 28 Oktober 2026 • Jakarta",
   hashtag = "#GilangSalsaWedding",
+  defaultCouplePhoto,
+  availablePhotos = [],
 }: A3PosterModalProps) {
   const [theme, setTheme] = useState<A3PosterTheme>("emerald-gold");
   const [paperSize, setPaperSize] = useState<PosterPaperSize>(defaultPaperSize);
   const [multiUpOnA4, setMultiUpOnA4] = useState<boolean>(false);
+
+  const [selectedPhotoUrl, setSelectedPhotoUrl] = useState<string>(
+    defaultCouplePhoto || "/images/paper-keepsake/couple-watercolor-keepsake.jpg"
+  );
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState<boolean>(false);
 
   const [targetUrl, setTargetUrl] = useState<string>(
     defaultUrl || "https://cut-fishing-postal-violations.trycloudflare.com/photobox"
@@ -104,7 +123,8 @@ export function A3PosterModal({
     if (coupleNames) setCustomCoupleNames(coupleNames);
     if (weddingDate) setCustomWeddingDate(weddingDate);
     if (hashtag) setCustomHashtag(hashtag);
-  }, [defaultPasscode, coupleNames, weddingDate, hashtag]);
+    if (defaultCouplePhoto) setSelectedPhotoUrl(defaultCouplePhoto);
+  }, [defaultPasscode, coupleNames, weddingDate, hashtag, defaultCouplePhoto]);
 
   // When switching paper size, reset multiUp if the new size doesn't support it
   const currentSizeConfig = POSTER_SIZES[paperSize] || POSTER_SIZES.a4;
@@ -113,6 +133,29 @@ export function A3PosterModal({
       setMultiUpOnA4(false);
     }
   }, [paperSize, currentSizeConfig.supportsA4MultiUp, multiUpOnA4]);
+
+  const handleCustomPhotoUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingPhoto(true);
+      const localPreview = URL.createObjectURL(file);
+      setSelectedPhotoUrl(localPreview);
+
+      const uploadedUrl = await uploadImageFile(file);
+      if (uploadedUrl) {
+        setSelectedPhotoUrl(uploadedUrl);
+      }
+    } catch (err) {
+      console.warn("Gagal mengunggah foto khusus poster:", err);
+    } finally {
+      setIsUploadingPhoto(false);
+      e.target.value = "";
+    }
+  };
 
   // Re-generate preview whenever options change
   useEffect(() => {
@@ -134,6 +177,7 @@ export function A3PosterModal({
           weddingDate: customWeddingDate.trim() || "Rabu, 28 Oktober 2026 • Jakarta",
           hashtag: customHashtag.trim() || "#GilangSalsaWedding",
           passcode: posterPasscode.trim(),
+          couplePhotoUrl: selectedPhotoUrl,
           wifiInfo: includeWifi
             ? {
                 enabled: true,
@@ -169,6 +213,7 @@ export function A3PosterModal({
     customWeddingDate,
     customHashtag,
     weddingTitle,
+    selectedPhotoUrl,
     includeWifi,
     wifiSsid,
     wifiPassword,
@@ -190,6 +235,7 @@ export function A3PosterModal({
         weddingDate: customWeddingDate.trim() || "Rabu, 28 Oktober 2026 • Jakarta",
         hashtag: customHashtag.trim() || "#GilangSalsaWedding",
         passcode: posterPasscode.trim(),
+        couplePhotoUrl: selectedPhotoUrl,
         wifiInfo: includeWifi
           ? {
               enabled: true,
@@ -256,6 +302,7 @@ export function A3PosterModal({
         weddingDate: customWeddingDate.trim() || "Rabu, 28 Oktober 2026 • Jakarta",
         hashtag: customHashtag.trim() || "#GilangSalsaWedding",
         passcode: posterPasscode.trim(),
+        couplePhotoUrl: selectedPhotoUrl,
         wifiInfo: includeWifi
           ? {
               enabled: true,
@@ -598,7 +645,102 @@ export function A3PosterModal({
               </div>
             </div>
 
-            {/* 3. Target Link & Passcode */}
+            {/* 3. Photo Customization */}
+            <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
+                  <ImageIcon className="w-4 h-4 text-[#8C6239]" />
+                  <span>Foto Pasangan di Medali Poster:</span>
+                </label>
+                <span className="text-[10px] font-mono font-bold text-[#8C6239] bg-[#FAF6EE] px-2 py-0.5 rounded-md border border-[#E8DFC8]">
+                  Medali Tengah
+                </span>
+              </div>
+
+              <p className="text-[10px] text-[#786551] leading-relaxed">
+                Foto di medali lingkaran otomatis mengambil dari foto yang Anda upload di undangan. Anda juga bisa memilih foto lain atau upload foto baru.
+              </p>
+
+              {/* Current Active Photo Banner & Upload Trigger */}
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-[#FAF6EE] border border-[#E8DFC8]">
+                <div className="relative w-12 h-12 rounded-full border-2 border-[#8C6239] overflow-hidden shadow-xs shrink-0 bg-white">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selectedPhotoUrl}
+                    alt="Foto Pasangan di Poster"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-[#4A121A] truncate">
+                    {availablePhotos.find((p) => p.url === selectedPhotoUrl)?.label || "Foto Kustom / Upload"}
+                  </div>
+                  <p className="text-[10px] text-[#786551] truncate mt-0.5">
+                    Ditampilkan di medali lingkaran emas poster
+                  </p>
+                </div>
+                <label className="min-h-[44px] px-3 py-1.5 rounded-xl bg-white hover:bg-[#FAF6EE] text-[#4A121A] border border-[#E8DFC8] text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs transition-colors shrink-0">
+                  <Upload className="w-3.5 h-3.5 text-[#8C6239]" />
+                  <span>{isUploadingPhoto ? "Memuat..." : "Upload"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={isUploadingPhoto}
+                    className="hidden"
+                    onChange={handleCustomPhotoUpload}
+                  />
+                </label>
+              </div>
+
+              {/* Quick Select Options from Uploaded Invitation Photos */}
+              {availablePhotos.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[10px] font-semibold text-[#5A4D3E]">
+                    Pilih Cepat dari Foto Undangan:
+                  </span>
+                  <div className="grid grid-cols-2 gap-1.5 max-h-44 overflow-y-auto pr-0.5">
+                    {availablePhotos.map((photo) => {
+                      const isSelected = selectedPhotoUrl === photo.url;
+                      return (
+                        <button
+                          key={photo.id}
+                          type="button"
+                          onClick={() => setSelectedPhotoUrl(photo.url)}
+                          className={`p-1.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2 min-h-[44px] ${
+                            isSelected
+                              ? "border-[#4A121A] bg-[#4A121A] text-[#DFD2BD] shadow-2xs font-bold ring-1 ring-[#4A121A]"
+                              : "border-[#E8DFC8] bg-white hover:bg-[#FAF6EE] text-[#3A332C]"
+                          }`}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={photo.url}
+                            alt={photo.label}
+                            className="w-7 h-7 rounded-full object-cover border border-current/20 shrink-0 bg-slate-100"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[10px] truncate leading-tight">
+                              {photo.label}
+                            </p>
+                            {photo.category && (
+                              <span
+                                className={`text-[8px] uppercase font-mono block truncate ${
+                                  isSelected ? "text-[#DFD2BD]/80" : "text-[#786551]"
+                                }`}
+                              >
+                                {photo.category}
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Target Link & Passcode */}
             <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5">
@@ -647,7 +789,7 @@ export function A3PosterModal({
               </div>
             </div>
 
-            {/* 4. Collapsible Text Customization */}
+            {/* 5. Collapsible Text Customization */}
             <div className="bg-white rounded-2xl border border-[#E8DFC8] shadow-xs overflow-hidden">
               <button
                 type="button"
@@ -704,7 +846,7 @@ export function A3PosterModal({
               )}
             </div>
 
-            {/* 5. Optional WiFi Details */}
+            {/* 6. Optional WiFi Details */}
             <div className="bg-white p-4 rounded-2xl border border-[#E8DFC8] shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-[#4A121A] flex items-center gap-1.5 cursor-pointer">

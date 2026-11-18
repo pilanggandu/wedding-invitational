@@ -156,6 +156,7 @@ export interface PosterOptions {
   weddingDate?: string;
   hashtag?: string;
   passcode?: string;
+  couplePhotoUrl?: string; // Foto pasangan dari undangan atau kustom
   wifiInfo?: {
     enabled: boolean;
     ssid: string;
@@ -180,9 +181,20 @@ export const A4_HEIGHT = 3508;
 const loadImage = (src: string): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    if (!src.startsWith("data:") && !src.startsWith("blob:")) {
+      img.crossOrigin = "anonymous";
+    }
     img.onload = () => resolve(img);
-    img.onerror = (e) => reject(e);
+    img.onerror = (e) => {
+      if (img.crossOrigin) {
+        const fallbackImg = new Image();
+        fallbackImg.onload = () => resolve(fallbackImg);
+        fallbackImg.onerror = (err) => reject(err);
+        fallbackImg.src = src;
+      } else {
+        reject(e);
+      }
+    };
     img.src = src;
   });
 };
@@ -201,6 +213,7 @@ async function renderMasterPoster(
     weddingDate = "Rabu, 28 Oktober 2026 • Jakarta",
     hashtag = "#GilangSalsaWedding",
     passcode = "2026",
+    couplePhotoUrl,
     wifiInfo,
   } = options;
 
@@ -246,13 +259,23 @@ async function renderMasterPoster(
   let waxSealImg: HTMLImageElement | null = null;
   let ringsImg: HTMLImageElement | null = null;
 
-  try {
-    coupleArtImg = await loadImage("/images/paper-keepsake/couple-watercolor-keepsake.jpg");
-  } catch {
+  if (couplePhotoUrl) {
     try {
-      coupleArtImg = await loadImage("/images/prewedding/couple-1.jpg");
+      coupleArtImg = await loadImage(couplePhotoUrl);
+    } catch (err) {
+      console.warn("Gagal memuat couplePhotoUrl kustom poster, beralih ke fallback:", err);
+    }
+  }
+
+  if (!coupleArtImg) {
+    try {
+      coupleArtImg = await loadImage("/images/paper-keepsake/couple-watercolor-keepsake.jpg");
     } catch {
-      // fallback
+      try {
+        coupleArtImg = await loadImage("/images/prewedding/couple-1.jpg");
+      } catch {
+        // fallback
+      }
     }
   }
 
@@ -494,12 +517,37 @@ async function renderMasterPoster(
     ctx.beginPath();
     ctx.arc(MASTER_WIDTH / 2, medallionCenterY, medallionRadius, 0, Math.PI * 2);
     ctx.clip();
+
+    // Center-crop (aspect-ratio cover) to ensure any photo aspect ratio is fitted without distortion
+    const nw = coupleArtImg.naturalWidth || coupleArtImg.width || 1;
+    const nh = coupleArtImg.naturalHeight || coupleArtImg.height || 1;
+    const targetSize = medallionRadius * 2;
+    const targetX = MASTER_WIDTH / 2 - medallionRadius;
+    const targetY = medallionCenterY - medallionRadius;
+
+    let sx = 0;
+    let sy = 0;
+    let sw = nw;
+    let sh = nh;
+
+    if (nw > nh) {
+      sw = nh;
+      sx = (nw - nh) / 2;
+    } else if (nh > nw) {
+      sh = nw;
+      sy = (nh - nw) / 2;
+    }
+
     ctx.drawImage(
       coupleArtImg,
-      MASTER_WIDTH / 2 - medallionRadius,
-      medallionCenterY - medallionRadius,
-      medallionRadius * 2,
-      medallionRadius * 2
+      sx,
+      sy,
+      sw,
+      sh,
+      targetX,
+      targetY,
+      targetSize,
+      targetSize
     );
     ctx.restore();
 
