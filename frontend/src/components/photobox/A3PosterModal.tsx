@@ -27,6 +27,8 @@ import {
   POSTER_SIZES,
   generatePosterCanvas,
 } from "./a3PosterCanvas";
+import { downloadCanvasImage } from "./photoDownload";
+import { IOSPhotoSaveModal } from "./IOSPhotoSaveModal";
 
 export interface A3PosterModalProps {
   isOpen: boolean;
@@ -77,6 +79,11 @@ export function A3PosterModal({
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+  const [iosSaveModalData, setIosSaveModalData] = useState<{
+    imageUrl: string;
+    blob?: Blob;
+    filename?: string;
+  } | null>(null);
 
   // Initialize URL and couple names on mount
   useEffect(() => {
@@ -210,10 +217,21 @@ export function A3PosterModal({
         ? `${paperSize.toUpperCase()}-multiup-A4`
         : paperSize.toUpperCase();
 
-      const link = document.createElement("a");
-      link.download = `poster-qrcode-photobox-${sizePrefix}-${theme}-${Date.now()}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      const filename = `poster-qrcode-photobox-${sizePrefix}-${theme}-${Date.now()}.png`;
+
+      const result = await downloadCanvasImage(canvas, {
+        filename,
+        title: "Poster QR Photobox Gilang & Salsa",
+        text: "Poster QR Code Akses Bilik Foto Gilang & Salsadila",
+      });
+
+      if (result.method === "modal") {
+        setIosSaveModalData({
+          imageUrl: result.blobUrl,
+          blob: result.blob,
+          filename: result.filename,
+        });
+      }
     } catch (err) {
       console.error("Export error:", err);
       alert("Gagal mengunduh poster. Silakan coba kembali.");
@@ -829,6 +847,16 @@ export function A3PosterModal({
             Tutup
           </button>
         </div>
+
+        {/* Modal Panduan Simpan Gambar iOS */}
+        <IOSPhotoSaveModal
+          isOpen={Boolean(iosSaveModalData)}
+          onClose={() => setIosSaveModalData(null)}
+          imageUrl={iosSaveModalData?.imageUrl || ""}
+          blob={iosSaveModalData?.blob}
+          filename={iosSaveModalData?.filename}
+          title="Poster QR Photobox Gilang & Salsa"
+        />
       </motion.div>
     </div>
   );

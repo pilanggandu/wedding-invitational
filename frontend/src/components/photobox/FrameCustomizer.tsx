@@ -55,6 +55,8 @@ import {
 import { generatePhotoboxCanvas } from "./canvasExport";
 import { LayoutWireframe } from "./LayoutWireframe";
 import { PhotoboxCustomizerDraft } from "./photoboxStorage";
+import { downloadCanvasImage, canvasToBlob } from "./photoDownload";
+import { IOSPhotoSaveModal } from "./IOSPhotoSaveModal";
 
 export interface AestheticPreset {
   id: string;
@@ -256,6 +258,11 @@ export function FrameCustomizer({
   >("presets");
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+  const [iosSaveModalData, setIosSaveModalData] = useState<{
+    imageUrl: string;
+    blob?: Blob;
+    filename?: string;
+  } | null>(null);
 
   // Mobile fit-to-view auto scale state & scroll reset refs
   const [isFitToView, setIsFitToView] = useState<boolean>(true);
@@ -766,12 +773,22 @@ export function FrameCustomizer({
         // Confetti fallback
       }
 
-      const dataUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
       const safeTitle = (customTitle || currentTemplate.name).toLowerCase().replace(/\s+/g, "-");
-      link.download = `photobox-${safeTitle}-${Date.now()}.png`;
-      link.href = dataUrl;
-      link.click();
+      const filename = `photobox-${safeTitle}-${Date.now()}.png`;
+
+      const result = await downloadCanvasImage(canvas, {
+        filename,
+        title: customTitle || "Foto Photobox Gilang & Salsa",
+        text: customSubtitle || "Kenangan Photobox Pernikahan Gilang & Salsadila",
+      });
+
+      if (result.method === "modal") {
+        setIosSaveModalData({
+          imageUrl: result.blobUrl,
+          blob: result.blob,
+          filename: result.filename,
+        });
+      }
     } catch (err) {
       console.error("Export error:", err);
       alert("Terjadi kesalahan saat memproses gambar. Silakan coba kembali.");
@@ -797,20 +814,19 @@ export function FrameCustomizer({
         stickers,
       });
 
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ "image/png": blob }),
-          ]);
-          setCopySuccess(true);
-          setTimeout(() => setCopySuccess(false), 2500);
-        } catch {
-          alert("Browser tidak mendukung salin langsung gambar ke papan klip.");
-        }
-      });
+      const blob = await canvasToBlob(canvas, "image/png");
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ]);
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2500);
+      } else {
+        alert("Browser tidak mendukung salin langsung gambar ke papan klip.");
+      }
     } catch (err) {
       console.error("Copy error:", err);
+      alert("Browser tidak mendukung salin langsung gambar ke papan klip.");
     } finally {
       setIsExporting(false);
     }
@@ -3096,6 +3112,16 @@ export function FrameCustomizer({
           </div>
         </div>
       )}
+
+      {/* Modal Panduan Simpan Foto iOS / In-App Browser */}
+      <IOSPhotoSaveModal
+        isOpen={Boolean(iosSaveModalData)}
+        onClose={() => setIosSaveModalData(null)}
+        imageUrl={iosSaveModalData?.imageUrl || ""}
+        blob={iosSaveModalData?.blob}
+        filename={iosSaveModalData?.filename}
+        title={customTitle || currentTemplate.name}
+      />
     </div>
   );
 }
