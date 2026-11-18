@@ -3,8 +3,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Camera, Check, Heart, ArrowRight } from "lucide-react";
+import { PhotoboxFlowLayout, getFlowLayoutShotsCount } from "./photoboxConfig";
 
-export type PhotoboxFlowLayout = "strip-3" | "strip-2";
+export { type PhotoboxFlowLayout };
 
 interface PhotoboxLayoutSelectProps {
   selectedLayout: PhotoboxFlowLayout;
@@ -12,11 +13,58 @@ interface PhotoboxLayoutSelectProps {
   onStartPhoto: () => void;
 }
 
+interface FrameOption {
+  id: PhotoboxFlowLayout;
+  name: string;
+  badge: string;
+  shots: number;
+  description: string;
+  previewUrl: string;
+}
+
+const FRAME_OPTIONS: FrameOption[] = [
+  {
+    id: "strip-2",
+    name: "2 Foto • Album Spiral",
+    badge: "Favorit Duo 💍",
+    shots: 2,
+    description: "2 foto bertingkat dengan aksen spiral binder album di tengah.",
+    previewUrl: "/images/frame-sadil-gilang-duo.png",
+  },
+  {
+    id: "strip-3",
+    name: "3 Foto • Trio Strip",
+    badge: "Strip Populer ⭐",
+    shots: 3,
+    description: "3 pose berekspresi bertingkat di dalam bingkai renda bunga.",
+    previewUrl: "/images/frame-sadil-gilang-full.png",
+  },
+  {
+    id: "single-card",
+    name: "1 Foto • Kartu Renda",
+    badge: "Solo Elegan ✨",
+    shots: 1,
+    description: "1 pose fokus di kartu renda tengah berhias kembang sepatu.",
+    previewUrl: "/images/frame-sadil-gilang-single.png",
+  },
+  {
+    id: "single-full",
+    name: "1 Foto • Potret Megah",
+    badge: "Lace Window 🌺",
+    shots: 1,
+    description: "1 foto potret besar memenuhi seluruh bingkai renda bordir.",
+    previewUrl: "/images/frame-sadil-gilang-full.png",
+  },
+];
+
 export function PhotoboxLayoutSelect({
   selectedLayout,
   onSelectLayout,
   onStartPhoto,
 }: PhotoboxLayoutSelectProps) {
+  const currentOption =
+    FRAME_OPTIONS.find((f) => f.id === selectedLayout) || FRAME_OPTIONS[0];
+
   return (
     <div className="min-h-dvh bg-[#FAF6EE] text-[#3A332C] flex flex-col font-sans selection:bg-[#DFD2BD] selection:text-[#4A121A]">
       {/* Top Header */}
@@ -29,7 +77,7 @@ export function PhotoboxLayoutSelect({
             <h1 className="font-serif font-bold text-sm sm:text-base text-[#4A121A] leading-tight">
               Photobox Kenangan
             </h1>
-            <p className="text-[11px] text-[#786551]">Gilang & Salsa • 28 Nov 2026</p>
+            <p className="text-[11px] text-[#786551]">Sadil & Gilang • 21 Nov 2026</p>
           </div>
         </div>
 
@@ -40,172 +88,104 @@ export function PhotoboxLayoutSelect({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-xl w-full mx-auto px-4 py-6 sm:py-8 flex flex-col justify-between">
-        <div className="space-y-6">
+      <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-5 sm:py-8 flex flex-col justify-between">
+        <div className="space-y-5">
           {/* Welcome Text */}
-          <div className="text-center space-y-1.5">
+          <div className="text-center space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A121A]/10 text-[#4A121A] text-xs font-semibold">
               <Heart className="w-3.5 h-3.5 fill-[#4A121A] text-[#4A121A]" />
-              <span>Step 1: Pilih Layout Foto</span>
+              <span>Step 1: Pilih Frame & Layout</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#4A121A] tracking-tight">
-              Mau 3 Foto atau 2 Foto?
+              Pilih Gaya Frame Favoritmu
             </h2>
-            <p className="text-xs sm:text-sm text-[#786551] max-w-sm mx-auto">
-              Frame eksklusif pernikahan Gilang & Salsa sudah siap. Pilih jumlah foto yang kamu inginkan.
+            <p className="text-xs sm:text-sm text-[#786551] max-w-md mx-auto">
+              Frame resmi bordir beludru Sadil & Gilang. Pilih jumlah foto yang ingin kamu ambil.
             </p>
           </div>
 
-          {/* Layout Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-5">
-            {/* Opsi 1: 3 Foto */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onSelectLayout("strip-3")}
-              className={`relative rounded-2xl p-3.5 sm:p-5 text-left border-2 transition-all flex flex-col justify-between cursor-pointer ${
-                selectedLayout === "strip-3"
-                  ? "bg-white border-[#4A121A] shadow-lg ring-2 ring-[#4A121A]/20"
-                  : "bg-white/70 border-[#E8DFC8] hover:border-[#C5B7A1] hover:bg-white"
-              }`}
-            >
-              {/* Badge */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C99A45]/20 text-[#8C6239] border border-[#C99A45]/30">
-                  Favorit ⭐
-                </span>
-                <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                    selectedLayout === "strip-3"
-                      ? "bg-[#4A121A] text-white"
-                      : "border border-[#C5B7A1]"
+          {/* Layout Grid Cards */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {FRAME_OPTIONS.map((opt) => {
+              const isSelected = selectedLayout === opt.id;
+              return (
+                <motion.button
+                  key={opt.id}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onSelectLayout(opt.id)}
+                  className={`relative rounded-2xl p-3 sm:p-4 text-left border-2 transition-all flex flex-col justify-between cursor-pointer ${
+                    isSelected
+                      ? "bg-white border-[#4A121A] shadow-lg ring-2 ring-[#4A121A]/20"
+                      : "bg-white/70 border-[#E8DFC8] hover:border-[#C5B7A1] hover:bg-white"
                   }`}
                 >
-                  {selectedLayout === "strip-3" && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                </div>
-              </div>
-
-              {/* Wireframe Mockup Preview */}
-              <div className="w-full aspect-9/16 max-h-[190px] sm:max-h-[220px] bg-[#260304] rounded-lg p-2 flex flex-col justify-between border border-[#C99A45]/40 shadow-inner my-1 mx-auto max-w-[120px]">
-                <div className="text-center pt-0.5">
-                  <div className="text-[6px] tracking-widest text-[#DFD2BD] font-serif uppercase">
-                    The Wedding Of
+                  {/* Badge Header */}
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#4A121A]/10 text-[#4A121A]">
+                      {opt.badge}
+                    </span>
+                    <div
+                      className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "bg-[#4A121A] text-white"
+                          : "border border-[#C5B7A1]"
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                    </div>
                   </div>
-                  <div className="text-[7px] font-serif font-bold text-[#FAF1D9]">
-                    Gilang & Salsa
-                  </div>
-                </div>
 
-                <div className="flex-1 flex flex-col justify-center gap-1 my-1">
-                  <div className="h-[26%] bg-[#FAF1D9]/20 rounded-xs border border-[#C99A45]/50 flex items-center justify-center">
-                    <span className="text-[8px] text-[#FAF1D9]">1</span>
+                  {/* Frame Image Thumbnail */}
+                  <div className="w-full aspect-9/16 max-h-[170px] sm:max-h-[200px] rounded-lg overflow-hidden border border-[#4A121A]/20 shadow-md my-1 mx-auto max-w-[110px] bg-[#260304] relative">
+                    <img
+                      src={opt.previewUrl}
+                      alt={opt.name}
+                      className="w-full h-full object-contain"
+                    />
+                    {/* Visual slot indicator overlay */}
+                    {opt.id === "strip-3" && (
+                      <div className="absolute inset-0 flex flex-col justify-center items-center gap-1.5 p-3 pointer-events-none">
+                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
+                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
+                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
+                      </div>
+                    )}
                   </div>
-                  <div className="h-[26%] bg-[#FAF1D9]/20 rounded-xs border border-[#C99A45]/50 flex items-center justify-center">
-                    <span className="text-[8px] text-[#FAF1D9]">2</span>
+
+                  {/* Info Text */}
+                  <div className="mt-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-serif font-bold text-xs sm:text-sm text-[#4A121A] truncate">
+                        {opt.name}
+                      </span>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-[#786551] mt-0.5 line-clamp-2 leading-tight">
+                      {opt.description}
+                    </p>
                   </div>
-                  <div className="h-[26%] bg-[#FAF1D9]/20 rounded-xs border border-[#C99A45]/50 flex items-center justify-center">
-                    <span className="text-[8px] text-[#FAF1D9]">3</span>
-                  </div>
-                </div>
-
-                <div className="text-center pb-0.5">
-                  <div className="text-[5px] text-[#DFD2BD]">28 Nov 2026</div>
-                </div>
-              </div>
-
-              {/* Info Text */}
-              <div className="mt-3">
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4A121A]">
-                  3 Foto (Trio)
-                </div>
-                <p className="text-[11px] text-[#786551] mt-0.5 leading-snug">
-                  Format strip Korea klasik. Pas untuk ekspresi seru bertingkat.
-                </p>
-              </div>
-            </motion.button>
-
-            {/* Opsi 2: 2 Foto */}
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onSelectLayout("strip-2")}
-              className={`relative rounded-2xl p-3.5 sm:p-5 text-left border-2 transition-all flex flex-col justify-between cursor-pointer ${
-                selectedLayout === "strip-2"
-                  ? "bg-white border-[#4A121A] shadow-lg ring-2 ring-[#4A121A]/20"
-                  : "bg-white/70 border-[#E8DFC8] hover:border-[#C5B7A1] hover:bg-white"
-              }`}
-            >
-              {/* Badge */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#4A121A]/10 text-[#4A121A] border border-[#4A121A]/20">
-                  Resmi 💍
-                </span>
-                <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
-                    selectedLayout === "strip-2"
-                      ? "bg-[#4A121A] text-white"
-                      : "border border-[#C5B7A1]"
-                  }`}
-                >
-                  {selectedLayout === "strip-2" && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                </div>
-              </div>
-
-              {/* Wireframe Mockup Preview */}
-              <div className="w-full aspect-9/16 max-h-[190px] sm:max-h-[220px] bg-[#260304] rounded-lg p-2 flex flex-col justify-between border border-[#C99A45]/40 shadow-inner my-1 mx-auto max-w-[120px] relative overflow-hidden">
-                <div className="text-center pt-1">
-                  <div className="text-[6px] tracking-widest text-[#DFD2BD] font-serif uppercase">
-                    The Wedding Of
-                  </div>
-                  <div className="text-[7px] font-serif font-bold text-[#FAF1D9]">
-                    Sadil & Gilang
-                  </div>
-                </div>
-
-                <div className="flex-1 flex flex-col justify-center gap-1.5 my-1">
-                  <div className="h-[36%] bg-[#FAF1D9]/20 rounded-xs border border-[#C99A45]/60 flex items-center justify-center">
-                    <span className="text-[8px] text-[#FAF1D9]">1</span>
-                  </div>
-                  <div className="h-[36%] bg-[#FAF1D9]/20 rounded-xs border border-[#C99A45]/60 flex items-center justify-center">
-                    <span className="text-[8px] text-[#FAF1D9]">2</span>
-                  </div>
-                </div>
-
-                <div className="text-center pb-1">
-                  <div className="text-[5px] text-[#DFD2BD]">28 Nov 2026</div>
-                </div>
-              </div>
-
-              {/* Info Text */}
-              <div className="mt-3">
-                <div className="font-serif font-bold text-sm sm:text-base text-[#4A121A]">
-                  2 Foto (Duo)
-                </div>
-                <p className="text-[11px] text-[#786551] mt-0.5 leading-snug">
-                  Frame resmi beludru Sadil & Gilang. Lebih lega & pas untuk berdua.
-                </p>
-              </div>
-            </motion.button>
+                </motion.button>
+              );
+            })}
           </div>
 
-          {/* Information Reassurance */}
-          <div className="bg-white/80 rounded-xl p-3.5 border border-[#E8DFC8] flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#4A121A]/5 text-[#4A121A] flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-[#C99A45]" />
-            </div>
-            <p className="text-xs text-[#786551] leading-relaxed">
-              Frame sudah otomatis dikunci dengan nama & tanggal pernikahan. Hasil unduhan siap diunggah ke Instagram Story tanpa crop.
+          {/* Reassurance Banner */}
+          <div className="bg-white/80 rounded-xl p-3 border border-[#E8DFC8] flex items-center gap-2.5">
+            <Sparkles className="w-4 h-4 text-[#C99A45] shrink-0" />
+            <p className="text-xs text-[#786551]">
+              Frame terkunci dengan identitas resmi Sadil & Gilang. Hasil otomatis 1080×1920 untuk Instagram Story.
             </p>
           </div>
         </div>
 
         {/* Bottom CTA Button */}
-        <div className="pt-6 sm:pt-8">
+        <div className="pt-4 sm:pt-6">
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={onStartPhoto}
             className="w-full py-4 px-6 rounded-2xl bg-[#4A121A] hover:bg-[#380D13] text-[#FAF1D9] font-semibold text-sm sm:text-base shadow-lg shadow-[#4A121A]/20 flex items-center justify-center gap-2 cursor-pointer transition-all"
           >
             <Camera className="w-5 h-5 text-[#C99A45]" />
-            <span>Mulai Foto ({selectedLayout === "strip-3" ? "3 Pose" : "2 Pose"})</span>
+            <span>Mulai Foto ({currentOption.shots} Pose)</span>
             <ArrowRight className="w-4 h-4 ml-1" />
           </motion.button>
         </div>

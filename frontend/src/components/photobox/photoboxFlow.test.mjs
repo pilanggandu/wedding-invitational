@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { FILTER_CSS_MAP, FILTER_PRESETS } from "./photoboxConfig.ts";
+import {
+  FILTER_CSS_MAP,
+  FILTER_PRESETS,
+  getFlowLayoutShotsCount,
+} from "./photoboxConfig.ts";
 
 test("FILTER_PRESETS contains essential wedding filters", () => {
   const ids = FILTER_PRESETS.map((p) => p.id);
@@ -27,4 +31,11 @@ test("Story IG resolution adheres to standard 9:16 aspect ratio (1080x1920)", ()
   const height = 1920;
   const ratio = width / height;
   assert.strictEqual(ratio, 9 / 16);
+});
+
+test("getFlowLayoutShotsCount returns accurate shot counts for all 4 official frames", () => {
+  assert.strictEqual(getFlowLayoutShotsCount("strip-2"), 2);
+  assert.strictEqual(getFlowLayoutShotsCount("strip-3"), 3);
+  assert.strictEqual(getFlowLayoutShotsCount("single-card"), 1);
+  assert.strictEqual(getFlowLayoutShotsCount("single-full"), 1);
 });

@@ -1,6 +1,24 @@
 import type { PhotoboxFilter } from "./types";
 
-export type PhotoboxFlowLayout = "strip-3" | "strip-2";
+export type PhotoboxFlowLayout =
+  | "strip-2"
+  | "strip-3"
+  | "single-card"
+  | "single-full";
+
+export function getFlowLayoutShotsCount(layout: PhotoboxFlowLayout): number {
+  switch (layout) {
+    case "single-card":
+    case "single-full":
+      return 1;
+    case "strip-2":
+      return 2;
+    case "strip-3":
+      return 3;
+    default:
+      return 2;
+  }
+}
 
 export const FILTER_CSS_MAP: Record<PhotoboxFilter, string> = {
   none: "none",

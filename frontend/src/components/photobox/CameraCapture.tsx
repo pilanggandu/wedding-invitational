@@ -333,6 +333,8 @@ export function CameraCapture({
   // Rasio safe area guide disesuaikan dengan jenis layout aktif
   const isSadilGilangSlot = layout === "strip-2" || layout === "2-strip";
   const isThreeShotSlot = layout === "strip-3" || layout === "3-strip";
+  const isSingleCardSlot = layout === "single-card";
+  const isSingleFullSlot = layout === "single-full";
   const isSquareLayout = layout === "grid-1";
 
   return (
@@ -475,9 +477,13 @@ export function CameraCapture({
         <div
           className={`relative w-[90vw] max-w-[480px] ${
             isSadilGilangSlot
-              ? "aspect-[606/356] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
+              ? "aspect-[586/436] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
               : isThreeShotSlot
-              ? "aspect-[720/370] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
+              ? "aspect-[790/403] max-h-[38vh] xs:max-h-[44vh] sm:max-h-[50vh]"
+              : isSingleCardSlot
+              ? "aspect-[586/941] max-h-[44vh] xs:max-h-[52vh] sm:max-h-[58vh]"
+              : isSingleFullSlot
+              ? "aspect-[809/1367] max-h-[44vh] xs:max-h-[52vh] sm:max-h-[58vh]"
               : isSquareLayout
               ? "aspect-square max-h-[36vh] xs:max-h-[42vh] sm:max-h-[50vh]"
               : "aspect-4/3 max-h-[38vh] xs:max-h-[44vh] sm:max-h-[56vh]"
@@ -515,6 +521,10 @@ export function CameraCapture({
               ? "Area Cetak • 2 Pose Sadil & Gilang"
               : isThreeShotSlot
               ? "Area Cetak • 3 Pose Gilang & Salsa"
+              : isSingleCardSlot
+              ? "Area Cetak • 1 Pose Kartu Renda"
+              : isSingleFullSlot
+              ? "Area Cetak • 1 Pose Potret Megah"
               : `Area Cetak • ${activeLayoutOption.shots} Pose`}
           </div>
         </div>

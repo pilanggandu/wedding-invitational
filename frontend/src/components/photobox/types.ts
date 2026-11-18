@@ -20,7 +20,9 @@ export type PhotoboxLayout =
   | "3-strip"
   | "2x2-grid"
   | "2-strip"
-  | "polaroid";
+  | "polaroid"
+  | "single-card"
+  | "single-full";
 
 export interface LayoutOption {
   id: PhotoboxLayout;
@@ -169,6 +171,8 @@ export function getLayoutShotsCount(layout: PhotoboxLayout): number {
     case "strip-1":
     case "grid-1":
     case "polaroid":
+    case "single-card":
+    case "single-full":
       return 1;
     case "strip-2":
     case "grid-2":

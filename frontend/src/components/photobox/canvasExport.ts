@@ -822,16 +822,16 @@ export async function generatePhotoboxCanvas(
 
 /**
  * High-Resolution 1080x1920 (9:16 Instagram Story) Generator for Gilang & Salsa Wedding
- * Supports locked signature frame for 2-photo and 3-photo layouts.
+ * Supports official locked signature frames for 2-photo (spiral duo), 1-photo card, 1-photo full, and 3-photo strip.
  */
 export async function generatePhotoboxStoryCanvas(options: {
-  layout: "strip-2" | "strip-3";
+  layout: "strip-2" | "strip-3" | "single-card" | "single-full";
   photos: string[];
   filter: PhotoboxFilter;
 }): Promise<HTMLCanvasElement> {
   const { layout, photos, filter } = options;
 
-  // Pastikan web fonts termuat sempurna sebelum render kanvas
+  // Pastikan web fonts termuat sempurna jika dibutuhkan
   try {
     if (typeof document !== "undefined" && document.fonts) {
       await document.fonts.ready;
@@ -851,160 +851,42 @@ export async function generatePhotoboxStoryCanvas(options: {
   ctx.fillStyle = "#260304";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+  let overlayPath = "/images/frame-sadil-gilang-duo.png";
+  let slotCoords: { x: number; y: number; w: number; h: number; r: number }[] = [];
+
   if (layout === "strip-2") {
-    // Koordinat presisi 2 slot jendela transparan pada asset frame-photobox-sadil-gilang.png
-    const slotCoords = [
-      { x: 234, y: 554, w: 606, h: 356, r: 6 },
-      { x: 234, y: 1052, w: 606, h: 356, r: 6 },
+    // 2 Foto (Spiral Album)
+    overlayPath = "/images/frame-sadil-gilang-duo.png";
+    slotCoords = [
+      { x: 247, y: 493, w: 586, h: 436, r: 6 },
+      { x: 247, y: 1001, w: 586, h: 433, r: 6 },
     ];
-
-    for (let i = 0; i < slotCoords.length; i++) {
-      const slot = slotCoords[i];
-      const photoSrc = photos[i];
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(slot.x, slot.y, slot.w, slot.h, slot.r);
-      ctx.clip();
-
-      if (photoSrc) {
-        try {
-          const img = await loadImage(photoSrc);
-          ctx.filter = getCanvasFilter(filter);
-
-          const imgAspect = img.width / img.height;
-          const targetAspect = slot.w / slot.h;
-          let drawW = slot.w;
-          let drawH = slot.h;
-          let offsetX = 0;
-          let offsetY = 0;
-
-          if (imgAspect > targetAspect) {
-            drawH = slot.h;
-            drawW = slot.h * imgAspect;
-            offsetX = (slot.w - drawW) / 2;
-          } else {
-            drawW = slot.w;
-            drawH = slot.w / imgAspect;
-            offsetY = (slot.h - drawH) / 2;
-          }
-
-          ctx.drawImage(img, slot.x + offsetX, slot.y + offsetY, drawW, drawH);
-        } catch (e) {
-          console.warn(`Could not draw photo in slot ${i + 1}`, e);
-          ctx.fillStyle = "#1E0203";
-          ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
-        }
-      } else {
-        ctx.fillStyle = "#1E0203";
-        ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
-      }
-      ctx.restore();
-    }
-
-    // Render Full Frame Overlay Sadil & Gilang di atas foto
-    try {
-      const overlayImg = await loadImage("/images/frame-photobox-sadil-gilang.png");
-      ctx.drawImage(overlayImg, 0, 0, canvasWidth, canvasHeight);
-    } catch (e) {
-      console.warn("Could not draw full frame overlay", e);
-    }
-
-    return canvas;
+  } else if (layout === "single-card") {
+    // 1 Foto (Kartu Renda)
+    overlayPath = "/images/frame-sadil-gilang-single.png";
+    slotCoords = [{ x: 247, y: 493, w: 586, h: 941, r: 8 }];
+  } else if (layout === "single-full") {
+    // 1 Foto (Full Lace Megah)
+    overlayPath = "/images/frame-sadil-gilang-full.png";
+    slotCoords = [{ x: 125, y: 342, w: 809, h: 1367, r: 10 }];
+  } else if (layout === "strip-3") {
+    // 3 Foto (Trio Strip di dalam Bingkai Renda Megah)
+    overlayPath = "/images/frame-sadil-gilang-full.png";
+    slotCoords = [
+      { x: 145, y: 384, w: 790, h: 403, r: 8 },
+      { x: 145, y: 825, w: 790, h: 403, r: 8 },
+      { x: 145, y: 1267, w: 790, h: 403, r: 8 },
+    ];
   }
 
-  // --- Layout 3-Foto (Strip Trio 9:16) ---
-  // Double gold border
-  ctx.save();
-  ctx.strokeStyle = "#C99A45";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(36, 36, canvasWidth - 72, canvasHeight - 72);
-
-  ctx.strokeStyle = "rgba(232, 215, 184, 0.35)";
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(52, 52, canvasWidth - 104, canvasHeight - 104);
-  ctx.restore();
-
-  // Corner filigrees
-  try {
-    const cornerImg = await loadImage(
-      "/images/templates/royal-heritage/baroque-corner-filigree.svg"
-    );
-    const cornerSize = 110;
-
-    // Top-Left
-    ctx.drawImage(cornerImg, 40, 40, cornerSize, cornerSize);
-
-    // Top-Right
-    ctx.save();
-    ctx.translate(canvasWidth - 40, 40);
-    ctx.scale(-1, 1);
-    ctx.drawImage(cornerImg, 0, 0, cornerSize, cornerSize);
-    ctx.restore();
-
-    // Bottom-Left
-    ctx.save();
-    ctx.translate(40, canvasHeight - 40);
-    ctx.scale(1, -1);
-    ctx.drawImage(cornerImg, 0, 0, cornerSize, cornerSize);
-    ctx.restore();
-
-    // Bottom-Right
-    ctx.save();
-    ctx.translate(canvasWidth - 40, canvasHeight - 40);
-    ctx.scale(-1, -1);
-    ctx.drawImage(cornerImg, 0, 0, cornerSize, cornerSize);
-    ctx.restore();
-  } catch (e) {
-    console.debug("Corner filigree SVG could not be loaded:", e);
-  }
-
-  // Header Typography
-  ctx.save();
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  ctx.fillStyle = "#DFD2BD";
-  ctx.font = "600 24px 'Playfair Display', Georgia, serif";
-  ctx.letterSpacing = "6px";
-  ctx.fillText("THE WEDDING OF", canvasWidth / 2, 140);
-
-  ctx.fillStyle = "#FAF1D9";
-  ctx.font = "bold 60px 'Playfair Display', Georgia, serif";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("GILANG & SALSA", canvasWidth / 2, 205);
-
-  ctx.fillStyle = "#C99A45";
-  ctx.font = "20px Georgia, serif";
-  ctx.letterSpacing = "4px";
-  ctx.fillText("✦  STUDIO KENANGAN  ✦", canvasWidth / 2, 260);
-  ctx.restore();
-
-  // 3 Photo Slots (720px wide x 370px tall each)
-  const slotW = 720;
-  const slotH = 370;
-  const slotX = (canvasWidth - slotW) / 2; // 180
-  const slotYCoords = [310, 715, 1120];
-
-  for (let i = 0; i < slotYCoords.length; i++) {
-    const sy = slotYCoords[i];
+  // 2. Render photos into slots
+  for (let i = 0; i < slotCoords.length; i++) {
+    const slot = slotCoords[i];
     const photoSrc = photos[i];
 
     ctx.save();
-    // Shadow & Outer gold stroke
-    ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
-    ctx.shadowBlur = 12;
-    ctx.shadowOffsetY = 6;
     ctx.beginPath();
-    ctx.roundRect(slotX, sy, slotW, slotH, 12);
-    ctx.fillStyle = "#1E0203";
-    ctx.fill();
-    ctx.restore();
-
-    // Draw photo clipped
-    ctx.save();
-    ctx.beginPath();
-    ctx.roundRect(slotX, sy, slotW, slotH, 12);
+    ctx.roundRect(slot.x, slot.y, slot.w, slot.h, slot.r);
     ctx.clip();
 
     if (photoSrc) {
@@ -1013,88 +895,42 @@ export async function generatePhotoboxStoryCanvas(options: {
         ctx.filter = getCanvasFilter(filter);
 
         const imgAspect = img.width / img.height;
-        const targetAspect = slotW / slotH;
-        let drawW = slotW;
-        let drawH = slotH;
+        const targetAspect = slot.w / slot.h;
+        let drawW = slot.w;
+        let drawH = slot.h;
         let offsetX = 0;
         let offsetY = 0;
 
         if (imgAspect > targetAspect) {
-          drawH = slotH;
-          drawW = slotH * imgAspect;
-          offsetX = (slotW - drawW) / 2;
+          drawH = slot.h;
+          drawW = slot.h * imgAspect;
+          offsetX = (slot.w - drawW) / 2;
         } else {
-          drawW = slotW;
-          drawH = slotW / imgAspect;
-          offsetY = (slotH - drawH) / 2;
+          drawW = slot.w;
+          drawH = slot.w / imgAspect;
+          offsetY = (slot.h - drawH) / 2;
         }
 
-        ctx.drawImage(img, slotX + offsetX, sy + offsetY, drawW, drawH);
+        ctx.drawImage(img, slot.x + offsetX, slot.y + offsetY, drawW, drawH);
       } catch (e) {
-        console.warn(`Could not draw 3-photo slot ${i + 1}`, e);
+        console.warn(`Could not draw photo in slot ${i + 1}`, e);
+        ctx.fillStyle = "#1E0203";
+        ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
       }
+    } else {
+      ctx.fillStyle = "#1E0203";
+      ctx.fillRect(slot.x, slot.y, slot.w, slot.h);
     }
-    ctx.restore();
-
-    // Photo Border
-    ctx.save();
-    ctx.beginPath();
-    ctx.roundRect(slotX, sy, slotW, slotH, 12);
-    ctx.strokeStyle = "#C99A45";
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    // Slot number badge
-    ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
-    ctx.beginPath();
-    ctx.roundRect(slotX + 16, sy + 16, 44, 26, 6);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.fillStyle = "#FAF1D9";
-    ctx.font = "bold 14px monospace";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(`0${i + 1}`, slotX + 38, sy + 30);
     ctx.restore();
   }
 
-  // Footer
-  ctx.save();
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  // Center gold line
-  ctx.strokeStyle = "rgba(201, 154, 69, 0.6)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(canvasWidth / 2 - 120, 1570);
-  ctx.lineTo(canvasWidth / 2 + 120, 1570);
-  ctx.stroke();
-
-  // Little diamond in the center
-  ctx.fillStyle = "#C99A45";
-  ctx.beginPath();
-  ctx.arc(canvasWidth / 2, 1570, 5, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.fillStyle = "#DFD2BD";
-  ctx.font = "600 24px 'Playfair Display', Georgia, serif";
-  ctx.letterSpacing = "4px";
-  ctx.fillText("28 NOVEMBER 2026 • TUBAN, INDONESIA", canvasWidth / 2, 1630);
-
-  ctx.fillStyle = "#FAF1D9";
-  ctx.font = "bold 38px 'Playfair Display', Georgia, serif";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("#GilangSalsa2026", canvasWidth / 2, 1695);
-
-  ctx.fillStyle = "rgba(223, 210, 189, 0.7)";
-  ctx.font = "18px Georgia, serif";
-  ctx.letterSpacing = "2px";
-  ctx.fillText("Momen Bahagia Bersama Kita", canvasWidth / 2, 1750);
-  ctx.restore();
+  // 3. Render official frame overlay PNG on top of photos
+  try {
+    const overlayImg = await loadImage(overlayPath);
+    ctx.drawImage(overlayImg, 0, 0, canvasWidth, canvasHeight);
+  } catch (e) {
+    console.warn("Could not draw frame overlay", e);
+  }
 
   return canvas;
 }

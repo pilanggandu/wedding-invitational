@@ -11,7 +11,8 @@ import {
   loadPhotoboxDraft,
   clearPhotoboxDraft,
 } from "./photoboxStorage";
-import { PhotoboxLayoutSelect, PhotoboxFlowLayout } from "./PhotoboxLayoutSelect";
+import { PhotoboxLayoutSelect } from "./PhotoboxLayoutSelect";
+import { PhotoboxFlowLayout, getFlowLayoutShotsCount } from "./photoboxConfig";
 import { PhotoboxFilterView } from "./PhotoboxFilterView";
 import { PhotoboxDoneView } from "./PhotoboxDoneView";
 
@@ -22,8 +23,8 @@ export function PhotoboxStudio() {
   const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [configuredPasscode, setConfiguredPasscode] = useState<string>("2026");
   const [currentStep, setCurrentStep] = useState<PhotoboxStep>("layout");
-  const [layout, setLayout] = useState<PhotoboxFlowLayout>("strip-3");
-  const [photos, setPhotos] = useState<string[]>(["", "", ""]);
+  const [layout, setLayout] = useState<PhotoboxFlowLayout>("strip-2");
+  const [photos, setPhotos] = useState<string[]>(["", ""]);
   const [filter, setFilter] = useState<PhotoboxFilter>("original");
   const [restoreToast, setRestoreToast] = useState<string | null>(null);
 
@@ -42,11 +43,18 @@ export function PhotoboxStudio() {
         if (draft && Array.isArray(draft.photos) && draft.photos.some((p) => Boolean(p))) {
           const isRecent = Date.now() - draft.timestamp < 24 * 60 * 60 * 1000;
           if (isRecent) {
-            const chosenLayout: PhotoboxFlowLayout =
-              draft.layout === "strip-2" || draft.layout === "2-strip" ? "strip-2" : "strip-3";
+            let chosenLayout: PhotoboxFlowLayout = "strip-2";
+            if (
+              draft.layout === "strip-2" ||
+              draft.layout === "strip-3" ||
+              draft.layout === "single-card" ||
+              draft.layout === "single-full"
+            ) {
+              chosenLayout = draft.layout as PhotoboxFlowLayout;
+            }
             setLayout(chosenLayout);
 
-            const count = chosenLayout === "strip-2" ? 2 : 3;
+            const count = getFlowLayoutShotsCount(chosenLayout);
             const validPhotos = draft.photos.slice(0, count);
             while (validPhotos.length < count) validPhotos.push("");
             setPhotos(validPhotos);
@@ -139,7 +147,7 @@ export function PhotoboxStudio() {
     if (!confirmed) return;
 
     await clearPhotoboxDraft();
-    const count = layout === "strip-2" ? 2 : 3;
+    const count = getFlowLayoutShotsCount(layout);
     setPhotos(Array(count).fill(""));
     setFilter("original");
     setCurrentStep("layout");
@@ -161,7 +169,7 @@ export function PhotoboxStudio() {
 
   const handleLayoutChange = (newLayout: PhotoboxFlowLayout) => {
     setLayout(newLayout);
-    const count = newLayout === "strip-2" ? 2 : 3;
+    const count = getFlowLayoutShotsCount(newLayout);
     setPhotos((prev) => {
       const copy = [...prev].slice(0, count);
       while (copy.length < count) copy.push("");
@@ -186,7 +194,7 @@ export function PhotoboxStudio() {
     );
   }
 
-  // STEP 1: PILIH LAYOUT (2 Foto atau 3 Foto)
+  // STEP 1: PILIH LAYOUT
   if (currentStep === "layout") {
     return (
       <PhotoboxLayoutSelect
@@ -202,7 +210,7 @@ export function PhotoboxStudio() {
     return (
       <CameraCapture
         layout={layout}
-        onLayoutChange={(l) => handleLayoutChange(l === "strip-2" ? "strip-2" : "strip-3")}
+        onLayoutChange={(l) => handleLayoutChange(l as PhotoboxFlowLayout)}
         photos={photos}
         onPhotosChange={setPhotos}
         onProceedToFrames={() => setCurrentStep("filter")}
