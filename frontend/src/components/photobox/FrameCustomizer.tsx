@@ -87,19 +87,6 @@ export const AESTHETIC_PRESETS: AestheticPreset[] = [
     previewBg: "#FAF7F2",
   },
   {
-    id: "preset-korean-studio",
-    name: "Korean Studio Soft",
-    tagline: "Nuansa bilik foto Seoul yang cerah & minimalis",
-    icon: "✨",
-    badge: "Populer",
-    templateId: "korean-film-clean",
-    filter: "warm",
-    customTitle: "Gilang & Salsadila",
-    customSubtitle: "Photobox Studio",
-    accentColor: "#8C6239",
-    previewBg: "#F7F5F0",
-  },
-  {
     id: "preset-royal-gold",
     name: "Royal Baroque & Gold",
     tagline: "Ukiran emas filigree mewah & sketsa cincin kawin",
@@ -111,6 +98,19 @@ export const AESTHETIC_PRESETS: AestheticPreset[] = [
     customSubtitle: "Gilang & Salsa • 2026",
     accentColor: "#D4AF37",
     previewBg: "#FBF9F4",
+  },
+  {
+    id: "preset-korean-studio",
+    name: "Korean Studio Soft",
+    tagline: "Nuansa bilik foto Seoul yang cerah & minimalis",
+    icon: "✨",
+    badge: "Populer",
+    templateId: "korean-film-clean",
+    filter: "warm",
+    customTitle: "Gilang & Salsadila",
+    customSubtitle: "Photobox Studio",
+    accentColor: "#8C6239",
+    previewBg: "#F7F5F0",
   },
   {
     id: "preset-romantic-silk",
@@ -178,7 +178,13 @@ export function FrameCustomizer({
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(
     initialCustomizerState?.templateId || "real-botanical-pressed"
   );
-  const [selectedCategory, setSelectedCategory] = useState<TemplateCategory>("all");
+  const [selectedCategory, setSelectedCategory] = useState<TemplateCategory>(() => {
+    if (initialCustomizerState?.templateId) {
+      const tmpl = PHOTOBOX_TEMPLATES.find((t) => t.id === initialCustomizerState.templateId);
+      if (tmpl) return tmpl.category;
+    }
+    return "real-art";
+  });
   const [filter, setFilter] = useState<PhotoboxFilter>(
     initialCustomizerState?.filter || "none"
   );
@@ -457,6 +463,10 @@ export function FrameCustomizer({
     if (preset.customTitle) setCustomTitle(preset.customTitle);
     if (preset.customSubtitle) setCustomSubtitle(preset.customSubtitle);
     setCustomBgColor("");
+    const tmpl = PHOTOBOX_TEMPLATES.find((t) => t.id === preset.templateId);
+    if (tmpl) {
+      setSelectedCategory(tmpl.category);
+    }
     setPresetToast(`Gaya "${preset.name}" berhasil diterapkan! ✨`);
     setTimeout(() => setPresetToast(null), 3000);
   };
@@ -1616,20 +1626,30 @@ export function FrameCustomizer({
           <div className="space-y-4">
             {/* Category Pills Filter */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
-                    selectedCategory === cat.id
-                      ? "bg-[#4A121A] text-[#DFD2BD] font-semibold shadow-xs"
-                      : "bg-[#FAF6EE] text-[#5A4D3E] hover:bg-[#F3ECE0] border border-[#E8DFC8]"
-                  }`}
-                >
-                  <span>{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
+              {CATEGORIES.map((cat) => {
+                const count =
+                  cat.id === "all"
+                    ? PHOTOBOX_TEMPLATES.length
+                    : PHOTOBOX_TEMPLATES.filter((t) => t.category === cat.id).length;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
+                      selectedCategory === cat.id
+                        ? "bg-[#4A121A] text-[#DFD2BD] font-semibold shadow-xs"
+                        : "bg-[#FAF6EE] text-[#5A4D3E] hover:bg-[#F3ECE0] border border-[#E8DFC8]"
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    <span>
+                      {cat.id === "real-art"
+                        ? `Real Frame (${count})`
+                        : `${cat.label} (${count})`}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Templates Grid List (Fully responsive, no sticky overlap!) */}
@@ -1649,7 +1669,7 @@ export function FrameCustomizer({
                         : "border-[#E8DFC8] bg-white hover:border-[#8C6239]/50 hover:bg-[#FAF6EE]/30"
                     }`}
                   >
-                    {/* Frame Visual Swatch Card */}
+                    {/* Frame Visual Swatch Card - Menampilkan frame fisik asli, bukan icon */}
                     <div
                       style={{
                         backgroundColor: tmpl.bgColor,
@@ -1669,6 +1689,32 @@ export function FrameCustomizer({
                         />
                       )}
 
+                      {/* Real Frame Border Overlay if present (e.g. Baroque Gilded Border Frame) */}
+                      {tmpl.realAssets?.frameBorderUrl && (
+                        <div
+                          className="absolute inset-0 pointer-events-none z-10 bg-center bg-no-repeat bg-contain"
+                          style={{
+                            backgroundImage: `url(${tmpl.realAssets.frameBorderUrl})`,
+                          }}
+                        />
+                      )}
+
+                      {/* Real Corner Sprigs/Flourishes if present */}
+                      {tmpl.realAssets?.cornerAssetUrl && (
+                        <>
+                          <img
+                            src={tmpl.realAssets.cornerAssetUrl}
+                            alt=""
+                            className="absolute top-0.5 left-0.5 w-3 h-3 object-contain z-10 pointer-events-none opacity-80"
+                          />
+                          <img
+                            src={tmpl.realAssets.cornerAssetUrl}
+                            alt=""
+                            className="absolute top-0.5 right-0.5 w-3 h-3 object-contain z-10 pointer-events-none opacity-80 -scale-x-100"
+                          />
+                        </>
+                      )}
+
                       {tmpl.badge && (
                         <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded text-[7px] sm:text-[8px] font-mono font-bold bg-[#4A121A] text-[#DFD2BD] z-10 shadow-xs">
                           {tmpl.badge}
@@ -1684,28 +1730,22 @@ export function FrameCustomizer({
                         </span>
                       </div>
 
-                      {/* Miniature dummy photos preview with couple photo or real ornament if present */}
+                      {/* Miniature dummy photos preview - fokus pada bingkai frame asli */}
                       <div className="flex gap-1 justify-center items-center my-0.5 relative z-10">
-                        {tmpl.realAssets?.bottomOrnamentUrl ? (
-                          <div className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 flex items-center justify-center">
-                            <img
-                              src={tmpl.realAssets.bottomOrnamentUrl}
-                              alt="Ornamen Asli"
-                              className="w-full h-full object-contain"
-                            />
+                        {[0, 1, 2].map((slotIdx) => (
+                          <div
+                            key={slotIdx}
+                            className={`w-4 sm:w-5 h-5 sm:h-6 rounded-xs relative shadow-2xs flex items-center justify-center ${
+                              tmpl.realAssets?.deckleMatUrl
+                                ? "bg-[#FAF7F0] border border-[#D5C2A5] p-0.5"
+                                : "bg-black/15 border border-black/10"
+                            }`}
+                          >
+                            {tmpl.realAssets?.deckleMatUrl ? (
+                              <div className="w-full h-full bg-black/20 rounded-2xs" />
+                            ) : null}
                           </div>
-                        ) : tmpl.coupleBadge ? (
-                          <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full overflow-hidden border border-white shrink-0 shadow-2xs">
-                            <img
-                              src={tmpl.coupleBadge.imageUrl}
-                              alt="Foto Pengantin"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : null}
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
-                        <div className="w-4 sm:w-5 h-5 sm:h-6 rounded-xs bg-black/15 shadow-2xs" />
+                        ))}
                       </div>
 
                       <div className="w-full text-center relative z-10">

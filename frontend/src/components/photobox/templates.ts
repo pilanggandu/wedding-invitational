@@ -1,8 +1,8 @@
 import { PhotoboxTemplate, TemplateCategory } from "./types";
 
 export const CATEGORIES: { id: TemplateCategory; label: string; icon: string }[] = [
+  { id: "real-art", label: "Real Frame (2)", icon: "🖼️" },
   { id: "all", label: "Semua Frame", icon: "✨" },
-  { id: "real-art", label: "Real Asset Frame", icon: "🖼️" },
   { id: "wedding", label: "Wedding & Love", icon: "💍" },
   { id: "korean", label: "Korean Studio", icon: "🇰🇷" },
   { id: "cute", label: "Cute & Playful", icon: "🎀" },
@@ -11,13 +11,13 @@ export const CATEGORIES: { id: TemplateCategory; label: string; icon: string }[]
 ];
 
 export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
-  // --- REAL ASSET KEEPSAKE FRAMES (Menggunakan Asset Real, Bukan Generic Code) ---
+  // --- REAL ASSET KEEPSAKE FRAMES (2 Frame Real Asset Utama) ---
   {
     id: "real-botanical-pressed",
-    name: "Pressed Flowers & Gold Seal",
+    name: "Pressed Botanical Keepsake",
     category: "real-art",
-    description: "Bingkai bertekstur kertas ivory asli dengan sudut bunga kering alami, ornamen sprig botanical, dan segel wax emas murni.",
-    badge: "Asset Asli",
+    description: "Bingkai matras kertas katun deckle asli dengan sudut bunga pres alami dan kertas berserat ivory.",
+    badge: "Real Frame",
     bgColor: "#FAF7F2",
     borderColor: "#E6DBC9",
     borderWidth: 2,
@@ -28,10 +28,10 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
     fontFamily: "serif",
     realAssets: {
       bgTextureUrl: "/images/paper-art/paper-texture-ivory.png",
+      deckleMatUrl: "/images/paper-keepsake/deckle-photo-mat.png",
       cornerAssetUrl: "/images/paper-keepsake/real-pressed-corner-cute.png",
       topOrnamentUrl: "/images/paper-keepsake/botanical-corner-sprig.png",
       bottomOrnamentUrl: "/images/paper-keepsake/real-gold-wax-seal.png",
-      deckleMatUrl: "/images/paper-keepsake/deckle-photo-mat.png",
     },
     themeStyle: {
       headerTitle: "THE WEDDING ARCHIVE",
@@ -46,10 +46,10 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
   },
   {
     id: "real-royal-baroque",
-    name: "Baroque Filigree & Golden Rings",
+    name: "Royal Baroque Gilded Gold",
     category: "real-art",
-    description: "Frame mewah dengan ornamen sudut ukiran emas filigree baroque asli, pita emas klasik, dan sketsa cincin pernikahan.",
-    badge: "Royal Gold",
+    description: "Bingkai ukiran emas gilded border klasik dengan ornamen filigree baroque mewah dan pita emas.",
+    badge: "Real Frame",
     bgColor: "#FBF9F4",
     borderColor: "#D9C39B",
     borderWidth: 2,
@@ -60,6 +60,7 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
     fontFamily: "serif",
     realAssets: {
       bgTextureUrl: "/images/paper-art/paper-texture-ivory.png",
+      frameBorderUrl: "/images/templates/royal-heritage/gilded-border-frame.svg",
       cornerAssetUrl: "/images/templates/royal-heritage/baroque-corner-filigree.svg",
       topOrnamentUrl: "/images/templates/royal-heritage/golden-scroll-ribbon.svg",
       bottomOrnamentUrl: "/images/paper-keepsake/wedding-rings-closing-vignette.png",
@@ -78,9 +79,9 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
   {
     id: "real-silk-ribbon-bow",
     name: "Romantic Silk Bow & Wildflower",
-    category: "real-art",
+    category: "wedding",
     description: "Frame romantis berhiaskan pita sutra pengantin asli yang mengkilap, matras kertas deckle, dan buket bunga liar.",
-    badge: "Pita Sutra Asli",
+    badge: "Pita Sutra",
     bgColor: "#FFF8F9",
     borderColor: "#EAD5DA",
     borderWidth: 2,
@@ -109,9 +110,9 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
   {
     id: "real-eucalyptus-wreath",
     name: "Eucalyptus Garden & Wax Seal",
-    category: "real-art",
+    category: "wedding",
     description: "Border dedaunan eucalyptus segar asli dengan segel lilin tradisional buatan tangan dan kertas berserat katun.",
-    badge: "Eucalyptus Asli",
+    badge: "Eucalyptus",
     bgColor: "#F5F8F4",
     borderColor: "#C5D4C2",
     borderWidth: 2,
@@ -140,9 +141,9 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
   {
     id: "real-washi-tape-polaroid",
     name: "Artisan Washi Tape Keepsake",
-    category: "real-art",
+    category: "retro",
     description: "Gaya scrapbook buatan tangan dengan klip washi tape asli, tangkai bunga lavender kering, dan matras kertas deckle.",
-    badge: "Handmade Scrapbook",
+    badge: "Scrapbook",
     bgColor: "#FAF6EE",
     borderColor: "#D9C9B2",
     borderWidth: 2,
@@ -171,9 +172,9 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
   {
     id: "real-cats-meow-frame",
     name: "Cute Meow Wedding Couple",
-    category: "real-art",
+    category: "cute",
     description: "Frame menggemaskan berhiaskan pita sutra asli dan ilustrasi kucing pengantin asli Gilang & Salsa.",
-    badge: "Kucing Pengantin",
+    badge: "Kucing Lucu",
     bgColor: "#FFF9F5",
     borderColor: "#F3D5C0",
     borderWidth: 2,
