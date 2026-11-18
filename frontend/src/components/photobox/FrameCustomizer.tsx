@@ -962,15 +962,34 @@ export function FrameCustomizer({
           />
         )}
 
-        {/* Real Frame Border Overlay (Border asli di sekeliling canvas) */}
-        {currentTemplate.realAssets?.frameBorderUrl && (
+        {/* Real Frame Border Overlay (Gilded Gold Baroque Frame / Image Border) */}
+        {currentTemplate.id === "real-royal-baroque" ? (
+          <div className="absolute inset-0 pointer-events-none z-20 p-2 sm:p-2.5">
+            <div className="w-full h-full rounded-md border-2 border-[#C8A97E] relative">
+              <div className="absolute inset-0.5 rounded-sm border border-dashed border-[#C8A97E]/70" />
+              {/* 4 Corner Rosettes */}
+              <div className="absolute -top-1.5 -left-1.5 w-3 h-3 rounded-full bg-[#0F2D24] border border-[#C8A97E] flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-[#FAF1D9]" />
+              </div>
+              <div className="absolute -top-1.5 -right-1.5 w-3 h-3 rounded-full bg-[#0F2D24] border border-[#C8A97E] flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-[#FAF1D9]" />
+              </div>
+              <div className="absolute -bottom-1.5 -left-1.5 w-3 h-3 rounded-full bg-[#0F2D24] border border-[#C8A97E] flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-[#FAF1D9]" />
+              </div>
+              <div className="absolute -bottom-1.5 -right-1.5 w-3 h-3 rounded-full bg-[#0F2D24] border border-[#C8A97E] flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-[#FAF1D9]" />
+              </div>
+            </div>
+          </div>
+        ) : currentTemplate.realAssets?.frameBorderUrl ? (
           <div
             className="absolute inset-0 pointer-events-none z-20 bg-center bg-no-repeat bg-contain"
             style={{
               backgroundImage: `url(${currentTemplate.realAssets.frameBorderUrl})`,
             }}
           />
-        )}
+        ) : null}
 
         {/* Real Corner Sprigs/Flourishes Assets (4 sudut berornamen asli) */}
         {currentTemplate.realAssets?.cornerAssetUrl && (
@@ -983,17 +1002,17 @@ export function FrameCustomizer({
             <img
               src={currentTemplate.realAssets.cornerAssetUrl}
               alt="Corner decoration"
-              className="absolute top-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-x-[-1] drop-shadow-xs"
+              className="absolute top-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain -scale-x-100 drop-shadow-xs"
             />
             <img
               src={currentTemplate.realAssets.cornerAssetUrl}
               alt="Corner decoration"
-              className="absolute bottom-1.5 left-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-y-[-1] drop-shadow-xs"
+              className="absolute bottom-1.5 left-1.5 w-8 h-8 pointer-events-none z-20 object-contain -scale-y-100 drop-shadow-xs"
             />
             <img
               src={currentTemplate.realAssets.cornerAssetUrl}
               alt="Corner decoration"
-              className="absolute bottom-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain scale-x-[-1] scale-y-[-1] drop-shadow-xs"
+              className="absolute bottom-1.5 right-1.5 w-8 h-8 pointer-events-none z-20 object-contain -scale-100 drop-shadow-xs"
             />
           </>
         )}

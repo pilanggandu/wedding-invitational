@@ -4,6 +4,7 @@ import {
   PhotoboxTemplate,
   StickerItem,
   getLayoutShotsCount,
+  isGridLayout,
 } from "./types";
 
 interface ExportOptions {
@@ -50,6 +51,61 @@ const loadImage = (src: string): Promise<HTMLImageElement> => {
   });
 };
 
+// Draw classical royal gilded gold border frame with corner rosettes
+function drawGildedBorderFrame(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number
+) {
+  ctx.save();
+  const grad = ctx.createLinearGradient(0, 0, width, height);
+  grad.addColorStop(0, "#FAF1D9");
+  grad.addColorStop(0.35, "#C8A97E");
+  grad.addColorStop(0.7, "#7A5B2C");
+  grad.addColorStop(1, "#F0D9BA");
+
+  // Outer beveled gold border
+  const mOuter = 32;
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.roundRect(mOuter, mOuter, width - mOuter * 2, height - mOuter * 2, 16);
+  ctx.stroke();
+
+  // Inner dashed gold hairline border
+  const mInner = 50;
+  ctx.lineWidth = 2.5;
+  ctx.setLineDash([14, 8]);
+  ctx.beginPath();
+  ctx.roundRect(mInner, mInner, width - mInner * 2, height - mInner * 2, 10);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 4 Corner Rosettes (circular rosettes, perfectly round and sharp!)
+  const rPos = [
+    { x: mInner, y: mInner },
+    { x: width - mInner, y: mInner },
+    { x: mInner, y: height - mInner },
+    { x: width - mInner, y: height - mInner },
+  ];
+
+  for (const p of rPos) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
+    ctx.fillStyle = "#0F2D24";
+    ctx.fill();
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = "#FAF1D9";
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 export async function generatePhotoboxCanvas(
   options: ExportOptions
 ): Promise<HTMLCanvasElement> {
@@ -66,173 +122,37 @@ export async function generatePhotoboxCanvas(
     stickers,
   } = options;
 
+  // Ensure all web fonts are loaded in canvas context before drawing
+  try {
+    if (typeof document !== "undefined" && document.fonts) {
+      await document.fonts.ready;
+    }
+  } catch {
+    // Continue if document.fonts is unavailable
+  }
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Could not get 2d context");
 
-  // Determine Dimensions based on layout (Ultra HD 3x Scale for printing crispness)
-  let canvasWidth = 1200;
-  let canvasHeight = 3600;
-
-  if (layout === "strip-1" || layout === "polaroid") {
-    canvasWidth = 1200;
-    canvasHeight = 1800;
-  } else if (layout === "strip-2" || layout === "2-strip") {
-    canvasWidth = 1200;
-    canvasHeight = 2200;
-  } else if (layout === "strip-3" || layout === "3-strip") {
-    canvasWidth = 1200;
-    canvasHeight = 3000;
-  } else if (layout === "strip-4" || layout === "4-strip") {
-    canvasWidth = 1200;
-    canvasHeight = 3600;
-  } else if (layout === "strip-5") {
-    canvasWidth = 1200;
-    canvasHeight = 4400;
-  } else if (layout === "strip-6") {
-    canvasWidth = 1200;
-    canvasHeight = 5200;
-  } else if (layout === "grid-1") {
-    canvasWidth = 1800;
-    canvasHeight = 2200;
-  } else if (layout === "grid-2") {
-    canvasWidth = 2400;
-    canvasHeight = 1800;
-  } else if (layout === "grid-3") {
-    canvasWidth = 2000;
-    canvasHeight = 2400;
-  } else if (layout === "grid-4" || layout === "2x2-grid") {
-    canvasWidth = 2400;
-    canvasHeight = 2800;
-  } else if (layout === "grid-5") {
-    canvasWidth = 2400;
-    canvasHeight = 3200;
-  } else if (layout === "grid-6") {
-    canvasWidth = 2400;
-    canvasHeight = 3400;
-  } else if (layout === "grid-8") {
-    canvasWidth = 2400;
-    canvasHeight = 4000;
-  } else if (layout === "grid-9") {
-    canvasWidth = 2700;
-    canvasHeight = 3200;
-  }
-
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
-
-  // 1. Draw Background
-  const effectiveBgColor = customBgColor || template.bgColor;
-  ctx.fillStyle = effectiveBgColor;
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  // Real paper texture asset (Menggunakan asset tekstur asli bukan generic code)
-  if (template.realAssets?.bgTextureUrl) {
-    try {
-      const texImg = await loadImage(template.realAssets.bgTextureUrl);
-      ctx.save();
-      ctx.globalAlpha = 0.55;
-      const pattern = ctx.createPattern(texImg, "repeat");
-      if (pattern) {
-        ctx.fillStyle = pattern;
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-      } else {
-        ctx.drawImage(texImg, 0, 0, canvasWidth, canvasHeight);
-      }
-      ctx.restore();
-    } catch (e) {
-      console.warn("Could not load real bg texture", e);
-    }
-  } else if (template.themeStyle.paperTexture) {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
-    for (let x = 0; x < canvasWidth; x += 8) {
-      for (let y = 0; y < canvasHeight; y += 8) {
-        if ((x + y) % 16 === 0) {
-          ctx.fillRect(x, y, 4, 4);
-        }
-      }
-    }
-  }
-
-  // Real Frame Border Asset (Overlay border asli di sekeliling canvas)
-  if (template.realAssets?.frameBorderUrl) {
-    try {
-      const borderImg = await loadImage(template.realAssets.frameBorderUrl);
-      ctx.save();
-      ctx.drawImage(borderImg, 0, 0, canvasWidth, canvasHeight);
-      ctx.restore();
-    } catch (e) {
-      console.warn("Could not load real frame border", e);
-    }
-  }
-
-  // 2. Film Sprockets for 35mm film strips
-  if (template.themeStyle.filmSprockets) {
-    ctx.fillStyle = "#2D2D2D";
-    const sprocketWidth = 50;
-    const sprocketHeight = 70;
-    const sprocketRadius = 12;
-    const step = 120;
-
-    for (let y = 80; y < canvasHeight - 80; y += step) {
-      // Left sprocket
-      ctx.beginPath();
-      ctx.roundRect(30, y, sprocketWidth, sprocketHeight, sprocketRadius);
-      ctx.fill();
-
-      // Right sprocket
-      ctx.beginPath();
-      ctx.roundRect(canvasWidth - 30 - sprocketWidth, y, sprocketWidth, sprocketHeight, sprocketRadius);
-      ctx.fill();
-    }
-  }
-
-  // 3. Draw Outer Border if template has one
-  if (template.borderWidth && template.borderColor) {
-    const bWidth = template.borderWidth * 3;
-    ctx.strokeStyle = template.borderColor;
-    ctx.lineWidth = bWidth;
-    ctx.strokeRect(bWidth / 2, bWidth / 2, canvasWidth - bWidth, canvasHeight - bWidth);
-  }
-
-  // Header Section
+  const isGrid = isGridLayout(layout);
   const isSingle = layout === "strip-1" || layout === "polaroid" || layout === "grid-1";
-  const headerHeight = isSingle ? 100 : 220;
-  const headerTitle = customTitle || template.themeStyle.headerTitle || template.name;
-  const headerSubtitle = customSubtitle || template.themeStyle.headerSubtitle || "";
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  // Base Canvas Width (High-res 1200px for strips, 2000-2400px for grids)
+  let canvasWidth = 1200;
+  if (layout === "grid-1") canvasWidth = 1600;
+  else if (layout === "grid-2") canvasWidth = 2400;
+  else if (layout === "grid-3") canvasWidth = 2000;
+  else if (layout === "grid-4" || layout === "2x2-grid") canvasWidth = 2400;
+  else if (layout === "grid-5") canvasWidth = 2200;
+  else if (layout === "grid-6" || layout === "grid-8") canvasWidth = 2400;
+  else if (layout === "grid-9") canvasWidth = 2400;
 
-  // Header Title
-  ctx.fillStyle = template.textColor;
-  if (template.fontFamily === "serif") {
-    ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
-  } else if (template.fontFamily === "handwriting") {
-    ctx.font = "bold 72px 'Caveat', cursive";
-  } else if (template.fontFamily === "mono") {
-    ctx.font = "bold 44px 'Courier New', monospace";
-  } else {
-    ctx.font = "bold 48px 'Plus Jakarta Sans', sans-serif";
-  }
-  ctx.fillText(headerTitle, canvasWidth / 2, isSingle ? 70 : 100);
-
-  // Header Subtitle
-  if (headerSubtitle && !isSingle) {
-    ctx.fillStyle = template.subtextColor;
-    ctx.font = "500 32px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillText(headerSubtitle, canvasWidth / 2, 160);
-  }
-
-  // 4. Calculate Photo Slot Rectangles
-  const footerHeight = 280;
-  const contentTop = headerHeight;
-  const contentBottom = canvasHeight - footerHeight;
-  const availableContentHeight = contentBottom - contentTop;
-
-  const sideMargin = template.themeStyle.filmSprockets ? 120 : 70;
-  const slotGap = 40;
+  const sideMargin = template.themeStyle.filmSprockets ? 120 : (isGrid ? 80 : 70);
+  const slotGap = isGrid ? 32 : 36;
   const slotRadius = (template.themeStyle.photoRadius || 6) * 3;
+  const cardRadius = (template.borderRadius || 10) * 3;
+  const shotsCount = getLayoutShotsCount(layout);
 
   interface SlotRect {
     x: number;
@@ -241,9 +161,10 @@ export async function generatePhotoboxCanvas(
     h: number;
   }
 
-  const slotRects: SlotRect[] = [];
+  // 1. Calculate relative photo slot layout (y relative to contentTop = 0)
+  const localRects: SlotRect[] = [];
+  let totalPhotoH = 0;
 
-  // STRIP LAYOUTS (1, 2, 3, 4, 5, 6)
   if (
     layout === "strip-1" ||
     layout === "strip-2" ||
@@ -256,140 +177,294 @@ export async function generatePhotoboxCanvas(
     layout === "2-strip" ||
     layout === "polaroid"
   ) {
-    const shotsCount = getLayoutShotsCount(layout);
-    const totalGaps = slotGap * (shotsCount - 1);
-    const slotH = (availableContentHeight - totalGaps) / shotsCount;
     const slotW = canvasWidth - sideMargin * 2;
+    const slotH = isSingle ? slotW : Math.round((slotW * 3) / 4); // Exact 4:3 matching preview!
 
     for (let i = 0; i < shotsCount; i++) {
-      slotRects.push({
+      localRects.push({
         x: sideMargin,
-        y: contentTop + i * (slotH + slotGap),
+        y: i * (slotH + slotGap),
         w: slotW,
         h: slotH,
       });
     }
+    totalPhotoH = shotsCount * slotH + (shotsCount - 1) * slotGap;
   } else if (layout === "grid-1") {
-    // Kotak 1 Foto Square
     const slotW = canvasWidth - sideMargin * 2;
-    const slotH = slotW * 0.95;
-    slotRects.push({
-      x: sideMargin,
-      y: contentTop + (availableContentHeight - slotH) / 2,
-      w: slotW,
-      h: slotH,
-    });
+    const slotH = slotW;
+    localRects.push({ x: sideMargin, y: 0, w: slotW, h: slotH });
+    totalPhotoH = slotH;
   } else if (layout === "grid-2") {
-    // Kotak 2 Foto: 2 Kolom x 1 Baris
     const slotW = (canvasWidth - sideMargin * 2 - slotGap) / 2;
-    const slotH = availableContentHeight;
-    slotRects.push({ x: sideMargin, y: contentTop, w: slotW, h: slotH });
-    slotRects.push({ x: sideMargin + slotW + slotGap, y: contentTop, w: slotW, h: slotH });
+    const slotH = Math.round((slotW * 3) / 4);
+    localRects.push({ x: sideMargin, y: 0, w: slotW, h: slotH });
+    localRects.push({ x: sideMargin + slotW + slotGap, y: 0, w: slotW, h: slotH });
+    totalPhotoH = slotH;
   } else if (layout === "grid-3") {
-    // Kotak 3 Foto: 1 Hero Top + 2 Duo Bottom
-    const heroH = availableContentHeight * 0.52;
-    const bottomH = availableContentHeight - heroH - slotGap;
-    const fullW = canvasWidth - sideMargin * 2;
-    const halfW = (fullW - slotGap) / 2;
+    // 1 Hero Top (16:9) + 2 Grid Bottom (4:3)
+    const slotW = canvasWidth - sideMargin * 2;
+    const heroH = Math.round((slotW * 9) / 16);
+    const slotW2 = (slotW - slotGap) / 2;
+    const bottomH = Math.round((slotW2 * 3) / 4);
 
-    // Slot 0: Top Hero
-    slotRects.push({ x: sideMargin, y: contentTop, w: fullW, h: heroH });
-    // Slot 1 & 2: Bottom Grid
-    const botY = contentTop + heroH + slotGap;
-    slotRects.push({ x: sideMargin, y: botY, w: halfW, h: bottomH });
-    slotRects.push({ x: sideMargin + halfW + slotGap, y: botY, w: halfW, h: bottomH });
+    localRects.push({ x: sideMargin, y: 0, w: slotW, h: heroH });
+    localRects.push({ x: sideMargin, y: heroH + slotGap, w: slotW2, h: bottomH });
+    localRects.push({ x: sideMargin + slotW2 + slotGap, y: heroH + slotGap, w: slotW2, h: bottomH });
+    totalPhotoH = heroH + slotGap + bottomH;
   } else if (layout === "grid-4" || layout === "2x2-grid") {
-    // Kotak 4 Foto: 2 Kolom x 2 Baris
     const slotW = (canvasWidth - sideMargin * 2 - slotGap) / 2;
-    const slotH = (availableContentHeight - slotGap) / 2;
-    // Row 0
-    slotRects.push({ x: sideMargin, y: contentTop, w: slotW, h: slotH });
-    slotRects.push({ x: sideMargin + slotW + slotGap, y: contentTop, w: slotW, h: slotH });
-    // Row 1
-    slotRects.push({ x: sideMargin, y: contentTop + slotH + slotGap, w: slotW, h: slotH });
-    slotRects.push({ x: sideMargin + slotW + slotGap, y: contentTop + slotH + slotGap, w: slotW, h: slotH });
+    const slotH = Math.round((slotW * 3) / 4);
+    localRects.push({ x: sideMargin, y: 0, w: slotW, h: slotH });
+    localRects.push({ x: sideMargin + slotW + slotGap, y: 0, w: slotW, h: slotH });
+    localRects.push({ x: sideMargin, y: slotH + slotGap, w: slotW, h: slotH });
+    localRects.push({ x: sideMargin + slotW + slotGap, y: slotH + slotGap, w: slotW, h: slotH });
+    totalPhotoH = slotH * 2 + slotGap;
   } else if (layout === "grid-5") {
-    // Kotak 5 Foto: 1 Hero Top + 4 Grid (2x2) Bottom
-    const heroH = availableContentHeight * 0.38;
-    const bottomAvailableH = availableContentHeight - heroH - slotGap;
-    const slotGridH = (bottomAvailableH - slotGap) / 2;
-    const fullW = canvasWidth - sideMargin * 2;
-    const halfW = (fullW - slotGap) / 2;
+    const slotW = canvasWidth - sideMargin * 2;
+    const heroH = Math.round((slotW * 9) / 16);
+    const slotW2 = (slotW - slotGap) / 2;
+    const bottomH = Math.round((slotW2 * 3) / 4);
 
-    // Slot 0: Top Hero
-    slotRects.push({ x: sideMargin, y: contentTop, w: fullW, h: heroH });
-    // Row 1
-    const r1Y = contentTop + heroH + slotGap;
-    slotRects.push({ x: sideMargin, y: r1Y, w: halfW, h: slotGridH });
-    slotRects.push({ x: sideMargin + halfW + slotGap, y: r1Y, w: halfW, h: slotGridH });
-    // Row 2
-    const r2Y = r1Y + slotGridH + slotGap;
-    slotRects.push({ x: sideMargin, y: r2Y, w: halfW, h: slotGridH });
-    slotRects.push({ x: sideMargin + halfW + slotGap, y: r2Y, w: halfW, h: slotGridH });
+    localRects.push({ x: sideMargin, y: 0, w: slotW, h: heroH });
+    const r1Y = heroH + slotGap;
+    localRects.push({ x: sideMargin, y: r1Y, w: slotW2, h: bottomH });
+    localRects.push({ x: sideMargin + slotW2 + slotGap, y: r1Y, w: slotW2, h: bottomH });
+    const r2Y = r1Y + bottomH + slotGap;
+    localRects.push({ x: sideMargin, y: r2Y, w: slotW2, h: bottomH });
+    localRects.push({ x: sideMargin + slotW2 + slotGap, y: r2Y, w: slotW2, h: bottomH });
+    totalPhotoH = r2Y + bottomH;
   } else if (layout === "grid-6") {
-    // Kotak 6 Foto: 2 Kolom x 3 Baris
     const slotW = (canvasWidth - sideMargin * 2 - slotGap) / 2;
-    const slotH = (availableContentHeight - slotGap * 2) / 3;
+    const slotH = Math.round((slotW * 3) / 4);
     for (let r = 0; r < 3; r++) {
-      const y = contentTop + r * (slotH + slotGap);
-      slotRects.push({ x: sideMargin, y, w: slotW, h: slotH });
-      slotRects.push({ x: sideMargin + slotW + slotGap, y, w: slotW, h: slotH });
+      const y = r * (slotH + slotGap);
+      localRects.push({ x: sideMargin, y, w: slotW, h: slotH });
+      localRects.push({ x: sideMargin + slotW + slotGap, y, w: slotW, h: slotH });
     }
+    totalPhotoH = slotH * 3 + slotGap * 2;
   } else if (layout === "grid-8") {
-    // Kotak 8 Foto: 2 Kolom x 4 Baris
     const slotW = (canvasWidth - sideMargin * 2 - slotGap) / 2;
-    const slotH = (availableContentHeight - slotGap * 3) / 4;
+    const slotH = Math.round((slotW * 3) / 4);
     for (let r = 0; r < 4; r++) {
-      const y = contentTop + r * (slotH + slotGap);
-      slotRects.push({ x: sideMargin, y, w: slotW, h: slotH });
-      slotRects.push({ x: sideMargin + slotW + slotGap, y, w: slotW, h: slotH });
+      const y = r * (slotH + slotGap);
+      localRects.push({ x: sideMargin, y, w: slotW, h: slotH });
+      localRects.push({ x: sideMargin + slotW + slotGap, y, w: slotW, h: slotH });
     }
+    totalPhotoH = slotH * 4 + slotGap * 3;
   } else if (layout === "grid-9") {
-    // Kotak 9 Foto: 3 Kolom x 3 Baris
     const slotW = (canvasWidth - sideMargin * 2 - slotGap * 2) / 3;
-    const slotH = (availableContentHeight - slotGap * 2) / 3;
+    const slotH = slotW;
     for (let r = 0; r < 3; r++) {
-      const y = contentTop + r * (slotH + slotGap);
+      const y = r * (slotH + slotGap);
       for (let c = 0; c < 3; c++) {
         const x = sideMargin + c * (slotW + slotGap);
-        slotRects.push({ x, y, w: slotW, h: slotH });
+        localRects.push({ x, y, w: slotW, h: slotH });
       }
     }
+    totalPhotoH = slotH * 3 + slotGap * 2;
   }
 
-  // 5. Draw Photos with clipping and filter (Beserta real deckle mat jika ada)
-  let deckleMatImg: HTMLImageElement | null = null;
-  if (template.realAssets?.deckleMatUrl) {
+  // 2. Calculate Header Section Metrics (Zero overlap between ornament and title)
+  const hasTopOrnament = Boolean(template.realAssets?.topOrnamentUrl);
+  const topOrnamentH = hasTopOrnament ? 120 : 0;
+  const topOrnamentY = 28;
+  const headerTitleY = hasTopOrnament
+    ? topOrnamentY + topOrnamentH + 45
+    : (isSingle ? 75 : 95);
+  const headerSubtitle = customSubtitle || template.themeStyle.headerSubtitle || "";
+  const headerSubtitleY = headerTitleY + 45;
+  const headerHeight = (!isSingle && headerSubtitle)
+    ? headerSubtitleY + 45
+    : headerTitleY + 45;
+
+  const contentTop = headerHeight;
+  const contentBottom = contentTop + totalPhotoH;
+
+  // 3. Calculate Footer Section Metrics (Zero overlap between bottom ornament and text)
+  const hasBottomOrnament = Boolean(template.realAssets?.bottomOrnamentUrl);
+  const botOrnamentH = hasBottomOrnament ? 140 : 0;
+  const botOrnamentY = contentBottom + 25;
+  const footerTitle = template.themeStyle.footerTitle || "MEMORIES";
+  const footerSubtitle = template.themeStyle.footerSubtitle || "";
+  const footerTitleY = hasBottomOrnament
+    ? botOrnamentY + botOrnamentH + 45
+    : contentBottom + 50;
+  const footerSubtitleY = footerSubtitle ? footerTitleY + 40 : footerTitleY;
+  const dateY = showDate ? footerSubtitleY + 40 : footerSubtitleY;
+  const footerHeight = (dateY - contentBottom) + 55;
+
+  // Total Canvas Dimensions (Calculated from true content, no arbitrary crushing!)
+  const canvasHeight = Math.round(headerHeight + totalPhotoH + footerHeight);
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+
+  // 4. Map final photo slot coordinates
+  const slotRects: SlotRect[] = localRects.map((r) => ({
+    x: r.x,
+    y: r.y + contentTop,
+    w: r.w,
+    h: r.h,
+  }));
+
+  // 5. Draw Card with Rounded Corners Clip
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(0, 0, canvasWidth, canvasHeight, cardRadius);
+  ctx.clip();
+
+  // Background Fill
+  const effectiveBgColor = customBgColor || template.bgColor;
+  ctx.fillStyle = effectiveBgColor;
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Real paper texture asset
+  if (template.realAssets?.bgTextureUrl) {
     try {
-      deckleMatImg = await loadImage(template.realAssets.deckleMatUrl);
+      const texImg = await loadImage(template.realAssets.bgTextureUrl);
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      const pattern = ctx.createPattern(texImg, "repeat");
+      if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      }
+      ctx.restore();
     } catch (e) {
-      console.warn("Could not load deckle mat asset", e);
+      console.warn("Could not load real bg texture", e);
     }
   }
 
+  // Real Frame Border (Baroque Gilded Gold or custom image border)
+  if (template.id === "real-royal-baroque") {
+    drawGildedBorderFrame(ctx, canvasWidth, canvasHeight);
+  } else if (template.realAssets?.frameBorderUrl) {
+    try {
+      const borderImg = await loadImage(template.realAssets.frameBorderUrl);
+      ctx.save();
+      ctx.drawImage(borderImg, 0, 0, canvasWidth, canvasHeight);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real frame border", e);
+    }
+  }
+
+  // Film Sprockets Simulation
+  if (template.themeStyle.filmSprockets) {
+    ctx.fillStyle = "#2D2D2D";
+    const sprocketWidth = 50;
+    const sprocketHeight = 70;
+    const sRadius = 12;
+    const step = 120;
+
+    for (let y = 80; y < canvasHeight - 80; y += step) {
+      ctx.beginPath();
+      ctx.roundRect(30, y, sprocketWidth, sprocketHeight, sRadius);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.roundRect(canvasWidth - 30 - sprocketWidth, y, sprocketWidth, sprocketHeight, sRadius);
+      ctx.fill();
+    }
+  }
+
+  // Outer Border with rounded corners
+  if (template.borderWidth && template.borderColor) {
+    const bWidth = template.borderWidth * 3;
+    ctx.strokeStyle = template.borderColor;
+    ctx.lineWidth = bWidth;
+    ctx.beginPath();
+    ctx.roundRect(
+      bWidth / 2,
+      bWidth / 2,
+      canvasWidth - bWidth,
+      canvasHeight - bWidth,
+      Math.max(0, cardRadius - bWidth / 2)
+    );
+    ctx.stroke();
+  }
+
+  // 6. Draw Real Corner Sprigs/Flourishes
+  if (template.realAssets?.cornerAssetUrl) {
+    try {
+      const cornerImg = await loadImage(template.realAssets.cornerAssetUrl);
+      const cSize = 140;
+      const margin = 24;
+
+      // Top-Left Corner
+      ctx.drawImage(cornerImg, margin, margin, cSize, cSize);
+
+      // Top-Right Corner (Flipped horizontally)
+      ctx.save();
+      ctx.translate(canvasWidth - margin, margin);
+      ctx.scale(-1, 1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+
+      // Bottom-Left Corner (Flipped vertically)
+      ctx.save();
+      ctx.translate(margin, canvasHeight - margin);
+      ctx.scale(1, -1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+
+      // Bottom-Right Corner (Flipped both)
+      ctx.save();
+      ctx.translate(canvasWidth - margin, canvasHeight - margin);
+      ctx.scale(-1, -1);
+      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real corner asset", e);
+    }
+  }
+
+  // 7. Draw Top Ornament (Golden Ribbon / Silk Bow / Sprig)
+  if (template.realAssets?.topOrnamentUrl) {
+    try {
+      const topImg = await loadImage(template.realAssets.topOrnamentUrl);
+      const topTargetW = (topImg.width / topImg.height) * topOrnamentH;
+      const topX = (canvasWidth - topTargetW) / 2;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0, 0, 0, 0.16)";
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetY = 6;
+      ctx.drawImage(topImg, topX, topOrnamentY, topTargetW, topOrnamentH);
+      ctx.restore();
+    } catch (e) {
+      console.warn("Could not load real top ornament", e);
+    }
+  }
+
+  // 8. Draw Header Text
+  const headerTitle = customTitle || template.themeStyle.headerTitle || template.name;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = template.textColor;
+
+  if (template.fontFamily === "serif") {
+    ctx.font = "bold 56px 'Playfair Display', Georgia, serif";
+  } else if (template.fontFamily === "handwriting") {
+    ctx.font = "bold 72px 'Caveat', cursive";
+  } else if (template.fontFamily === "mono") {
+    ctx.font = "bold 44px 'Courier New', monospace";
+  } else {
+    ctx.font = "bold 48px 'Plus Jakarta Sans', sans-serif";
+  }
+  ctx.fillText(headerTitle, canvasWidth / 2, headerTitleY);
+
+  if (headerSubtitle && !isSingle) {
+    ctx.fillStyle = template.subtextColor;
+    ctx.font = "500 32px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillText(headerSubtitle, canvasWidth / 2, headerSubtitleY);
+  }
+
+  // 9. Draw Photo Slots with aspect-fill and filter
   for (let i = 0; i < slotRects.length; i++) {
     const rect = slotRects[i];
     const photoSrc = photos[i];
 
-    // Gambar matras kertas deckle asli di belakang slot foto
-    if (deckleMatImg) {
-      ctx.save();
-      const pad = 32;
-      ctx.shadowColor = "rgba(0, 0, 0, 0.12)";
-      ctx.shadowBlur = 18;
-      ctx.shadowOffsetY = 8;
-      ctx.drawImage(
-        deckleMatImg,
-        rect.x - pad,
-        rect.y - pad,
-        rect.w + pad * 2,
-        rect.h + pad * 2
-      );
-      ctx.restore();
-    }
-
     ctx.save();
-    // Rounded clip for the photo
     ctx.beginPath();
     ctx.roundRect(rect.x, rect.y, rect.w, rect.h, slotRadius);
     ctx.clip();
@@ -433,7 +508,6 @@ export async function generatePhotoboxCanvas(
       ctx.textBaseline = "middle";
       ctx.fillText(`FOTO ${i + 1}`, rect.x + rect.w / 2, rect.y + rect.h / 2);
     }
-
     ctx.restore();
 
     // Subtle inner stroke around photo
@@ -446,91 +520,30 @@ export async function generatePhotoboxCanvas(
     ctx.restore();
   }
 
-  // 6. Draw Real Ornaments (Corner Sprigs, Top Bow/Tape, Bottom Wax Seal/Rings)
-  if (template.realAssets?.cornerAssetUrl) {
-    try {
-      const cornerImg = await loadImage(template.realAssets.cornerAssetUrl);
-      const cSize = 220;
-      const margin = 20;
-
-      // Top-Left Corner
-      ctx.drawImage(cornerImg, margin, margin, cSize, cSize);
-
-      // Top-Right Corner (Flipped horizontally)
-      ctx.save();
-      ctx.translate(canvasWidth - margin, margin);
-      ctx.scale(-1, 1);
-      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
-      ctx.restore();
-
-      // Bottom-Left Corner (Flipped vertically)
-      ctx.save();
-      ctx.translate(margin, canvasHeight - margin);
-      ctx.scale(1, -1);
-      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
-      ctx.restore();
-
-      // Bottom-Right Corner (Flipped both)
-      ctx.save();
-      ctx.translate(canvasWidth - margin, canvasHeight - margin);
-      ctx.scale(-1, -1);
-      ctx.drawImage(cornerImg, 0, 0, cSize, cSize);
-      ctx.restore();
-    } catch (e) {
-      console.warn("Could not load real corner asset", e);
-    }
-  }
-
-  // Top Ornament (Pita Sutra / Washi Tape / Pita Emas)
-  if (template.realAssets?.topOrnamentUrl) {
-    try {
-      const topImg = await loadImage(template.realAssets.topOrnamentUrl);
-      const topTargetH = 200;
-      const topTargetW = (topImg.width / topImg.height) * topTargetH;
-      const topX = (canvasWidth - topTargetW) / 2;
-      const topY = 16;
-
-      ctx.save();
-      ctx.shadowColor = "rgba(0, 0, 0, 0.16)";
-      ctx.shadowBlur = 20;
-      ctx.shadowOffsetY = 8;
-      ctx.drawImage(topImg, topX, topY, topTargetW, topTargetH);
-      ctx.restore();
-    } catch (e) {
-      console.warn("Could not load real top ornament", e);
-    }
-  }
-
-  // Bottom Ornament (Segel Wax Emas / Cincin Kawin / Ilustrasi Kucing)
+  // 10. Draw Bottom Ornament (Wax Seal / Rings / Cat Couple)
   if (template.realAssets?.bottomOrnamentUrl) {
     try {
       const botImg = await loadImage(template.realAssets.bottomOrnamentUrl);
-      const botTargetH = 240;
-      const botTargetW = (botImg.width / botImg.height) * botTargetH;
+      const botTargetW = (botImg.width / botImg.height) * botOrnamentH;
       const botX = (canvasWidth - botTargetW) / 2;
-      const botY = canvasHeight - footerHeight + 10;
 
       ctx.save();
       ctx.shadowColor = "rgba(0, 0, 0, 0.18)";
-      ctx.shadowBlur = 24;
-      ctx.shadowOffsetY = 10;
-      ctx.drawImage(botImg, botX, botY, botTargetW, botTargetH);
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 8;
+      ctx.drawImage(botImg, botX, botOrnamentY, botTargetW, botOrnamentH);
       ctx.restore();
     } catch (e) {
       console.warn("Could not load real bottom ornament", e);
     }
   }
 
-  // 6. Draw Footer Section
+  // 11. Draw Footer Text
   ctx.save();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-
-  const footerCenterY = canvasHeight - 140;
-  const footerTitle = template.themeStyle.footerTitle || "MEMORIES";
-  const footerSubtitle = template.themeStyle.footerSubtitle || "";
-
   ctx.fillStyle = template.textColor;
+
   if (template.fontFamily === "serif") {
     ctx.font = "bold 44px 'Playfair Display', Georgia, serif";
   } else if (template.fontFamily === "handwriting") {
@@ -540,45 +553,46 @@ export async function generatePhotoboxCanvas(
   } else {
     ctx.font = "bold 40px 'Plus Jakarta Sans', sans-serif";
   }
-  ctx.fillText(footerTitle, canvasWidth / 2, footerCenterY - 30);
+  ctx.fillText(footerTitle, canvasWidth / 2, footerTitleY);
 
   if (footerSubtitle) {
     ctx.fillStyle = template.subtextColor;
     ctx.font = "500 28px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillText(footerSubtitle, canvasWidth / 2, footerCenterY + 25);
+    ctx.fillText(footerSubtitle, canvasWidth / 2, footerSubtitleY);
   }
 
   // Date Stamp
   if (showDate) {
-    const dateText = customDate || new Date().toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
+    const dateText =
+      customDate ||
+      new Date().toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
     ctx.fillStyle = template.accentColor || template.subtextColor;
     ctx.font = "600 26px 'Courier New', monospace";
-    ctx.fillText(`• ${dateText} •`, canvasWidth / 2, footerCenterY + 75);
+    ctx.fillText(`• ${dateText} •`, canvasWidth / 2, dateY);
   }
   ctx.restore();
 
-  // 6b. Draw Bride & Groom Generated Photo Badge if enabled on this template
+  // 12. Draw Couple Badge if enabled
   if (template.coupleBadge) {
     try {
       const badgeImg = await loadImage(template.coupleBadge.imageUrl);
       ctx.save();
       const bShape = template.coupleBadge.shape || "circle";
       const bPos = template.coupleBadge.position || "footer";
-
-      const badgeSize = 180;
+      const badgeSize = 160;
       let badgeX = canvasWidth / 2 - badgeSize / 2;
-      let badgeY = bPos === "header" ? 60 : canvasHeight - 250;
+      let badgeY = bPos === "header" ? 50 : botOrnamentY;
 
       if (bPos === "top-right") {
         badgeX = canvasWidth - sideMargin - badgeSize;
         badgeY = 50;
       } else if (bPos === "bottom-right") {
         badgeX = canvasWidth - sideMargin - badgeSize;
-        badgeY = canvasHeight - 250;
+        badgeY = canvasHeight - 230;
       }
 
       ctx.save();
@@ -592,9 +606,8 @@ export async function generatePhotoboxCanvas(
       ctx.drawImage(badgeImg, badgeX, badgeY, badgeSize, badgeSize);
       ctx.restore();
 
-      // Border frame around couple photo badge
       ctx.strokeStyle = template.accentColor || "#DFD2BD";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 5;
       ctx.beginPath();
       if (bShape === "polaroid") {
         ctx.roundRect(badgeX, badgeY, badgeSize, badgeSize * 1.15, 12);
@@ -608,9 +621,8 @@ export async function generatePhotoboxCanvas(
     }
   }
 
-  // 7. Draw Stickers onto the Canvas (Supports Emojis, Couple Photos, & Custom Uploaded Images!)
+  // 13. Draw Stickers (Coordinates match percentage on canvas)
   if (stickers && stickers.length > 0) {
-    // Sort by zIndex so higher layers render on top
     const sortedStickers = [...stickers].sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
 
     for (const sticker of sortedStickers) {
@@ -645,7 +657,6 @@ export async function generatePhotoboxCanvas(
           }
 
           if (sticker.hasFrame) {
-            // Draw photo card frame with rounded corners & clean white border
             ctx.save();
             ctx.beginPath();
             ctx.roundRect(-size / 2, -size / 2, size, size, 16);
@@ -653,14 +664,12 @@ export async function generatePhotoboxCanvas(
             ctx.drawImage(sImg, -size / 2, -size / 2, size, size);
             ctx.restore();
 
-            // Border for photo sticker
             ctx.strokeStyle = "#FFFFFF";
             ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.roundRect(-size / 2, -size / 2, size, size, 16);
             ctx.stroke();
           } else {
-            // Transparent PNG sticker / natural image without forced border
             ctx.drawImage(sImg, -drawW / 2, -drawH / 2, drawW, drawH);
           }
         } catch {
@@ -675,6 +684,9 @@ export async function generatePhotoboxCanvas(
       ctx.restore();
     }
   }
+
+  // 14. Restore Card Rounded Clip
+  ctx.restore();
 
   return canvas;
 }

@@ -28,7 +28,6 @@ export const PHOTOBOX_TEMPLATES: PhotoboxTemplate[] = [
     fontFamily: "serif",
     realAssets: {
       bgTextureUrl: "/images/paper-art/paper-texture-ivory.png",
-      deckleMatUrl: "/images/paper-keepsake/deckle-photo-mat.png",
       cornerAssetUrl: "/images/paper-keepsake/real-pressed-corner-cute.png",
       topOrnamentUrl: "/images/paper-keepsake/botanical-corner-sprig.png",
       bottomOrnamentUrl: "/images/paper-keepsake/real-gold-wax-seal.png",
