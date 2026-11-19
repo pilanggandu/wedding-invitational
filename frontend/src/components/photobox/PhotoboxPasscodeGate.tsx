@@ -40,7 +40,7 @@ export function PhotoboxPasscodeGate({
       if (verifyPhotoboxPasscode(codeToVerify, configuredPasscode)) {
         setIsSuccess(true);
         setErrorMessage("");
-        setPhotoboxUnlockedSession(true);
+        setPhotoboxUnlockedSession(true, configuredPasscode || codeToVerify);
 
         try {
           confetti({
@@ -130,7 +130,7 @@ export function PhotoboxPasscodeGate({
       const urlCode = params.get("pin") || params.get("code") || params.get("passcode");
       if (urlCode && verifyPhotoboxPasscode(urlCode, configuredPasscode)) {
         setIsSuccess(true);
-        setPhotoboxUnlockedSession(true);
+        setPhotoboxUnlockedSession(true, configuredPasscode || urlCode);
         onUnlock();
       }
     } catch {

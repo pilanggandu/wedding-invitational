@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { PhotoboxLayout, PhotoboxFilter, getLayoutShotsCount } from "./types";
 import { CameraCapture } from "./CameraCapture";
 import { PhotoboxPasscodeGate } from "./PhotoboxPasscodeGate";
-import { isPhotoboxUnlockedSession } from "./passcode";
+import { isPhotoboxUnlockedSession, getActivePasscode } from "./passcode";
 import { getInvitationData } from "@/lib/invitationStore";
 import {
   savePhotoboxDraft,
@@ -21,7 +21,14 @@ export type PhotoboxStep = "layout" | "camera" | "filter" | "done";
 export function PhotoboxStudio() {
   const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
   const [hasMounted, setHasMounted] = useState<boolean>(false);
-  const [configuredPasscode, setConfiguredPasscode] = useState<string>("2026");
+  const [configuredPasscode, setConfiguredPasscode] = useState<string>(() => {
+    try {
+      const inv = getInvitationData();
+      const pin = inv?.general?.photoboxPasscode?.toString()?.trim();
+      if (pin) return pin;
+    } catch {}
+    return getActivePasscode();
+  });
   const [currentStep, setCurrentStep] = useState<PhotoboxStep>("layout");
   const [layout, setLayout] = useState<PhotoboxFlowLayout>("strip-2");
   const [photos, setPhotos] = useState<string[]>(["", ""]);
@@ -156,14 +163,20 @@ export function PhotoboxStudio() {
 
   useEffect(() => {
     setHasMounted(true);
+    let activePin = configuredPasscode;
     try {
       const inv = getInvitationData();
       const pin = inv?.general?.photoboxPasscode?.toString()?.trim();
-      if (pin) setConfiguredPasscode(pin);
+      if (pin) {
+        activePin = pin;
+        setConfiguredPasscode(pin);
+      }
     } catch {}
 
-    if (isPhotoboxUnlockedSession()) {
+    if (isPhotoboxUnlockedSession(activePin)) {
       setIsUnlocked(true);
+    } else {
+      setIsUnlocked(false);
     }
   }, []);
 

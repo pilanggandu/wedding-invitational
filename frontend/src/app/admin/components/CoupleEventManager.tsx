@@ -1672,7 +1672,7 @@ export function CoupleEventManager({
                 <span>Format Passcode yang Didukung:</span>
               </span>
               <p className="text-[11px] text-[#786551] leading-relaxed">
-                Tamu dapat memasukkan passcode kustom ini (saat ini: <strong className="font-mono text-[#4A121A]">{photoboxPasscode || "2026"}</strong>), atau tahun pernikahan bawaan (<strong>2026</strong>).
+                Tamu wajib memasukkan passcode aktif ini (saat ini: <strong className="font-mono text-[#4A121A]">{photoboxPasscode || "2026"}</strong>). Pincode lama otomatis tidak dapat digunakan lagi setelah passcode diubah.
               </p>
             </div>
             <div className="pt-2 mt-2 border-t border-[#E8DFC8]/60 flex items-center justify-between text-[11px]">
