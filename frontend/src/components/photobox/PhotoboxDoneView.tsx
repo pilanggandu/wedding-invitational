@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
   Download,
-  Share2,
   RotateCcw,
   Sparkles,
   CheckCircle2,
   Camera,
   Heart,
   Loader2,
+  Check,
 } from "lucide-react";
 import { PhotoboxFlowLayout } from "./PhotoboxLayoutSelect";
 import { PhotoboxStoryFrame } from "./PhotoboxStoryFrame";
@@ -19,12 +19,24 @@ import { PhotoboxFilter } from "./types";
 import { generatePhotoboxStoryCanvas } from "./canvasExport";
 import { downloadCanvasImage } from "./photoDownload";
 import { IOSPhotoSaveModal } from "./IOSPhotoSaveModal";
+import {
+  InstagramShareGuideModal,
+  InstagramIcon,
+} from "./InstagramShareGuideModal";
 
 interface PhotoboxDoneViewProps {
   layout: PhotoboxFlowLayout;
   photos: string[];
   filter: PhotoboxFilter;
   onResetSession: () => void;
+}
+
+interface ExportedMedia {
+  canvas: HTMLCanvasElement;
+  blob: Blob;
+  blobUrl: string;
+  file: File;
+  filename: string;
 }
 
 export function PhotoboxDoneView({
@@ -35,10 +47,16 @@ export function PhotoboxDoneView({
 }: PhotoboxDoneViewProps) {
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [isSharing, setIsSharing] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [shareGuideModalOpen, setShareGuideModalOpen] = useState<boolean>(false);
   const [iosModalData, setIosModalData] = useState<{
     blobUrl: string;
     filename: string;
   } | null>(null);
+
+  const [preparedExport, setPreparedExport] = useState<ExportedMedia | null>(null);
+  const preparedExportRef = useRef<ExportedMedia | null>(null);
+  preparedExportRef.current = preparedExport;
 
   // Trigger celebration confetti when screen loads
   useEffect(() => {
@@ -52,20 +70,96 @@ export function PhotoboxDoneView({
     } catch {}
   }, []);
 
+  // Pre-generate HD canvas and file in background so downloads & sharing are instant
+  useEffect(() => {
+    let isCancelled = false;
+
+    const prepare = async () => {
+      try {
+        const canvas = await generatePhotoboxStoryCanvas({
+          layout,
+          photos,
+          filter,
+        });
+        if (isCancelled) return;
+
+        const dataUrl = canvas.toDataURL("image/png");
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        if (isCancelled) return;
+
+        const filename = `photobox-gilang-salsa-${layout}-${Date.now()}.png`;
+        const file = new File([blob], filename, { type: "image/png" });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const exported: ExportedMedia = {
+          canvas,
+          blob,
+          blobUrl,
+          file,
+          filename,
+        };
+
+        preparedExportRef.current = exported;
+        setPreparedExport(exported);
+      } catch (err) {
+        console.warn("Pre-render canvas error:", err);
+      }
+    };
+
+    prepare();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [layout, photos, filter]);
+
+  // Helper to ensure media is ready
+  const getOrGenerateExport = async (): Promise<ExportedMedia> => {
+    if (preparedExportRef.current) {
+      return preparedExportRef.current;
+    }
+    const canvas = await generatePhotoboxStoryCanvas({
+      layout,
+      photos,
+      filter,
+    });
+    const dataUrl = canvas.toDataURL("image/png");
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
+    const filename = `photobox-gilang-salsa-${layout}-${Date.now()}.png`;
+    const file = new File([blob], filename, { type: "image/png" });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const exported: ExportedMedia = {
+      canvas,
+      blob,
+      blobUrl,
+      file,
+      filename,
+    };
+    preparedExportRef.current = exported;
+    setPreparedExport(exported);
+    return exported;
+  };
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  // Unduh HD
   const handleDownload = async () => {
     try {
       setIsExporting(true);
-      const canvas = await generatePhotoboxStoryCanvas({
-        layout,
-        photos,
-        filter,
-      });
+      const exported = await getOrGenerateExport();
 
-      const filename = `photobox-gilang-salsa-${layout}-${Date.now()}.png`;
-      const result = await downloadCanvasImage(canvas, {
-        filename,
+      const result = await downloadCanvasImage(exported.canvas, {
+        filename: exported.filename,
         title: "Photobox Gilang & Salsa Wedding",
         text: "Kenangan Photobox Pernikahan Gilang & Salsa • 28 November 2026",
+        precomputedBlob: exported.blob,
+        precomputedFile: exported.file,
       });
 
       if (result.method === "modal") {
@@ -73,6 +167,8 @@ export function PhotoboxDoneView({
           blobUrl: result.blobUrl,
           filename: result.filename,
         });
+      } else {
+        showToast("Foto HD berhasil diunduh ✨");
       }
     } catch (err) {
       console.error("Gagal export canvas photobox:", err);
@@ -82,51 +178,82 @@ export function PhotoboxDoneView({
     }
   };
 
+  // Bagikan ke Instagram
   const handleShareStory = async () => {
-    try {
-      setIsSharing(true);
-      const canvas = await generatePhotoboxStoryCanvas({
-        layout,
-        photos,
-        filter,
-      });
+    const exp = preparedExportRef.current;
 
-      const filename = `photobox-gilang-salsa-${Date.now()}.png`;
+    // 1. Direct Web Share API attempt on supported devices (iOS Safari & Android Chrome)
+    // Synchronous execution ensures the browser transient user gesture is strictly preserved
+    const canNativeShare =
+      typeof navigator !== "undefined" &&
+      typeof navigator.share === "function" &&
+      typeof navigator.canShare === "function";
 
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          setIsSharing(false);
+    if (exp && canNativeShare && navigator.canShare({ files: [exp.file] })) {
+      try {
+        await navigator.share({
+          files: [exp.file],
+          title: "Photobox Gilang & Salsa",
+          text: "Momen kenangan di pernikahan Gilang & Salsa #GilangSalsa2026",
+        });
+        return;
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === "AbortError") {
+          // User closed share sheet without selecting an app
           return;
         }
+        console.warn("navigator.share failed, fallback to download & IG guide:", err);
+      }
+    }
 
-        const file = new File([blob], filename, { type: "image/png" });
+    // 2. Fallback for Desktop PC, in-app browsers, or when native file share is unsupported:
+    // Automatically save the photo, copy to clipboard, and open Instagram guidance / deep link
+    try {
+      setIsSharing(true);
+      const exported = await getOrGenerateExport();
 
-        if (
-          typeof navigator !== "undefined" &&
-          typeof navigator.canShare === "function" &&
-          navigator.canShare({ files: [file] })
-        ) {
-          try {
-            await navigator.share({
-              files: [file],
-              title: "Photobox Gilang & Salsa",
-              text: "Momen kenangan di pernikahan Gilang & Salsa #GilangSalsa2026",
-            });
-          } catch (e: unknown) {
-            if (e instanceof Error && e.name !== "AbortError") {
-              handleDownload();
-            }
-          }
-        } else {
-          // Fallback to normal download if share is not supported
-          handleDownload();
+      // Trigger download so the image is safely saved in user device
+      const link = document.createElement("a");
+      link.href = exported.blobUrl;
+      link.download = exported.filename;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
         }
-        setIsSharing(false);
-      }, "image/png");
+      }, 1000);
+
+      // Copy image to clipboard if supported
+      if (
+        typeof navigator !== "undefined" &&
+        typeof ClipboardItem !== "undefined" &&
+        navigator.clipboard?.write
+      ) {
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": exported.blob }),
+          ]);
+        } catch {}
+      }
+
+      // Check if on mobile device to attempt opening Instagram app directly
+      const isMobile =
+        typeof navigator !== "undefined" &&
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+
+      if (isMobile) {
+        setTimeout(() => {
+          window.location.href = "instagram://story-camera";
+        }, 350);
+      }
+
+      setShareGuideModalOpen(true);
     } catch (err) {
-      console.error("Share error:", err);
-      setIsSharing(false);
+      console.error("Gagal fallback bagikan ke Instagram:", err);
       handleDownload();
+    } finally {
+      setIsSharing(false);
     }
   };
 
@@ -164,7 +291,7 @@ export function PhotoboxDoneView({
             <span>Foto Berhasil Dibuat</span>
           </div>
           <h2 className="font-serif text-2xl font-bold text-[#4A121A]">
-            Siap untuk Story Instagram! ✨
+            Foto Siap Dibagikan! ✨
           </h2>
           <p className="text-xs text-[#786551] mt-0.5">
             Format 9:16 pas untuk layar HP. Jangan lupa tag <strong>#GilangSalsa2026</strong> ya!
@@ -180,7 +307,7 @@ export function PhotoboxDoneView({
 
         {/* Action Buttons */}
         <div className="w-full space-y-2.5 pt-1">
-          {/* Tombol Download HD */}
+          {/* Tombol Unduh HD */}
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={handleDownload}
@@ -190,17 +317,17 @@ export function PhotoboxDoneView({
             {isExporting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin text-[#C99A45]" />
-                <span>Menyiapkan Gambar HD...</span>
+                <span>Menyiapkan HD...</span>
               </>
             ) : (
               <>
                 <Download className="w-5 h-5 text-[#C99A45]" />
-                <span>Unduh Foto Story IG (HD)</span>
+                <span>Unduh HD</span>
               </>
             )}
           </motion.button>
 
-          {/* Tombol Share ke Instagram Story */}
+          {/* Tombol Bagikan ke Instagram */}
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={handleShareStory}
@@ -210,12 +337,14 @@ export function PhotoboxDoneView({
             {isSharing ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-[#4A121A]" />
-                <span>Membuka Menu Berbagi...</span>
+                <span>Membuka Instagram...</span>
               </>
             ) : (
               <>
-                <Share2 className="w-4 h-4 text-[#8C6239]" />
-                <span>Bagikan ke Instagram Story</span>
+                <div className="w-5 h-5 rounded-md bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] text-white flex items-center justify-center shrink-0">
+                  <InstagramIcon className="w-3.5 h-3.5 text-white" />
+                </div>
+                <span>Bagikan ke Instagram</span>
               </>
             )}
           </motion.button>
@@ -230,6 +359,30 @@ export function PhotoboxDoneView({
           </button>
         </div>
       </main>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 15 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#4A121A] text-[#FAF1D9] border border-[#C99A45]/40 px-4 py-2 rounded-full text-xs font-semibold shadow-lg flex items-center gap-2"
+          >
+            <Check className="w-3.5 h-3.5 text-[#C99A45]" />
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Instagram Share Guide Modal (for desktop & fallback) */}
+      <InstagramShareGuideModal
+        isOpen={shareGuideModalOpen}
+        onClose={() => setShareGuideModalOpen(false)}
+        imageUrl={preparedExport?.blobUrl}
+        blob={preparedExport?.blob}
+        filename={preparedExport?.filename}
+      />
 
       {/* iOS Safari Save Modal */}
       {iosModalData && (

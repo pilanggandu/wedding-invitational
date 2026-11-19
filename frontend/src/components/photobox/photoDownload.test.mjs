@@ -27,3 +27,16 @@ test("isInAppBrowser detects common mobile webviews", () => {
   assert.ok(!standardSafariUa.toLowerCase().includes("instagram"));
   assert.ok(!standardSafariUa.toLowerCase().includes("tiktok"));
 });
+
+test("PhotoDownloadOptions accepts precomputedBlob and precomputedFile", () => {
+  const dummyBlob = { size: 1024, type: "image/png" };
+  const dummyFile = { name: "photobox.png", size: 1024, type: "image/png" };
+  const opts = {
+    filename: "test.png",
+    precomputedBlob: dummyBlob,
+    precomputedFile: dummyFile,
+  };
+  assert.strictEqual(opts.filename, "test.png");
+  assert.strictEqual(opts.precomputedBlob, dummyBlob);
+  assert.strictEqual(opts.precomputedFile, dummyFile);
+});

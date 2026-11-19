@@ -44,6 +44,8 @@ export interface PhotoDownloadOptions {
   filename: string;
   title?: string;
   text?: string;
+  precomputedBlob?: Blob;
+  precomputedFile?: File;
 }
 
 export interface PhotoDownloadResult {
@@ -61,14 +63,17 @@ export async function downloadCanvasImage(
     filename,
     title = "Foto Photobox Gilang & Salsa",
     text = "Kenangan Photobox Pernikahan Gilang & Salsadila",
+    precomputedBlob,
+    precomputedFile,
   } = options;
 
-  const blob = await canvasToBlob(canvas, "image/png");
+  const blob = precomputedBlob || (await canvasToBlob(canvas, "image/png"));
   const blobUrl = URL.createObjectURL(blob);
   const isApple = isIOSDevice();
 
   if (isApple) {
-    const file = new File([blob], filename, { type: "image/png" });
+    const file =
+      precomputedFile || new File([blob], filename, { type: "image/png" });
     const canUseShare =
       typeof navigator !== "undefined" &&
       typeof navigator.canShare === "function" &&
