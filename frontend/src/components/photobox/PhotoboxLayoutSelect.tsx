@@ -37,7 +37,7 @@ const FRAME_OPTIONS: FrameOption[] = [
     badge: "Strip Populer ⭐",
     shots: 3,
     description: "3 pose berekspresi bertingkat di dalam bingkai renda bunga.",
-    previewUrl: "/images/frame-sadil-gilang-full.png",
+    previewUrl: "/images/frame-sadil-gilang-trio.png",
   },
   {
     id: "single-card",
@@ -142,14 +142,6 @@ export function PhotoboxLayoutSelect({
                       alt={opt.name}
                       className="w-full h-full object-contain"
                     />
-                    {/* Visual slot indicator overlay */}
-                    {opt.id === "strip-3" && (
-                      <div className="absolute inset-0 flex flex-col justify-center items-center gap-1.5 p-3 pointer-events-none">
-                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
-                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
-                        <div className="w-[70%] h-[20%] border border-amber-300/80 bg-black/30 rounded-xs" />
-                      </div>
-                    )}
                   </div>
 
                   {/* Info Text */}
