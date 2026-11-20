@@ -429,6 +429,21 @@
   scrollbar-color: var(--scrollbar-thumb, #7D1128) var(--scrollbar-track, #FFF5F6);
 }
 
+/* Utility to completely hide scrollbar while preserving touch & wheel scroll functionality */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+
 
 /* ========================================================
    UNIVERSAL MOTION: LETTER-BY-LETTER & FRAME MOUNT

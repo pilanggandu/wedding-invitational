@@ -75,30 +75,32 @@ export function PhotoboxFilterView({
             Pilihan Filter Studio
           </div>
 
-          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-1 px-1 no-scrollbar">
-            {FILTER_PRESETS.map((preset) => {
-              const isSelected = selectedFilter === preset.id;
-              return (
-                <button
-                  key={preset.id}
-                  onClick={() => onSelectFilter(preset.id)}
-                  className={`px-3 py-2 rounded-xl text-center transition-all cursor-pointer border flex flex-col items-center shrink-0 min-w-[70px] ${
-                    isSelected
-                      ? "bg-[#4A121A] text-[#FAF1D9] border-[#4A121A] shadow-md scale-105"
-                      : "bg-white text-[#5C4A3A] border-[#E8DFC8] hover:border-[#C5B7A1] hover:bg-[#FAF6EE]"
-                  }`}
-                >
-                  <span className="text-xs font-bold leading-tight">{preset.label}</span>
-                  <span
-                    className={`text-[9px] mt-0.5 ${
-                      isSelected ? "text-[#DFD2BD]" : "text-[#9E8B75]"
+          <div className="w-full overflow-x-auto no-scrollbar scrollbar-none py-2 px-1">
+            <div className="flex items-center gap-2 min-w-max mx-auto px-2">
+              {FILTER_PRESETS.map((preset) => {
+                const isSelected = selectedFilter === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => onSelectFilter(preset.id)}
+                    className={`px-3 py-2 rounded-xl text-center transition-all cursor-pointer border flex flex-col items-center shrink-0 min-w-[70px] ${
+                      isSelected
+                        ? "bg-[#4A121A] text-[#FAF1D9] border-[#4A121A] shadow-md scale-105"
+                        : "bg-white text-[#5C4A3A] border-[#E8DFC8] hover:border-[#C5B7A1] hover:bg-[#FAF6EE]"
                     }`}
                   >
-                    {preset.tone}
-                  </span>
-                </button>
-              );
-            })}
+                    <span className="text-xs font-bold leading-tight">{preset.label}</span>
+                    <span
+                      className={`text-[9px] mt-0.5 ${
+                        isSelected ? "text-[#DFD2BD]" : "text-[#9E8B75]"
+                      }`}
+                    >
+                      {preset.tone}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Bottom Action Button */}
