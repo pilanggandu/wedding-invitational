@@ -879,7 +879,7 @@ export function AdminOverview({
                 Bilik Foto Tamu (Photobox Studio)
               </h3>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#4A121A]/10 text-[#4A121A]">
-                Passcode: {data.general?.photoboxPasscode || "2026"}
+                Passcode: {data.general?.photoboxPasscode || "2111"}
               </span>
             </div>
             <p className="text-xs text-[#786551] max-w-xl leading-relaxed">

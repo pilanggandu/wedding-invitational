@@ -910,7 +910,7 @@ function AdminDashboardContent() {
       <A3PosterModal
         isOpen={isA3PosterOpen}
         onClose={() => setIsA3PosterOpen(false)}
-        defaultPasscode={invitationData.general?.photoboxPasscode || "2026"}
+        defaultPasscode={invitationData.general?.photoboxPasscode || "2111"}
         coupleNames={
           invitationData.couple?.groom?.name && invitationData.couple?.bride?.name
             ? `${invitationData.couple.groom.name} & ${invitationData.couple.bride.name}`.toUpperCase()

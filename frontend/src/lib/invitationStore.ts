@@ -181,7 +181,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
   general: {
     hashtag: WEDDING_DATA.general.hashtag,
     funTagline: WEDDING_DATA.general.funTagline,
-    photoboxPasscode: WEDDING_DATA.general.photoboxPasscode || "2026",
+    photoboxPasscode: WEDDING_DATA.general.photoboxPasscode || "2111",
     musicTitle: WEDDING_DATA.general.musicTitle,
     musicArtist: WEDDING_DATA.general.musicArtist,
     musicUrl: "",

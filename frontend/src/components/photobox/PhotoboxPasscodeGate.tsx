@@ -17,6 +17,7 @@ import confetti from "canvas-confetti";
 import {
   verifyPhotoboxPasscode,
   setPhotoboxUnlockedSession,
+  getActivePasscode,
 } from "./passcode";
 
 interface PhotoboxPasscodeGateProps {
@@ -37,10 +38,12 @@ export function PhotoboxPasscodeGate({
   // Trigger verifikasi PIN saat panjang digit mencapai 4
   const handleVerify = useCallback(
     (codeToVerify: string) => {
-      if (verifyPhotoboxPasscode(codeToVerify, configuredPasscode)) {
+      const currentActive = getActivePasscode(configuredPasscode);
+
+      if (verifyPhotoboxPasscode(codeToVerify, currentActive)) {
         setIsSuccess(true);
         setErrorMessage("");
-        setPhotoboxUnlockedSession(true, configuredPasscode || codeToVerify);
+        setPhotoboxUnlockedSession(true, currentActive);
 
         try {
           confetti({
@@ -58,7 +61,11 @@ export function PhotoboxPasscodeGate({
         }, 650);
       } else {
         setErrorShake(true);
-        setErrorMessage("Passcode belum tepat. Silakan coba lagi.");
+        if (codeToVerify === "2026" && currentActive !== "2026") {
+          setErrorMessage("Passcode '2026' sudah kedaluwarsa. Silakan gunakan passcode aktif terbaru.");
+        } else {
+          setErrorMessage("Passcode belum tepat. Silakan coba lagi.");
+        }
         if (typeof window !== "undefined" && "vibrate" in navigator) {
           try {
             navigator.vibrate(200);
@@ -128,9 +135,10 @@ export function PhotoboxPasscodeGate({
     try {
       const params = new URLSearchParams(window.location.search);
       const urlCode = params.get("pin") || params.get("code") || params.get("passcode");
-      if (urlCode && verifyPhotoboxPasscode(urlCode, configuredPasscode)) {
+      const currentActive = getActivePasscode(configuredPasscode);
+      if (urlCode && verifyPhotoboxPasscode(urlCode, currentActive)) {
         setIsSuccess(true);
-        setPhotoboxUnlockedSession(true, configuredPasscode || urlCode);
+        setPhotoboxUnlockedSession(true, currentActive);
         onUnlock();
       }
     } catch {

@@ -229,7 +229,7 @@ export function CoupleEventManager({
       "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kami."
   );
   const [photoboxPasscode, setPhotoboxPasscode] = useState(
-    data.general?.photoboxPasscode || "2026"
+    data.general?.photoboxPasscode || "2111"
   );
 
   // Bank accounts (Dynamic)
@@ -371,7 +371,7 @@ export function CoupleEventManager({
           funTagline: funTagline.trim(),
           hashtag: hashtag.trim(),
           closingMessage: closingMessage.trim(),
-          photoboxPasscode: photoboxPasscode.trim() || "2026",
+          photoboxPasscode: photoboxPasscode.trim() || "2111",
           coverPhotoUrl: coverPhotoUrl.trim(),
           heroPhotoUrl: coverPhotoUrl.trim(),
           closingPhotoUrl: closingPhotoUrl.trim(),
@@ -444,7 +444,7 @@ export function CoupleEventManager({
 
       const serverSaved = await saveInvitationData(updated);
       try {
-        localStorage.setItem("wedding_photobox_pin", photoboxPasscode.trim() || "2026");
+        localStorage.setItem("wedding_photobox_pin", photoboxPasscode.trim() || "2111");
       } catch {}
       onUpdate(updated);
 
@@ -1655,7 +1655,7 @@ export function CoupleEventManager({
                 maxLength={8}
                 value={photoboxPasscode}
                 onChange={(e) => setPhotoboxPasscode(e.target.value)}
-                placeholder="2026"
+                placeholder="2111"
                 className="w-full px-3.5 py-2.5 rounded-xl border border-[#DCDCD5] bg-white focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C] font-mono text-xs sm:text-sm text-[#14161C] placeholder:text-[#A0A4B0] transition-colors"
               />
               <KeyRound className="w-4 h-4 text-slate-400 absolute right-3.5 top-3 pointer-events-none" />
@@ -1672,7 +1672,7 @@ export function CoupleEventManager({
                 <span>Format Passcode yang Didukung:</span>
               </span>
               <p className="text-[11px] text-[#786551] leading-relaxed">
-                Tamu wajib memasukkan passcode aktif ini (saat ini: <strong className="font-mono text-[#4A121A]">{photoboxPasscode || "2026"}</strong>). Pincode lama otomatis tidak dapat digunakan lagi setelah passcode diubah.
+                Tamu wajib memasukkan passcode aktif ini (saat ini: <strong className="font-mono text-[#4A121A]">{photoboxPasscode || "2111"}</strong>). Pincode lama otomatis tidak dapat digunakan lagi setelah passcode diubah.
               </p>
             </div>
             <div className="pt-2 mt-2 border-t border-[#E8DFC8]/60 flex items-center justify-between text-[11px]">

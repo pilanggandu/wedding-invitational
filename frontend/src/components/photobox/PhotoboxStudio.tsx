@@ -4,8 +4,10 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { PhotoboxLayout, PhotoboxFilter, getLayoutShotsCount } from "./types";
 import { CameraCapture } from "./CameraCapture";
 import { PhotoboxPasscodeGate } from "./PhotoboxPasscodeGate";
-import { isPhotoboxUnlockedSession, getActivePasscode } from "./passcode";
+import { isPhotoboxUnlockedSession, getActivePasscode, PHOTOBOX_STORAGE_KEY } from "./passcode";
 import { getInvitationData } from "@/lib/invitationStore";
+import { fetchInvitationFromBackend } from "@/lib/api";
+import { WeddingInvitationData } from "@/types/wedding";
 import {
   savePhotoboxDraft,
   loadPhotoboxDraft,
@@ -163,21 +165,63 @@ export function PhotoboxStudio() {
 
   useEffect(() => {
     setHasMounted(true);
-    let activePin = configuredPasscode;
-    try {
-      const inv = getInvitationData();
-      const pin = inv?.general?.photoboxPasscode?.toString()?.trim();
-      if (pin) {
-        activePin = pin;
-        setConfiguredPasscode(pin);
-      }
-    } catch {}
 
-    if (isPhotoboxUnlockedSession(activePin)) {
-      setIsUnlocked(true);
-    } else {
-      setIsUnlocked(false);
-    }
+    const syncPin = (data?: WeddingInvitationData | null) => {
+      let resolvedPin = "";
+      if (data?.general?.photoboxPasscode) {
+        resolvedPin = data.general.photoboxPasscode.toString().trim();
+      } else {
+        try {
+          const inv = getInvitationData();
+          resolvedPin = inv?.general?.photoboxPasscode?.toString()?.trim() || "";
+        } catch {}
+      }
+
+      const activePin = getActivePasscode(resolvedPin || undefined);
+      setConfiguredPasscode(activePin);
+
+      if (isPhotoboxUnlockedSession(activePin)) {
+        setIsUnlocked(true);
+      } else {
+        setIsUnlocked(false);
+      }
+    };
+
+    // 1. Inisialisasi awal dari penyimpanan lokal
+    syncPin();
+
+    // 2. Tarik data terbaru dari backend server (PostgreSQL / API)
+    fetchInvitationFromBackend()
+      .then((serverData) => {
+        if (serverData) {
+          syncPin(serverData);
+        }
+      })
+      .catch(() => {});
+
+    // 3. Listener event data pernikahan jika diubah dari admin di window yang sama
+    const handleDataChanged = (e: Event) => {
+      const customEv = e as CustomEvent<WeddingInvitationData>;
+      syncPin(customEv.detail);
+    };
+    window.addEventListener("wedding-data-changed", handleDataChanged);
+
+    // 4. Listener storage jika passcode diubah di tab admin terpisah
+    const handleStorageChange = (e: StorageEvent) => {
+      if (
+        e.key === "wedding_invitation_data_v1" ||
+        e.key === "wedding_photobox_pin" ||
+        e.key === PHOTOBOX_STORAGE_KEY
+      ) {
+        syncPin();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("wedding-data-changed", handleDataChanged);
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   const handleLayoutChange = (newLayout: PhotoboxFlowLayout) => {

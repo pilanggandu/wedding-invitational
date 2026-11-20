@@ -32,6 +32,7 @@ import {
 } from "./a3PosterCanvas";
 import { downloadCanvasImage } from "./photoDownload";
 import { IOSPhotoSaveModal } from "./IOSPhotoSaveModal";
+import { getInvitationData, saveInvitationData } from "@/lib/invitationStore";
 
 export interface PhotoOptionItem {
   id: string;
@@ -80,7 +81,7 @@ export function A3PosterModal({
     defaultUrl || "https://cut-fishing-postal-violations.trycloudflare.com/photobox"
   );
   const [posterPasscode, setPosterPasscode] = useState<string>(
-    defaultPasscode || "2026"
+    defaultPasscode || "2111"
   );
 
   // Editable wedding text details
@@ -782,8 +783,22 @@ export function A3PosterModal({
                   type="text"
                   maxLength={8}
                   value={posterPasscode}
-                  onChange={(e) => setPosterPasscode(e.target.value)}
-                  placeholder="2026"
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setPosterPasscode(val);
+                    const clean = val.trim();
+                    if (clean && clean.length >= 4) {
+                      try {
+                        localStorage.setItem("wedding_photobox_pin", clean);
+                        const inv = getInvitationData();
+                        if (inv && inv.general) {
+                          inv.general.photoboxPasscode = clean;
+                          saveInvitationData(inv);
+                        }
+                      } catch {}
+                    }
+                  }}
+                  placeholder="2111"
                   className="w-24 px-2.5 py-1 text-xs font-mono font-bold text-center rounded-lg border border-[#E8DFC8] bg-[#FAF6EE]/50 focus:bg-white text-[#4A121A]"
                 />
               </div>

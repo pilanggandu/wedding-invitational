@@ -178,6 +178,7 @@ function seedIfEmpty() {
       JSON.stringify({
         hashtag: "#GilangSalsaHalal",
         title: "The Wedding of Gilang & Salsadila",
+        photoboxPasscode: "2111",
         welcomeGreeting: "Walimatul 'Ursy - Pernikahan Penuh Berkah",
         quote: {
           arabic:

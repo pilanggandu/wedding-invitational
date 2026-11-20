@@ -246,6 +246,7 @@ export async function initPostgres(): Promise<boolean> {
             JSON.stringify({
               hashtag: "#GilangSalsaHalal",
               funTagline: "Menemukan cinta itu mudah, tapi menemukan yang sefrekuensi itu anugerah!",
+              photoboxPasscode: "2111",
               musicTitle: "A Thousand Years",
               musicArtist: "Christina Perri",
               closingMessage:
@@ -453,7 +454,11 @@ export const postgresService = {
           gifts: wideGifts?.accounts && Array.isArray(wideGifts.accounts) && wideGifts.accounts.length > 0 ? wideGifts : normalizedData.gifts,
           general: {
             ...normalizedData.general,
-            ...(general && typeof general === "object" && !Array.isArray(general) ? general : {}),
+            ...(general && typeof general === "object" && !Array.isArray(general)
+              ? Object.fromEntries(
+                  Object.entries(general).filter(([k]) => k !== "openingMessage")
+                )
+              : {}),
             ...musicSettings,
             coverPhotoUrl:
               musicSettings.coverPhotoUrl ||

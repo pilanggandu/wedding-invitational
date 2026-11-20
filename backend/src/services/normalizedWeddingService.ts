@@ -164,6 +164,7 @@ export class NormalizedWeddingService {
       general: {
         hashtag: "#GilangSalsaHalal",
         funTagline: settings.cover_subtitle || "Menemukan cinta itu mudah, tapi menemukan yang sefrekuensi itu anugerah!",
+        photoboxPasscode: "2111",
         musicTitle: settings.background_music || "A Thousand Years",
         musicArtist: "Christina Perri",
         closingMessage: settings.closing_text || "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.",
