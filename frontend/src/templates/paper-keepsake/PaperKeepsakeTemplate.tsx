@@ -28,6 +28,7 @@ import { ItemMotion } from "@/components/ItemMotion";
 import { useScrollMotion } from "@/components/ScrollMotionContext";
 import { FallingPaperPetals } from "@/components/FallingPaperPetals";
 import { getFontFamilyCss } from "@/lib/typography";
+import { getMainEvent } from "@/types/wedding";
 import type { TemplateProps } from "@/templates/types";
 import type { EventDetail, GroomBrideInfo } from "@/types/wedding";
 import { KeepsakeGuestbook, KeepsakeGifts } from "./KeepsakeGuestbook";
@@ -153,6 +154,7 @@ function Cover({
 }) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
+  const mainEvent = getMainEvent(data);
   return (
     <section
       className={`pk-cover ${leaving ? "pk-cover--opening" : ""}`}
@@ -181,7 +183,7 @@ function Cover({
             <span className="pk-letter-amp" aria-hidden="true">&amp;</span>
             <KeepsakeCharMotion className="pk-letter-name" text={bride.name} baseDelay={0.75} />
           </h1>
-          <p>{data.events[0]?.displayDate}</p>
+          <p>{mainEvent?.displayDate}</p>
         </div>
         <div className="pk-letter-guest">
           <span>Kepada Yth.</span>
@@ -246,14 +248,15 @@ function KeepsakeDesktop({
   onOpen: () => void;
 }) {
   const data = useWeddingData();
+  const mainEvent = getMainEvent(data);
   return (
     <aside className="pk-desktop" aria-label="Undangan pernikahan">
       <KeepsakeSurrounds variant="desktop" />
       <div className="pk-desktop-inner">
         <span className="pk-desktop-date">
-          {data.events[0]?.displayDay}
-          {data.events[0]?.displayDay ? ", " : ""}
-          {data.events[0]?.displayDate}
+          {mainEvent?.displayDay}
+          {mainEvent?.displayDay ? ", " : ""}
+          {mainEvent?.displayDate}
         </span>
         <motion.div
           className="pk-desktop-photo pk-photo-mount"
@@ -306,6 +309,7 @@ function KeepsakeDesktop({
 
 function KeepsakeHero() {
   const data = useWeddingData();
+  const mainEvent = getMainEvent(data);
   return (
     <>
       <SectionMotion id="hero" className="pk-section pk-hero" duration={PK_SECTION_DURATION}>
@@ -338,7 +342,7 @@ function KeepsakeHero() {
         </ItemMotion>
         <ItemMotion variant="pop" delay={0.36} duration={PK_ITEM_DURATION}>
           <p className="pk-date">
-            {data.events[0]?.displayDay}, {data.events[0]?.displayDate}
+            {mainEvent?.displayDay}, {mainEvent?.displayDate}
           </p>
         </ItemMotion>
         <ItemMotion variant="fade" delay={0.46} duration={PK_ITEM_DURATION}>

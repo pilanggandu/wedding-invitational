@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, Film, Radio } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 import {
   FilmClapperIcon,
   FilmTimecodeBadge,
@@ -23,7 +24,7 @@ export function CinematicDesktopLeft({
 }: CinematicDesktopLeftProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

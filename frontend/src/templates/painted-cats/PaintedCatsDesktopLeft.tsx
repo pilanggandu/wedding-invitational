@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calendar, Heart } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { PaintedTextReveal } from "./PaintedTextReveal";
+import { getMainEvent } from "@/types/wedding";
 import {
   DoodleCatCoupleSticker,
   DoodlePawSticker,
@@ -25,7 +26,7 @@ export function PaintedCatsDesktopLeft({
 }: PaintedCatsDesktopLeftProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

@@ -19,8 +19,19 @@ import {
   Camera,
   QrCode,
   KeyRound,
+  Star,
+  CheckCircle2,
+  CalendarCheck,
+  Clock,
+  ArrowRightLeft,
 } from "lucide-react";
-import { WeddingInvitationData, BankAccount } from "@/types/wedding";
+import {
+  WeddingInvitationData,
+  BankAccount,
+  EventDetail,
+  getMainEvent,
+  getEventCountdownTarget,
+} from "@/types/wedding";
 import { saveInvitationData } from "@/lib/invitationStore";
 import { extractColorsFromImage, ExtractedColors, FALLBACK_PALETTE } from "@/lib/colorExtractor";
 import { uploadImageFile } from "@/lib/imageUpload";
@@ -131,24 +142,21 @@ export function CoupleEventManager({
       if (data.general.photoboxPasscode !== undefined) setPhotoboxPasscode(data.general.photoboxPasscode);
     }
 
-    const evAkad = data.events?.[0];
-    if (evAkad) {
-      if (evAkad.displayDay) setAkadDay(evAkad.displayDay);
-      if (evAkad.displayDate) setAkadDate(evAkad.displayDate);
-      if (evAkad.time) setAkadTime(evAkad.time);
-      if (evAkad.venueName) setAkadVenue(evAkad.venueName);
-      if (evAkad.venueAddress) setAkadAddress(evAkad.venueAddress);
-      if (evAkad.mapUrl) setAkadMapUrl(evAkad.mapUrl);
-    }
-
-    const evResepsi = data.events?.[1] || evAkad;
-    if (evResepsi) {
-      if (evResepsi.displayDay) setResepsiDay(evResepsi.displayDay);
-      if (evResepsi.displayDate) setResepsiDate(evResepsi.displayDate);
-      if (evResepsi.time) setResepsiTime(evResepsi.time);
-      if (evResepsi.venueName) setResepsiVenue(evResepsi.venueName);
-      if (evResepsi.venueAddress) setResepsiAddress(evResepsi.venueAddress);
-      if (evResepsi.mapUrl) setResepsiMapUrl(evResepsi.mapUrl);
+    if (Array.isArray(data.events) && data.events.length > 0) {
+      setEventsList(
+        data.events.map((evt, idx) => ({
+          ...evt,
+          isMain: data.mainEventId ? evt.id === data.mainEventId : (evt.isMain ?? (idx === 0)),
+          hostSide: evt.hostSide || (idx === 0 ? "wanita" : (idx === 1 ? "bersama" : "pria")),
+          eventType: evt.eventType || (idx === 0 ? "akad" : "resepsi"),
+        }))
+      );
+      const foundMain = data.mainEventId
+        ? data.events.find((e) => e.id === data.mainEventId)
+        : data.events.find((e) => e.isMain) || data.events[0];
+      if (foundMain) {
+        setSelectedMainEventId(foundMain.id);
+      }
     }
 
     if (data.gifts?.accounts && data.gifts.accounts.length > 0) {
@@ -201,23 +209,189 @@ export function CoupleEventManager({
     setPreweddingPhotos((prev) => prev.filter((_, idx) => idx !== idxToRemove));
   };
 
-  // Events
-  const akad = data.events[0] || {} as any;
-  const resepsi = data.events[1] || akad || {} as any;
+  // Events (Dynamic & Switchable Main/Highlight Event)
+  const [eventsList, setEventsList] = useState<EventDetail[]>(() => {
+    if (Array.isArray(data.events) && data.events.length > 0) {
+      return data.events.map((evt, idx) => ({
+        ...evt,
+        isMain: data.mainEventId ? evt.id === data.mainEventId : (evt.isMain ?? (idx === 0)),
+        hostSide: evt.hostSide || (idx === 0 ? "wanita" : (idx === 1 ? "bersama" : "pria")),
+        eventType: evt.eventType || (idx === 0 ? "akad" : "resepsi"),
+      }));
+    }
+    return [
+      {
+        id: "event_akad",
+        title: "Akad Nikah",
+        subTitle: "Momen Sakral Ijab Kabul",
+        badgeCute: "Momen Paling Sakral",
+        colorTheme: "red",
+        dateStr: "2026-11-28",
+        displayDate: "28 November 2026",
+        displayDay: "Sabtu",
+        time: "08:00 - 10:00 WIB",
+        venueName: "Kediaman Mempelai Wanita",
+        venueAddress: "Merakurak, Tuban, Jawa Timur",
+        mapUrl: "https://maps.google.com",
+        isMain: true,
+        hostSide: "wanita",
+        eventType: "akad",
+        calendarEvent: {
+          title: "Akad Nikah",
+          description: "Momen Sakral Ijab Kabul",
+          location: "Merakurak, Tuban, Jawa Timur",
+          startDate: "20261128T010000Z",
+          endDate: "20261128T030000Z",
+        },
+      },
+      {
+        id: "event_resepsi",
+        title: "Resepsi Pernikahan",
+        subTitle: "Pesta Syukuran & Temu Kangen",
+        badgeCute: "Pesta Bahagia & Temu Syukuran",
+        colorTheme: "yellow",
+        dateStr: "2026-11-28",
+        displayDate: "28 November 2026",
+        displayDay: "Sabtu",
+        time: "11:00 - Selesai",
+        venueName: "Gedung Serbaguna Merakurak",
+        venueAddress: "Jl. Raya Merakurak, Tuban, Jawa Timur",
+        mapUrl: "https://maps.google.com",
+        isMain: false,
+        hostSide: "bersama",
+        eventType: "resepsi",
+        calendarEvent: {
+          title: "Resepsi Pernikahan",
+          description: "Pesta Syukuran",
+          location: "Jl. Raya Merakurak, Tuban, Jawa Timur",
+          startDate: "20261128T040000Z",
+          endDate: "20261128T090000Z",
+        },
+      },
+    ];
+  });
 
-  const [akadDay, setAkadDay] = useState(akad.displayDay || "Sabtu");
-  const [akadDate, setAkadDate] = useState(akad.displayDate || "28 November 2026");
-  const [akadTime, setAkadTime] = useState(akad.time || "08:00 - 10:00 WIB");
-  const [akadVenue, setAkadVenue] = useState(akad.venueName || "Kediaman Mempelai Wanita");
-  const [akadAddress, setAkadAddress] = useState(akad.venueAddress || "Merakurak, Tuban, Jawa Timur");
-  const [akadMapUrl, setAkadMapUrl] = useState(akad.mapUrl || "https://maps.google.com");
+  const [selectedMainEventId, setSelectedMainEventId] = useState<string>(() => {
+    if (data.mainEventId) return data.mainEventId;
+    const main = data.events?.find((e) => e.isMain);
+    return main?.id || data.events?.[0]?.id || "event_akad";
+  });
 
-  const [resepsiDay, setResepsiDay] = useState(resepsi.displayDay || "Sabtu");
-  const [resepsiDate, setResepsiDate] = useState(resepsi.displayDate || "28 November 2026");
-  const [resepsiTime, setResepsiTime] = useState(resepsi.time || "11:00 - Selesai");
-  const [resepsiVenue, setResepsiVenue] = useState(resepsi.venueName || "Gedung Serbaguna Merakurak");
-  const [resepsiAddress, setResepsiAddress] = useState(resepsi.venueAddress || "Jl. Raya Merakurak, Tuban, Jawa Timur");
-  const [resepsiMapUrl, setResepsiMapUrl] = useState(resepsi.mapUrl || "https://maps.google.com");
+  const [autoSyncCountdown, setAutoSyncCountdown] = useState<boolean>(true);
+
+  const handleSelectMainEvent = (eventId: string) => {
+    setSelectedMainEventId(eventId);
+    setEventsList((prev) =>
+      prev.map((e) => ({
+        ...e,
+        isMain: e.id === eventId,
+      }))
+    );
+  };
+
+  const handleUpdateEventField = (index: number, field: keyof EventDetail, value: any) => {
+    setEventsList((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const handleAddEvent = (preset?: "resepsi_pria" | "resepsi_wanita" | "custom") => {
+    const newId = `event_${Date.now()}`;
+    let newEvt: EventDetail;
+
+    if (preset === "resepsi_pria") {
+      newEvt = {
+        id: newId,
+        title: "Resepsi Mempelai Pria (Ngunduh Mantu)",
+        subTitle: "Tasyakuran & Ramah Tamah Pihak Pria",
+        badgeCute: "Ngunduh Mantu Bahagia 🏛️",
+        colorTheme: "blue",
+        dateStr: "2026-11-28",
+        displayDate: "28 November 2026",
+        displayDay: "Sabtu",
+        time: "10:00 - 14:00 WIB",
+        venueName: "Kediaman Mempelai Pria",
+        venueAddress: "Tuban, Jawa Timur",
+        mapUrl: "https://maps.google.com",
+        isMain: false,
+        hostSide: "pria",
+        eventType: "resepsi_pria",
+        calendarEvent: {
+          title: `Resepsi Mempelai Pria ${groomName || "Gilang"} & ${brideName || "Salsa"}`,
+          description: "Tasyakuran Pernikahan",
+          location: "Kediaman Mempelai Pria",
+          startDate: "20261128T030000Z",
+          endDate: "20261128T070000Z",
+        },
+      };
+    } else if (preset === "resepsi_wanita") {
+      newEvt = {
+        id: newId,
+        title: "Resepsi Mempelai Wanita",
+        subTitle: "Pesta Syukuran Mempelai Wanita",
+        badgeCute: "Pesta Bahagia Wanita 🌸",
+        colorTheme: "yellow",
+        dateStr: "2026-11-28",
+        displayDate: "28 November 2026",
+        displayDay: "Sabtu",
+        time: "11:00 - 15:00 WIB",
+        venueName: "Kediaman Mempelai Wanita",
+        venueAddress: "Merakurak, Tuban",
+        mapUrl: "https://maps.google.com",
+        isMain: false,
+        hostSide: "wanita",
+        eventType: "resepsi_wanita",
+        calendarEvent: {
+          title: `Resepsi Mempelai Wanita ${groomName || "Gilang"} & ${brideName || "Salsa"}`,
+          description: "Pesta Syukuran",
+          location: "Kediaman Mempelai Wanita",
+          startDate: "20261128T040000Z",
+          endDate: "20261128T080000Z",
+        },
+      };
+    } else {
+      newEvt = {
+        id: newId,
+        title: `Acara Tambahan 0${eventsList.length + 1}`,
+        subTitle: "Rangkaian Perayaan Pernikahan",
+        badgeCute: "Momen Istimewa ✨",
+        colorTheme: "green",
+        dateStr: "2026-11-28",
+        displayDate: "28 November 2026",
+        displayDay: "Sabtu",
+        time: "10:00 - Selesai",
+        venueName: "Lokasi Acara",
+        venueAddress: "Alamat Lengkap",
+        mapUrl: "https://maps.google.com",
+        isMain: false,
+        hostSide: "bersama",
+        eventType: "custom",
+        calendarEvent: {
+          title: `Acara Pernikahan ${groomName || "Gilang"} & ${brideName || "Salsa"}`,
+          description: "Rangkaian Acara",
+          location: "Lokasi Acara",
+          startDate: "20261128T030000Z",
+          endDate: "20261128T060000Z",
+        },
+      };
+    }
+
+    setEventsList((prev) => [...prev, newEvt]);
+  };
+
+  const handleRemoveEvent = (idxToRemove: number) => {
+    if (eventsList.length <= 1) return;
+    const removedId = eventsList[idxToRemove]?.id;
+    const next = eventsList.filter((_, idx) => idx !== idxToRemove);
+    setEventsList(next);
+    if (selectedMainEventId === removedId) {
+      const newMain = next[0];
+      setSelectedMainEventId(newMain.id);
+      next[0].isMain = true;
+    }
+  };
 
   // General details
   const [funTagline, setFunTagline] = useState(
@@ -342,6 +516,37 @@ export function CoupleEventManager({
 
     setIsSaving(true);
 
+    const preparedEvents = eventsList.map((evt) => {
+      const isThisMain = evt.id === selectedMainEventId;
+      return {
+        ...evt,
+        isMain: isThisMain,
+        title: (evt.title || "").trim() || "Acara Pernikahan",
+        subTitle: (evt.subTitle || "").trim(),
+        badgeCute: (evt.badgeCute || "").trim() || (isThisMain ? "Acara Utama" : "Rangkaian Bahagia"),
+        colorTheme: evt.colorTheme || "red",
+        dateStr: (evt.dateStr || "").trim() || "2026-11-28",
+        displayDate: (evt.displayDate || "").trim() || "28 November 2026",
+        displayDay: (evt.displayDay || "").trim() || "Sabtu",
+        time: (evt.time || "").trim() || "08:00 WIB",
+        venueName: (evt.venueName || "").trim() || "Kediaman Mempelai",
+        venueAddress: (evt.venueAddress || "").trim() || "Tuban, Jawa Timur",
+        mapUrl: (evt.mapUrl || "").trim() || "https://maps.google.com",
+        calendarEvent: {
+          title: evt.calendarEvent?.title || `${evt.title || "Acara"} ${groomName.trim()} & ${brideName.trim()}`,
+          description: evt.calendarEvent?.description || `${evt.title || "Acara"} ${groomFullName.trim()} & ${brideFullName.trim()}`,
+          location: evt.venueAddress?.trim() || "",
+          startDate: evt.calendarEvent?.startDate || "20261128T010000Z",
+          endDate: evt.calendarEvent?.endDate || "20261128T030000Z",
+        },
+      };
+    });
+
+    const chosenMain = preparedEvents.find((e) => e.id === selectedMainEventId) || preparedEvents[0];
+    const newCountdownTarget = autoSyncCountdown
+      ? getEventCountdownTarget(chosenMain)
+      : (data.countdownTarget || getEventCountdownTarget(chosenMain));
+
     try {
       const updated: WeddingInvitationData = {
         ...data,
@@ -377,52 +582,9 @@ export function CoupleEventManager({
           closingPhotoUrl: closingPhotoUrl.trim(),
           preweddingPhotos: preweddingPhotos,
         },
-        events: [
-          {
-            ...(data.events[0] || {}),
-            id: "event_akad",
-            title: "Akad Nikah",
-            subTitle: "Momen Sakral Ijab Kabul",
-            badgeCute: "Momen Paling Sakral",
-            colorTheme: "red",
-            dateStr: "2026-11-28",
-            displayDate: akadDate.trim(),
-            displayDay: akadDay.trim(),
-            time: akadTime.trim(),
-            venueName: akadVenue.trim(),
-            venueAddress: akadAddress.trim(),
-            mapUrl: akadMapUrl.trim(),
-            calendarEvent: {
-              title: `Akad Nikah ${groomName.trim()} & ${brideName.trim()}`,
-              description: `Akad Nikah ${groomFullName.trim()} & ${brideFullName.trim()}`,
-              location: akadAddress.trim(),
-              startDate: "20261128T010000Z",
-              endDate: "20261128T030000Z",
-            },
-          },
-          {
-            ...(data.events[1] || {}),
-            id: "event_resepsi",
-            title: "Resepsi Pernikahan",
-            subTitle: "Pesta Syukuran & Temu Kangen",
-            badgeCute: "Pesta Bahagia & Temu Syukuran",
-            colorTheme: "yellow",
-            dateStr: "2026-11-28",
-            displayDate: resepsiDate.trim(),
-            displayDay: resepsiDay.trim(),
-            time: resepsiTime.trim(),
-            venueName: resepsiVenue.trim(),
-            venueAddress: resepsiAddress.trim(),
-            mapUrl: resepsiMapUrl.trim(),
-            calendarEvent: {
-              title: `Resepsi Pernikahan ${groomName.trim()} & ${brideName.trim()}`,
-              description: `Pesta Resepsi ${groomFullName.trim()} & ${brideFullName.trim()}`,
-              location: resepsiAddress.trim(),
-              startDate: "20261128T040000Z",
-              endDate: "20261128T090000Z",
-            },
-          },
-        ],
+        mainEventId: chosenMain.id,
+        countdownTarget: newCountdownTarget,
+        events: preparedEvents,
         gifts: {
           accounts: accounts
             .filter((acc) => acc.bankName.trim() || acc.accountNumber.trim())
@@ -1197,170 +1359,369 @@ export function CoupleEventManager({
         </div>
       </div>
 
-      {/* Jadwal Acara (Akad & Resepsi) */}
+      {/* Jadwal Acara (Akad, Resepsi Wanita, Resepsi Pria / Ngunduh Mantu) */}
       <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#E7E7E1] shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
-        <div className="flex items-center gap-3 pb-4 border-b border-[#F0F0EA]">
-          <div className="w-9 h-9 rounded-xl bg-[#14161C] text-[#DFD2BD] flex items-center justify-center font-bold text-xs shrink-0 border border-[#2D313E]">
-            <Calendar className="w-4 h-4 text-[#DFD2BD]" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#F0F0EA]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#14161C] text-[#DFD2BD] flex items-center justify-center font-bold text-xs shrink-0 border border-[#2D313E]">
+              <Calendar className="w-4 h-4 text-[#DFD2BD]" />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
+                Jadwal Rangkaian Acara Pernikahan
+              </h3>
+              <p className="text-[11px] text-[#717686]">
+                Atur seluruh rangkaian seremoni, tentukan tanggal utama (highlight), dan sesuaikan detail akad &amp; resepsi
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-serif font-bold text-base text-[#14161C] tracking-tight">
-              Jadwal Rangkaian Acara Pernikahan
-            </h3>
-            <p className="text-[11px] text-[#717686]">
-              Atur waktu pelaksanaan, lokasi seremoni akad, dan resepsi perayaan
-            </p>
+
+          {eventsList.length > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#E5E0D5] text-[11px] font-mono text-[#8C6218]">
+              <Star className="w-3.5 h-3.5 text-[#C85A17] fill-[#C85A17]" />
+              <span>
+                Acara Utama: {eventsList.find((e) => e.id === selectedMainEventId)?.title || eventsList[0]?.title}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Panel Pemilihan Acara Utama (Highlight Tanggal di Undangan) */}
+        <div className="p-4 sm:p-5 rounded-xl bg-[#FCFCFA] border border-[#EAE6DD] space-y-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Star className="w-4 h-4 text-[#C85A17] fill-[#C85A17]" />
+              <span className="text-xs sm:text-sm font-semibold text-[#14161C]">
+                Pilih Tanggal Acara yang Di-Highlight di Undangan
+              </span>
+            </div>
+            <label className="flex items-center gap-2 text-[11px] text-[#555A68] cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={autoSyncCountdown}
+                onChange={(e) => setAutoSyncCountdown(e.target.checked)}
+                className="rounded border-[#DCDCD5] text-[#14161C] focus:ring-0"
+              />
+              <span>Sinkronkan Countdown Otomatis</span>
+            </label>
+          </div>
+
+          <p className="text-[11px] text-[#717686] leading-relaxed">
+            Pilih acara yang menjadi tanggal sorotan utama. Tanggal dan hitung mundur pada <strong>Sampul (Cover), Hero, dan Save-the-Date</strong> undangan akan otomatis menampilkan acara ini. Sangat berguna bila Akad diadakan di pihak mempelai wanita dan Resepsi di mempelai pria, atau jika Anda ingin mengarahkan highlight ke resepsi tertentu.
+          </p>
+
+          {/* Switcher Option Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+            {eventsList.map((evt, idx) => {
+              const isSelected = evt.id === selectedMainEventId;
+              const hostLabel =
+                evt.hostSide === "wanita"
+                  ? "👰 Pihak Wanita"
+                  : evt.hostSide === "pria"
+                  ? "🤵 Pihak Pria"
+                  : "💍 Pihak Bersama";
+
+              return (
+                <button
+                  key={evt.id || idx}
+                  type="button"
+                  onClick={() => handleSelectMainEvent(evt.id)}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between gap-2 ${
+                    isSelected
+                      ? "bg-white border-[#14161C] shadow-sm ring-1 ring-[#14161C]"
+                      : "bg-white/70 border-[#E2DFD8] hover:border-[#C4BFB4] hover:bg-white"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-1">
+                    <span className="font-semibold text-xs text-[#14161C] line-clamp-1">
+                      {evt.title || `Acara 0${idx + 1}`}
+                    </span>
+                    {isSelected ? (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#14161C] text-[#DFD2BD] shrink-0 flex items-center gap-1">
+                        <Star className="w-2.5 h-2.5 fill-[#DFD2BD]" />
+                        HIGHLIGHT
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-mono text-[#8C91A0] shrink-0 hover:text-[#14161C]">
+                        Pilih ini
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="text-[11px] text-[#555A68] space-y-0.5">
+                    <div className="font-medium text-[#14161C]">
+                      {evt.displayDay ? `${evt.displayDay}, ` : ""}
+                      {evt.displayDate || "Tanggal belum diatur"}
+                    </div>
+                    <div className="text-[10px] text-[#717686] truncate">
+                      {evt.time || "Waktu belum diatur"} • {evt.venueName || "Lokasi"}
+                    </div>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-[#F0EFEA] flex items-center justify-between text-[10px]">
+                    <span className="text-[#717686] font-mono">{hostLabel}</span>
+                    {isSelected && (
+                      <span className="text-[#C85A17] font-medium flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Aktif
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
+        {/* Daftar Kartu Acara */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Akad Nikah */}
-          <div className="p-5 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-medium bg-[#14161C] text-[#DFD2BD]">
-                Acara 01: Akad Nikah
-              </span>
-              <span className="text-[11px] font-mono text-[#717686]">Seremoni Sakral</span>
-            </div>
+          {eventsList.map((evt, idx) => {
+            const isSelected = evt.id === selectedMainEventId;
 
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Hari</label>
-                <input
-                  type="text"
-                  value={akadDay}
-                  onChange={(e) => setAkadDay(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
+            return (
+              <div
+                key={evt.id || idx}
+                className={`p-5 rounded-xl border space-y-4 transition-colors ${
+                  isSelected
+                    ? "bg-[#FFFDFB] border-[#D9CEBA] shadow-[0_2px_8px_rgba(200,90,23,0.04)]"
+                    : "bg-[#FCFCFB] border-[#EBEBE5]"
+                }`}
+              >
+                <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-medium ${
+                        isSelected
+                          ? "bg-[#14161C] text-[#DFD2BD]"
+                          : "bg-[#2C303B] text-white"
+                      }`}
+                    >
+                      Acara 0{idx + 1}: {evt.title || "Acara"}
+                    </span>
+                    {isSelected && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#FAF2E6] text-[#A24810] border border-[#ECD9BD] flex items-center gap-1">
+                        <Star className="w-2.5 h-2.5 fill-[#A24810]" />
+                        Utama (Cover)
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {!isSelected && (
+                      <button
+                        type="button"
+                        onClick={() => handleSelectMainEvent(evt.id)}
+                        className="text-[11px] font-medium text-[#717686] hover:text-[#14161C] flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-[#EFEFEA] transition-colors cursor-pointer"
+                        title="Jadikan tanggal acara ini sebagai sorotan utama di Cover & Countdown"
+                      >
+                        <Star className="w-3 h-3" />
+                        <span>Sorot Ini</span>
+                      </button>
+                    )}
+                    {eventsList.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveEvent(idx)}
+                        className="text-[11px] text-[#A0A4B0] hover:text-red-600 p-1 rounded-md hover:bg-red-50 transition-colors cursor-pointer"
+                        title="Hapus acara ini"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Judul & Subtitle Acara */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Nama / Judul Acara
+                    </label>
+                    <input
+                      type="text"
+                      value={evt.title}
+                      onChange={(e) => handleUpdateEventField(idx, "title", e.target.value)}
+                      placeholder="Contoh: Akad Nikah / Resepsi Mempelai Pria"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Sub-judul / Badge Keterangan
+                    </label>
+                    <input
+                      type="text"
+                      value={evt.subTitle}
+                      onChange={(e) => handleUpdateEventField(idx, "subTitle", e.target.value)}
+                      placeholder="Contoh: Momen Sakral Ijab Kabul / Pesta Syukuran Bersama"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+                </div>
+
+                {/* Pihak Penyelenggara */}
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1.5 font-medium">
+                    Pihak Penyelenggara
+                  </label>
+                  <div className="flex gap-2">
+                    {[
+                      { value: "wanita", label: "👰 Mempelai Wanita" },
+                      { value: "pria", label: "🤵 Mempelai Pria (Ngunduh Mantu)" },
+                      { value: "bersama", label: "💍 Pihak Bersama" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => handleUpdateEventField(idx, "hostSide", opt.value)}
+                        className={`flex-1 py-1.5 px-2 rounded-lg text-[10px] sm:text-xs font-medium border text-center transition-colors cursor-pointer ${
+                          evt.hostSide === opt.value
+                            ? "bg-[#14161C] text-white border-[#14161C]"
+                            : "bg-white hover:bg-[#F2F2EE] text-[#555A68] border-[#DCDCD5]"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hari & Tanggal */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Hari
+                    </label>
+                    <input
+                      type="text"
+                      value={evt.displayDay}
+                      onChange={(e) => handleUpdateEventField(idx, "displayDay", e.target.value)}
+                      placeholder="Sabtu"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Tanggal Tampilan
+                    </label>
+                    <input
+                      type="text"
+                      value={evt.displayDate}
+                      onChange={(e) => handleUpdateEventField(idx, "displayDate", e.target.value)}
+                      placeholder="28 November 2026"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+                </div>
+
+                {/* Tanggal Kalender (ISO / dateStr) & Waktu Pelaksanaan */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Format Kalender (YYYY-MM-DD)
+                    </label>
+                    <input
+                      type="date"
+                      value={
+                        evt.dateStr && evt.dateStr.includes("T")
+                          ? evt.dateStr.split("T")[0]
+                          : evt.dateStr || "2026-11-28"
+                      }
+                      onChange={(e) => handleUpdateEventField(idx, "dateStr", e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                      Waktu Pelaksanaan
+                    </label>
+                    <input
+                      type="text"
+                      value={evt.time}
+                      onChange={(e) => handleUpdateEventField(idx, "time", e.target.value)}
+                      placeholder="08:00 - 10:00 WIB"
+                      className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                  </div>
+                </div>
+
+                {/* Lokasi / Gedung */}
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                    Nama Tempat / Gedung
+                  </label>
+                  <input
+                    type="text"
+                    value={evt.venueName}
+                    onChange={(e) => handleUpdateEventField(idx, "venueName", e.target.value)}
+                    placeholder="Contoh: Gedung Serbaguna Merakurak"
+                    className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                  />
+                </div>
+
+                {/* Alamat Lengkap */}
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                    Alamat Lengkap
+                  </label>
+                  <input
+                    type="text"
+                    value={evt.venueAddress}
+                    onChange={(e) => handleUpdateEventField(idx, "venueAddress", e.target.value)}
+                    placeholder="Alamat lengkap lokasi acara..."
+                    className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                  />
+                </div>
+
+                {/* Maps URL */}
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">
+                    Tautan Google Maps
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={evt.mapUrl}
+                      onChange={(e) => handleUpdateEventField(idx, "mapUrl", e.target.value)}
+                      placeholder="https://maps.google.com/..."
+                      className="w-full pl-8 pr-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
+                    />
+                    <MapPin className="w-3.5 h-3.5 text-[#888D9C] absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
               </div>
-              <div className="col-span-2">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Tanggal</label>
-                <input
-                  type="text"
-                  value={akadDate}
-                  onChange={(e) => setAkadDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
-              </div>
-            </div>
+            );
+          })}
+        </div>
 
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Waktu Pelaksanaan</label>
-              <input
-                type="text"
-                value={akadTime}
-                onChange={(e) => setAkadTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Nama Tempat / Gedung</label>
-              <input
-                type="text"
-                value={akadVenue}
-                onChange={(e) => setAkadVenue(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Alamat Lengkap</label>
-              <input
-                type="text"
-                value={akadAddress}
-                onChange={(e) => setAkadAddress(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Tautan Google Maps</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={akadMapUrl}
-                  onChange={(e) => setAkadMapUrl(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
-                <MapPin className="w-3.5 h-3.5 text-[#888D9C] absolute left-2.5 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-          </div>
-
-          {/* Resepsi */}
-          <div className="p-5 rounded-xl bg-[#FCFCFB] border border-[#EBEBE5] space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#EFEFE8]">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-mono font-medium bg-[#2C303B] text-white">
-                Acara 02: Resepsi Pernikahan
-              </span>
-              <span className="text-[11px] font-mono text-[#717686]">Perayaan Utama</span>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Hari</label>
-                <input
-                  type="text"
-                  value={resepsiDay}
-                  onChange={(e) => setResepsiDay(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Tanggal</label>
-                <input
-                  type="text"
-                  value={resepsiDate}
-                  onChange={(e) => setResepsiDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Waktu Pelaksanaan</label>
-              <input
-                type="text"
-                value={resepsiTime}
-                onChange={(e) => setResepsiTime(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Nama Tempat / Gedung</label>
-              <input
-                type="text"
-                value={resepsiVenue}
-                onChange={(e) => setResepsiVenue(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Alamat Lengkap</label>
-              <input
-                type="text"
-                value={resepsiAddress}
-                onChange={(e) => setResepsiAddress(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs sm:text-sm text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-[#717686] mb-1 font-medium">Tautan Google Maps</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={resepsiMapUrl}
-                  onChange={(e) => setResepsiMapUrl(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl border border-[#DCDCD5] bg-white text-xs text-[#14161C] focus:outline-none focus:border-[#14161C] focus:ring-1 focus:ring-[#14161C]"
-                />
-                <MapPin className="w-3.5 h-3.5 text-[#888D9C] absolute left-2.5 top-1/2 -translate-y-1/2" />
-              </div>
-            </div>
-          </div>
+        {/* Tombol Tambah Rangkaian Acara (Presets) */}
+        <div className="pt-2 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] text-[#717686] mr-1">Tambah Rangkaian Acara:</span>
+          <button
+            type="button"
+            onClick={() => handleAddEvent("resepsi_pria")}
+            className="px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white hover:bg-[#F5F5F0] text-xs text-[#14161C] font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+          >
+            <Plus className="w-3.5 h-3.5 text-[#717686]" />
+            <span>+ Resepsi Mempelai Pria (Ngunduh Mantu)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAddEvent("resepsi_wanita")}
+            className="px-3 py-2 rounded-xl border border-[#DCDCD5] bg-white hover:bg-[#F5F5F0] text-xs text-[#14161C] font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+          >
+            <Plus className="w-3.5 h-3.5 text-[#717686]" />
+            <span>+ Resepsi Mempelai Wanita</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAddEvent("custom")}
+            className="px-3 py-2 rounded-xl border border-[#DCDCD5] bg-[#FAF9F6] hover:bg-[#F0EEE8] text-xs text-[#555A68] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5 text-[#717686]" />
+            <span>+ Acara Lainnya</span>
+          </button>
         </div>
       </div>
 

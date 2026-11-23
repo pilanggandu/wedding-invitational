@@ -203,6 +203,7 @@ export const DEFAULT_INVITATION_DATA: WeddingInvitationData = {
     ],
   },
   countdownTarget: WEDDING_DATA.countdownTarget,
+  mainEventId: WEDDING_DATA.mainEventId || "akad",
   events: WEDDING_DATA.events,
   stories: WEDDING_DATA.stories || [],
   gallery: WEDDING_DATA.gallery,

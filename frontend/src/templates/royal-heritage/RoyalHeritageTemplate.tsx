@@ -21,7 +21,7 @@ import {
 import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
 import { TemplateProps } from "@/templates/types";
-import { WishMessage } from "@/types/wedding";
+import { WishMessage, getMainEvent } from "@/types/wedding";
 import { getWishes, submitWish } from "@/lib/invitationStore";
 import { submitRsvpApi } from "@/lib/api";
 import { RoyalCover } from "./RoyalCover";
@@ -65,8 +65,9 @@ function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
 function RoyalHero() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const akadDate = data.events[0]?.displayDate || "21 November 2026";
-  const akadDay = data.events[0]?.displayDay || "Sabtu";
+  const mainEvent = getMainEvent(data);
+  const akadDate = mainEvent?.displayDate || "21 November 2026";
+  const akadDay = mainEvent?.displayDay || "Sabtu";
 
   const [timeLeft, setTimeLeft] = useState<{
     days: number;

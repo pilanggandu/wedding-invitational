@@ -9,6 +9,7 @@ import { useWeddingData } from "@/context/WeddingDataContext";
 import { resolveThemeColors } from "@/lib/colorPalettes";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
 import { MOTION_TRANSITIONS } from "@/lib/motion";
+import { getMainEvent } from "@/types/wedding";
 
 interface EnvelopeCoverProps {
   onOpen: () => void;
@@ -187,16 +188,20 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
               </div>
 
               {/* Wedding Date Pill */}
-              {data.events[0]?.displayDate && (
-                <motion.div
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.65, delay: 0.3, ease: MOTION_TRANSITIONS.romantic.ease }}
-                  className="inline-block bg-[#F2DFBA] text-[#3A1116] px-3.5 py-1 rounded-full border border-[#3A1116]/40 text-xs font-mono font-bold my-1 rotate-[-0.5deg] shadow-[2px_2px_0px_rgba(58,17,22,0.2)] max-w-full"
-                >
-                  {[data.events[0].displayDay, data.events[0].displayDate].filter(Boolean).join(", ")}
-                </motion.div>
-              )}
+              {(() => {
+                const mainEvt = getMainEvent(data);
+                if (!mainEvt?.displayDate) return null;
+                return (
+                  <motion.div
+                    initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.65, delay: 0.3, ease: MOTION_TRANSITIONS.romantic.ease }}
+                    className="inline-block bg-[#F2DFBA] text-[#3A1116] px-3.5 py-1 rounded-full border border-[#3A1116]/40 text-xs font-mono font-bold my-1 rotate-[-0.5deg] shadow-[2px_2px_0px_rgba(58,17,22,0.2)] max-w-full"
+                  >
+                    {[mainEvt.displayDay, mainEvt.displayDate].filter(Boolean).join(", ")}
+                  </motion.div>
+                );
+              })()}
 
               {/* Fun Tagline */}
               {data.general?.funTagline && (

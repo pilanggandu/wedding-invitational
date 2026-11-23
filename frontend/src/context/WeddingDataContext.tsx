@@ -35,6 +35,7 @@ export function normalizeWeddingData(
       ...DEFAULT_INVITATION_DATA.themePalette,
       ...(incoming.themePalette || {}),
     },
+    mainEventId: incoming.mainEventId ?? DEFAULT_INVITATION_DATA.mainEventId,
     events:
       Array.isArray(incoming.events)
         ? incoming.events

@@ -33,6 +33,10 @@ export interface EventDetail {
     startDate: string;
     endDate: string;
   };
+  isMain?: boolean;
+  hostSide?: "wanita" | "pria" | "bersama";
+  eventType?: "akad" | "resepsi_wanita" | "resepsi_pria" | "resepsi" | "ngunduh_mantu" | "custom" | string;
+  note?: string;
 }
 
 export interface LoveStoryItem {
@@ -133,6 +137,7 @@ export const WEDDING_DATA = {
   },
 
   countdownTarget: "2026-11-28T08:00:00+07:00",
+  mainEventId: "akad",
 
   events: [
     {
@@ -148,6 +153,9 @@ export const WEDDING_DATA = {
       venueName: "Desa Mandirejo",
       venueAddress: "Dusun Mendalan, RT 02 RW 04, Desa Mandirejo, Kecamatan Merakurak, Kabupaten Tuban",
       mapUrl: "https://maps.app.goo.gl/X4bCF1AkZJfpPy8p8",
+      isMain: true,
+      hostSide: "wanita",
+      eventType: "akad",
       calendarEvent: {
         title: "Akad Nikah Gilang & Salsa",
         description: "Pernikahan Gilang Pandu Permadi dan Salsadila Nanda Octavia",
@@ -169,6 +177,9 @@ export const WEDDING_DATA = {
       venueName: "Desa Mandirejo",
       venueAddress: "Dusun Mendalan, RT 02 RW 04, Desa Mandirejo, Kecamatan Merakurak, Kabupaten Tuban",
       mapUrl: "https://maps.app.goo.gl/X4bCF1AkZJfpPy8p8",
+      isMain: false,
+      hostSide: "bersama",
+      eventType: "resepsi",
       calendarEvent: {
         title: "Resepsi Pernikahan Gilang & Salsa",
         description: "Pernikahan Gilang Pandu Permadi dan Salsadila Nanda Octavia",

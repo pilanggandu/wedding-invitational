@@ -12,6 +12,7 @@ import {
 import { RoyalAmbientParticles } from "./RoyalAmbientParticles";
 import { getFontFamilyCss } from "@/lib/typography";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 
 interface RoyalCoverProps {
   isOpen: boolean;
@@ -43,8 +44,9 @@ export function RoyalCover({
 
   const groomName = data.couple?.groom?.name || "Mempelai Pria";
   const brideName = data.couple?.bride?.name || "Mempelai Wanita";
-  const akadDate = data.events[0]?.displayDate || "";
-  const akadDay = data.events[0]?.displayDay || "";
+  const mainEvent = getMainEvent(data);
+  const akadDate = mainEvent?.displayDate || "";
+  const akadDay = mainEvent?.displayDay || "";
 
   return (
     <motion.div

@@ -7,6 +7,7 @@ import { Building2, Navigation, Compass, MapPin, ArrowRight } from "lucide-react
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { getFontFamilyCss } from "@/lib/typography";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 
 interface CityscapeCoverProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ export function CityscapeCover({
 
   const groomName = data.couple?.groom?.name || "Mempelai Pria";
   const brideName = data.couple?.bride?.name || "Mempelai Wanita";
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const eventDateStr = mainEvent?.displayDate || "21 November 2026";
   const eventCity = mainEvent?.venueAddress?.split(",")?.pop()?.trim() || "Tuban, Jawa Timur";
 

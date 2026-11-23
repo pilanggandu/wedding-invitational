@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Play, Calendar, Film, Ticket } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 import {
   FilmClapperIcon,
   FilmTimecodeBadge,
@@ -42,7 +43,7 @@ export function CinematicCover({
 
   const groomName = data.couple?.groom?.name || "Mempelai Pria";
   const brideName = data.couple?.bride?.name || "Mempelai Wanita";
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

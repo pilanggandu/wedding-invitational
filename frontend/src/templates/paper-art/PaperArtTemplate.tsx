@@ -24,7 +24,7 @@ import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
 import { resolveThemeColors } from "@/lib/colorPalettes";
 import { TemplateProps } from "@/templates/types";
-import { WishMessage, BankAccount } from "@/types/wedding";
+import { WishMessage, BankAccount, getMainEvent } from "@/types/wedding";
 import { getWishes } from "@/lib/invitationStore";
 import { saveGuestResponse, type GuestResponseFeedback } from "@/lib/guestResponse";
 import { createKeepsakeCalendar, getKeepsakeSchedule } from "../paper-keepsake/keepsakeCalendar";
@@ -175,7 +175,7 @@ function SketchbookHero() {
   const { paperColor, textColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "";
   const dayStr = mainEvent?.displayDay || "";
 

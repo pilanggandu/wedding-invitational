@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Check, Music, Eye, Type, Sparkles, SlidersHorizontal, Palette } from "lucide-react";
-import { WeddingInvitationData } from "@/types/wedding";
+import { WeddingInvitationData, getMainEvent } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { saveInvitationData } from "@/lib/invitationStore";
 import { getMusicUrlError, getMusicVolume, type MusicSettingsValue } from "@/lib/musicSettings";
@@ -381,7 +381,7 @@ export function TemplateThemeManager({
   const couplePreviewText = isCoupleConfigured
     ? `${groomName} & ${brideName}`
     : "Nama Mempelai";
-  const displayEventDate = data.events?.[0]?.displayDate || "Tanggal Belum Diatur";
+  const displayEventDate = getMainEvent(data)?.displayDate || "Tanggal Belum Diatur";
 
   const categories: { id: TypographyCategory; label: string; count: number }[] =
     [

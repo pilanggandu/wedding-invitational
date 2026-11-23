@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calendar, Palette, Sparkles } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
+import { getMainEvent } from "@/types/wedding";
 
 interface AmbientBlurDesktopLeftProps {
   isOpened: boolean;
@@ -19,7 +20,7 @@ export function AmbientBlurDesktopLeft({
 }: AmbientBlurDesktopLeftProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { getFontFamilyCss } from "@/lib/typography";
+import { getMainEvent } from "@/types/wedding";
 import {
   RoyalMonogram,
   CornerFiligree,
@@ -35,7 +36,7 @@ interface RoyalDesktopLeftProps {
 export function RoyalDesktopLeft({ isOpened, onOpen }: RoyalDesktopLeftProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const akadEvent = data.events[0] || {
+  const akadEvent = getMainEvent(data) || data.events[0] || {
     time: "08:00 - 10:00 WIB",
     displayDay: "Sabtu",
     displayDate: "21 November 2026",

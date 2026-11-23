@@ -22,8 +22,9 @@ import {
   X,
   Layers,
   Music,
+  Star,
 } from "lucide-react";
-import { WeddingInvitationData, BankAccount } from "@/types/wedding";
+import { WeddingInvitationData, BankAccount, EventDetail, getMainEvent, getEventCountdownTarget } from "@/types/wedding";
 import { TYPOGRAPHY_OPTIONS } from "@/lib/typography";
 import { COLOR_PALETTE_PRESETS, resolveThemeColors } from "@/lib/colorPalettes";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
@@ -854,131 +855,281 @@ export function TemplateEditorWorkspace({
             {/* 3. EVENTS INSPECTOR */}
             {activeSection === "events" && (
               <div className="space-y-4">
-                {(draftData.events || []).map((evt, idx) => (
-                  <div
-                    key={evt.id || idx}
-                    className="p-3.5 rounded-xl bg-[#1A1D26] border border-[#272B38] space-y-2.5"
-                  >
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#DFD2BD] block">
-                      Acara 0{idx + 1}: {evt.title}
+                {/* Switcher Acara Utama */}
+                <div className="p-3 rounded-xl bg-[#1A1D26] border border-[#272B38] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono font-semibold text-[#DFD2BD] flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-[#E5B869] fill-[#E5B869]" />
+                      Acara Utama (Highlight)
                     </span>
-
-                    <div>
-                      <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                        Judul Acara
-                      </label>
-                      <input
-                        type="text"
-                        value={evt.title}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          updateDraft((prev) => {
-                            const newEvents = [...(prev.events || [])];
-                            newEvents[idx] = { ...newEvents[idx], title: val };
-                            return { ...prev, events: newEvents };
-                          });
-                        }}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                          Hari (Misal: Sabtu)
-                        </label>
-                        <input
-                          type="text"
-                          value={evt.displayDay}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            updateDraft((prev) => {
-                              const newEvents = [...(prev.events || [])];
-                              newEvents[idx] = { ...newEvents[idx], displayDay: val };
-                              return { ...prev, events: newEvents };
-                            });
-                          }}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                          Tanggal Acara
-                        </label>
-                        <input
-                          type="text"
-                          value={evt.displayDate}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            updateDraft((prev) => {
-                              const newEvents = [...(prev.events || [])];
-                              newEvents[idx] = { ...newEvents[idx], displayDate: val };
-                              return { ...prev, events: newEvents };
-                            });
-                          }}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                        Waktu / Jam
-                      </label>
-                      <input
-                        type="text"
-                        value={evt.time}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          updateDraft((prev) => {
-                            const newEvents = [...(prev.events || [])];
-                            newEvents[idx] = { ...newEvents[idx], time: val };
-                            return { ...prev, events: newEvents };
-                          });
-                        }}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                        Nama Gedung / Lokasi
-                      </label>
-                      <input
-                        type="text"
-                        value={evt.venueName}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          updateDraft((prev) => {
-                            const newEvents = [...(prev.events || [])];
-                            newEvents[idx] = { ...newEvents[idx], venueName: val };
-                            return { ...prev, events: newEvents };
-                          });
-                        }}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
-                        Alamat Lengkap
-                      </label>
-                      <input
-                        type="text"
-                        value={evt.venueAddress}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          updateDraft((prev) => {
-                            const newEvents = [...(prev.events || [])];
-                            newEvents[idx] = { ...newEvents[idx], venueAddress: val };
-                            return { ...prev, events: newEvents };
-                          });
-                        }}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
-                      />
-                    </div>
+                    <span className="text-[9px] font-mono text-[#8E93A2]">
+                      Tampil di Cover &amp; Countdown
+                    </span>
                   </div>
-                ))}
+                  <select
+                    value={
+                      draftData.mainEventId ||
+                      draftData.events?.find((e) => e.isMain)?.id ||
+                      draftData.events?.[0]?.id ||
+                      ""
+                    }
+                    onChange={(e) => {
+                      const chosenId = e.target.value;
+                      updateDraft((prev) => {
+                        const newEvents = (prev.events || []).map((evt) => ({
+                          ...evt,
+                          isMain: evt.id === chosenId,
+                        }));
+                        const chosen = newEvents.find((evt) => evt.id === chosenId);
+                        return {
+                          ...prev,
+                          mainEventId: chosenId,
+                          events: newEvents,
+                          countdownTarget: chosen
+                            ? getEventCountdownTarget(chosen)
+                            : prev.countdownTarget,
+                        };
+                      });
+                    }}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white focus:outline-none focus:border-[#DFD2BD]"
+                  >
+                    {(draftData.events || []).map((evt, idx) => (
+                      <option key={evt.id || idx} value={evt.id}>
+                        Acara 0{idx + 1}: {evt.title} ({evt.displayDate})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {(draftData.events || []).map((evt, idx) => {
+                  const isMain =
+                    (draftData.mainEventId
+                      ? evt.id === draftData.mainEventId
+                      : evt.isMain) || idx === 0;
+
+                  return (
+                    <div
+                      key={evt.id || idx}
+                      className={`p-3.5 rounded-xl border space-y-2.5 transition-colors ${
+                        isMain
+                          ? "bg-[#1C1F2B] border-[#DFD2BD]/40 shadow-xs"
+                          : "bg-[#1A1D26] border-[#272B38]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between pb-1 border-b border-[#272B38]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#DFD2BD]">
+                            Acara 0{idx + 1}: {evt.title}
+                          </span>
+                          {isMain && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-[#DFD2BD] text-[#14161C] flex items-center gap-1">
+                              <Star className="w-2.5 h-2.5 fill-[#14161C]" />
+                              UTAMA
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {!isMain && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updateDraft((prev) => {
+                                  const newEvents = (prev.events || []).map((e) => ({
+                                    ...e,
+                                    isMain: e.id === evt.id,
+                                  }));
+                                  return {
+                                    ...prev,
+                                    mainEventId: evt.id,
+                                    events: newEvents,
+                                    countdownTarget: getEventCountdownTarget(evt),
+                                  };
+                                });
+                              }}
+                              className="text-[10px] font-mono text-[#E5B869] hover:underline cursor-pointer flex items-center gap-1"
+                            >
+                              <Star className="w-2.5 h-2.5" />
+                              Jadikan Utama
+                            </button>
+                          )}
+                          {(draftData.events || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updateDraft((prev) => {
+                                  const newEvents = (prev.events || []).filter((_, i) => i !== idx);
+                                  const newMain = newEvents[0];
+                                  return {
+                                    ...prev,
+                                    events: newEvents,
+                                    mainEventId: prev.mainEventId === evt.id ? newMain?.id : prev.mainEventId,
+                                  };
+                                });
+                              }}
+                              className="text-[10px] text-red-400 hover:text-red-300 p-0.5 cursor-pointer"
+                              title="Hapus Acara"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                          Judul Acara
+                        </label>
+                        <input
+                          type="text"
+                          value={evt.title}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => {
+                              const newEvents = [...(prev.events || [])];
+                              newEvents[idx] = { ...newEvents[idx], title: val };
+                              return { ...prev, events: newEvents };
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                            Hari (Misal: Sabtu)
+                          </label>
+                          <input
+                            type="text"
+                            value={evt.displayDay}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateDraft((prev) => {
+                                const newEvents = [...(prev.events || [])];
+                                newEvents[idx] = { ...newEvents[idx], displayDay: val };
+                                return { ...prev, events: newEvents };
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                            Tanggal Acara
+                          </label>
+                          <input
+                            type="text"
+                            value={evt.displayDate}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              updateDraft((prev) => {
+                                const newEvents = [...(prev.events || [])];
+                                newEvents[idx] = { ...newEvents[idx], displayDate: val };
+                                return { ...prev, events: newEvents };
+                              });
+                            }}
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                          Waktu / Jam
+                        </label>
+                        <input
+                          type="text"
+                          value={evt.time}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => {
+                              const newEvents = [...(prev.events || [])];
+                              newEvents[idx] = { ...newEvents[idx], time: val };
+                              return { ...prev, events: newEvents };
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                          Nama Gedung / Lokasi
+                        </label>
+                        <input
+                          type="text"
+                          value={evt.venueName}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => {
+                              const newEvents = [...(prev.events || [])];
+                              newEvents[idx] = { ...newEvents[idx], venueName: val };
+                              return { ...prev, events: newEvents };
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-mono text-[#8E93A2] block mb-0.5">
+                          Alamat Lengkap
+                        </label>
+                        <input
+                          type="text"
+                          value={evt.venueAddress}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateDraft((prev) => {
+                              const newEvents = [...(prev.events || [])];
+                              newEvents[idx] = { ...newEvents[idx], venueAddress: val };
+                              return { ...prev, events: newEvents };
+                            });
+                          }}
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#14161C] border border-[#2A2E3D] text-xs text-white"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateDraft((prev) => {
+                      const newId = `event_${Date.now()}`;
+                      const count = (prev.events || []).length + 1;
+                      const newEvt: EventDetail = {
+                        id: newId,
+                        title: `Resepsi Mempelai Pria (Ngunduh Mantu)`,
+                        subTitle: `Pesta Perayaan Bersama`,
+                        badgeCute: `Momen Bahagia ✨`,
+                        colorTheme: "blue",
+                        dateStr: "2026-11-28",
+                        displayDate: "28 November 2026",
+                        displayDay: "Sabtu",
+                        time: "10:00 - Selesai",
+                        venueName: "Lokasi Acara",
+                        venueAddress: "Alamat Lengkap",
+                        mapUrl: "https://maps.google.com",
+                        isMain: false,
+                        calendarEvent: {
+                          title: `Resepsi Pernikahan`,
+                          description: `Pesta Resepsi`,
+                          location: `Lokasi Acara`,
+                          startDate: "20261128T030000Z",
+                          endDate: "20261128T070000Z",
+                        },
+                      };
+                      return { ...prev, events: [...(prev.events || []), newEvt] };
+                    });
+                  }}
+                  className="w-full py-2 rounded-xl border border-dashed border-[#2A2E3D] hover:border-[#DFD2BD]/60 text-xs font-mono text-[#DFD2BD] hover:bg-[#1A1D26] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Tambah Rangkaian Acara Baru</span>
+                </button>
               </div>
             )}
 

@@ -38,6 +38,7 @@ router.get("/", async (_req: Request, res: Response) => {
           themePalette: data.theme_palette,
           couple: data.couple,
           general: data.general,
+          mainEventId: data.main_event_id || data.events?.find((e: any) => e.isMain)?.id || data.events?.[0]?.id,
           countdownTarget: data.countdown_target,
           events: data.events,
           stories: data.stories,

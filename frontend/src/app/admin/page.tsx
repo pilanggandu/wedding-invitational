@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { AdminAuthView } from "./components/AdminAuthView";
-import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
+import { WeddingInvitationData, GuestItem, WishMessage, getMainEvent } from "@/types/wedding";
 import {
   getInvitationData,
   getGuests,
@@ -290,7 +290,8 @@ function AdminDashboardContent() {
   const coupleDisplayTitle = isCoupleConfigured
     ? `${groomName} & ${brideName}`
     : "Atur Nama Mempelai";
-  const mainEventDate = invitationData.events?.[0]?.displayDate || "";
+  const mainEvent = getMainEvent(invitationData);
+  const mainEventDate = mainEvent?.displayDate || "";
 
   if (isLoading) {
     return (
@@ -917,8 +918,8 @@ function AdminDashboardContent() {
             : "GILANG & SALSADILA"
         }
         weddingDate={
-          invitationData.events?.[0]?.displayDate
-            ? `${invitationData.events[0].displayDate} • Jakarta`
+          mainEventDate
+            ? `${mainEventDate} • Jakarta`
             : "Rabu, 28 Oktober 2026 • Jakarta"
         }
         hashtag={invitationData.general?.hashtag || "#GilangSalsaWedding"}

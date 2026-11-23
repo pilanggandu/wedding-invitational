@@ -25,6 +25,7 @@ import { createKeepsakeCalendar } from "../paper-keepsake/keepsakeCalendar";
 import { CraftBookEnvelope } from "./CraftBookEnvelope";
 import { CraftBookGuestbook } from "./CraftBookGuestbook";
 import type { TemplateProps } from "../types";
+import { getMainEvent } from "@/types/wedding";
 import "./craft-book.css";
 
 const TABS = [
@@ -174,7 +175,7 @@ function CraftBookInner({
 
               <div className="cb-torn-hero">
                 <div className="cb-washi-strip tape-olive">
-                  WALIMATUL 'URS • {data.events[0]?.displayDate || "Hari Bahagia"}
+                  WALIMATUL &apos;URS • {getMainEvent(data)?.displayDate || "Hari Bahagia"}
                 </div>
                 <h1 className="cb-hero-couple">
                   <CharMotionReveal text={groom.name} baseDelay={0.25} />{" "}
@@ -303,7 +304,7 @@ function CraftBookInner({
 
                 <div className="cb-torn-hero">
                   <div className="cb-washi-strip tape-terracotta">
-                    SAVE THE DATE • {data.events[0]?.displayDate}
+                    SAVE THE DATE • {getMainEvent(data)?.displayDate}
                   </div>
                   <h2 className="cb-hero-couple">
                     <CharMotionReveal text={groom.name} baseDelay={0.15} />{" "}

@@ -10,6 +10,7 @@ import {
 } from "./CityscapeIllustrations";
 import { SkyAirplane, PastelCloud, VintageStreetLamp } from "./CityscapeDecorations";
 import { getFontFamilyCss } from "@/lib/typography";
+import { getMainEvent } from "@/types/wedding";
 
 interface CityscapeDesktopLeftProps {
   isOpened?: boolean;
@@ -22,7 +23,7 @@ export function CityscapeDesktopLeft({
 }: CityscapeDesktopLeftProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const akadEvent = data.events[0] || {
+  const akadEvent = getMainEvent(data) || data.events[0] || {
     time: "08:00 - 10:00 WIB",
     displayDay: "Sabtu",
     displayDate: "21 November 2026",

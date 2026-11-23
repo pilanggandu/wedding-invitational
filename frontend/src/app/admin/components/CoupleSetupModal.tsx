@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { X, Heart, Check, Calendar, User } from "lucide-react";
-import { WeddingInvitationData } from "@/types/wedding";
+import { WeddingInvitationData, getMainEvent } from "@/types/wedding";
 import { saveInvitationData } from "@/lib/invitationStore";
 
 interface CoupleSetupModalProps {
@@ -32,7 +32,7 @@ export function CoupleSetupModal({
       setBrideName(data.couple.bride?.name || "");
       setBrideFullName(data.couple.bride?.fullName || "");
     }
-    const mainEvent = data?.events?.[0];
+    const mainEvent = getMainEvent(data);
     if (mainEvent) {
       setEventDate(mainEvent.displayDate || "28 November 2026");
       setEventDay(mainEvent.displayDay || "Sabtu");
@@ -52,10 +52,15 @@ export function CoupleSetupModal({
 
     const updatedEvents = data.events ? [...data.events] : [];
     if (updatedEvents.length > 0) {
-      updatedEvents[0] = {
-        ...updatedEvents[0],
-        displayDate: eventDate.trim() || updatedEvents[0].displayDate,
-        displayDay: eventDay.trim() || updatedEvents[0].displayDay,
+      const mainIdx = updatedEvents.findIndex(
+        (ev) => ev.id === data.mainEventId || ev.isMain
+      );
+      const targetIdx = mainIdx >= 0 ? mainIdx : 0;
+
+      updatedEvents[targetIdx] = {
+        ...updatedEvents[targetIdx],
+        displayDate: eventDate.trim() || updatedEvents[targetIdx].displayDate,
+        displayDay: eventDay.trim() || updatedEvents[targetIdx].displayDay,
       };
     }
 

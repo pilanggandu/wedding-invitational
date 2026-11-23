@@ -7,6 +7,7 @@ import { useWeddingData } from "@/context/WeddingDataContext";
 import { getFontFamilyCss } from "@/lib/typography";
 import { resolveThemeColors } from "@/lib/colorPalettes";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 import {
   KidsDrawingCouple,
   KidsDrawingSun,
@@ -25,13 +26,12 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
   const data = useWeddingData();
   const { paperColor, primaryColor, textColor } = resolveThemeColors(data.themePalette);
   const shouldReduceMotion = useReducedMotion();
-  const akadEvent = data.events[0] || {
+  const mainEvent = getMainEvent(data) || data.events[0] || {
     time: "",
     displayDay: "",
     displayDate: "",
     venueAddress: "",
   };
-  const receptionEvent = data.events[1];
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
@@ -111,13 +111,13 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
         </p>
 
         <div className="flex flex-wrap items-center gap-2.5 mt-4 text-xs font-mono font-bold">
-          {akadEvent.displayDate && <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
+          {mainEvent.displayDate && <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
             <Calendar className="w-3.5 h-3.5 text-[#F2DFBA]" />
-            {[akadEvent.displayDay, akadEvent.displayDate].filter(Boolean).join(", ")}
+            {[mainEvent.displayDay, mainEvent.displayDate].filter(Boolean).join(", ")}
           </span>}
-          {akadEvent.venueAddress && <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
+          {mainEvent.venueAddress && <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
             <MapPin className="w-3.5 h-3.5 text-[#F2DFBA]" />
-            {akadEvent.venueAddress}
+            {mainEvent.venueAddress}
           </span>}
           {data.general?.hashtag && (
             <span className="bg-[#3A1116] text-[#F2DFBA] px-3.5 py-1.5 rounded-full border border-[#541E24]/50 flex items-center gap-1.5 shadow-sm">
@@ -145,17 +145,23 @@ export function DesktopLeftShowcase({ onOpen, isOpened }: DesktopLeftShowcasePro
             </div>
 
             <div className="flex-1 text-left space-y-2.5">
-              {akadEvent.time && <div className="bg-[#FFFDFB] p-3 rounded-2xl border-2 border-[#541E24] shadow-[2px_3px_0px_#541E24]">
-                <p className="text-xs font-script font-bold text-[#541E24] leading-snug">
-                  <strong>Akad:</strong> {akadEvent.time}
-                </p>
-              </div>}
-
-              {receptionEvent?.time && <div className="bg-[#FFFDFB] p-3 rounded-2xl border-2 border-[#541E24] shadow-[2px_3px_0px_#541E24]">
-                <p className="text-xs font-script font-bold text-[#541E24] leading-snug">
-                  <strong>Resepsi:</strong> {receptionEvent.time}
-                </p>
-              </div>}
+              {(data.events || []).slice(0, 3).map((evt, idx) => (
+                <div
+                  key={evt.id || idx}
+                  className={`bg-[#FFFDFB] p-2.5 rounded-2xl border-2 shadow-[2px_3px_0px_#541E24] ${
+                    evt.id === mainEvent.id ? "border-[#C85A17] ring-1 ring-[#C85A17]/30" : "border-[#541E24]"
+                  }`}
+                >
+                  <p className="text-xs font-script font-bold text-[#541E24] leading-snug flex items-center justify-between">
+                    <span>
+                      <strong>{evt.title}:</strong> {evt.time}
+                    </span>
+                    {evt.id === mainEvent.id && (
+                      <span className="text-[10px] text-[#C85A17] font-mono font-bold uppercase ml-1">★ UTAMA</span>
+                    )}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 

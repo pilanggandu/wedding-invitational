@@ -15,7 +15,8 @@ import { MotionReveal } from "./MotionReveal";
 import { SectionMotion } from "./SectionMotion";
 
 export function EventSection() {
-  const { events, dresscode } = useWeddingData();
+  const data = useWeddingData();
+  const { events, dresscode, mainEventId } = data;
 
   return (
     <SectionMotion id="acara" className="relative py-16 paper-texture bg-[#FFF9FA] overflow-hidden">
@@ -29,7 +30,7 @@ export function EventSection() {
         <MotionReveal variant="fade-up">
           <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
             <span className="font-script text-xl sm:text-2xl text-[#B3394B] font-bold block mb-1">
-              Catat Tanggal & Jangan Nyasar! 🗺️
+              Catat Tanggal &amp; Jangan Nyasar! 🗺️
             </span>
             <h2 className="font-handwriting text-4xl min-[380px]:text-5xl sm:text-6xl text-[#660F1A] mb-2">
               Rangkaian Acara
@@ -43,29 +44,41 @@ export function EventSection() {
         {/* Event Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {events.map((event, index) => {
-            const isFirst = index === 0;
+            const isMain = Boolean(event.isMain || (mainEventId ? event.id === mainEventId : index === 0));
+            const isOdd = index % 2 !== 0;
 
             return (
               <MotionReveal
                 key={event.id}
-                variant={isFirst ? "slide-left" : "slide-right"}
+                variant={index % 2 === 0 ? "slide-left" : "slide-right"}
                 delay={0.2 * (index + 1)}
                 className="h-full"
               >
-                <div className="crayon-box p-4 sm:p-7 relative group flex flex-col justify-between h-full bg-white border-[#660F1A]">
+                <div
+                  className={`crayon-box p-4 sm:p-7 relative group flex flex-col justify-between h-full bg-white ${
+                    isMain ? "border-[#C85A17] ring-2 ring-[#C85A17]/20 shadow-md" : "border-[#660F1A]"
+                  }`}
+                >
                   {/* Crayon Washi Tape in Gold / Maroon */}
                   <CrayonWashiTape
-                    text={isFirst ? "★ AKAD NIKAH ★" : "♥ PESTA RESEPSI ♥"}
-                    color={isFirst ? "gold" : "maroon"}
-                    className={`absolute -top-3.5 ${isFirst ? "left-6" : "right-6"} z-20`}
+                    text={isMain ? "★ ACARA UTAMA ★" : `♥ ${event.title.toUpperCase()} ♥`}
+                    color={isMain ? "gold" : isOdd ? "maroon" : "gold"}
+                    className={`absolute -top-3.5 ${index % 2 === 0 ? "left-6" : "right-6"} z-20`}
                   />
 
                   {/* Event Content */}
                   <div>
                     <div className="border-b-2 border-dashed border-[#8A1C2C]/25 pb-4 mb-4 text-center mt-2">
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FFF0F3] text-[#7D1128] border border-[#FAD2D8] mb-2 shadow-xs">
-                        {event.badgeCute}
-                      </span>
+                      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2">
+                        {isMain && (
+                          <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#FAF2E6] text-[#A24810] border border-[#ECD9BD] shadow-2xs">
+                            ★ Acara Utama
+                          </span>
+                        )}
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-script font-bold bg-[#FFF0F3] text-[#7D1128] border border-[#FAD2D8] shadow-xs">
+                          {event.badgeCute}
+                        </span>
+                      </div>
                       <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#4A0812]">
                         {event.title}
                       </h3>

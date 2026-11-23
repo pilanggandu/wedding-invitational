@@ -6,6 +6,7 @@ import { Mail, Sparkles, Heart } from "lucide-react";
 import { useWeddingData } from "@/context/WeddingDataContext";
 import { ExtractedColors } from "@/lib/colorExtractor";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 
 interface AmbientBlurCoverProps {
   isOpen: boolean;
@@ -39,7 +40,7 @@ export function AmbientBlurCover({
 
   const groomName = data.couple?.groom?.name || "Mempelai Pria";
   const brideName = data.couple?.bride?.name || "Mempelai Wanita";
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

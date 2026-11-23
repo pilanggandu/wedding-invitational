@@ -17,17 +17,17 @@ import { SectionMotion } from "./SectionMotion";
 import { ItemMotion } from "./ItemMotion";
 import { getFontFamilyCss } from "@/lib/typography";
 import { CharMotionReveal } from "./CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 
 export function HeroSection() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const akadEvent = data.events[0] || {
+  const mainEvent = getMainEvent(data) || data.events[0] || {
     venueAddress: "Merakurak, Tuban",
     displayDate: "28 November 2026",
     displayDay: "Sabtu",
     time: "08:00 - 10:00 WIB",
   };
-  const receptionEvent = data.events[1] || akadEvent;
 
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
@@ -65,7 +65,7 @@ export function HeroSection() {
     `Pernikahan ${groom.name} & ${bride.name}`
   )}&dates=20261128T010000Z/20261128T080000Z&details=${encodeURIComponent(
     `Undangan Pernikahan: ${groom.fullName} & ${bride.fullName}`
-  )}&location=${encodeURIComponent(receptionEvent.venueAddress)}`;
+  )}&location=${encodeURIComponent(mainEvent.venueAddress || "")}`;
 
   const downloadIcs = () => {
     const icsContent = [
@@ -76,7 +76,7 @@ export function HeroSection() {
       "BEGIN:VEVENT",
       `SUMMARY:The Wedding of ${groom.name} & ${bride.name}`,
       `DESCRIPTION:Pernikahan ${groom.fullName} & ${bride.fullName}`,
-      `LOCATION:${receptionEvent.venueAddress}`,
+      `LOCATION:${mainEvent.venueAddress || ""}`,
       "DTSTART:20261128T010000Z",
       "DTEND:20261128T080000Z",
       "STATUS:CONFIRMED",
@@ -147,7 +147,7 @@ export function HeroSection() {
           </p>
 
           <div className="inline-block bg-[#FFE58F] text-[#4A0812] px-3.5 sm:px-4 py-1 rounded-full border-2 border-[#4A0812] text-[11px] sm:text-xs font-mono font-bold mb-5 sm:mb-6 rotate-[-1deg] shadow-[2px_2px_0px_#4A0812] max-w-full break-words">
-            📅 {akadEvent.displayDay}, {akadEvent.displayDate} • {akadEvent.venueAddress || "Merakurak, Tuban"}
+            📅 {mainEvent.displayDay}, {mainEvent.displayDate} • {mainEvent.venueAddress || "Merakurak, Tuban"}
           </div>
         </MotionReveal>
 

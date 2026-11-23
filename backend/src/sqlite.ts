@@ -371,6 +371,11 @@ export const sqliteService = {
       couple: row.couple ? JSON.parse(row.couple) : {},
       general: row.general ? JSON.parse(row.general) : {},
       countdownTarget: row.countdown_target,
+      mainEventId: (() => {
+        const evts = row.events ? JSON.parse(row.events) : [];
+        const main = evts.find((e: any) => e.isMain);
+        return main ? main.id : evts[0]?.id;
+      })(),
       events: row.events ? JSON.parse(row.events) : [],
       stories: row.stories ? JSON.parse(row.stories) : [],
       gallery: row.gallery ? JSON.parse(row.gallery) : [],

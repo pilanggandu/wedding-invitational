@@ -9,7 +9,7 @@ import {
   isGuestDeletedLocally,
 } from "@/lib/invitationStore";
 import { verifyGuestTokenApi, checkGuestAccessApi } from "@/lib/api";
-import { WeddingInvitationData } from "@/types/wedding";
+import { WeddingInvitationData, getMainEvent, getEventCountdownTarget } from "@/types/wedding";
 import { TemplateRenderer } from "@/templates/TemplateRenderer";
 import { AccessDeniedInvitation } from "@/components/AccessDeniedInvitation";
 
@@ -18,6 +18,7 @@ function InvitationContent() {
   const tokenParam = searchParams.get("u") || searchParams.get("token") || "";
   const rawTo = searchParams.get("to") || searchParams.get("nama") || "";
   const templateParam = searchParams.get("template") || searchParams.get("theme") || "";
+  const eventParam = searchParams.get("event") || searchParams.get("acara") || "";
 
   const [weddingData, setWeddingData] = useState<WeddingInvitationData>(DEFAULT_INVITATION_DATA);
   const [verifiedGuest, setVerifiedGuest] = useState<{
@@ -154,9 +155,21 @@ function InvitationContent() {
     );
   }
 
-  const effectiveData = templateParam
-    ? { ...weddingData, activeTemplateId: templateParam }
-    : weddingData;
+  const matchedEvent = eventParam ? getMainEvent(weddingData, eventParam) : null;
+  const effectiveData: WeddingInvitationData = {
+    ...weddingData,
+    ...(templateParam ? { activeTemplateId: templateParam } : {}),
+    ...(matchedEvent
+      ? {
+          mainEventId: matchedEvent.id,
+          countdownTarget: getEventCountdownTarget(matchedEvent),
+          events: (weddingData.events || []).map((e) => ({
+            ...e,
+            isMain: e.id === matchedEvent.id,
+          })),
+        }
+      : {}),
+  };
 
   return (
     <div className="relative min-h-screen">

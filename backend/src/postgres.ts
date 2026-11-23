@@ -502,6 +502,11 @@ export const postgresService = {
       couple: typeof row.couple === "string" ? JSON.parse(row.couple) : row.couple || {},
       general: typeof row.general === "string" ? JSON.parse(row.general) : row.general || {},
       countdownTarget: row.countdown_target,
+      mainEventId: (() => {
+        const evts = typeof row.events === "string" ? JSON.parse(row.events) : row.events || [];
+        const main = evts.find((e: any) => e.isMain);
+        return main ? main.id : evts[0]?.id;
+      })(),
       events: typeof row.events === "string" ? JSON.parse(row.events) : row.events || [],
       stories: typeof row.stories === "string" ? JSON.parse(row.stories) : row.stories || [],
       gallery: (() => {

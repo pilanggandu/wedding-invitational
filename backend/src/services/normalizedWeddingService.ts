@@ -181,6 +181,7 @@ export class NormalizedWeddingService {
         ],
         quote,
       },
+      mainEventId: mainEvent ? mainEvent.id : "event_akad",
       countdownTarget: mainEvent ? `${mainEvent.dateStr}T08:00:00+07:00` : "2026-11-21T08:00:00+07:00",
       events,
       stories,
@@ -336,35 +337,14 @@ export class NormalizedWeddingService {
 
       // 3. Update wedding_events jika ada payload.events
       if (Array.isArray(payload.events) && payload.events.length > 0) {
-        const akadEvent = payload.events[0];
-        if (akadEvent) {
-          await client.query(
-            `UPDATE wedding_events SET
-              name = COALESCE($1, name),
-              venue = COALESCE($2, venue),
-              address = COALESCE($3, address),
-              maps_url = COALESCE($4, maps_url),
-              display_day = COALESCE($5, display_day),
-              display_date = COALESCE($6, display_date),
-              badge_cute = COALESCE($7, badge_cute),
-              color_theme = COALESCE($8, color_theme),
-              updated_at = NOW()
-            WHERE sort_order = 0 OR is_main = TRUE OR id = 1`,
-            [
-              akadEvent.title,
-              akadEvent.venueName,
-              akadEvent.venueAddress,
-              akadEvent.mapUrl,
-              akadEvent.displayDay,
-              akadEvent.displayDate,
-              akadEvent.badgeCute,
-              akadEvent.colorTheme,
-            ]
+        for (let i = 0; i < payload.events.length; i++) {
+          const ev = payload.events[i];
+          if (!ev) continue;
+          const isMain = Boolean(
+            ev.isMain ||
+              (payload.mainEventId ? ev.id === payload.mainEventId : i === 0)
           );
-        }
 
-        const resepsiEvent = payload.events[1];
-        if (resepsiEvent) {
           await client.query(
             `UPDATE wedding_events SET
               name = COALESCE($1, name),
@@ -375,17 +355,21 @@ export class NormalizedWeddingService {
               display_date = COALESCE($6, display_date),
               badge_cute = COALESCE($7, badge_cute),
               color_theme = COALESCE($8, color_theme),
+              is_main = $9,
               updated_at = NOW()
-            WHERE sort_order = 1 OR id = 2`,
+            WHERE sort_order = $10 OR id = $11`,
             [
-              resepsiEvent.title,
-              resepsiEvent.venueName,
-              resepsiEvent.venueAddress,
-              resepsiEvent.mapUrl,
-              resepsiEvent.displayDay,
-              resepsiEvent.displayDate,
-              resepsiEvent.badgeCute,
-              resepsiEvent.colorTheme,
+              ev.title,
+              ev.venueName,
+              ev.venueAddress,
+              ev.mapUrl,
+              ev.displayDay,
+              ev.displayDate,
+              ev.badgeCute,
+              ev.colorTheme,
+              isMain,
+              i,
+              i + 1,
             ]
           );
         }

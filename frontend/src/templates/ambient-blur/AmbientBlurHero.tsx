@@ -8,6 +8,7 @@ import { ExtractedColors } from "@/lib/colorExtractor";
 import { SectionMotion } from "@/components/SectionMotion";
 import { ItemMotion } from "@/components/ItemMotion";
 import { CharMotionReveal } from "@/components/CharMotionReveal";
+import { getMainEvent } from "@/types/wedding";
 
 interface AmbientBlurHeroProps {
   palette?: ExtractedColors;
@@ -16,7 +17,7 @@ interface AmbientBlurHeroProps {
 export function AmbientBlurHero({ palette }: AmbientBlurHeroProps) {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

@@ -15,11 +15,12 @@ import {
 } from "./PaintedDecorations";
 import { SectionMotion } from "@/components/SectionMotion";
 import { ItemMotion } from "@/components/ItemMotion";
+import { getMainEvent } from "@/types/wedding";
 
 export function PaintedCatsHero() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const dateStr = mainEvent?.displayDate || "21 November 2026";
   const dayStr = mainEvent?.displayDay || "Sabtu";
 

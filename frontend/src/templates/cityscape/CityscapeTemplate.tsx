@@ -24,6 +24,7 @@ import {
 import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
 import { TemplateProps } from "@/templates/types";
+import { getMainEvent } from "@/types/wedding";
 
 function InstagramIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   return (
@@ -71,7 +72,7 @@ import { ItemMotion } from "@/components/ItemMotion";
 function CityscapeHero() {
   const data = useWeddingData();
   const { groom, bride } = data.couple;
-  const akadEvent = data.events[0] || {
+  const akadEvent = getMainEvent(data) || data.events[0] || {
     displayDay: "Sabtu",
     displayDate: "21 November 2026",
     venueAddress: "Merakurak, Tuban",

@@ -26,7 +26,7 @@ import {
   Camera,
   QrCode,
 } from "lucide-react";
-import { WeddingInvitationData, GuestItem, WishMessage } from "@/types/wedding";
+import { WeddingInvitationData, GuestItem, WishMessage, getMainEvent } from "@/types/wedding";
 import { AVAILABLE_TEMPLATES } from "@/data/templates";
 import { generateWhatsAppInvitationUrl } from "@/lib/invitationStore";
 import { fetchRsvpsApi } from "@/lib/api";
@@ -92,7 +92,7 @@ export function AdminOverview({
   const groomName = data.couple?.groom?.name?.trim() || "";
   const brideName = data.couple?.bride?.name?.trim() || "";
   const hasCoupleNames = Boolean(groomName && brideName);
-  const mainEvent = data.events?.[0];
+  const mainEvent = getMainEvent(data);
   const eventDateStr = mainEvent?.displayDate
     ? `${mainEvent.displayDay || "Sabtu"}, ${mainEvent.displayDate}`
     : "28 November 2026";
