@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Great_Vibes, Caveat, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { PageTransition } from "@/components/PageTransition";
 import "./globals.css";
@@ -28,11 +28,67 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const siteBaseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://wedding-invitational.vercel.app");
+
+export const viewport: Viewport = {
+  themeColor: "#541E24",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "The Wedding of Gilang & Salsadila - Undangan Digital Paper Art",
-  description: "Undangan Pernikahan Digital Eksklusif dengan tema Paper Art Craft & Handcrafted Typography",
+  metadataBase: new URL(siteBaseUrl),
+  title: {
+    default: "The Wedding of Gilang & Salsadila | Undangan Pernikahan Digital",
+    template: "%s | The Wedding of Gilang & Salsa",
+  },
+  description:
+    "Undangan Pernikahan Digital Eksklusif Gilang Pandu Permadi & Salsadila Nanda Octavia. Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu.",
+  applicationName: "The Wedding of Gilang & Salsa",
+  authors: [{ name: "Gilang & Salsadila" }],
+  keywords: [
+    "Undangan Pernikahan Digital",
+    "Wedding Invitation",
+    "Gilang & Salsa",
+    "Paper Art Wedding",
+    "The Wedding of Gilang & Salsadila",
+  ],
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: "/undangan",
+    siteName: "The Wedding of Gilang & Salsa",
+    title: "The Wedding of Gilang & Salsadila",
+    description:
+      "Tanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia pernikahan kami.",
+    images: [
+      {
+        url: "/images/og-wedding-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "The Wedding of Gilang & Salsadila - Undangan Digital",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Wedding of Gilang & Salsadila",
+    description:
+      "Undangan Pernikahan Digital Eksklusif Gilang Pandu Permadi & Salsadila Nanda Octavia.",
+    images: ["/images/og-wedding-preview.png"],
   },
 };
 
