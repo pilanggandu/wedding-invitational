@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import type { GuestItem, WeddingInvitationData } from "@/types/wedding";
+import { getMainEvent } from "@/types/wedding";
 import { getGuestInputError, normalizeGuestPhone } from "@/lib/guestData";
 import {
   buildGuestWhatsAppMessage,
@@ -45,6 +46,9 @@ export function GuestWhatsAppQueue({ guests, data, onConfirmSent, onClose }: Gue
   const [openedGuestId, setOpenedGuestId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const mainEvent = getMainEvent(data);
+  const [selectedEventId, setSelectedEventId] = useState<string>(() => mainEvent?.id || data.events?.[0]?.id || "");
+  const activeEvent = getMainEvent(data, selectedEventId);
   const origin = useSyncExternalStore(subscribeToOrigin, readOrigin, readServerOrigin);
   const websiteUrl = websiteOverride ?? (origin ? `${origin}/undangan` : "");
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -89,7 +93,7 @@ export function GuestWhatsAppQueue({ guests, data, onConfirmSent, onClose }: Gue
   if (currentGuest) {
     try {
       personalUrl = getPersonalInvitationUrl(websiteUrl, currentGuest);
-      message = buildGuestWhatsAppMessage(currentGuest, data, websiteUrl, template);
+      message = buildGuestWhatsAppMessage(currentGuest, data, websiteUrl, template, selectedEventId);
       whatsAppUrl = getWhatsAppWebUrl(currentGuest.phone, message);
     } catch (cause) {
       previewError = cause instanceof Error ? cause.message : "Pesan belum dapat dibuat.";
@@ -198,6 +202,35 @@ export function GuestWhatsAppQueue({ guests, data, onConfirmSent, onClose }: Gue
                     Parameter template tetap disertakan; token atau nama akan disesuaikan untuk setiap tamu.
                   </p>
                 </div>
+                {data.events && data.events.length > 1 && (
+                  <div>
+                    <label htmlFor={`${id}-event`} className="mb-2 block text-sm font-semibold">
+                      Acara untuk tanggal pesan ({"{tanggal}"})
+                    </label>
+                    <select
+                      id={`${id}-event`}
+                      value={selectedEventId}
+                      disabled={saving}
+                      onChange={(event) => {
+                        setSelectedEventId(event.target.value);
+                        setOpenedGuestId(null);
+                        setError(null);
+                      }}
+                      className={fieldStyle}
+                    >
+                      {data.events.map((evt) => {
+                        const isMain = evt.id === mainEvent?.id;
+                        const dateText = evt.displayDate || evt.dateStr || "";
+                        const dayText = evt.displayDay ? `${evt.displayDay}, ` : "";
+                        return (
+                          <option key={evt.id} value={evt.id}>
+                            {evt.title} ({dayText}{dateText}){isMain ? " ★ Sorotan Utama" : ""}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                )}
                 <div>
                   <div className="mb-2 flex flex-wrap items-center justify-between gap-1.5">
                     <label htmlFor={`${id}-template`} className="block text-sm font-semibold">Template pesan</label>
@@ -232,9 +265,16 @@ export function GuestWhatsAppQueue({ guests, data, onConfirmSent, onClose }: Gue
                     aria-describedby={`${id}-placeholders`}
                     className={`${fieldStyle} resize-y leading-relaxed`}
                   />
-                  <p id={`${id}-placeholders`} className="mt-2 break-words text-sm leading-relaxed text-slate-600">
-                    Variabel: {"{nama}, {mempelai_pria}, {mempelai_wanita}, {tanggal}, {link}"}. Tanggal mengikuti data acara; jika belum diisi, tanggal dikosongkan.
-                  </p>
+                  <div className="mt-2 space-y-1">
+                    <p id={`${id}-placeholders`} className="break-words text-sm leading-relaxed text-slate-600">
+                      Variabel: {"{nama}, {mempelai_pria}, {mempelai_wanita}, {tanggal}, {link}"}. Tanggal otomatis mengikuti acara sorotan aktif.
+                    </p>
+                    {activeEvent && (
+                      <p className="text-xs font-medium text-emerald-800">
+                        Acara tanggal: <strong>{activeEvent.title}</strong> — {activeEvent.displayDay ? `${activeEvent.displayDay}, ` : ""}{activeEvent.displayDate || activeEvent.dateStr || "Tanggal belum diatur"}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="min-w-0 space-y-4 rounded-lg border border-slate-200 bg-slate-50 p-4">

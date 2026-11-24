@@ -8,10 +8,15 @@ const source = await readFile(helperPath, "utf8").catch((error) => {
   if (error.code === "ENOENT") return "";
   throw error;
 });
-const runtimeSource = stripTypeScriptTypes(source).replace(
-  /(["'])@\/lib\/guestData\1/g,
-  JSON.stringify(new URL("./guestData.ts", import.meta.url).href)
-);
+const runtimeSource = stripTypeScriptTypes(source)
+  .replace(
+    /(["'])@\/lib\/guestData\1/g,
+    JSON.stringify(new URL("./guestData.ts", import.meta.url).href)
+  )
+  .replace(
+    /(["'])@\/types\/wedding\1/g,
+    JSON.stringify(new URL("../types/wedding.ts", import.meta.url).href)
+  );
 const helpers = await import(`data:text/javascript;base64,${Buffer.from(runtimeSource).toString("base64")}`);
 
 function helper(name) {
@@ -62,6 +67,38 @@ test("personalizes every supported placeholder without recursively replacing gue
     "Halo {nama}! {mempelai_pria} & {mempelai_wanita}, {tanggal}.\n{link}\nUntuk {nama}"
   );
   assert.equal(message, "Halo Rina {link}! Pandu & Nanda, Minggu, 14 Maret 2027.\nhttps://undangan.example/undangan?template=craft-book&u=rina\nUntuk Rina {link}");
+});
+
+test("uses the active highlighted event (isMain / mainEventId) in the WhatsApp message", () => {
+  const customData = {
+    couple: { groom: { name: "Pandu" }, bride: { name: "Nanda" } },
+    mainEventId: "resepsi",
+    events: [
+      { id: "akad", displayDay: "Jumat", displayDate: "12 Maret 2027", isMain: false },
+      { id: "resepsi", displayDay: "Minggu", displayDate: "14 Maret 2027", isMain: true },
+    ],
+  };
+  const makeMessage = helper("buildGuestWhatsAppMessage");
+  const message = makeMessage(guest, customData, "https://undangan.example");
+  assert.match(message, /Minggu, 14 Maret 2027/);
+  assert.doesNotMatch(message, /Jumat, 12 Maret 2027/);
+});
+
+test("supports event override via targetEventId or url query parameter", () => {
+  const customData = {
+    couple: { groom: { name: "Pandu" }, bride: { name: "Nanda" } },
+    mainEventId: "resepsi",
+    events: [
+      { id: "akad", displayDay: "Jumat", displayDate: "12 Maret 2027", isMain: false },
+      { id: "resepsi", displayDay: "Minggu", displayDate: "14 Maret 2027", isMain: true },
+    ],
+  };
+  const makeMessage = helper("buildGuestWhatsAppMessage");
+  const urlMessage = makeMessage(guest, customData, "https://undangan.example?event=akad");
+  assert.match(urlMessage, /Jumat, 12 Maret 2027/);
+
+  const directMessage = makeMessage(guest, customData, "https://undangan.example", undefined, "akad");
+  assert.match(directMessage, /Jumat, 12 Maret 2027/);
 });
 
 test("uses the supplied event date in the default message and never invents a missing date", () => {

@@ -1407,7 +1407,7 @@ export function CoupleEventManager({
           </div>
 
           <p className="text-[11px] text-[#717686] leading-relaxed">
-            Pilih acara yang menjadi tanggal sorotan utama. Tanggal dan hitung mundur pada <strong>Sampul (Cover), Hero, dan Save-the-Date</strong> undangan akan otomatis menampilkan acara ini. Sangat berguna bila Akad diadakan di pihak mempelai wanita dan Resepsi di mempelai pria, atau jika Anda ingin mengarahkan highlight ke resepsi tertentu.
+            Pilih acara yang menjadi tanggal sorotan utama. Tanggal dan hitung mundur pada <strong>Sampul (Cover), Hero, Save-the-Date, dan Pesan Template WhatsApp</strong> akan otomatis menampilkan acara ini. Sangat berguna bila Akad diadakan di pihak mempelai wanita dan Resepsi di mempelai pria, atau jika Anda ingin mengarahkan highlight ke resepsi tertentu.
           </p>
 
           {/* Switcher Option Cards */}

@@ -1,4 +1,5 @@
 import type { GuestItem, WeddingInvitationData } from "@/types/wedding";
+import { getMainEvent } from "@/types/wedding";
 import { getGuestInputError, normalizeGuestPhone } from "@/lib/guestData";
 
 export const DEFAULT_GUEST_WHATSAPP_TEMPLATE = [
@@ -136,15 +137,25 @@ export function buildGuestWhatsAppMessage(
   guest: Pick<GuestItem, "name" | "token">,
   data: WeddingInvitationData,
   baseUrl: string,
-  template = DEFAULT_GUEST_WHATSAPP_TEMPLATE
+  template = DEFAULT_GUEST_WHATSAPP_TEMPLATE,
+  targetEventId?: string | null
 ): string {
-  const event = data.events?.[0];
+  let targetEventFromUrl: string | null = null;
+  try {
+    const parsed = new URL(baseUrl);
+    targetEventFromUrl = parsed.searchParams.get("event") || parsed.searchParams.get("acara");
+  } catch {
+    // Abaikan jika baseUrl belum lengkap atau valid
+  }
+
+  const event = getMainEvent(data, targetEventId || targetEventFromUrl);
   const date = event?.displayDate?.trim() || event?.dateStr?.trim() || "";
+  const day = event?.displayDay?.trim() || "";
   const values: Record<string, string> = {
     nama: guest.name.trim(),
     mempelai_pria: data.couple?.groom?.name?.trim() || "Mempelai Pria",
     mempelai_wanita: data.couple?.bride?.name?.trim() || "Mempelai Wanita",
-    tanggal: date ? [event?.displayDay?.trim(), date].filter(Boolean).join(", ") : "",
+    tanggal: date ? [day, date].filter(Boolean).join(", ") : "",
     link: getPersonalInvitationUrl(baseUrl, guest),
   };
   return template.replace(/\{(nama|mempelai_pria|mempelai_wanita|tanggal|link)\}/g,

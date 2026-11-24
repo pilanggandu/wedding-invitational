@@ -93,9 +93,11 @@ export function AdminOverview({
   const brideName = data.couple?.bride?.name?.trim() || "";
   const hasCoupleNames = Boolean(groomName && brideName);
   const mainEvent = getMainEvent(data);
-  const eventDateStr = mainEvent?.displayDate
-    ? `${mainEvent.displayDay || "Sabtu"}, ${mainEvent.displayDate}`
-    : "28 November 2026";
+  const mainDate = mainEvent?.displayDate?.trim() || mainEvent?.dateStr?.trim() || "";
+  const mainDay = mainEvent?.displayDay?.trim() || "";
+  const eventDateStr = mainDate
+    ? [mainDay, mainDate].filter(Boolean).join(", ")
+    : "";
 
   const publicUrl =
     typeof window !== "undefined" ? `${window.location.origin}/undangan` : "";
