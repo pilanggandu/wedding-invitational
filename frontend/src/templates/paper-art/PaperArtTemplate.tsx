@@ -20,7 +20,6 @@ import {
   Gift,
   Image as ImageIcon,
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { WeddingDataProvider, useWeddingData } from "@/context/WeddingDataContext";
 import { resolveThemeColors } from "@/lib/colorPalettes";
 import { TemplateProps } from "@/templates/types";
@@ -1123,11 +1122,6 @@ function SketchbookRsvp({
       const result = await saveGuestResponse({ name, attendance, attendeeCount, quota: maxQuota, message, guestId: guestItem?.id, preview });
       setFeedback(result);
       if (result.clearMessage) setMessage("");
-      if (result.tone === "success" && !shouldReduceMotion) {
-        try {
-          confetti({ particleCount: 50, spread: 65, origin: { y: 0.7 }, colors: ["#541E24", "#A3B899", "#E5B869", "#F2DFBA", "#FFFDFB"] });
-        } catch {}
-      }
     } finally {
       submittingRef.current = false;
       setIsSubmitting(false);

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import confetti from "canvas-confetti";
 import { Mail, Heart, Sparkles } from "lucide-react";
 import { BotanicalLeaves } from "./PaperArtDecorations";
 import { useWeddingData } from "@/context/WeddingDataContext";
@@ -39,18 +38,6 @@ export function EnvelopeCover({ onOpen, isOpen, initialGuestName }: EnvelopeCove
   const handleOpenInvitation = () => {
     if (isOpening || isOpen) return;
     setIsOpening(true);
-
-    try {
-      if (!shouldReduceMotion) {
-        confetti({
-          particleCount: 55,
-          spread: 65,
-          origin: { y: 0.65 },
-          colors: ["#541E24", "#A3B899", "#E5B869", "#F2DFBA", "#FFFDFB"],
-        });
-      }
-    } catch {
-    }
 
     const durationMs = shouldReduceMotion ? 120 : 820;
     setTimeout(() => {
